@@ -74,46 +74,33 @@ export default async function ArticlePage({
   const faq = article.faq_json ?? []
 
   return (
-    <article style={{ padding: '56px 0 80px' }}>
-      <div className="container">
-        <div className="article-content" style={{ maxWidth: 780, margin: '0 auto' }}>
-
-          {/* Breadcrumb */}
+    <article>
+      {/* ── En-tête sombre ── */}
+      <header className="page-hero">
+        <div className="container" style={{ maxWidth: 820, margin: '0 auto' }}>
           <nav className="breadcrumb">
-            <a href="/articles">Décryptages</a>
-            {' › '}
-            {flag} {pays}
+            <a href="/articles">← Décryptages</a>
           </nav>
-
-          {/* Meta */}
-          <div className="article-meta" style={{ display: 'flex', gap: 10, marginBottom: 28, flexWrap: 'wrap', alignItems: 'center' }}>
-            <span className={`tag-pays ${pays.toLowerCase()}`}>
-              {flag} {pays}
-            </span>
-            {dateStr && (
-              <span className="article-date">📅 {dateStr}</span>
-            )}
-            <span className={`confidence ${confCls}`}>{confLbl}</span>
+          <div className="page-hero-badges">
+            <span className="page-hero-badge">{flag} {pays}</span>
+            {dateStr && <span className="page-hero-badge">📅 {dateStr}</span>}
+            <span className={`confidence ${confCls}`} style={{ fontSize: '0.72rem' }}>{confLbl}</span>
           </div>
-
-          {/* Titre */}
-          <h1 style={{ fontSize: '2rem', fontWeight: 800, lineHeight: 1.2, marginBottom: 16 }}>
+          <h1 style={{ position: 'relative', lineHeight: 1.18, maxWidth: 720 }}>
             {article.titre_provisoire}
           </h1>
-
-          {/* Résumé */}
           {article.resume_50mots && (
-            <p style={{
-              fontSize: '1.05rem',
-              color: 'var(--color-text-soft)',
-              lineHeight: 1.6,
-              marginBottom: 36,
-              paddingBottom: 36,
-              borderBottom: '1px solid var(--color-border)',
-            }}>
+            <p style={{ marginTop: 14, maxWidth: 680, fontSize: '1.02rem' }}>
               {article.resume_50mots}
             </p>
           )}
+        </div>
+      </header>
+
+      {/* ── Corps ── */}
+      <div style={{ padding: '56px 0 80px' }}>
+      <div className="container">
+        <div className="article-content" style={{ maxWidth: 780, margin: '0 auto' }}>
 
           {/* Corps de l'article */}
           {article.contenu_html && (
@@ -141,6 +128,7 @@ export default async function ArticlePage({
           )}
 
         </div>
+      </div>
       </div>
     </article>
   )

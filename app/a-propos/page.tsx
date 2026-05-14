@@ -1,9 +1,14 @@
 export default function AProposPage() {
   return (
-    <div dangerouslySetInnerHTML={{ __html: `<section style="padding: 56px 0;">
+    <div dangerouslySetInnerHTML={{ __html: `<section class="page-hero">
+<div class="container">
+<h1>À propos de Moteurs.com</h1>
+<p>Un média éditorial 100 % autonome — données triangulées, sources officielles, zéro promesse marketing.</p>
+</div>
+</section>
+<section style="padding: 56px 0;">
 <div class="container">
 <div class="article-content">
-<h1>À propos de Moteurs.com</h1>
 <div class="article-summary">
 <strong>En une phrase —</strong> Moteurs.com est un média éditorial 100 % autonome qui transforme la complexité technique de la transition énergétique des transports en opportunités économiques claires : pour les PME, les artisans, les flottes, et les particuliers.
       </div>

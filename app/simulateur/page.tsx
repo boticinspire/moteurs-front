@@ -15,10 +15,10 @@ export default function SimulateurPage() {
   }, [])
 
   return (
-    <div dangerouslySetInnerHTML={{ __html: `<section style="padding: 36px 0 18px;">
+    <div dangerouslySetInnerHTML={{ __html: `<section class="page-hero">
 <div class="container">
-<h1 style="font-size: 2rem; color: var(--color-bg-dark); margin-bottom:8px;">Simulateur TCO Moteurs.com</h1>
-<p style="color: var(--color-text-soft); max-width: 760px;">Calculez le coût total de possession (achat + énergie + entretien + aides) sur 6 motorisations. Tous les paramètres sont modifiables, toutes les hypothèses sont affichées.</p>
+<h1>Simulateur TCO Moteurs.com</h1>
+<p>Calculez le coût total de possession (achat + énergie + entretien + aides) sur 6 motorisations. Tous les paramètres sont modifiables, toutes les hypothèses sont affichées.</p>
 </div>
 </section>
 <section style="padding: 8px 0 80px;">

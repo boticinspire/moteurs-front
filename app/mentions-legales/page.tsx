@@ -1,6 +1,12 @@
 export default function MentionsLegalesPage() {
   return (
-    <div dangerouslySetInnerHTML={{ __html: `<section style="padding: 56px 0;">
+    <div dangerouslySetInnerHTML={{ __html: `<section class="page-hero">
+<div class="container">
+<h1>Mentions légales &amp; méthodologie</h1>
+<p>Dernière mise à jour : 8 mai 2026</p>
+</div>
+</section>
+<section style="padding: 56px 0;">
 <div class="container">
 <div class="article-content">
 <h1>Mentions légales &amp; méthodologie</h1>

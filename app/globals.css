@@ -364,6 +364,95 @@ a:hover {
   font-size: 0.85rem;
 }
 
+/* ===== Page Hero (compact) — pages secondaires ===== */
+
+.page-hero {
+  padding: 52px 0 44px;
+  background:
+    radial-gradient(ellipse at 75% 20%, rgba(0,184,135,0.10) 0%, transparent 55%),
+    linear-gradient(160deg, var(--hero-bg-start) 0%, var(--hero-bg-mid) 60%, var(--hero-bg-end) 100%);
+  position: relative;
+  overflow: hidden;
+}
+
+.page-hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
+                    linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
+  background-size: 48px 48px;
+  pointer-events: none;
+}
+
+.page-hero::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(26,95,196,0.4), rgba(0,184,135,0.4), transparent);
+}
+
+.page-hero h1 {
+  font-size: 2.2rem;
+  font-weight: 800;
+  letter-spacing: -0.025em;
+  color: #ffffff;
+  margin-bottom: 10px;
+  position: relative;
+}
+
+.page-hero p {
+  color: rgba(255,255,255,0.65);
+  font-size: 1rem;
+  max-width: 640px;
+  line-height: 1.65;
+  position: relative;
+}
+
+.page-hero .breadcrumb {
+  font-size: 0.82rem;
+  color: rgba(255,255,255,0.45);
+  margin-bottom: 14px;
+  position: relative;
+}
+
+.page-hero .breadcrumb a {
+  color: rgba(255,255,255,0.45);
+  text-decoration: none;
+}
+
+.page-hero .breadcrumb a:hover {
+  color: rgba(255,255,255,0.75);
+}
+
+.page-hero-badges {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-bottom: 14px;
+  position: relative;
+}
+
+.page-hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  background: rgba(255,255,255,0.10);
+  color: rgba(255,255,255,0.80);
+  border: 1px solid rgba(255,255,255,0.15);
+}
+
+@media (max-width: 640px) {
+  .page-hero { padding: 36px 0 32px; }
+  .page-hero h1 { font-size: 1.7rem; }
+}
+
 /* ===== Sections ===== */
 
 section {

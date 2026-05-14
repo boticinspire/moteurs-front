@@ -19,14 +19,10 @@ export default async function ArticlesPage() {
 
   return (
     <>
-      <section style={{ padding: '48px 0 24px', borderBottom: '1px solid var(--color-border)' }}>
+      <section className="page-hero">
         <div className="container">
-          <h1 style={{ fontSize: '2.2rem', color: 'var(--color-bg-dark)', letterSpacing: '-0.025em', fontWeight: 800 }}>
-            Décryptages
-          </h1>
-          <p style={{ color: 'var(--color-text-soft)', maxWidth: 640, marginTop: 8, fontSize: '1rem', lineHeight: 1.6 }}>
-            Veille triangulée · 2 sources minimum par fait publié · niveaux de confiance affichés.
-          </p>
+          <h1>Décryptages</h1>
+          <p>Veille triangulée · 2 sources minimum par fait publié · niveaux de confiance affichés.</p>
         </div>
       </section>
 
