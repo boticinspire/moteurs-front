@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import { supabase, FLAGS, CONF_CLASS, CONF_LABEL, type Article } from '@/lib/supabase'
+import NewsletterForm from '@/components/NewsletterForm'
 
 export const revalidate = 3600
 
@@ -157,10 +158,7 @@ export default async function HomePage() {
         <div className="container">
           <h2>Une veille hebdomadaire, segmentée selon votre profil.</h2>
           <p>Recevez chaque vendredi les arbitrages économiques de la semaine — pas de spam, désinscription en 1 clic.</p>
-          <form className="newsletter-form">
-            <input type="email" placeholder="votre@email.fr" required />
-            <button type="submit">S&apos;inscrire</button>
-          </form>
+          <NewsletterForm />
         </div>
       </section>
     </>
