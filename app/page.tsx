@@ -56,9 +56,9 @@ export default async function HomePage() {
       </section>
 
       {/* ===== STATS ===== */}
-      <section>
-        <div className="container">
-          <div className="stats-strip">
+      <section style={{ padding: '0', background: 'white', borderTop: '1px solid var(--color-border)', borderBottom: '1px solid var(--color-border)' }}>
+        <div className="container" style={{ padding: '0 24px' }}>
+          <div className="stats-strip" style={{ borderRadius: 0, border: 'none', borderLeft: '1px solid var(--color-border)', borderRight: '1px solid var(--color-border)' }}>
             <div className="stat">
               <div className="stat-value">8 600 €</div>
               <div className="stat-label">CEE max VUL électrique <span className="confidence high">FR</span></div>
