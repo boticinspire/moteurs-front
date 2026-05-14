@@ -36,9 +36,18 @@ export default function NewsletterForm() {
   }
 
   if (status === 'ok') return (
-    <p style={{ color: '#10b981', fontWeight: 600, fontSize: '1.05rem', textAlign: 'center' }}>
-      ✓ Inscription confirmée ! Vous recevrez votre première veille vendredi.
-    </p>
+    <div style={{ textAlign: 'center' }}>
+      <p style={{ color: '#10b981', fontWeight: 600, fontSize: '1.05rem', marginBottom: 8 }}>
+        ✓ Inscription confirmée ! Vous recevrez votre première veille vendredi.
+      </p>
+      <p style={{ fontSize: '0.75rem', color: 'rgba(255,255,255,0.5)' }}>
+        Pour vous désinscrire à tout moment :{' '}
+        <a href={`/desinscription?email=${encodeURIComponent(email || '')}`}
+           style={{ color: 'rgba(255,255,255,0.6)', textDecoration: 'underline' }}>
+          lien de désinscription
+        </a>
+      </p>
+    </div>
   )
 
   return (
