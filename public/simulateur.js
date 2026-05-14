@@ -547,7 +547,13 @@
   _onReady(function () {
     // 1. Démarrage immédiat avec les données intégrées
     _chargerFallback();
-    _initSimulateur();
+    try {
+      _initSimulateur();
+    } catch (err) {
+      var rc = document.getElementById("results-content");
+      if (rc) rc.innerHTML = "<p style='color:#dc2626;padding:16px;'>Erreur d'initialisation : " + (err && err.message ? err.message : String(err)) + "</p>";
+      console.error("[Simulateur] _initSimulateur error:", err);
+    }
 
     // 2. Tentative de chargement du JSON à jour en arrière-plan
     fetch("/data/simulateur-data.json?v=" + Date.now())
