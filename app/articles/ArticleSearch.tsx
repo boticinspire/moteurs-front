@@ -1,119 +1,184 @@
 'use client'
 
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useEffect } from 'react'
 import Link from 'next/link'
 import { FLAGS, CONF_CLASS, CONF_LABEL, type Article } from '@/lib/supabase'
 
 type ArticleRow = Pick<Article, 'slug' | 'titre_provisoire' | 'resume_50mots' | 'pays_cible' | 'published_at' | 'niveau_confiance'>
 
 const PAYS_LIST = ['FR', 'BE', 'CH', 'CA'] as const
+const PAGE_SIZE = 25
 
 export default function ArticleSearch({ articles }: { articles: ArticleRow[] }) {
-  const [query, setQuery] = useState('')
-  const [pays, setPays]   = useState<string>('')
+  const [query,      setQuery]      = useState('')
+  const [pays,       setPays]       = useState('')
+  const [confiance,  setConfiance]  = useState('')
+  const [page,       setPage]       = useState(1)
+
+  // Remise à la page 1 dès qu'un filtre change
+  useEffect(() => { setPage(1) }, [query, pays, confiance])
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase()
     return articles.filter((a) => {
-      const matchPays = !pays || a.pays_cible === pays
-      if (!matchPays) return false
-      if (!q) return true
-      return (
-        (a.titre_provisoire?.toLowerCase().includes(q)) ||
-        (a.resume_50mots?.toLowerCase().includes(q))
-      )
+      if (pays && a.pays_cible !== pays) return false
+      if (confiance && a.niveau_confiance !== confiance) return false
+      if (q) {
+        const inTitre   = a.titre_provisoire?.toLowerCase().includes(q)
+        const inResume  = a.resume_50mots?.toLowerCase().includes(q)
+        if (!inTitre && !inResume) return false
+      }
+      return true
     })
-  }, [articles, query, pays])
+  }, [articles, query, pays, confiance])
+
+  const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE))
+  const currentPage = Math.min(page, totalPages)
+  const paginated   = filtered.slice((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE)
+
+  const hasFilters = query || pays || confiance
+
+  function reset() { setQuery(''); setPays(''); setConfiance(''); setPage(1) }
 
   return (
     <>
-      {/* Barre de recherche + filtres */}
-      <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap', alignItems: 'center', marginBottom: 28 }}>
-        {/* Champ de recherche */}
-        <div style={{ flex: '1 1 260px', position: 'relative' }}>
+      {/* ── Barre de recherche + filtres ── */}
+      <div style={{
+        display: 'flex', gap: 10, flexWrap: 'wrap', alignItems: 'center',
+        marginBottom: 20,
+        padding: '16px 18px',
+        background: 'var(--color-bg-alt)',
+        border: '1px solid var(--color-border)',
+        borderRadius: 'var(--radius-lg)',
+      }}>
+        {/* Champ texte */}
+        <div style={{ flex: '1 1 220px', position: 'relative', minWidth: 180 }}>
           <span style={{
-            position: 'absolute', left: 14, top: '50%', transform: 'translateY(-50%)',
-            color: 'var(--color-text-soft)', fontSize: '1rem', pointerEvents: 'none',
-          }}>
-            🔍
-          </span>
+            position: 'absolute', left: 11, top: '50%', transform: 'translateY(-50%)',
+            fontSize: '0.9rem', pointerEvents: 'none', color: 'var(--color-text-soft)',
+          }}>🔍</span>
           <input
             type="search"
-            placeholder="Rechercher un décryptage…"
+            placeholder="Rechercher…"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             style={{
               width: '100%',
-              padding: '10px 14px 10px 40px',
+              padding: '9px 12px 9px 34px',
               border: '1.5px solid var(--color-border)',
               borderRadius: 'var(--radius-md)',
-              fontSize: '0.95rem',
+              fontSize: '0.9rem',
               fontFamily: 'inherit',
               background: 'white',
               color: 'var(--color-text)',
               outline: 'none',
-              transition: 'border-color 0.15s',
             }}
-            onFocus={(e) => (e.target.style.borderColor = 'var(--color-primary)')}
-            onBlur={(e) => (e.target.style.borderColor = 'var(--color-border)')}
+            onFocus={(e)  => (e.target.style.borderColor = 'var(--color-primary)')}
+            onBlur={(e)   => (e.target.style.borderColor = 'var(--color-border)')}
           />
         </div>
 
-        {/* Filtres pays */}
-        <div className="filters" style={{ margin: 0, flex: '0 0 auto', padding: '8px 12px' }}>
-          <button
-            onClick={() => setPays('')}
-            className={`filter-btn${!pays ? ' active' : ''}`}
-          >
-            Tous
-          </button>
+        {/* Sélecteur pays */}
+        <select
+          value={pays}
+          onChange={(e) => setPays(e.target.value)}
+          style={selectStyle}
+        >
+          <option value="">🌍 Tous les pays</option>
           {PAYS_LIST.map((p) => (
-            <button
-              key={p}
-              onClick={() => setPays(pays === p ? '' : p)}
-              className={`filter-btn${pays === p ? ' active' : ''}`}
-            >
-              {FLAGS[p]} {p}
-            </button>
+            <option key={p} value={p}>{FLAGS[p]} {p}</option>
           ))}
-        </div>
+        </select>
+
+        {/* Sélecteur confiance */}
+        <select
+          value={confiance}
+          onChange={(e) => setConfiance(e.target.value)}
+          style={selectStyle}
+        >
+          <option value="">● Toutes confiances</option>
+          <option value="ÉLEVÉ">● Confiance ÉLEVÉ</option>
+          <option value="MOYEN">● Confiance MOYEN</option>
+          <option value="FAIBLE">● À vérifier</option>
+        </select>
+
+        {/* Reset */}
+        {hasFilters && (
+          <button onClick={reset} style={{
+            background: 'none', border: '1px solid var(--color-border)',
+            borderRadius: 'var(--radius-md)', padding: '9px 14px',
+            cursor: 'pointer', fontSize: '0.82rem', color: 'var(--color-text-soft)',
+            whiteSpace: 'nowrap', transition: 'all 0.15s',
+          }}
+          onMouseEnter={(e) => { (e.currentTarget.style.borderColor = 'var(--color-primary)'); (e.currentTarget.style.color = 'var(--color-primary)') }}
+          onMouseLeave={(e) => { (e.currentTarget.style.borderColor = 'var(--color-border)'); (e.currentTarget.style.color = 'var(--color-text-soft)') }}
+          >
+            ✕ Réinitialiser
+          </button>
+        )}
       </div>
 
-      {/* Compteur résultats */}
-      {(query || pays) && (
-        <p style={{
-          fontSize: '0.82rem', color: 'var(--color-text-soft)',
-          marginBottom: 16, paddingLeft: 2,
-        }}>
-          {filtered.length} résultat{filtered.length !== 1 ? 's' : ''} {query && <>pour «&nbsp;<strong>{query}</strong>&nbsp;»</>}{pays && <> · {FLAGS[pays]} {pays}</>}
-          {' '}—{' '}
-          <button
-            onClick={() => { setQuery(''); setPays('') }}
-            style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--color-primary)', fontSize: '0.82rem', padding: 0, textDecoration: 'underline' }}
-          >
-            réinitialiser
-          </button>
+      {/* ── Barre de résultats + pagination ── */}
+      <div style={{
+        display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+        marginBottom: 16, flexWrap: 'wrap', gap: 8,
+      }}>
+        <p style={{ fontSize: '0.82rem', color: 'var(--color-text-soft)', margin: 0 }}>
+          {filtered.length === 0
+            ? 'Aucun résultat'
+            : <>
+                <strong>{(currentPage - 1) * PAGE_SIZE + 1}–{Math.min(currentPage * PAGE_SIZE, filtered.length)}</strong>
+                {' '}sur <strong>{filtered.length}</strong> décryptage{filtered.length > 1 ? 's' : ''}
+                {query && <> · «&nbsp;<em>{query}</em>&nbsp;»</>}
+                {pays && <> · {FLAGS[pays]} {pays}</>}
+                {confiance && <> · {CONF_LABEL[confiance] ?? confiance}</>}
+              </>
+          }
         </p>
-      )}
 
-      {/* Liste articles */}
-      <div className="article-list">
-        {filtered.length === 0 ? (
-          <div style={{ textAlign: 'center', padding: '64px 24px', color: 'var(--color-text-soft)' }}>
-            <div style={{ fontSize: '2.5rem', marginBottom: 12 }}>🔍</div>
-            <p style={{ fontSize: '1rem', marginBottom: 8 }}>Aucun résultat pour «&nbsp;<strong>{query}</strong>&nbsp;»</p>
-            <p style={{ fontSize: '0.85rem' }}>
-              Essayez des mots-clés différents ou{' '}
-              <button
-                onClick={() => setQuery('')}
-                style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--color-primary)', fontSize: '0.85rem', padding: 0, textDecoration: 'underline' }}
-              >
-                afficher tous les articles
-              </button>
-            </p>
+        {/* Pagination */}
+        {totalPages > 1 && (
+          <div style={{ display: 'flex', gap: 4, alignItems: 'center' }}>
+            <PaginationBtn onClick={() => setPage(1)}      disabled={currentPage === 1}       label="«" title="Première page" />
+            <PaginationBtn onClick={() => setPage(p => p - 1)} disabled={currentPage === 1}   label="‹" title="Page précédente" />
+
+            {pageRange(currentPage, totalPages).map((p, i) =>
+              p === '…'
+                ? <span key={`e${i}`} style={{ padding: '0 4px', color: 'var(--color-text-soft)', fontSize: '0.8rem' }}>…</span>
+                : <button
+                    key={p}
+                    onClick={() => setPage(Number(p))}
+                    style={{
+                      width: 32, height: 32, border: '1px solid',
+                      borderColor: currentPage === p ? 'var(--color-primary)' : 'var(--color-border)',
+                      borderRadius: 'var(--radius-sm)',
+                      background: currentPage === p ? 'var(--color-primary)' : 'white',
+                      color: currentPage === p ? 'white' : 'var(--color-text)',
+                      fontSize: '0.82rem', fontWeight: currentPage === p ? 700 : 400,
+                      cursor: 'pointer', transition: 'all 0.15s',
+                    }}
+                  >{p}</button>
+            )}
+
+            <PaginationBtn onClick={() => setPage(p => p + 1)} disabled={currentPage === totalPages} label="›" title="Page suivante" />
+            <PaginationBtn onClick={() => setPage(totalPages)} disabled={currentPage === totalPages}  label="»" title="Dernière page" />
           </div>
-        ) : (
-          filtered.map((a) => {
+        )}
+      </div>
+
+      {/* ── Liste articles ── */}
+      {filtered.length === 0 ? (
+        <div style={{ textAlign: 'center', padding: '64px 24px', color: 'var(--color-text-soft)' }}>
+          <div style={{ fontSize: '2.5rem', marginBottom: 12 }}>🔍</div>
+          <p style={{ fontSize: '1rem', marginBottom: 8 }}>Aucun article ne correspond à ces critères.</p>
+          <button onClick={reset} style={{
+            marginTop: 8, background: 'none', border: 'none', cursor: 'pointer',
+            color: 'var(--color-primary)', fontSize: '0.9rem', textDecoration: 'underline',
+          }}>Réinitialiser les filtres</button>
+        </div>
+      ) : (
+        <div className="article-list">
+          {paginated.map((a) => {
             const p    = a.pays_cible as string
             const flag = FLAGS[p] ?? ''
             const conf = a.niveau_confiance ?? 'MOYEN'
@@ -147,14 +212,80 @@ export default function ArticleSearch({ articles }: { articles: ArticleRow[] }) 
                 </div>
               </article>
             )
-          })
-        )}
-      </div>
+          })}
+        </div>
+      )}
+
+      {/* ── Pagination bas de page ── */}
+      {totalPages > 1 && filtered.length > 0 && (
+        <div style={{ display: 'flex', justifyContent: 'center', gap: 4, marginTop: 32 }}>
+          <PaginationBtn onClick={() => setPage(p => p - 1)} disabled={currentPage === 1}          label="‹ Précédent" />
+          <span style={{ padding: '8px 14px', fontSize: '0.82rem', color: 'var(--color-text-soft)', alignSelf: 'center' }}>
+            Page {currentPage} / {totalPages}
+          </span>
+          <PaginationBtn onClick={() => setPage(p => p + 1)} disabled={currentPage === totalPages}  label="Suivant ›" />
+        </div>
+      )}
     </>
   )
 }
 
-/** Surligne les occurrences du terme recherché dans le texte */
+/* ── Styles partagés ── */
+
+const selectStyle: React.CSSProperties = {
+  flex: '0 0 auto',
+  padding: '9px 12px',
+  border: '1.5px solid var(--color-border)',
+  borderRadius: 'var(--radius-md)',
+  fontSize: '0.88rem',
+  fontFamily: 'inherit',
+  background: 'white',
+  color: 'var(--color-text)',
+  cursor: 'pointer',
+  outline: 'none',
+  minWidth: 160,
+}
+
+/* ── Bouton pagination ── */
+function PaginationBtn({
+  onClick, disabled, label, title,
+}: {
+  onClick: () => void; disabled: boolean; label: string; title?: string
+}) {
+  return (
+    <button
+      onClick={onClick}
+      disabled={disabled}
+      title={title}
+      style={{
+        padding: '7px 12px',
+        border: '1px solid var(--color-border)',
+        borderRadius: 'var(--radius-sm)',
+        background: disabled ? 'var(--color-bg-alt)' : 'white',
+        color: disabled ? 'var(--color-border)' : 'var(--color-text)',
+        fontSize: '0.82rem',
+        cursor: disabled ? 'default' : 'pointer',
+        transition: 'all 0.15s',
+      }}
+    >
+      {label}
+    </button>
+  )
+}
+
+/* ── Calcul des pages à afficher (avec ellipses) ── */
+function pageRange(current: number, total: number): (number | '…')[] {
+  if (total <= 7) return Array.from({ length: total }, (_, i) => i + 1)
+  const pages: (number | '…')[] = []
+  pages.push(1)
+  if (current > 3)          pages.push('…')
+  for (let p = Math.max(2, current - 1); p <= Math.min(total - 1, current + 1); p++) pages.push(p)
+  if (current < total - 2)  pages.push('…')
+  pages.push(total)
+  return pages
+}
+
+/* ── Surlignage des termes trouvés ── */
 function highlightMatch(text: string, query: string) {
   if (!query.trim()) return <>{text}</>
   const q = query.trim()
@@ -164,7 +295,7 @@ function highlightMatch(text: string, query: string) {
     <>
       {parts.map((part, i) =>
         regex.test(part) ? (
-          <mark key={i} style={{ background: 'rgba(0,184,135,0.18)', color: 'inherit', borderRadius: 2, padding: '0 1px' }}>
+          <mark key={i} style={{ background: 'rgba(0,184,135,0.2)', color: 'inherit', borderRadius: 2, padding: '0 2px' }}>
             {part}
           </mark>
         ) : (
