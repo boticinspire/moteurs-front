@@ -21,7 +21,7 @@ export default function NewsletterForm() {
 
     const { error } = await sb.from('leads').insert({
       email,
-      source_lead: 'newsletter',
+      source_lead: 'NEWSLETTER',
       message: `Consentement RGPD donné le ${new Date().toISOString()}`,
     })
 
