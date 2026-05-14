@@ -2,7 +2,7 @@ import Link from 'next/link'
 import { supabase, FLAGS, CONF_CLASS, CONF_LABEL, type Article } from '@/lib/supabase'
 import NewsletterForm from '@/components/NewsletterForm'
 
-export const revalidate = 3600
+export const revalidate = 60
 
 export default async function HomePage() {
   const { data: articles } = await supabase
