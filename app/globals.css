@@ -1451,3 +1451,37 @@ tr:hover td {
     /* Loader */
     .membre-loader { display: flex; flex-direction: column; align-items: center; gap: 16px; padding: 80px; color: var(--color-text-soft); }
   
+
+/* ===== Impression ===== */
+@media print {
+  .no-print,
+  header nav,
+  footer,
+  .page-hero-badges,
+  .breadcrumb,
+  .article-actions { display: none !important; }
+
+  body { background: #fff; color: #000; font-size: 11pt; }
+
+  .page-hero {
+    background: none !important;
+    color: #000 !important;
+    padding: 16px 0 8px;
+  }
+
+  .article-body h2 { font-size: 13pt; margin-top: 16pt; }
+  .article-body p  { line-height: 1.5; margin-bottom: 8pt; }
+  a { color: #000; text-decoration: underline; }
+
+  /* Copyright visible à l'impression */
+  .print-copyright {
+    display: block !important;
+    margin-top: 24pt;
+    font-size: 8pt;
+    color: #666;
+    border-top: 1px solid #ccc;
+    padding-top: 8pt;
+  }
+}
+
+.print-copyright { display: none; }

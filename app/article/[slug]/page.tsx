@@ -1,6 +1,8 @@
 import { notFound } from 'next/navigation'
 import type { Metadata } from 'next'
 import { supabase, FLAGS, CONF_CLASS, CONF_LABEL, type Article } from '@/lib/supabase'
+import Flag from '@/components/Flag'
+import ArticleActions from './ArticleActions'
 
 // ISR : revalidation toutes les heures
 export const revalidate = 3600
@@ -82,7 +84,7 @@ export default async function ArticlePage({
             <a href="/articles">← Décryptages</a>
           </nav>
           <div className="page-hero-badges">
-            <span className="page-hero-badge">{flag} {pays}</span>
+            <span className="page-hero-badge" style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}><Flag code={pays.toLowerCase()} size={16} /> {pays}</span>
             {dateStr && <span className="page-hero-badge">📅 {dateStr}</span>}
             <span className={`confidence ${confCls}`} style={{ fontSize: '0.72rem' }}>{confLbl}</span>
           </div>
@@ -126,6 +128,34 @@ export default async function ArticlePage({
               ))}
             </div>
           )}
+
+          {/* ── Copyright impression uniquement ── */}
+          <div className="print-copyright">
+            © {new Date().getFullYear()} Moteurs.com — Tous droits réservés. Article rédigé par la rédaction Moteurs.com.
+            URL : https://moteurs.com/article/{article.slug}
+          </div>
+
+          {/* ── Actions : imprimer / partager ── */}
+          <ArticleActions
+            titre={article.titre_provisoire ?? ''}
+            url={`https://moteurs.com/article/${article.slug}`}
+          />
+
+          {/* ── Copyright ── */}
+          <div className="no-print" style={{
+            marginTop: 8,
+            padding: '14px 18px',
+            background: 'var(--color-bg-alt)',
+            border: '1px solid var(--color-border)',
+            borderRadius: 8,
+            fontSize: '0.78rem',
+            color: 'var(--color-text-soft)',
+            lineHeight: 1.6,
+          }}>
+            © {new Date().getFullYear()} <strong>Moteurs.com</strong> — Tous droits réservés.
+            Cet article a été rédigé par la rédaction Moteurs.com. Toute reproduction, même partielle,
+            est interdite sans autorisation écrite préalable.
+          </div>
 
         </div>
       </div>
