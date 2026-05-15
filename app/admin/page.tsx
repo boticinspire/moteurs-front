@@ -105,6 +105,24 @@ export default function AdminPage() {
     setArticles(prev => prev.filter(a => a.id !== id)); setSelected(null); chargerStats()
   }
 
+  async function validerTout() {
+    const enAttente = articles.filter(a => a.etat_code === 'EN_ATTENTE_VALIDATION')
+    if (enAttente.length === 0) { msg('Aucun article en attente.'); return }
+    msg(`Validation de ${enAttente.length} article(s) en cours…`)
+    const { error } = await sb.from('articles')
+      .update({ etat_code: 'VALIDE' })
+      .eq('etat_code', 'EN_ATTENTE_VALIDATION')
+    if (error) { msg('✗ Erreur : ' + error.message); return }
+    msg(`✓ ${enAttente.length} article(s) validés — Lancement Agent SEO…`)
+    try {
+      await fetch(`${RAIL}/seo/traiter-valides`, { method: 'POST' })
+      msg(`✓ ${enAttente.length} article(s) validés et publiés.`, 6000)
+    } catch { msg('✓ Validés — mais erreur connexion SEO. Lance "Publier validés" manuellement.') }
+    setSelected(null)
+    await chargerStats()
+    await chargerArticles('EN_ATTENTE_VALIDATION')
+  }
+
   async function rejeter(id: number) {
     msg('Rejet en cours…')
     await sb.from('articles').update({ etat_code: 'REJETE' }).eq('id', id)
@@ -255,6 +273,17 @@ export default function AdminPage() {
               </button>
             ))}
           </div>
+
+          {filter === 'EN_ATTENTE_VALIDATION' && articles.length > 0 && (
+            <div style={{ marginBottom: 14, display: 'flex', alignItems: 'center', gap: 12 }}>
+              <button className="btn btn-primary btn-sm" onClick={validerTout}>
+                ✓ Valider tout & publier ({articles.length})
+              </button>
+              <span style={{ fontSize: '0.8rem', color: 'var(--color-text-soft)' }}>
+                Valide tous les articles en attente et déclenche l&apos;Agent SEO.
+              </span>
+            </div>
+          )}
 
           <div style={{ display: 'grid', gridTemplateColumns: '320px 1fr', gap: 20, alignItems: 'start' }}>
             {/* Liste */}
