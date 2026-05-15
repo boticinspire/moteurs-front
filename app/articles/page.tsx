@@ -2,7 +2,7 @@ import type { Metadata } from 'next'
 import { supabase, type Article } from '@/lib/supabase'
 import ArticleSearch from './ArticleSearch'
 
-export const revalidate = 1800
+export const revalidate = 300
 
 export const metadata: Metadata = {
   title: 'Décryptages',
