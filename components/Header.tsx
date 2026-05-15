@@ -12,6 +12,7 @@ export default function Header() {
     { href: '/particulier', label: 'Particuliers' },
     { href: '/articles',    label: 'Décryptages' },
     { href: '/simulateur',  label: 'Simulateur TCO' },
+    { href: '/comparer',    label: 'Comparateur' },
   ]
 
   return (

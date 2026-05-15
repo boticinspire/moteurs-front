@@ -21,6 +21,7 @@ export default function Footer() {
               <li><Link href="/particulier">Particuliers</Link></li>
               <li><Link href="/articles">Décryptages</Link></li>
               <li><Link href="/simulateur">Simulateur TCO</Link></li>
+              <li><Link href="/comparer">Comparateur</Link></li>
             </ul>
           </div>
           <div>
