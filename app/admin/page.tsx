@@ -3,6 +3,7 @@
 import { useEffect, useState, useCallback } from 'react'
 import { createClient } from '@supabase/supabase-js'
 import Link from 'next/link'
+import Flag from '@/components/Flag'
 
 const sb = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -11,7 +12,6 @@ const sb = createClient(
 
 const RAIL = 'https://orchestrateur-production.up.railway.app'
 const ADMIN_EMAIL = '356904@gmail.com'
-const FLAGS: Record<string, string> = { FR: '🇫🇷', BE: '🇧🇪', CH: '🇨🇭', CA: '🇨🇦' }
 
 type Article = {
   id: number; slug: string; titre_provisoire: string; resume_50mots: string | null
@@ -296,7 +296,7 @@ export default function AdminPage() {
                   borderRadius: 8, cursor: 'pointer',
                 }}>
                   <div style={{ display: 'flex', gap: 6, alignItems: 'center', marginBottom: 5 }}>
-                    <span>{FLAGS[a.pays_cible] || '🌐'}</span>
+                    <Flag code={a.pays_cible.toLowerCase()} size={16} />
                     <span style={{ fontSize: '0.7rem', padding: '1px 6px', background: 'var(--color-bg)', border: '1px solid var(--color-border)', borderRadius: 10, color: 'var(--color-text-soft)' }}>{a.pays_cible}</span>
                     <span style={{ fontSize: '0.7rem', color: 'var(--color-text-soft)', marginLeft: 'auto' }}>{new Date(a.created_at).toLocaleDateString('fr-FR')}</span>
                   </div>

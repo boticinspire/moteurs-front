@@ -1,6 +1,7 @@
 import { notFound } from 'next/navigation'
 import type { Metadata } from 'next'
 import Link from 'next/link'
+import Flag from '@/components/Flag'
 import {
   calculTCO, getMotors,
   MOTOR_LABELS, MOTOR_COLORS, SEGMENT_LABELS,
@@ -234,7 +235,7 @@ export default async function TcoSegmentPage({
             <a href="/tco">← Comparatifs TCO</a>
           </nav>
           <div className="page-hero-badges">
-            <span className="page-hero-badge">{flag} {pLabel}</span>
+            <span className="page-hero-badge" style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}><Flag code={pays.toLowerCase()} size={16} /> {pLabel}</span>
             <span className="page-hero-badge">{profil}</span>
             <span className="page-hero-badge">📅 2026</span>
           </div>
@@ -423,7 +424,7 @@ export default async function TcoSegmentPage({
                       color: 'var(--color-text)',
                     }}
                   >
-                    {PAYS_FLAGS[PAYS_MAP[p]]} TCO {sLabel} — {PAYS_LABELS[PAYS_MAP[p]]}
+                    <Flag code={p} size={14} /> TCO {sLabel} — {PAYS_LABELS[PAYS_MAP[p]]}
                   </Link>
                 ))}
             </div>

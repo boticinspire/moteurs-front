@@ -11,10 +11,10 @@ import {
 // ─── Constantes ───────────────────────────────────────────────────────────────
 
 const PAYS_OPTIONS: { value: Pays; label: string }[] = [
-  { value: 'FR', label: '🇫🇷 France' },
-  { value: 'BE', label: '🇧🇪 Belgique' },
-  { value: 'CH', label: '🇨🇭 Suisse' },
-  { value: 'CA', label: '🇨🇦 Canada' },
+  { value: 'FR', label: 'France' },
+  { value: 'BE', label: 'Belgique' },
+  { value: 'CH', label: 'Suisse' },
+  { value: 'CA', label: 'Canada' },
 ]
 
 const DUREES = [36, 48, 60]

@@ -177,7 +177,7 @@ export default function EspaceMembresPage() {
 
   // ── VUE DASHBOARD ──
   const prenom = profil.prenom || session.user.email.split('@')[0]
-  const PAYS_LIST = [{ v: 'FR', l: '🇫🇷 France' }, { v: 'BE', l: '🇧🇪 Belgique' }, { v: 'CH', l: '🇨🇭 Suisse' }, { v: 'CA', l: '🇨🇦 Canada' }]
+  const PAYS_LIST = [{ v: 'FR', l: 'France' }, { v: 'BE', l: 'Belgique' }, { v: 'CH', l: 'Suisse' }, { v: 'CA', l: 'Canada' }]
   const SEG_LIST = [{ v: 'B2B', l: 'B2B / Flottes' }, { v: 'Particulier', l: 'Particuliers' }, { v: 'ZFE', l: 'ZFE' }, { v: 'Aides', l: 'Aides & Fiscalité' }]
 
   return (

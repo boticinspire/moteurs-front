@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 import { SEGMENT_LABELS } from '@/lib/tco'
 import type { Segment } from '@/lib/tco'
+import Flag from '@/components/Flag'
 
 export const metadata: Metadata = {
   title: 'Comparatifs TCO par segment — France, Belgique, Suisse, Canada 2026',
@@ -10,10 +11,10 @@ export const metadata: Metadata = {
 }
 
 const PAYS = [
-  { slug: 'fr', label: 'France',   flag: '🇫🇷' },
-  { slug: 'be', label: 'Belgique', flag: '🇧🇪' },
-  { slug: 'ch', label: 'Suisse',   flag: '🇨🇭' },
-  { slug: 'ca', label: 'Canada',   flag: '🇨🇦' },
+  { slug: 'fr', label: 'France'   },
+  { slug: 'be', label: 'Belgique' },
+  { slug: 'ch', label: 'Suisse'   },
+  { slug: 'ca', label: 'Canada'   },
 ]
 
 const SEGMENTS_B2B: { slug: string; segment: Segment }[] = [
@@ -60,7 +61,7 @@ function SegmentGrid({ segments, pays }: {
                 transition: 'border-color 0.15s',
               }}
             >
-              <span>{p.flag}</span>
+              <Flag code={p.slug} size={16} />
               <span>TCO {p.label}</span>
             </Link>
           ))}
