@@ -32,6 +32,15 @@ export default function SimulateurPage() {
 <button data-value="Particulier">Particulier</button>
 </div>
 <div class="form-group">
+<label for="pays">Pays</label>
+<select id="pays">
+<option value="FR">France</option>
+<option value="BE">Belgique</option>
+<option value="CH">Suisse</option>
+<option value="CA">Canada</option>
+</select>
+</div>
+<div class="form-group">
 <label for="segment">Segment</label>
 <select id="segment">
 <option value="vul_petit">Petit VUL</option>
@@ -86,7 +95,7 @@ export default function SimulateurPage() {
 <span style="font-size:0.75rem; color:var(--color-text-soft);">Appliquée à toutes les motorisations en plus des prix individuels.</span>
 </div>
 <div style="margin-top:18px; font-size:0.78rem; color:var(--color-text-soft); padding:10px; background:var(--color-bg-alt); border-radius:6px;">
-          💡 <strong>Astuce :</strong> changez le pays dans le bandeau du haut pour adapter automatiquement les aides, la TVA et le prix de l'énergie.
+          💡 <strong>Astuce :</strong> changez le pays dans le menu Pays ci-dessus pour adapter automatiquement les aides, la TVA et les prix de l'énergie.
         </div>
 </aside>
 <!-- ===== Panneau droit : résultats ===== -->
@@ -97,9 +106,4 @@ export default function SimulateurPage() {
 </main>
 </div>
 <div class="disclaimer" style="margin-top: 32px;">
-<strong>Disclaimer —</strong> Ce simulateur produit une estimation indicative basée sur des moyennes 2026. Les montants réels (achat, aides, énergie, entretien) varient selon l'opérateur, le concessionnaire et votre éligibilité. Vérifiez votre situation auprès d'un professionnel avant tout engagement. Moteurs.com n'est pas conseiller financier.
-    </div>
-</div>
-</section>` }} />
-  )
-}
+<strong>Disclaimer —</strong> Ce simulateur produit une estimation indicative basée sur des moyennes 2026. Les montants réels (achat, aides, énergie, entretien) varient selon l'opérateur, le concessionnaire et votre éligibilité. Vérifiez votre situation auprès d'un professionnel avant tout engage

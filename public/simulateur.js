@@ -602,6 +602,7 @@
     }
 
     $("#segment").addEventListener("change", (e) => { state.segment = e.target.value; recompute(); });
+    if ($("#pays")) $("#pays").addEventListener("change", (e) => { state.pays = e.target.value; recompute(); });
     $("#km_an").addEventListener("input", (e) => { state.km_an = parseInt(e.target.value, 10) || 0; recompute(); });
     $("#profil_conduite").addEventListener("change", (e) => { state.profil_conduite = e.target.value; recompute(); });
     $("#charge").addEventListener("change", (e) => { state.charge = e.target.value; recompute(); });
