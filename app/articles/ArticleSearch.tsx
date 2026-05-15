@@ -2,7 +2,10 @@
 
 import { useState, useMemo, useEffect } from 'react'
 import Link from 'next/link'
-import { FLAGS, CONF_CLASS, CONF_LABEL, type Article } from '@/lib/supabase'
+import { CONF_CLASS, CONF_LABEL, type Article } from '@/lib/supabase'
+import Flag from '@/components/Flag'
+
+const PAYS_LABELS: Record<string, string> = { FR: 'France', BE: 'Belgique', CH: 'Suisse', CA: 'Canada' }
 
 type ArticleRow = Pick<Article, 'slug' | 'titre_provisoire' | 'resume_50mots' | 'pays_cible' | 'published_at' | 'niveau_confiance'>
 
@@ -84,9 +87,9 @@ export default function ArticleSearch({ articles }: { articles: ArticleRow[] }) 
           onChange={(e) => setPays(e.target.value)}
           style={selectStyle}
         >
-          <option value="">🌍 Tous les pays</option>
+          <option value="">Tous les pays</option>
           {PAYS_LIST.map((p) => (
-            <option key={p} value={p}>{FLAGS[p]} {p}</option>
+            <option key={p} value={p}>{PAYS_LABELS[p]}</option>
           ))}
         </select>
 
@@ -130,7 +133,7 @@ export default function ArticleSearch({ articles }: { articles: ArticleRow[] }) 
                 <strong>{(currentPage - 1) * PAGE_SIZE + 1}–{Math.min(currentPage * PAGE_SIZE, filtered.length)}</strong>
                 {' '}sur <strong>{filtered.length}</strong> décryptage{filtered.length > 1 ? 's' : ''}
                 {query && <> · «&nbsp;<em>{query}</em>&nbsp;»</>}
-                {pays && <> · {FLAGS[pays]} {pays}</>}
+                {pays && <> · <Flag code={pays.toLowerCase()} size={14} /> {PAYS_LABELS[pays]}</>}
                 {confiance && <> · {CONF_LABEL[confiance] ?? confiance}</>}
               </>
           }
@@ -180,7 +183,6 @@ export default function ArticleSearch({ articles }: { articles: ArticleRow[] }) 
         <div className="article-list">
           {paginated.map((a) => {
             const p    = a.pays_cible as string
-            const flag = FLAGS[p] ?? ''
             const conf = a.niveau_confiance ?? 'MOYEN'
             const date = a.published_at
               ? new Date(a.published_at).toLocaleDateString('fr-FR', {
@@ -190,7 +192,7 @@ export default function ArticleSearch({ articles }: { articles: ArticleRow[] }) 
 
             return (
               <article key={a.slug} className="article-row">
-                <div className="thumb">{flag}</div>
+                <div className="thumb"><Flag code={p.toLowerCase()} size={40} /></div>
                 <div>
                   <h3>
                     <Link href={`/article/${a.slug}`}>
@@ -208,7 +210,7 @@ export default function ArticleSearch({ articles }: { articles: ArticleRow[] }) 
                   </div>
                 </div>
                 <div>
-                  <span className="tag">{flag} {p}</span>
+                  <span className="tag" style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}><Flag code={p.toLowerCase()} size={14} /> {p}</span>
                 </div>
               </article>
             )
