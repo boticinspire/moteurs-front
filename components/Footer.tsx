@@ -7,8 +7,7 @@ export default function Footer() {
         <div className="footer-grid">
           <div>
             <div className="logo" style={{ color: 'white', marginBottom: 12 }}>
-              <span className="logo-dot" />
-              Moteurs<span style={{ color: '#7af0c2' }}>.com</span>
+              <span className="logo-dot" /><span>Moteurs<span style={{ color: '#7af0c2' }}>.com</span></span>
             </div>
             <p style={{ color: '#b8c5d6', fontSize: '0.88rem' }}>
               Le média éditorial de la transition énergétique des transports routiers.
