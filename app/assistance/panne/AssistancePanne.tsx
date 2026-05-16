@@ -145,14 +145,14 @@ function Etape2({ data, setData }: { data: PanneData; setData: (d: PanneData) =>
 
   const isVE = data.motorisation === 've' || data.motorisation === 'phev'
 
-  const TYPES_PANNE: { id: TypePanne; icon: string; label: string; detail: string; showFor?: string }[] = [
-    { id: 'energie',     icon: isVE ? '⚡' : '⛽', label: isVE ? 'Batterie à 0 km' : 'Panne de carburant', detail: isVE ? 'Autonomie épuisée, véhicule s\'arrête' : 'Réservoir vide, moteur calé' },
-    { id: 'crevaison',   icon: '🔧', label: 'Crevaison / pneu crevé',        detail: 'Pneu à plat, bruit de souffle' },
-    { id: 'mecanique',   icon: '⚙️', label: 'Panne mécanique',               detail: 'Moteur, boîte, direction, électronique' },
-    { id: 'accident',    icon: '💥', label: 'Accident',                       detail: 'Collision, sortie de route, choc' },
-    { id: 'batterie12v', icon: '🔋', label: 'Ne démarre plus (batterie 12V)', detail: 'Tableau de bord mort, clé sans réponse' },
-    { id: 'surchauffe',  icon: '🌡️', label: 'Surchauffe moteur',             detail: 'Voyant température rouge, fumée', showFor: 'non-ve' },
-    { id: 'autre',       icon: '❓', label: 'Autre problème',                  detail: 'Voyant inconnu, bruit bizarre, autre' },
+  const TYPES_PANNE = [
+    { id: 'energie'     as TypePanne, icon: isVE ? '⚡' : '⛽', label: isVE ? 'Batterie à 0 km' : 'Panne de carburant', detail: isVE ? "Autonomie épuisée, véhicule s'arrête" : 'Réservoir vide, moteur calé', showFor: undefined },
+    { id: 'crevaison'   as TypePanne, icon: '🔧', label: 'Crevaison / pneu crevé',        detail: 'Pneu à plat, bruit de souffle',                   showFor: undefined },
+    { id: 'mecanique'   as TypePanne, icon: '⚙️', label: 'Panne mécanique',               detail: 'Moteur, boîte, direction, électronique',           showFor: undefined },
+    { id: 'accident'    as TypePanne, icon: '💥', label: 'Accident',                       detail: 'Collision, sortie de route, choc',                 showFor: undefined },
+    { id: 'batterie12v' as TypePanne, icon: '🔋', label: 'Ne démarre plus (batterie 12V)', detail: 'Tableau de bord mort, clé sans réponse',           showFor: undefined },
+    { id: 'surchauffe'  as TypePanne, icon: '🌡️', label: 'Surchauffe moteur',             detail: 'Voyant température rouge, fumée',                  showFor: 'non-ve'  },
+    { id: 'autre'       as TypePanne, icon: '❓', label: 'Autre problème',                  detail: 'Voyant inconnu, bruit bizarre, autre',             showFor: undefined },
   ].filter(t => {
     if (t.showFor === 'non-ve' && isVE) return false
     return true
