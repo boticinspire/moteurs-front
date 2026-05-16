@@ -1,6 +1,7 @@
 'use client'
 
-import { useState, useMemo, useEffect } from 'react'
+import { useState, useMemo, useEffect, Suspense } from 'react'
+import { useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import { CONF_CLASS, CONF_LABEL, type Article } from '@/lib/supabase'
 import Flag from '@/components/Flag'
@@ -13,20 +14,27 @@ const PAYS_LIST = ['FR', 'BE', 'CH', 'CA', 'LU'] as const
 const PAYS_STORAGE_KEY = 'moteurs_pays_filter'
 const PAGE_SIZE = 25
 
-export default function ArticleSearch({ articles }: { articles: ArticleRow[] }) {
+function ArticleSearchInner({ articles }: { articles: ArticleRow[] }) {
+  const searchParams = useSearchParams()
   const [query,      setQuery]      = useState('')
   const [pays,       setPays]       = useState('')
   const [confiance,  setConfiance]  = useState('')
   const [page,       setPage]       = useState(1)
 
-  // Restaure le filtre pays depuis localStorage au montage
+  // Priorité : param URL > localStorage
   useEffect(() => {
+    const urlPays = searchParams.get('pays')?.toUpperCase() ?? ''
+    if (urlPays && PAYS_LIST.includes(urlPays as typeof PAYS_LIST[number])) {
+      setPays(urlPays)
+      return
+    }
     try {
       const saved = localStorage.getItem(PAYS_STORAGE_KEY)
       if (saved && PAYS_LIST.includes(saved as typeof PAYS_LIST[number])) {
         setPays(saved)
       }
     } catch { /* ignore */ }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   // Persiste le filtre pays dans localStorage
@@ -244,14 +252,24 @@ export default function ArticleSearch({ articles }: { articles: ArticleRow[] }) 
       {/* ── Pagination bas de page ── */}
       {totalPages > 1 && filtered.length > 0 && (
         <div style={{ display: 'flex', justifyContent: 'center', gap: 4, marginTop: 32 }}>
-          <PaginationBtn onClick={() => setPage(p => p - 1)} disabled={currentPage === 1}          label="‹ Précédent" />
+          <PaginationBtn onClick={() => setPage(p => p - 1)} disabled={currentPage === 1}          label="&#8249; Précédent" />
           <span style={{ padding: '8px 14px', fontSize: '0.82rem', color: 'var(--color-text-soft)', alignSelf: 'center' }}>
             Page {currentPage} / {totalPages}
           </span>
-          <PaginationBtn onClick={() => setPage(p => p + 1)} disabled={currentPage === totalPages}  label="Suivant ›" />
+          <PaginationBtn onClick={() => setPage(p => p + 1)} disabled={currentPage === totalPages}  label="Suivant &#8250;" />
         </div>
       )}
     </>
+  )
+}
+
+}
+
+export default function ArticleSearch({ articles }: { articles: ArticleRow[] }) {
+  return (
+    <Suspense fallback={null}>
+      <ArticleSearchInner articles={articles} />
+    </Suspense>
   )
 }
 

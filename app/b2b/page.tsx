@@ -211,6 +211,7 @@ export default function B2BPage() {
 <option value="BE">🇧🇪 Belgique</option>
 <option value="CH">🇨🇭 Suisse</option>
 <option value="CA">🇨🇦 Canada</option>
+<option value="LU">🇱🇺 Luxembourg</option>
 </select>
 </div>
 <div class="form-group">
