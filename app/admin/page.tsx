@@ -4,6 +4,7 @@ import { useEffect, useState, useCallback } from 'react'
 import { createClient } from '@supabase/supabase-js'
 import Link from 'next/link'
 import Flag from '@/components/Flag'
+import { FLAGS } from '@/lib/supabase'
 
 const sb = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
