@@ -64,7 +64,7 @@ const MODULES: Module[] = [
     id: 'meteo', icon: '🌦️', label: 'Météo & Itinéraire',
     desc: 'Alertes · Avant · Pendant',
     detail: 'Prévisions sur votre route et destination, alertes canicule/orage/verglas, routes à risque.',
-    href: '/assistance/meteo', disponible: false, couleur: '#7c3aed',
+    href: '/assistance/meteo', disponible: true, couleur: '#7c3aed',
   },
   {
     id: 'surprises', icon: '😤', label: 'Mauvaises Surprises',
