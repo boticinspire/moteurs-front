@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import React, { useState } from 'react'
 
 export default function ArticleActions({ titre, url }: { titre: string; url: string }) {
   const [copied, setCopied] = useState(false)
