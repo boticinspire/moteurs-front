@@ -19,12 +19,6 @@ interface Module {
 
 const MODULES: Module[] = [
   {
-    id: 'recharge', icon: '⚡', label: 'Assistance Recharge',
-    desc: 'VE · Réseau · Domicile',
-    detail: 'Combien coûte une recharge ? Quelle borne installer ? Réseau public vs domicile.',
-    href: '/assistance/recharge', disponible: true, couleur: '#059669',
-  },
-  {
     id: 'vacances', icon: '🏖️', label: 'Assistance Vacances',
     desc: 'Budget · Trajet · Trafic',
     detail: 'Budget total voyage, itinéraire économique, alertes trafic, bagages, hôtels avec borne.',
@@ -37,10 +31,10 @@ const MODULES: Module[] = [
     href: '/assistance/couts', disponible: true, couleur: '#f59e0b',
   },
   {
-    id: 'panne', icon: '🚨', label: 'Assistance Panne',
-    desc: 'VE · Dépannage · Urgence',
-    detail: 'Que faire en cas de panne sur autoroute ? Spécificités VE. Contacts utiles par pays.',
-    href: '/assistance/panne', disponible: true, couleur: '#ef4444',
+    id: 'recharge', icon: '⚡', label: 'Assistance Recharge',
+    desc: 'VE · Réseau · Domicile',
+    detail: 'Combien coûte une recharge ? Quelle borne installer ? Réseau public vs domicile.',
+    href: '/assistance/recharge', disponible: true, couleur: '#059669',
   },
   {
     id: 'achat', icon: '🚗', label: 'Assistance Achat',
@@ -49,10 +43,34 @@ const MODULES: Module[] = [
     href: '/assistance/achat', disponible: true, couleur: '#8b5cf6',
   },
   {
-    id: 'admin', icon: '📋', label: 'Assistance Admin.',
-    desc: 'Carte grise · ZFE · Bonus',
-    detail: 'Calculez vos frais d\'immatriculation, vérifiez votre éligibilité aux ZFE, obtenez vos aides.',
-    href: '/assistance/admin', disponible: true, couleur: '#6366f1',
+    id: 'panne', icon: '🚨', label: 'Assistance Panne',
+    desc: 'VE · Dépannage · Urgence',
+    detail: 'Que faire en cas de panne sur autoroute ? Spécificités VE. Contacts utiles par pays.',
+    href: '/assistance/panne', disponible: true, couleur: '#ef4444',
+  },
+  {
+    id: 'location', icon: '🔑', label: 'Location & Assurance',
+    desc: 'Location · CDW · Litige',
+    detail: 'Quelle assurance prendre ? Checklist état du véhicule, que refuser au comptoir, que faire en cas de litige.',
+    href: '/assistance/location', disponible: true, couleur: '#0891b2',
+  },
+  {
+    id: 'sante', icon: '🏥', label: 'Santé Voyage',
+    desc: 'Médical · Bébé · Urgence',
+    detail: 'Tourista, coup de chaleur, bébé en voiture, pharmacie de voyage, premiers secours — par destination.',
+    href: '/assistance/sante', disponible: false, couleur: '#db2777',
+  },
+  {
+    id: 'meteo', icon: '🌦️', label: 'Météo & Itinéraire',
+    desc: 'Alertes · Avant · Pendant',
+    detail: 'Prévisions sur votre route et destination, alertes canicule/orage/verglas, routes à risque.',
+    href: '/assistance/meteo', disponible: false, couleur: '#7c3aed',
+  },
+  {
+    id: 'surprises', icon: '😤', label: 'Mauvaises Surprises',
+    desc: 'Amende · Fourrière · Vol',
+    detail: 'Amende à l\'étranger, fourrière, vol dans le véhicule, ZTL Italie, péage impayé — que faire.',
+    href: '/assistance/surprises', disponible: false, couleur: '#b45309',
   },
 ]
 
@@ -64,12 +82,15 @@ interface RoutingResult {
 }
 
 const ROUTING_PATTERNS: { patterns: string[]; moduleId: string }[] = [
-  { moduleId: 'vacances',  patterns: ['vacances', 'trajet', 'péages', 'autoroute', 'voyage', 'partir', 'barcelone', 'nice', 'espagne', 'italie', 'routier'] },
-  { moduleId: 'couts',     patterns: ['coût', 'cout', 'cher', 'budget', 'mensuel', 'mois', 'leasing', 'loa', 'assurance', 'tco', 'dépense', 'paie', 'paye', 'économie', 'economie', 'rentable', 'combien', 'facture', 'entretien', 'crédit', 'credit'] },
-  { moduleId: 'recharge',  patterns: ['recharge', 'charge', 'borne', 'kwh', 'autonomie', 'wallbox', 'irve', 'superchargeur', 'ionity', 'domicile', 'chargeur'] },
-  { moduleId: 'panne',     patterns: ['panne', 'dépannage', 'dépanner', 'tomber', 'en rade', 'secours', 'accident', 'garage', 'urgence'] },
-  { moduleId: 'achat',     patterns: ['acheter', 'achat', 'choisir', 'laquelle', 'comparaison', 'modèle', 'quelle voiture', 'nouveau', 'occasion', 'lequel'] },
-  { moduleId: 'admin',     patterns: ['carte grise', 'immatriculation', 'bonus', 'aide', 'prime', 'zfe', 'malus', 'fiscalité', 'taxe', 'conversion', 'déductible'] },
+  { moduleId: 'vacances',   patterns: ['vacances', 'trajet', 'péages', 'autoroute', 'voyage', 'partir', 'barcelone', 'nice', 'espagne', 'italie', 'routier'] },
+  { moduleId: 'couts',      patterns: ['coût', 'cout', 'cher', 'budget', 'mensuel', 'mois', 'leasing', 'loa', 'tco', 'dépense', 'paie', 'paye', 'économie', 'economie', 'rentable', 'combien', 'facture', 'entretien', 'crédit', 'credit'] },
+  { moduleId: 'recharge',   patterns: ['recharge', 'charge', 'borne', 'kwh', 'autonomie', 'wallbox', 'irve', 'superchargeur', 'ionity', 'domicile', 'chargeur'] },
+  { moduleId: 'panne',      patterns: ['panne', 'dépannage', 'dépanner', 'tomber', 'en rade', 'secours', 'accident', 'garage', 'urgence', 'crevé', 'crevaison'] },
+  { moduleId: 'achat',      patterns: ['acheter', 'achat', 'choisir', 'laquelle', 'comparaison', 'modèle', 'quelle voiture', 'nouveau', 'occasion', 'lequel'] },
+  { moduleId: 'location',   patterns: ['location', 'louer', 'loué', 'loueur', 'rent', 'hertz', 'avis', 'europcar', 'cdw', 'franchise', 'état des lieux', 'litige location', 'assurance location'] },
+  { moduleId: 'sante',      patterns: ['médecin', 'médical', 'maladie', 'tourista', 'diarrhée', 'bébé', 'enfant', 'fièvre', 'pharmacie', 'secours', 'urgence médicale', 'coup de chaleur', 'piqûre'] },
+  { moduleId: 'meteo',      patterns: ['météo', 'meteo', 'temps', 'orage', 'canicule', 'verglas', 'tempête', 'neige', 'pluie', 'vent', 'prévisions', 'alerte'] },
+  { moduleId: 'surprises',  patterns: ['amende', 'fourrière', 'vol', 'verbalisé', 'ztl', 'vignette', 'radar', 'litige', 'mauvaise surprise', 'arnaque', 'péage impayé'] },
 ]
 
 function router(question: string): RoutingResult | null {
@@ -101,8 +122,10 @@ const EXEMPLES = [
   { question: 'Trajet Paris-Barcelone en électrique, combien ça coûte ?', moduleId: 'vacances' },
   { question: 'Installer une borne Wallbox à domicile, quel coût ?', moduleId: 'recharge' },
   { question: 'Quel VE acheter pour 35 000 € avec le bonus ?', moduleId: 'achat' },
-  { question: 'Comment obtenir la prime à la conversion ?', moduleId: 'admin' },
+  { question: 'Quelle assurance prendre pour ma location de voiture ?', moduleId: 'location' },
   { question: 'Panne sur autoroute avec un VE, que faire ?', moduleId: 'panne' },
+  { question: 'Alerte canicule sur ma route de vacances ?', moduleId: 'meteo' },
+  { question: "J'ai reçu une amende ZTL en Italie, que faire ?", moduleId: 'surprises' },
 ]
 
 // ─── Composant ────────────────────────────────────────────────────────────────
