@@ -64,6 +64,14 @@ const OUTILS_COMPLEMENTAIRES = [
     cta: 'Voir les comparatifs',
   },
   {
+    href: '/assistance/achat',
+    icon: '🚗',
+    titre: 'Assistance Achat',
+    desc: 'Quelle motorisation selon votre budget, usage et km ? Recommandation personnalisée + modèles + aides.',
+    tags: ['VE', 'Hybride', 'Aides'],
+    cta: 'Trouver mon véhicule',
+  },
+  {
     href: '/assistance/recharge',
     icon: '⚡',
     titre: 'Assistance Recharge VE',

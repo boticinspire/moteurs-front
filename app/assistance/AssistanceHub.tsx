@@ -46,7 +46,7 @@ const MODULES: Module[] = [
     id: 'achat', icon: '🚗', label: 'Assistance Achat',
     desc: 'Budget · Aides · Segment',
     detail: 'Quel véhicule selon votre budget, vos km, votre usage ? Comparatif motorisations + aides.',
-    href: '/assistance/achat', disponible: false, couleur: '#8b5cf6',
+    href: '/assistance/achat', disponible: true, couleur: '#8b5cf6',
   },
   {
     id: 'admin', icon: '📋', label: 'Assistance Admin.',
