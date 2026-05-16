@@ -65,7 +65,7 @@ export default function PageAssistanceRecharge() {
           {[
             { icon: '🏠', titre: 'Domicile = 4× moins cher', desc: 'Recharger chez soi coûte 0.25 €/kWh en France. Sur le réseau public DC rapide : 0.55 €/kWh. Soit 4× plus cher — l\'argument principal pour une borne à domicile.' },
             { icon: '⏰', titre: 'Vous rechargez la nuit', desc: '80% des conducteurs VE rechargent la nuit. La borne à domicile est branchée pendant 6–8h, bien assez pour 200–300 km d\'autonomie.' },
-            { icon: '❄️', titre: 'L'hiver réduit de -30%', desc: 'En dessous de 0°C, la batterie perd jusqu\'à 30–35% d\'autonomie. Préchauffer le véhicule branché compense une grande partie de cette perte.' },
+            { icon: '❄️', titre: "L'hiver réduit de -30%", desc: "En dessous de 0°C, la batterie perd jusqu'à 30–35% d'autonomie. Préchauffer le véhicule branché compense une grande partie de cette perte." },
             { icon: '💶', titre: 'Borne amortie en < 2 ans', desc: 'Une wallbox à 1 200 € après aide s\'amortit en 18 à 24 mois pour un conducteur faisant 15 000 km/an, grâce à l\'écart de prix domicile vs public.' },
           ].map(item => (
             <div key={item.titre} style={{
