@@ -58,7 +58,7 @@ const MODULES: Module[] = [
     id: 'sante', icon: '🏥', label: 'Santé Voyage',
     desc: 'Médical · Bébé · Urgence',
     detail: 'Tourista, coup de chaleur, bébé en voiture, pharmacie de voyage, premiers secours — par destination.',
-    href: '/assistance/sante', disponible: false, couleur: '#db2777',
+    href: '/assistance/sante', disponible: true, couleur: '#db2777',
   },
   {
     id: 'meteo', icon: '🌦️', label: 'Météo & Itinéraire',
