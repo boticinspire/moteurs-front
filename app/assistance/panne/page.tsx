@@ -63,7 +63,7 @@ export default function PageAssistancePanne() {
         <div style={{ display: 'grid', gap: 16, gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))' }}>
           {[
             { icon: '🔴', titre: 'Feux de détresse immédiatement', desc: "Dès que vous ressentez un problème, activez les feux de détresse. C'est le premier signal pour les autres conducteurs — même avant de comprendre ce qui se passe." },
-            { icon: '🏃', titre: "Sortez du côté passager", desc: "Ne sortez jamais côté circulation. Le côté passager, puis derrière la glissière de sécurité. Les accidents impliquant des personnes sur la VAU sont mortels dans 80% des cas." },
+            { icon: '🦺', titre: "Gilet jaune avant de sortir", desc: "Enfilez votre gilet jaune AVANT d'ouvrir la portière — c'est une obligation légale en France, Belgique et Suisse. Ensuite, sortez côté passager uniquement. Les accidents sur la VAU sont mortels dans 80% des cas." },
             { icon: '🔺', titre: 'Triangle à 100 m minimum', desc: "Sur autoroute, le triangle doit être à au moins 100 m (pas 30 m comme en ville). Portez le gilet jaune AVANT de sortir du véhicule — obligation légale en France, Belgique et Suisse." },
             { icon: '⚡', titre: 'VE = protocole différent', desc: "Un VE ne se remorque pas comme un thermique — exigez une dépanneuse à plateau. En cas d'accident ou d'odeur chimique, éloignez-vous et signalez la haute tension aux secours." },
           ].map(item => (
