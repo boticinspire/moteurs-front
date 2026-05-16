@@ -8,13 +8,22 @@ export const metadata: Metadata = {
 
 const OUTILS_PHARES = [
   {
-    href: '/comparer-trajet',
+    href: '/assistant-vacances',
     icon: '🏖️',
-    titre: 'Comparateur trajet vacances',
-    desc: 'Combien coûte votre trajet en diesel, électrique ou hybride ? Péages et énergie inclus, 25 trajets populaires, saisie libre.',
-    tags: ['Été 2026', 'Péages inclus', 'Arrêts recharge'],
-    cta: 'Comparer mon trajet',
+    titre: 'Assistant Vacances Auto',
+    desc: 'Budget total voyage, itinéraire économique, stratégie recharge VE, alertes trafic, bagages — votre copilote économique complet en 3 étapes.',
+    tags: ['Budget hébergement', 'Trafic', 'Recharge VE', 'Bagages'],
+    cta: 'Planifier mon voyage',
     badge: 'Nouveau',
+  },
+  {
+    href: '/comparer-trajet',
+    icon: '📊',
+    titre: 'Comparateur trajet vacances',
+    desc: 'Comparez diesel, essence, électrique et hybride sur 25 trajets populaires — péages, énergie et location de véhicule inclus.',
+    tags: ['25 trajets', 'Péages', 'Location'],
+    cta: 'Comparer les motorisations',
+    badge: null,
   },
   {
     href: '/simulateur',
