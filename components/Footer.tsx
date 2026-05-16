@@ -19,6 +19,7 @@ export default function Footer() {
               <li><Link href="/b2b">PME &amp; Artisans</Link></li>
               <li><Link href="/particulier">Particuliers</Link></li>
               <li><Link href="/articles">Décryptages</Link></li>
+              <li><Link href="/assistance">🤖 Hub Assistance</Link></li>
               <li><Link href="/assistant-vacances">🏖️ Assistant vacances</Link></li>
               <li><Link href="/comparer-trajet">📊 Comparateur trajet</Link></li>
               <li><Link href="/outils">⚡ Tous les calculateurs</Link></li>

@@ -17,6 +17,15 @@ const OUTILS_PHARES = [
     badge: 'Nouveau',
   },
   {
+    href: '/assistance/couts',
+    icon: '💰',
+    titre: 'Assistance Coûts',
+    desc: 'Votre voiture vous coûte combien par mois vraiment ? Financement, carburant, assurance, entretien, dépréciation — plus le comparatif VE.',
+    tags: ['Coût mensuel réel', '€/km', 'Comparatif VE', 'Aides'],
+    cta: 'Calculer mon coût réel',
+    badge: null,
+  },
+  {
     href: '/comparer-trajet',
     icon: '📊',
     titre: 'Comparateur trajet vacances',

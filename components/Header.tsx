@@ -9,7 +9,7 @@ const navLinks = [
   { href: '/articles',        label: 'Décryptages' },
   { href: '/b2b',             label: 'PME & Artisans' },
   { href: '/particulier',     label: 'Particuliers' },
-  { href: '/assistant-vacances', label: '🏖️ Vacances auto' },
+  { href: '/assistance',         label: '🤖 Assistance' },
   { href: '/outils',          label: '⚡ Calculateurs' },
 ]
 
