@@ -288,6 +288,9 @@ export default function ComparateurTrajet({ routeInitiale }: { routeInitiale?: R
   // ── Onglet résultats ──
   const [onglet, setOnglet] = useState<'voiture' | 'location'>('voiture')
 
+  // ── Saisie libre : confirmation explicite ──
+  const [libreConfirme, setLibreConfirme] = useState(false)
+
   // ── Location ──
   const [categorieId, setCategorieId] = useState<CategorieLocation>('berline')
   const [nbJours, setNbJours] = useState(7)
@@ -379,10 +382,10 @@ export default function ComparateurTrajet({ routeInitiale }: { routeInitiale?: R
         <div style={{ background: 'var(--color-bg-card)', border: '1.5px solid var(--color-border)', borderRadius: 14, padding: 24, marginBottom: 28 }}>
           <div style={{ display: 'grid', gap: 16, gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))' }}>
             {[
-              { label: 'Ville de départ', value: libreDepart, set: setLibreDepart, placeholder: 'ex : Paris', type: 'text' },
-              { label: "Ville d'arrivée", value: libreArrivee, set: setLibreArrivee, placeholder: 'ex : Barcelone', type: 'text' },
-              { label: 'Distance (km) *', value: libreDistance, set: setLibreDistance, placeholder: 'ex : 750', type: 'number' },
-              { label: 'Péages estimés (€)', value: librePeages, set: setLibrePeages, placeholder: 'auto-calculé', type: 'number' },
+              { label: 'Ville de départ', value: libreDepart, set: (v: string) => { setLibreDepart(v); setLibreConfirme(false) }, placeholder: 'ex : Paris', type: 'text' },
+              { label: "Ville d'arrivée", value: libreArrivee, set: (v: string) => { setLibreArrivee(v); setLibreConfirme(false) }, placeholder: 'ex : Barcelone', type: 'text' },
+              { label: 'Distance (km) *', value: libreDistance, set: (v: string) => { setLibreDistance(v); setLibreConfirme(false) }, placeholder: 'ex : 750', type: 'number' },
+              { label: 'Péages estimés (€)', value: librePeages, set: (v: string) => { setLibrePeages(v); setLibreConfirme(false) }, placeholder: 'auto-calculé (0,07 €/km)', type: 'number' },
             ].map(f => (
               <div key={f.label}>
                 <label style={{ display: 'block', fontSize: '0.82rem', color: 'var(--color-text-muted)', marginBottom: 6, fontWeight: 600 }}>{f.label}</label>
@@ -390,14 +393,32 @@ export default function ComparateurTrajet({ routeInitiale }: { routeInitiale?: R
               </div>
             ))}
           </div>
-          <p style={{ fontSize: '0.76rem', color: 'var(--color-text-muted)', marginTop: 12, marginBottom: 0 }}>
-            * Distance disponible sur Google Maps. Péages estimés à 0,07 €/km si non renseignés.
-          </p>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: 18, flexWrap: 'wrap', gap: 10 }}>
+            <p style={{ fontSize: '0.76rem', color: 'var(--color-text-muted)', margin: 0 }}>
+              * Trouvez la distance sur <a href="https://maps.google.com" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--color-primary)' }}>Google Maps</a>. Péages estimés à 0,07 €/km si non renseignés.
+            </p>
+            <button
+              onClick={() => {
+                const dist = parseFloat(libreDistance)
+                if (dist > 0) setLibreConfirme(true)
+              }}
+              disabled={!libreDistance || parseFloat(libreDistance) <= 0}
+              style={{
+                padding: '11px 28px', borderRadius: 10, cursor: 'pointer',
+                fontWeight: 700, fontSize: '0.95rem',
+                background: libreDistance && parseFloat(libreDistance) > 0 ? 'var(--color-primary)' : 'var(--color-border)',
+                color: libreDistance && parseFloat(libreDistance) > 0 ? '#0a1628' : 'var(--color-text-muted)',
+                border: 'none', transition: 'all .15s',
+              }}
+            >
+              Calculer →
+            </button>
+          </div>
         </div>
       )}
 
       {/* ── Résultats ── */}
-      {routeSelectionnee && (
+      {routeSelectionnee && (mode === 'populaire' || libreConfirme) && (
         <>
           {/* Titre trajet */}
           <div style={{ marginBottom: 20, display: 'flex', alignItems: 'center', gap: 12, flexWrap: 'wrap' }}>
@@ -549,7 +570,7 @@ export default function ComparateurTrajet({ routeInitiale }: { routeInitiale?: R
       )}
 
       {/* État vide mode libre */}
-      {mode === 'libre' && !routeSelectionnee && (
+      {mode === 'libre' && (!routeSelectionnee || !libreConfirme) && (
         <div style={{ textAlign: 'center', padding: '48px 24px', color: 'var(--color-text-muted)', border: '2px dashed var(--color-border)', borderRadius: 14 }}>
           <div style={{ fontSize: '2rem', marginBottom: 12 }}>🗺️</div>
           <div>Saisissez au minimum la distance pour calculer</div>
