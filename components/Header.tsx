@@ -14,6 +14,7 @@ export default function Header() {
     { href: '/simulateur',  label: 'Simulateur TCO' },
     { href: '/comparer',    label: 'Comparateur' },
     { href: '/tco',         label: 'TCO par segment' },
+    { href: '/outils',      label: 'Outils' },
   ]
 
   return (
