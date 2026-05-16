@@ -32,6 +32,7 @@ export default function Footer() {
               <li><Link href="/articles?pays=BE">🇧🇪 Belgique</Link></li>
               <li><Link href="/articles?pays=CH">🇨🇭 Suisse</Link></li>
               <li><Link href="/articles?pays=CA">🇨🇦 Canada</Link></li>
+              <li><Link href="/articles?pays=LU">🇱🇺 Luxembourg</Link></li>
             </ul>
           </div>
           <div>

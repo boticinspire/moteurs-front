@@ -5,11 +5,12 @@ import Link from 'next/link'
 import { CONF_CLASS, CONF_LABEL, type Article } from '@/lib/supabase'
 import Flag from '@/components/Flag'
 
-const PAYS_LABELS: Record<string, string> = { FR: 'France', BE: 'Belgique', CH: 'Suisse', CA: 'Canada' }
+const PAYS_LABELS: Record<string, string> = { FR: 'France', BE: 'Belgique', CH: 'Suisse', CA: 'Canada', LU: 'Luxembourg' }
 
 type ArticleRow = Pick<Article, 'slug' | 'titre_provisoire' | 'resume_50mots' | 'pays_cible' | 'published_at' | 'niveau_confiance'>
 
-const PAYS_LIST = ['FR', 'BE', 'CH', 'CA'] as const
+const PAYS_LIST = ['FR', 'BE', 'CH', 'CA', 'LU'] as const
+const PAYS_STORAGE_KEY = 'moteurs_pays_filter'
 const PAGE_SIZE = 25
 
 export default function ArticleSearch({ articles }: { articles: ArticleRow[] }) {
@@ -17,6 +18,25 @@ export default function ArticleSearch({ articles }: { articles: ArticleRow[] }) 
   const [pays,       setPays]       = useState('')
   const [confiance,  setConfiance]  = useState('')
   const [page,       setPage]       = useState(1)
+
+  // Restaure le filtre pays depuis localStorage au montage
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem(PAYS_STORAGE_KEY)
+      if (saved && PAYS_LIST.includes(saved as typeof PAYS_LIST[number])) {
+        setPays(saved)
+      }
+    } catch { /* ignore */ }
+  }, [])
+
+  // Persiste le filtre pays dans localStorage
+  function handlePaysChange(value: string) {
+    setPays(value)
+    try {
+      if (value) localStorage.setItem(PAYS_STORAGE_KEY, value)
+      else localStorage.removeItem(PAYS_STORAGE_KEY)
+    } catch { /* ignore */ }
+  }
 
   // Remise à la page 1 dès qu'un filtre change
   useEffect(() => { setPage(1) }, [query, pays, confiance])
@@ -41,7 +61,10 @@ export default function ArticleSearch({ articles }: { articles: ArticleRow[] }) 
 
   const hasFilters = query || pays || confiance
 
-  function reset() { setQuery(''); setPays(''); setConfiance(''); setPage(1) }
+  function reset() {
+    setQuery(''); setConfiance(''); setPage(1)
+    handlePaysChange('')
+  }
 
   return (
     <>
@@ -84,7 +107,7 @@ export default function ArticleSearch({ articles }: { articles: ArticleRow[] }) 
         {/* Sélecteur pays */}
         <select
           value={pays}
-          onChange={(e) => setPays(e.target.value)}
+          onChange={(e) => handlePaysChange(e.target.value)}
           style={selectStyle}
         >
           <option value="">Tous les pays</option>
