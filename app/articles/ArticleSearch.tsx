@@ -305,4 +305,43 @@ function PaginationBtn({
         background: disabled ? 'var(--color-bg-alt)' : 'white',
         color: disabled ? 'var(--color-border)' : 'var(--color-text)',
         fontSize: '0.82rem',
-        cursor: disabled ? 'default' : 'pointer',
+        cursor: disabled ? 'default' : 'pointer',        transition: 'all 0.15s',
+      }}
+    >
+      {label}
+    </button>
+  )
+}
+
+/* ── Calcul des pages à afficher (avec ellipses) ── */
+function pageRange(current: number, total: number): (number | '…')[] {
+  if (total <= 7) return Array.from({ length: total }, (_, i) => i + 1)
+  const pages: (number | '…')[] = []
+  pages.push(1)
+  if (current > 3)          pages.push('…')
+  for (let p = Math.max(2, current - 1); p <= Math.min(total - 1, current + 1); p++) pages.push(p)
+  if (current < total - 2)  pages.push('…')
+  pages.push(total)
+  return pages
+}
+
+/* ── Surlignage des termes trouvés ── */
+function highlightMatch(text: string, query: string) {
+  if (!query.trim()) return <>{text}</>
+  const q = query.trim()
+  const regex = new RegExp(`(${q.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi')
+  const parts = text.split(regex)
+  return (
+    <>
+      {parts.map((part, i) =>
+        regex.test(part) ? (
+          <mark key={i} style={{ background: 'rgba(0,184,135,0.2)', color: 'inherit', borderRadius: 2, padding: '0 2px' }}>
+            {part}
+          </mark>
+        ) : (
+          <span key={i}>{part}</span>
+        )
+      )}
+    </>
+  )
+}
