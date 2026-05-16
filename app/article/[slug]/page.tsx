@@ -63,7 +63,7 @@ export default async function ArticlePage({
   if (error || !article) notFound()
 
   const pays     = article.pays_cible
-  const flag     = FLAGS[pays] ?? ''
+
   const conf     = article.niveau_confiance ?? 'MOYEN'
   const confCls  = CONF_CLASS[conf] ?? 'conf-medium'
   const confLbl  = CONF_LABEL[conf] ?? 'Confiance MOYEN'

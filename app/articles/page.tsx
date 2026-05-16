@@ -15,7 +15,7 @@ export default async function ArticlesPage() {
     .select('slug, titre_provisoire, resume_50mots, pays_cible, published_at, niveau_confiance')
     .eq('etat_code', 'PUBLIE')
     .order('published_at', { ascending: false })
-    .limit(200)
+    .limit(1000)
 
   return (
     <>

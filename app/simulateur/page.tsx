@@ -79,11 +79,11 @@ export default function SimulateurPage() {
 </select>
 </div>
 <div class="form-group">
-<label for="pct_hiver">Roulage hivernal : <span id="pct_hiver_val">25 %</span></label>
+<label for="pct_hiver">Roulage hivernal : <span id="pct_hiver_val">25 %</span></label>
 <input id="pct_hiver" max="100" min="0" step="5" style="width:100%;" type="range" value="25"/>
 </div>
 <div class="form-group">
-<label for="taux_recharge_phev">Taux de recharge PHEV : <span id="taux_recharge_phev_val">50 %</span></label>
+<label for="taux_recharge_phev">Taux de recharge PHEV : <span id="taux_recharge_phev_val">50 %</span></label>
 <input id="taux_recharge_phev" max="100" min="0" step="5" style="width:100%;" type="range" value="50"/>
 </div>
 <h3>Prix d'achat réel</h3>
@@ -95,7 +95,7 @@ export default function SimulateurPage() {
 <span style="font-size:0.75rem; color:var(--color-text-soft);">Appliquée à toutes les motorisations en plus des prix individuels.</span>
 </div>
 <div style="margin-top:18px; font-size:0.78rem; color:var(--color-text-soft); padding:10px; background:var(--color-bg-alt); border-radius:6px;">
-          💡 <strong>Astuce :</strong> changez le pays dans le menu Pays ci-dessus pour adapter automatiquement les aides, la TVA et les prix de l'énergie.
+          💡 <strong>Astuce :</strong> changez le pays dans le menu Pays ci-dessus pour adapter automatiquement les aides, la TVA et les prix de l'énergie.
         </div>
 </aside>
 <!-- ===== Panneau droit : résultats ===== -->
@@ -106,4 +106,10 @@ export default function SimulateurPage() {
 </main>
 </div>
 <div class="disclaimer" style="margin-top: 32px;">
-<strong>Disclaimer —</strong> Ce simulateur produit une estimation indicative basée sur des moyennes 2026. Les montants réels (achat, aides, énergie, entretien) varient selon l'opérateur, le concessionnaire et votre éligibilité. Vérifiez votre situation auprès d'un professionnel avant tout engage
+<strong>Disclaimer —</strong> Ce simulateur produit une estimation indicative basée sur des moyennes 2026. Les montants réels (achat, aides, énergie, entretien) varient selon l'opérateur, le concessionnaire et votre éligibilité. Vérifiez votre situation auprès d'un professionnel avant tout engagement. Moteurs.com n'est pas conseiller financier.
+</div>
+</div>
+</section>
+` }} />
+  )
+}
