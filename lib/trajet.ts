@@ -1,11 +1,126 @@
 /**
  * Moteurs.com — Moteur de calcul coût de trajet vacances
  * Calcule le coût réel d'un trajet routier selon la motorisation.
+ * Inclut le calcul de location de véhicule pour un trajet donné.
  */
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
 export type MotorisationTrajet = 'diesel' | 'essence' | 'elec' | 'phev'
+export type CategorieLocation = 'citadine' | 'berline' | 'suv' | 'monospace'
+
+// ─── Données location ─────────────────────────────────────────────────────────
+// Tarifs journaliers haute saison (juillet-août 2026, kilométrage illimité)
+// Source : moyennes Europcar, Hertz, Enterprise, Sixt
+
+export interface InfoLocation {
+  id: CategorieLocation
+  label: string
+  exemples: string
+  tarifs_jour: Record<MotorisationTrajet, number>
+  // consommations spécifiques à la catégorie (autoroute)
+  conso: Record<MotorisationTrajet, number>
+}
+
+export const CATEGORIES_LOCATION: InfoLocation[] = [
+  {
+    id: 'citadine',
+    label: 'Citadine / Compacte',
+    exemples: 'Renault Clio, Peugeot 208, Dacia Spring',
+    tarifs_jour: { diesel: 52, essence: 45, elec: 65, phev: 58 },
+    conso: { diesel: 5.5, essence: 6.8, elec: 18, phev: 5.0 },
+  },
+  {
+    id: 'berline',
+    label: 'Berline / Familiale',
+    exemples: 'Peugeot 308, Toyota Corolla, VW Golf',
+    tarifs_jour: { diesel: 72, essence: 65, elec: 98, phev: 78 },
+    conso: { diesel: 6.0, essence: 7.5, elec: 20, phev: 5.5 },
+  },
+  {
+    id: 'suv',
+    label: 'SUV / Crossover',
+    exemples: 'Peugeot 3008, Kia EV6, Tesla Model Y',
+    tarifs_jour: { diesel: 92, essence: 85, elec: 120, phev: 98 },
+    conso: { diesel: 7.0, essence: 8.5, elec: 22, phev: 6.5 },
+  },
+  {
+    id: 'monospace',
+    label: 'Monospace 7 places',
+    exemples: 'Citroën SpaceTourer, VW Touran, ID. Buzz',
+    tarifs_jour: { diesel: 115, essence: 105, elec: 140, phev: 120 },
+    conso: { diesel: 8.0, essence: 10.0, elec: 26, phev: 7.5 },
+  },
+]
+
+export interface ResultatLocation {
+  motorisation: MotorisationTrajet
+  label: string
+  emoji: string
+  couleur: string
+  tarif_jour: number
+  nb_jours: number
+  cout_location: number
+  cout_carburant: number
+  cout_peages: number
+  cout_total: number
+  nb_arrets_recharge: number
+  gagnant?: boolean
+}
+
+export function calculerLocation(
+  route: Route,
+  categorieId: CategorieLocation,
+  nb_jours: number
+): ResultatLocation[] {
+  const cat = CATEGORIES_LOCATION.find(c => c.id === categorieId)!
+  const motorisations: MotorisationTrajet[] = ['diesel', 'essence', 'elec', 'phev']
+
+  const resultats: ResultatLocation[] = motorisations.map(mot => {
+    const profil = PROFILS_VEHICULE.find(p => p.id === mot)!
+    const tarif_jour = cat.tarifs_jour[mot]
+    const cout_location = tarif_jour * nb_jours
+
+    // Carburant — on utilise la conso de la catégorie, pas le profil par défaut
+    const conso = cat.conso[mot]
+    let cout_carburant = 0
+    let nb_arrets = 0
+
+    if (mot === 'diesel') {
+      cout_carburant = (conso / 100) * route.distance_km * PRIX_ENERGIE.diesel
+    } else if (mot === 'essence') {
+      cout_carburant = (conso / 100) * route.distance_km * PRIX_ENERGIE.essence
+    } else if (mot === 'elec') {
+      cout_carburant = (conso / 100) * route.distance_km * PRIX_ENERGIE.elec_blended
+      const autonomie = 270 // autonomie autoroute standard
+      nb_arrets = Math.max(0, Math.ceil(route.distance_km / autonomie) - 1)
+    } else if (mot === 'phev') {
+      const km_elec = Math.min(50, route.distance_km)
+      const km_therm = Math.max(0, route.distance_km - km_elec)
+      cout_carburant =
+        (15 / 100) * km_elec * PRIX_ENERGIE.elec_home +
+        (conso / 100) * km_therm * PRIX_ENERGIE.diesel
+    }
+
+    return {
+      motorisation: mot,
+      label: profil.label,
+      emoji: profil.emoji,
+      couleur: profil.couleur,
+      tarif_jour,
+      nb_jours,
+      cout_location: Math.round(cout_location),
+      cout_carburant: Math.round(cout_carburant),
+      cout_peages: route.peages_eur,
+      cout_total: Math.round(cout_location + cout_carburant + route.peages_eur),
+      nb_arrets_recharge: nb_arrets,
+    }
+  })
+
+  resultats.sort((a, b) => a.cout_total - b.cout_total)
+  resultats[0].gagnant = true
+  return resultats
+}
 
 export interface Route {
   slug: string
