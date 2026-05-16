@@ -18,7 +18,7 @@ const outils = [
   {
     href: '/outils/immatriculation-belgique',
     icon: '🇧🇪',
-    titre: 'Frais d'immatriculation — Belgique',
+    titre: "Frais d’immatriculation — Belgique",
     desc: 'Calculez la TMC (taxe de mise en circulation) selon votre région : Wallonie, Bruxelles ou Flandre.',
     tags: ['Wallonie', 'Bruxelles', 'Flandre'],
     cta: 'Calculer',
