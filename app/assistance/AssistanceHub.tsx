@@ -70,7 +70,7 @@ const MODULES: Module[] = [
     id: 'surprises', icon: '😤', label: 'Mauvaises Surprises',
     desc: 'Amende · Fourrière · Vol',
     detail: 'Amende à l\'étranger, fourrière, vol dans le véhicule, ZTL Italie, péage impayé — que faire.',
-    href: '/assistance/surprises', disponible: false, couleur: '#b45309',
+    href: '/assistance/surprises', disponible: true, couleur: '#b45309',
   },
 ]
 
