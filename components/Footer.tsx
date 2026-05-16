@@ -22,6 +22,7 @@ export default function Footer() {
               <li><Link href="/simulateur">Simulateur TCO</Link></li>
               <li><Link href="/comparer">Comparateur</Link></li>
               <li><Link href="/tco">Comparatifs TCO</Link></li>
+              <li><Link href="/comparer-trajet">Trajet vacances</Link></li>
               <li><Link href="/outils">Outils &amp; Calculateurs</Link></li>
             </ul>
           </div>

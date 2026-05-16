@@ -12,7 +12,8 @@ const navLinks = [
   { href: '/simulateur',  label: 'Simulateur' },
   { href: '/comparer',    label: 'Comparateur' },
   { href: '/tco',         label: 'TCO' },
-  { href: '/outils',      label: 'Outils ⚡' },
+  { href: '/comparer-trajet', label: 'Trajet vacances 🏖️' },
+  { href: '/outils',          label: 'Outils ⚡' },
 ]
 
 export default function Header() {
