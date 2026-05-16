@@ -64,6 +64,14 @@ const OUTILS_COMPLEMENTAIRES = [
     cta: 'Voir les comparatifs',
   },
   {
+    href: '/assistance/panne',
+    icon: '🚨',
+    titre: 'Assistance Panne',
+    desc: 'Protocole urgence personnalisé : panne sèche, crevaison, accident, surchauffe. Spécificités VE + contacts par pays.',
+    tags: ['Urgence', 'VE', 'Contacts'],
+    cta: 'Guide urgence',
+  },
+  {
     href: '/assistance/achat',
     icon: '🚗',
     titre: 'Assistance Achat',

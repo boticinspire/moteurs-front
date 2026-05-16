@@ -40,7 +40,7 @@ const MODULES: Module[] = [
     id: 'panne', icon: '🚨', label: 'Assistance Panne',
     desc: 'VE · Dépannage · Urgence',
     detail: 'Que faire en cas de panne sur autoroute ? Spécificités VE. Contacts utiles par pays.',
-    href: '/assistance/panne', disponible: false, couleur: '#ef4444',
+    href: '/assistance/panne', disponible: true, couleur: '#ef4444',
   },
   {
     id: 'achat', icon: '🚗', label: 'Assistance Achat',
