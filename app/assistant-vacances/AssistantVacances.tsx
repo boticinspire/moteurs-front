@@ -893,6 +893,6 @@ const navBtnStyle = (primaire: boolean, enabled = true): React.CSSProperties => 
 
 const inputStyle: React.CSSProperties = {
   width: '100%', boxSizing: 'border-box', padding: '10px 12px', borderRadius: 8, fontSize: '0.9rem',
-  background: 'var(--color-bg-dark)', color: 'var(--color-text)',
+  background: 'var(--color-bg-alt)', color: 'var(--color-text)',
   border: '1.5px solid var(--color-border)', outline: 'none',
 }
