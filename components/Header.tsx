@@ -5,15 +5,12 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 
 const navLinks = [
-  { href: '/',            label: 'Accueil' },
-  { href: '/articles',    label: 'Décryptages' },
-  { href: '/b2b',         label: 'PME & Artisans' },
-  { href: '/particulier', label: 'Particuliers' },
-  { href: '/simulateur',  label: 'Simulateur' },
-  { href: '/comparer',    label: 'Comparateur' },
-  { href: '/tco',         label: 'TCO' },
-  { href: '/comparer-trajet', label: 'Trajet vacances 🏖️' },
-  { href: '/outils',          label: 'Outils ⚡' },
+  { href: '/',                label: 'Accueil' },
+  { href: '/articles',        label: 'Décryptages' },
+  { href: '/b2b',             label: 'PME & Artisans' },
+  { href: '/particulier',     label: 'Particuliers' },
+  { href: '/comparer-trajet', label: '🏖️ Trajet vacances' },
+  { href: '/outils',          label: '⚡ Calculateurs' },
 ]
 
 export default function Header() {

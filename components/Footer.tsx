@@ -19,11 +19,8 @@ export default function Footer() {
               <li><Link href="/b2b">PME &amp; Artisans</Link></li>
               <li><Link href="/particulier">Particuliers</Link></li>
               <li><Link href="/articles">Décryptages</Link></li>
-              <li><Link href="/simulateur">Simulateur TCO</Link></li>
-              <li><Link href="/comparer">Comparateur</Link></li>
-              <li><Link href="/tco">Comparatifs TCO</Link></li>
-              <li><Link href="/comparer-trajet">Trajet vacances</Link></li>
-              <li><Link href="/outils">Outils &amp; Calculateurs</Link></li>
+              <li><Link href="/comparer-trajet">🏖️ Trajet vacances</Link></li>
+              <li><Link href="/outils">⚡ Tous les calculateurs</Link></li>
             </ul>
           </div>
           <div>
