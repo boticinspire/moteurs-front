@@ -22,7 +22,7 @@ const MODULES: Module[] = [
     id: 'recharge', icon: '⚡', label: 'Assistance Recharge',
     desc: 'VE · Réseau · Domicile',
     detail: 'Combien coûte une recharge ? Quelle borne installer ? Réseau public vs domicile.',
-    href: '/assistance/recharge', disponible: false, couleur: '#059669',
+    href: '/assistance/recharge', disponible: true, couleur: '#059669',
   },
   {
     id: 'vacances', icon: '🏖️', label: 'Assistance Vacances',

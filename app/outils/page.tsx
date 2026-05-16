@@ -64,6 +64,14 @@ const OUTILS_COMPLEMENTAIRES = [
     cta: 'Voir les comparatifs',
   },
   {
+    href: '/assistance/recharge',
+    icon: '⚡',
+    titre: 'Assistance Recharge VE',
+    desc: 'Coût annuel recharge (domicile vs public), borne à installer, autonomie réelle été/hiver, réseaux par pays.',
+    tags: ['Borne', 'Autonomie', 'Aides'],
+    cta: 'Calculer',
+  },
+  {
     href: '/outils/immatriculation-france',
     icon: '🇫🇷',
     titre: 'Carte grise — France',
