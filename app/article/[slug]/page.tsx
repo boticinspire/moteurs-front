@@ -80,9 +80,16 @@ export default async function ArticlePage({
       {/* ── En-tête sombre ── */}
       <header className="page-hero">
         <div className="container" style={{ maxWidth: 820, margin: '0 auto' }}>
-          <nav className="breadcrumb">
-            <a href="/articles">← Décryptages</a>
-          </nav>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <nav className="breadcrumb">
+              <a href="/articles">← Décryptages</a>
+            </nav>
+            <ArticleActions
+              titre={article.titre_provisoire ?? ''}
+              url={`https://moteurs.com/article/${article.slug}`}
+              compact
+            />
+          </div>
           <div className="page-hero-badges">
             <span className="page-hero-badge" style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}><Flag code={pays.toLowerCase()} size={16} /> {pays}</span>
             {dateStr && <span className="page-hero-badge">📅 {dateStr}</span>}

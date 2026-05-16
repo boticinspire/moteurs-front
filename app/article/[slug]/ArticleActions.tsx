@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react'
 
-export default function ArticleActions({ titre, url }: { titre: string; url: string }) {
+export default function ArticleActions({ titre, url, compact = false }: { titre: string; url: string; compact?: boolean }) {
   const [copied, setCopied] = useState(false)
 
   function imprimer() {
@@ -27,6 +27,17 @@ export default function ArticleActions({ titre, url }: { titre: string; url: str
     }
   }
 
+  if (compact) {
+    return (
+      <div className="no-print" style={{ display: 'flex', gap: 6 }}>
+        <button onClick={imprimer} title="Imprimer" style={btnCompact}>🖨️</button>
+        <button onClick={partager} title={copied ? 'Lien copié !' : 'Partager'} style={btnCompact}>
+          {copied ? '✓' : '🔗'}
+        </button>
+      </div>
+    )
+  }
+
   return (
     <div className="article-actions no-print" style={{
       display: 'flex', gap: 10, flexWrap: 'wrap',
@@ -42,6 +53,21 @@ export default function ArticleActions({ titre, url }: { titre: string; url: str
       </button>
     </div>
   )
+}
+
+const btnCompact: React.CSSProperties = {
+  display: 'inline-flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  width: 32,
+  height: 32,
+  background: 'rgba(255,255,255,0.12)',
+  border: '1px solid rgba(255,255,255,0.25)',
+  borderRadius: 6,
+  cursor: 'pointer',
+  fontSize: '0.9rem',
+  color: 'white',
+  transition: 'background 0.15s',
 }
 
 const btnStyle: React.CSSProperties = {
