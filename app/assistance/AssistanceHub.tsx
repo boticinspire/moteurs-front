@@ -52,7 +52,7 @@ const MODULES: Module[] = [
     id: 'admin', icon: '📋', label: 'Assistance Admin.',
     desc: 'Carte grise · ZFE · Bonus',
     detail: 'Calculez vos frais d\'immatriculation, vérifiez votre éligibilité aux ZFE, obtenez vos aides.',
-    href: '/assistance/admin', disponible: false, couleur: '#6366f1',
+    href: '/assistance/admin', disponible: true, couleur: '#6366f1',
   },
 ]
 

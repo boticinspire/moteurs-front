@@ -64,6 +64,14 @@ const OUTILS_COMPLEMENTAIRES = [
     cta: 'Voir les comparatifs',
   },
   {
+    href: '/assistance/admin',
+    icon: '📋',
+    titre: 'Assistance Administrative',
+    desc: "Carte grise, Crit'Air ZFE, bonus écologique, prime à la conversion — toutes vos démarches en un calcul.",
+    tags: ["Carte grise", "ZFE", "Bonus"],
+    cta: 'Calculer',
+  },
+  {
     href: '/assistance/panne',
     icon: '🚨',
     titre: 'Assistance Panne',
