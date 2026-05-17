@@ -356,8 +356,8 @@ export const CHECKLIST_ITEMS: CheckItem[] = [
     id: 'ev_adaptateurs',
     categorie: '⚡ Véhicule Électrique',
     texte: 'Adaptateurs vérifiés selon le pays de destination (CCS, CHAdeMO, Type 2)',
+    detail: 'En dehors de France/Europe, les standards varient.',
     profils: ['ev'],
-    profils_detail: 'En dehors de France/Europe, les standards varient.',
   },
   {
     id: 'ev_autonomie_meteo',
