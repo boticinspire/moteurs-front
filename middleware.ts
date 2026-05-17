@@ -1,7 +1,10 @@
-// Middleware désactivé — @supabase/supabase-js stocke la session dans localStorage,
-// pas dans les cookies. La protection de /admin est assurée côté client dans page.tsx
-// (vérification session.user.email === ADMIN_EMAIL).
-// Pour une protection serveur complète, migrer vers @supabase/ssr + cookie storage.
+import { NextResponse } from 'next/server'
+import type { NextRequest } from 'next/server'
+
+// Passthrough — protection /admin gérée côté client (vérification email dans page.tsx)
+export function middleware(_request: NextRequest) {
+  return NextResponse.next()
+}
 
 export const config = {
   matcher: [],
