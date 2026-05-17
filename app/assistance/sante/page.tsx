@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import AssistanceSante from './AssistanceSante'
+import MembreGate from '@/components/MembreGate'
 
 export const metadata: Metadata = {
   title: "Santé Voyage — Vaccins, trousse médicale, premiers secours, rapatriement | Moteurs.com",
@@ -52,7 +53,19 @@ export default function PageAssistanceSante() {
       </div>
 
       {/* ── Wizard ── */}
-      <AssistanceSante />
+      <MembreGate
+        titre="Santé Voyage — Analyse personnalisée"
+        icon="🏥"
+        description="Vaccins recommandés par destination, trousse médicale sur-mesure, gestes de premiers secours et analyse de votre couverture rapatriement."
+        avantages={[
+          'Vaccins recommandés pour 8 zones géographiques',
+          'Trousse médicale adaptée à votre profil (bébé, senior, femme enceinte)',
+          'Protocoles premiers secours illustrés',
+          'Analyse de votre couverture CB et assurance rapatriement',
+        ]}
+      >
+        <AssistanceSante />
+      </MembreGate>
 
       {/* ── Pédagogie ── */}
       <section style={{ marginTop: 72, borderTop: '1px solid var(--color-border)', paddingTop: 48 }}>

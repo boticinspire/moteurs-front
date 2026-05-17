@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import AssistanceSurprises from './AssistanceSurprises'
+import MembreGate from '@/components/MembreGate'
 
 export const metadata: Metadata = {
   title: "Mauvaises Surprises — Amende, fourrière, vol, ZTL, accident à l'étranger | Moteurs.com",
@@ -53,7 +54,19 @@ export default function PageAssistanceSurprises() {
       </div>
 
       {/* ── Guide ── */}
-      <AssistanceSurprises />
+      <MembreGate
+        titre="Mauvaises Surprises — Protocoles d'urgence"
+        icon="⚠️"
+        description="Que faire en cas d'amende à l'étranger, de mise en fourrière, de vol, de ZTL en Italie ou d'accident hors frontières ? Des protocoles étape par étape."
+        avantages={[
+          '8 situations d\'urgence avec protocoles détaillés',
+          'Démarches spécifiques par pays (Italie, Espagne, Allemagne…)',
+          'Contacts d\'urgence et délais légaux à respecter',
+          'Check-lists de prévention avant le départ',
+        ]}
+      >
+        <AssistanceSurprises />
+      </MembreGate>
 
       {/* ── Pédagogie ── */}
       <section style={{ marginTop: 72, borderTop: '1px solid var(--color-border)', paddingTop: 48 }}>

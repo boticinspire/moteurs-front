@@ -15,6 +15,7 @@ interface Module {
   href:       string
   disponible: boolean
   couleur:    string
+  membre?:    boolean   // réservé aux membres inscrits
 }
 
 const MODULES: Module[] = [
@@ -52,13 +53,13 @@ const MODULES: Module[] = [
     id: 'location', icon: '🔑', label: 'Location & Assurance',
     desc: 'Location · CDW · Litige',
     detail: 'Quelle assurance prendre ? Checklist état du véhicule, que refuser au comptoir, que faire en cas de litige.',
-    href: '/assistance/location', disponible: true, couleur: '#0891b2',
+    href: '/assistance/location', disponible: true, couleur: '#0891b2', membre: true,
   },
   {
     id: 'sante', icon: '🏥', label: 'Santé Voyage',
     desc: 'Médical · Bébé · Urgence',
     detail: 'Tourista, coup de chaleur, bébé en voiture, pharmacie de voyage, premiers secours — par destination.',
-    href: '/assistance/sante', disponible: true, couleur: '#db2777',
+    href: '/assistance/sante', disponible: true, couleur: '#db2777', membre: true,
   },
   {
     id: 'meteo', icon: '🌦️', label: 'Météo & Itinéraire',
@@ -70,7 +71,7 @@ const MODULES: Module[] = [
     id: 'surprises', icon: '😤', label: 'Mauvaises Surprises',
     desc: 'Amende · Fourrière · Vol',
     detail: 'Amende à l\'étranger, fourrière, vol dans le véhicule, ZTL Italie, péage impayé — que faire.',
-    href: '/assistance/surprises', disponible: true, couleur: '#b45309',
+    href: '/assistance/surprises', disponible: true, couleur: '#b45309', membre: true,
   },
 ]
 
@@ -304,8 +305,20 @@ function ModuleCard({ module: m }: { module: Module }) {
 
       {/* Titre + desc */}
       <div>
-        <div style={{ fontWeight: 700, fontSize: '1.02rem', marginBottom: 4, color: 'var(--color-text)' }}>
-          {m.label}
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 4 }}>
+          <span style={{ fontWeight: 700, fontSize: '1.02rem', color: 'var(--color-text)' }}>
+            {m.label}
+          </span>
+          {m.membre && (
+            <span style={{
+              fontSize: '0.62rem', fontWeight: 800, padding: '2px 7px', borderRadius: 10,
+              background: 'rgba(14,165,233,0.12)', color: 'var(--color-primary)',
+              border: '1px solid rgba(14,165,233,0.25)', letterSpacing: '0.04em',
+              textTransform: 'uppercase', flexShrink: 0,
+            }}>
+              🔒 Membres
+            </span>
+          )}
         </div>
         <div style={{ fontSize: '0.82rem', color: 'var(--color-text-soft)', marginBottom: 8 }}>
           {m.desc}

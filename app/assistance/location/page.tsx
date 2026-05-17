@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import AssistanceLocation from './AssistanceLocation'
+import MembreGate from '@/components/MembreGate'
 
 export const metadata: Metadata = {
   title: "Location voiture & Assurance — Analyse CDW, checklist, alertes pays | Moteurs.com",
@@ -50,7 +51,19 @@ export default function PageAssistanceLocation() {
       </div>
 
       {/* ── Wizard ── */}
-      <AssistanceLocation />
+      <MembreGate
+        titre="Assistance Location — Analyse CDW & couverture CB"
+        icon="🚗"
+        description="Analyse personnalisée pour savoir si vous devez payer la franchise CDW ou si votre carte bancaire vous couvre déjà — par pays et type de véhicule."
+        avantages={[
+          '12 pays analysés avec leurs spécificités légales',
+          'Couverture détaillée selon votre carte bancaire (Visa, Mastercard, Amex…)',
+          'Recommandation CDW chiffrée avec économies potentielles',
+          'Checklists prise en charge et restitution du véhicule',
+        ]}
+      >
+        <AssistanceLocation />
+      </MembreGate>
 
       {/* ── Pédagogie ── */}
       <section style={{ marginTop: 72, borderTop: '1px solid var(--color-border)', paddingTop: 48 }}>
