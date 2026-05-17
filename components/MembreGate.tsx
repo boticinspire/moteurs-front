@@ -23,16 +23,23 @@ interface MembreGateProps {
 export default function MembreGate({
   children, titre, description, icon = '🔒', avantages = [],
 }: MembreGateProps) {
-  const [session, setSession] = useState<any>(undefined) // undefined = chargement
+  const [session, setSession] = useState<any>(null)
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    sb.auth.getSession().then(({ data }) => setSession(data.session))
-    const { data: listener } = sb.auth.onAuthStateChange((_e, s) => setSession(s))
+    sb.auth.getSession().then(({ data }) => {
+      setSession(data.session ?? null)
+      setLoading(false)
+    })
+    const { data: listener } = sb.auth.onAuthStateChange((_e, s) => {
+      setSession(s ?? null)
+      setLoading(false)
+    })
     return () => listener.subscription.unsubscribe()
   }, [])
 
   // Chargement
-  if (session === undefined) {
+  if (loading) {
     return (
       <div style={{ textAlign: 'center', padding: '60px 24px', color: 'var(--color-text-muted)' }}>
         <div style={{ fontSize: '1.5rem', marginBottom: 12 }}>⏳</div>
