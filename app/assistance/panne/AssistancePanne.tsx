@@ -56,14 +56,14 @@ function BandeauSOS({ pays }: { pays: Pays | null }) {
           {pays === 'CH' && ' · 144 (Ambulance) · 117 (Police) · 118 (Pompiers)'}
         </div>
       </div>
-      <a href={`tel:${numero}`} style={{
+      <span style={{
         background: 'white', color: '#dc2626',
         fontWeight: 800, fontSize: '1.1rem',
         padding: '8px 20px', borderRadius: 8,
-        textDecoration: 'none', whiteSpace: 'nowrap',
+        whiteSpace: 'nowrap',
       }}>
         📞 {numero}
-      </a>
+      </span>
     </div>
   )
 }
@@ -355,15 +355,15 @@ function Bilan({ data }: { data: PanneData }) {
                 <div style={{ fontWeight: 700, fontSize: '0.88rem', color: 'var(--color-text)' }}>{c.nom}</div>
                 <div style={{ fontSize: '0.76rem', color: 'var(--color-text-soft)', marginTop: 2 }}>{c.detail}</div>
               </div>
-              <a href={`tel:${c.numero.replace(/\s/g, '')}`} style={{
+              <span style={{
                 fontWeight: 800, fontSize: '1rem',
                 color: c.gratuit ? '#059669' : 'var(--color-primary)',
-                textDecoration: 'none', whiteSpace: 'nowrap',
+                whiteSpace: 'nowrap',
                 background: c.gratuit ? 'rgba(5,150,105,0.1)' : 'rgba(26,95,196,0.08)',
                 padding: '6px 14px', borderRadius: 6,
               }}>
                 📞 {c.numero}
-              </a>
+              </span>
             </div>
           ))}
         </div>

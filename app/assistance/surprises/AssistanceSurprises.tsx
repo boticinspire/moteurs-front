@@ -125,9 +125,9 @@ function DetailSituation({ situation, onBack }: { situation: Situation; onBack: 
                   {etape.contact && (
                     <div style={{ marginTop: 8, display: 'flex', gap: 8, alignItems: 'center', flexWrap: 'wrap' as const }}>
                       {etape.contact.numero && (
-                        <a href={`tel:${etape.contact.numero}`} style={{ display: 'inline-flex', alignItems: 'center', gap: 4, padding: '4px 10px', borderRadius: 6, background: 'rgba(8,145,178,0.1)', color: '#0891b2', fontSize: '0.82rem', fontWeight: 700, textDecoration: 'none' }}>
+                        <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4, padding: '4px 10px', borderRadius: 6, background: 'rgba(8,145,178,0.1)', color: '#0891b2', fontSize: '0.82rem', fontWeight: 700 }}>
                           📞 {etape.contact.numero}
-                        </a>
+                        </span>
                       )}
                       {etape.contact.url && (
                         <a href={etape.contact.url} target="_blank" rel="noopener noreferrer" style={{ display: 'inline-flex', alignItems: 'center', gap: 4, padding: '4px 10px', borderRadius: 6, background: 'rgba(124,58,237,0.1)', color: '#7c3aed', fontSize: '0.82rem', fontWeight: 700, textDecoration: 'none' }}>
@@ -241,9 +241,9 @@ function DetailSituation({ situation, onBack }: { situation: Situation; onBack: 
                 </div>
                 <div style={{ display: 'flex', gap: 6 }}>
                   {c.numero && (
-                    <a href={`tel:${c.numero}`} style={{ padding: '4px 10px', borderRadius: 6, background: 'rgba(8,145,178,0.1)', color: '#0891b2', fontSize: '0.82rem', fontWeight: 700, textDecoration: 'none' }}>
+                    <span style={{ padding: '4px 10px', borderRadius: 6, background: 'rgba(8,145,178,0.1)', color: '#0891b2', fontSize: '0.82rem', fontWeight: 700 }}>
                       📞 {c.numero}
-                    </a>
+                    </span>
                   )}
                   {c.url && (
                     <a href={c.url} target="_blank" rel="noopener noreferrer" style={{ padding: '4px 10px', borderRadius: 6, background: 'rgba(124,58,237,0.1)', color: '#7c3aed', fontSize: '0.82rem', fontWeight: 700, textDecoration: 'none' }}>
@@ -341,10 +341,10 @@ export default function AssistanceSurprises() {
             { label: 'SAMU France', numero: '15' },
             { label: 'Opposition CB', numero: '+33 892 705 705' },
           ].map(c => (
-            <a key={c.label} href={`tel:${c.numero}`}
-              style={{ padding: '6px 14px', borderRadius: 8, background: 'rgba(239,68,68,0.1)', color: '#dc2626', fontSize: '0.82rem', fontWeight: 700, textDecoration: 'none' }}>
+            <span key={c.label}
+              style={{ padding: '6px 14px', borderRadius: 8, background: 'rgba(239,68,68,0.1)', color: '#dc2626', fontSize: '0.82rem', fontWeight: 700 }}>
               📞 {c.label} — {c.numero}
-            </a>
+            </span>
           ))}
         </div>
       </div>
