@@ -22,7 +22,18 @@ type Article = {
 type Post = { id: number; article_id: number; plateforme: string; contenu: string; publie: boolean }
 type AlerteGov = { id: number; nom: string; pays: string; resume_changement: string; statut: string; created_at: string }
 
-type Tab = 'articles' | 'social' | 'alertes'
+type Tab = 'articles' | 'social' | 'alertes' | 'users'
+
+type AdminUser = {
+  id: string; email: string; prenom: string | null; profil_type: string | null
+  pays: string | null; created_at: string; last_sign_in: string | null
+  nb_checklists: number; nb_alertes: number; alerte_actif: boolean
+}
+
+type UserDetail = {
+  checklists: { id: string; nom_voyage: string | null; pct_complet: number; updated_at: string }[] | null
+  alertes: { id: number; pays: string[]; segments: string[]; actif: boolean; derniere_notif_at: string | null }[] | null
+}
 
 export default function AdminPage() {
   const [session, setSession]         = useState<any>(null)
@@ -37,6 +48,14 @@ export default function AdminPage() {
   const [alertes, setAlertes]         = useState<AlerteGov[]>([])
   const [nbAlertes, setNbAlertes]     = useState(0)
   const [expandPost, setExpandPost]   = useState<number | null>(null)
+
+  // Users tab
+  const [users, setUsers]               = useState<AdminUser[]>([])
+  const [usersLoading, setUsersLoading] = useState(false)
+  const [selectedUser, setSelectedUser] = useState<AdminUser | null>(null)
+  const [userDetail, setUserDetail]     = useState<UserDetail | null>(null)
+  const [userSearch, setUserSearch]     = useState('')
+  const [confirmDelete, setConfirmDelete] = useState<string | null>(null)
 
   const msg = (m: string, delay = 4000) => { setActionMsg(m); setTimeout(() => setActionMsg(''), delay) }
 
@@ -95,6 +114,7 @@ export default function AdminPage() {
     setTab(t)
     if (t === 'social') chargerPosts()
     if (t === 'alertes') chargerAlertes()
+    if (t === 'users') chargerUsers()
   }
 
   // ── Actions articles ──
@@ -165,6 +185,29 @@ export default function AdminPage() {
   async function supprimerPost(postId: number) {
     await sb.from('social_posts').delete().eq('id', postId)
     setPosts(prev => prev.filter(p => p.id !== postId))
+  }
+
+  // ── Utilisateurs ──
+  async function chargerUsers() {
+    setUsersLoading(true)
+    const { data, error } = await sb.rpc('admin_get_users')
+    if (!error) setUsers((data as AdminUser[]) || [])
+    setUsersLoading(false)
+  }
+
+  async function chargerUserDetail(userId: string) {
+    const { data } = await sb.rpc('admin_get_user_detail', { p_user_id: userId })
+    setUserDetail(data as UserDetail)
+  }
+
+  async function supprimerProfil(userId: string) {
+    await sb.from('checklist_sessions').delete().eq('user_id', userId)
+    await sb.from('alertes_utilisateurs').delete().eq('user_id', userId)
+    await sb.from('profils_membres').delete().eq('id', userId)
+    setUsers(prev => prev.filter(u => u.id !== userId))
+    setSelectedUser(null)
+    setConfirmDelete(null)
+    msg('✓ Profil supprimé (données utilisateur effacées — compte auth conservé).')
   }
 
   // ── Actions alertes ──
@@ -243,6 +286,7 @@ export default function AdminPage() {
             ['articles', '📰 Articles'],
             ['social',   '📣 Posts sociaux'],
             ['alertes',  `🏛️ Alertes gov.${nbAlertes > 0 ? ` (${nbAlertes})` : ''}`],
+            ['users',    `👥 Utilisateurs${users.length > 0 ? ` (${users.length})` : ''}`],
           ] as const).map(([t, label]) => (
             <button key={t} onClick={() => switchTab(t)} style={{
               padding: '8px 20px', background: 'none', border: 'none', cursor: 'pointer',
@@ -459,6 +503,256 @@ export default function AdminPage() {
                 </div>
               ))}
             </div>
+          </div>
+        )}
+
+        {/* ════════════════ TAB UTILISATEURS ════════════════ */}
+        {tab === 'users' && (
+          <div>
+            {/* Header + recherche */}
+            <div style={{ display: 'flex', gap: 12, alignItems: 'center', marginBottom: 16, flexWrap: 'wrap' }}>
+              <input
+                type="text"
+                placeholder="Rechercher email, prénom, pays…"
+                value={userSearch}
+                onChange={e => setUserSearch(e.target.value)}
+                style={{
+                  flex: 1, minWidth: 220, padding: '8px 14px', borderRadius: 8,
+                  border: '1px solid var(--color-border)',
+                  background: 'var(--color-bg-alt)', color: 'var(--color-text)', fontSize: '0.88rem',
+                }}
+              />
+              <button className="btn btn-secondary btn-sm" onClick={chargerUsers}>
+                {usersLoading ? '⏳' : '↻'} Rafraîchir
+              </button>
+              <span style={{ fontSize: '0.82rem', color: 'var(--color-text-soft)' }}>
+                {users.length} membre{users.length > 1 ? 's' : ''}
+              </span>
+            </div>
+
+            {/* Stats rapides */}
+            <div style={{ display: 'flex', gap: 12, marginBottom: 20, flexWrap: 'wrap' }}>
+              {[
+                { label: 'Total membres', value: users.length, color: '#3b82f6' },
+                { label: 'Alertes actives', value: users.filter(u => u.alerte_actif).length, color: '#10b981' },
+                { label: 'Checklists sauvegardées', value: users.reduce((s, u) => s + u.nb_checklists, 0), color: '#0ea5e9' },
+                { label: 'Connectés ≤ 7j', value: users.filter(u => u.last_sign_in && (Date.now() - new Date(u.last_sign_in).getTime()) < 7 * 86400000).length, color: '#f59e0b' },
+              ].map(s => (
+                <div key={s.label} style={{ background: 'var(--color-bg-alt)', border: '1px solid var(--color-border)', borderRadius: 8, padding: '10px 18px', minWidth: 120 }}>
+                  <div style={{ fontSize: '1.5rem', fontWeight: 700, color: s.color }}>{s.value}</div>
+                  <div style={{ fontSize: '0.75rem', color: 'var(--color-text-soft)' }}>{s.label}</div>
+                </div>
+              ))}
+            </div>
+
+            {usersLoading && (
+              <div style={{ padding: 40, textAlign: 'center', color: 'var(--color-text-soft)' }}>Chargement des utilisateurs…</div>
+            )}
+
+            {!usersLoading && users.length === 0 && (
+              <div style={{ padding: 40, textAlign: 'center', color: 'var(--color-text-soft)', background: 'var(--color-bg-alt)', border: '1px solid var(--color-border)', borderRadius: 10 }}>
+                <div style={{ fontSize: '2rem', marginBottom: 8 }}>👥</div>
+                Aucun membre inscrit.
+              </div>
+            )}
+
+            {!usersLoading && users.length > 0 && (
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 360px', gap: 20, alignItems: 'start' }}>
+                {/* Table utilisateurs */}
+                <div style={{ background: 'var(--color-bg-alt)', border: '1px solid var(--color-border)', borderRadius: 10, overflow: 'hidden' }}>
+                  <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.83rem' }}>
+                    <thead>
+                      <tr style={{ borderBottom: '2px solid var(--color-border)', background: 'var(--color-bg)' }}>
+                        <th style={{ padding: '10px 14px', textAlign: 'left', fontWeight: 700, color: 'var(--color-text-soft)' }}>Membre</th>
+                        <th style={{ padding: '10px 8px', textAlign: 'center', fontWeight: 700, color: 'var(--color-text-soft)' }}>Profil</th>
+                        <th style={{ padding: '10px 8px', textAlign: 'center', fontWeight: 700, color: 'var(--color-text-soft)' }}>✅</th>
+                        <th style={{ padding: '10px 8px', textAlign: 'center', fontWeight: 700, color: 'var(--color-text-soft)' }}>🔔</th>
+                        <th style={{ padding: '10px 8px', textAlign: 'center', fontWeight: 700, color: 'var(--color-text-soft)' }}>Dernière co.</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {users
+                        .filter(u => {
+                          if (!userSearch) return true
+                          const q = userSearch.toLowerCase()
+                          return (
+                            u.email.toLowerCase().includes(q) ||
+                            (u.prenom?.toLowerCase() || '').includes(q) ||
+                            (u.pays?.toLowerCase() || '').includes(q) ||
+                            (u.profil_type?.toLowerCase() || '').includes(q)
+                          )
+                        })
+                        .map(u => (
+                          <tr
+                            key={u.id}
+                            onClick={() => {
+                              setSelectedUser(u)
+                              setUserDetail(null)
+                              chargerUserDetail(u.id)
+                            }}
+                            style={{
+                              borderBottom: '1px solid var(--color-border)', cursor: 'pointer',
+                              background: selectedUser?.id === u.id ? 'rgba(14,165,233,0.07)' : 'transparent',
+                            }}
+                          >
+                            <td style={{ padding: '10px 14px' }}>
+                              <div style={{ fontWeight: 600, color: 'var(--color-text)' }}>
+                                {u.prenom || <span style={{ color: 'var(--color-text-soft)', fontStyle: 'italic' }}>—</span>}
+                              </div>
+                              <div style={{ fontSize: '0.75rem', color: 'var(--color-text-soft)' }}>{u.email}</div>
+                              <div style={{ fontSize: '0.72rem', color: 'var(--color-text-soft)' }}>
+                                Inscrit le {new Date(u.created_at).toLocaleDateString('fr-FR')}
+                              </div>
+                            </td>
+                            <td style={{ padding: '10px 8px', textAlign: 'center' }}>
+                              <div style={{ fontSize: '0.72rem' }}>{u.profil_type || '—'}</div>
+                              <div style={{ fontSize: '0.72rem', color: 'var(--color-text-soft)' }}>{u.pays || ''}</div>
+                            </td>
+                            <td style={{ padding: '10px 8px', textAlign: 'center', fontWeight: 700, color: u.nb_checklists > 0 ? '#0ea5e9' : 'var(--color-text-soft)' }}>
+                              {u.nb_checklists || '—'}
+                            </td>
+                            <td style={{ padding: '10px 8px', textAlign: 'center' }}>
+                              {u.nb_alertes > 0
+                                ? <span style={{ fontSize: '0.72rem', fontWeight: 700, padding: '2px 7px', borderRadius: 10, background: u.alerte_actif ? 'rgba(16,185,129,0.15)' : 'rgba(239,68,68,0.1)', color: u.alerte_actif ? '#059669' : '#ef4444' }}>
+                                    {u.nb_alertes} {u.alerte_actif ? 'actif' : 'inactif'}
+                                  </span>
+                                : <span style={{ color: 'var(--color-text-soft)', fontSize: '0.72rem' }}>—</span>
+                              }
+                            </td>
+                            <td style={{ padding: '10px 8px', textAlign: 'center', fontSize: '0.75rem', color: 'var(--color-text-soft)' }}>
+                              {u.last_sign_in
+                                ? new Date(u.last_sign_in).toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit', year: '2-digit' })
+                                : '—'}
+                            </td>
+                          </tr>
+                        ))}
+                    </tbody>
+                  </table>
+                </div>
+
+                {/* Panel détail */}
+                <div style={{ position: 'sticky', top: 100 }}>
+                  {!selectedUser ? (
+                    <div style={{ padding: 40, textAlign: 'center', color: 'var(--color-text-soft)', background: 'var(--color-bg-alt)', border: '1px solid var(--color-border)', borderRadius: 10 }}>
+                      <div style={{ fontSize: '2rem', marginBottom: 8 }}>👤</div>
+                      Sélectionne un utilisateur
+                    </div>
+                  ) : (
+                    <div style={{ background: 'var(--color-bg-alt)', border: '1px solid var(--color-border)', borderRadius: 10, overflow: 'hidden' }}>
+                      {/* Header user */}
+                      <div style={{ padding: '14px 18px', borderBottom: '1px solid var(--color-border)', background: 'var(--color-bg)' }}>
+                        <div style={{ fontWeight: 700, fontSize: '1rem', marginBottom: 2 }}>
+                          {selectedUser.prenom || selectedUser.email.split('@')[0]}
+                        </div>
+                        <div style={{ fontSize: '0.8rem', color: 'var(--color-text-soft)' }}>{selectedUser.email}</div>
+                        <div style={{ display: 'flex', gap: 8, marginTop: 8, flexWrap: 'wrap' }}>
+                          {selectedUser.profil_type && (
+                            <span style={{ fontSize: '0.72rem', padding: '2px 8px', borderRadius: 10, background: 'rgba(59,130,246,0.1)', color: '#3b82f6', fontWeight: 600 }}>
+                              {selectedUser.profil_type}
+                            </span>
+                          )}
+                          {selectedUser.pays && (
+                            <span style={{ fontSize: '0.72rem', padding: '2px 8px', borderRadius: 10, background: 'var(--color-bg)', border: '1px solid var(--color-border)', color: 'var(--color-text-soft)' }}>
+                              {FLAGS[selectedUser.pays] || ''} {selectedUser.pays}
+                            </span>
+                          )}
+                        </div>
+                      </div>
+
+                      {/* Stats user */}
+                      <div style={{ padding: '12px 18px', borderBottom: '1px solid var(--color-border)', display: 'flex', gap: 16 }}>
+                        <div style={{ textAlign: 'center' }}>
+                          <div style={{ fontWeight: 700, fontSize: '1.2rem', color: '#0ea5e9' }}>{selectedUser.nb_checklists}</div>
+                          <div style={{ fontSize: '0.72rem', color: 'var(--color-text-soft)' }}>check-list{selectedUser.nb_checklists > 1 ? 's' : ''}</div>
+                        </div>
+                        <div style={{ textAlign: 'center' }}>
+                          <div style={{ fontWeight: 700, fontSize: '1.2rem', color: selectedUser.alerte_actif ? '#10b981' : 'var(--color-text-soft)' }}>{selectedUser.nb_alertes}</div>
+                          <div style={{ fontSize: '0.72rem', color: 'var(--color-text-soft)' }}>alerte{selectedUser.nb_alertes > 1 ? 's' : ''}</div>
+                        </div>
+                        <div style={{ textAlign: 'center' }}>
+                          <div style={{ fontWeight: 700, fontSize: '0.82rem', color: 'var(--color-text-soft)' }}>
+                            {selectedUser.last_sign_in ? new Date(selectedUser.last_sign_in).toLocaleDateString('fr-FR') : '—'}
+                          </div>
+                          <div style={{ fontSize: '0.72rem', color: 'var(--color-text-soft)' }}>dernière co.</div>
+                        </div>
+                      </div>
+
+                      {/* Checklists */}
+                      <div style={{ padding: '12px 18px', borderBottom: '1px solid var(--color-border)' }}>
+                        <div style={{ fontWeight: 700, fontSize: '0.82rem', marginBottom: 8 }}>📋 Checklists sauvegardées</div>
+                        {!userDetail && <div style={{ fontSize: '0.78rem', color: 'var(--color-text-soft)' }}>Chargement…</div>}
+                        {userDetail?.checklists && userDetail.checklists.length === 0 && (
+                          <div style={{ fontSize: '0.78rem', color: 'var(--color-text-soft)' }}>Aucune checklist sauvegardée.</div>
+                        )}
+                        {userDetail?.checklists?.map(cl => (
+                          <div key={cl.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '6px 0', borderBottom: '1px solid var(--color-border)', fontSize: '0.8rem' }}>
+                            <div>
+                              <div style={{ fontWeight: 600 }}>{cl.nom_voyage || <span style={{ fontStyle: 'italic', color: 'var(--color-text-soft)' }}>Sans nom</span>}</div>
+                              <div style={{ fontSize: '0.72rem', color: 'var(--color-text-soft)' }}>{new Date(cl.updated_at).toLocaleDateString('fr-FR')}</div>
+                            </div>
+                            <span style={{
+                              fontWeight: 700, fontSize: '0.78rem', padding: '2px 8px', borderRadius: 10,
+                              background: cl.pct_complet === 100 ? 'rgba(16,185,129,0.12)' : 'rgba(14,165,233,0.12)',
+                              color: cl.pct_complet === 100 ? '#059669' : '#0ea5e9',
+                            }}>
+                              {cl.pct_complet}%
+                            </span>
+                          </div>
+                        ))}
+                      </div>
+
+                      {/* Alertes */}
+                      <div style={{ padding: '12px 18px', borderBottom: '1px solid var(--color-border)' }}>
+                        <div style={{ fontWeight: 700, fontSize: '0.82rem', marginBottom: 8 }}>🔔 Alertes configurées</div>
+                        {userDetail?.alertes?.map(al => (
+                          <div key={al.id} style={{ fontSize: '0.78rem', padding: '5px 0', borderBottom: '1px solid var(--color-border)' }}>
+                            <div style={{ display: 'flex', gap: 6, alignItems: 'center', marginBottom: 3 }}>
+                              <span style={{ fontWeight: 600 }}>Pays : {(al.pays || []).join(', ')}</span>
+                              <span style={{ marginLeft: 'auto', fontSize: '0.7rem', padding: '1px 6px', borderRadius: 10, background: al.actif ? 'rgba(16,185,129,0.12)' : 'rgba(239,68,68,0.1)', color: al.actif ? '#059669' : '#ef4444', fontWeight: 600 }}>
+                                {al.actif ? 'Actif' : 'Inactif'}
+                              </span>
+                            </div>
+                            <div style={{ color: 'var(--color-text-soft)' }}>Segments : {(al.segments || []).join(', ') || '—'}</div>
+                            {al.derniere_notif_at && (
+                              <div style={{ color: 'var(--color-text-soft)' }}>Dernière notif : {new Date(al.derniere_notif_at).toLocaleDateString('fr-FR')}</div>
+                            )}
+                          </div>
+                        ))}
+                        {userDetail && (!userDetail.alertes || userDetail.alertes.length === 0) && (
+                          <div style={{ fontSize: '0.78rem', color: 'var(--color-text-soft)' }}>Aucune alerte configurée.</div>
+                        )}
+                      </div>
+
+                      {/* Actions */}
+                      <div style={{ padding: '12px 18px' }}>
+                        {confirmDelete === selectedUser.id ? (
+                          <div style={{ display: 'flex', gap: 8, flexDirection: 'column' }}>
+                            <div style={{ fontSize: '0.8rem', color: '#ef4444', fontWeight: 600 }}>
+                              ⚠️ Supprimer le profil de {selectedUser.email} ? (données effacées, compte auth conservé)
+                            </div>
+                            <div style={{ display: 'flex', gap: 8 }}>
+                              <button onClick={() => supprimerProfil(selectedUser.id)} style={{ background: '#ef4444', color: '#fff', border: 'none', padding: '6px 14px', borderRadius: 6, cursor: 'pointer', fontSize: '0.8rem', fontWeight: 700 }}>
+                                Confirmer la suppression
+                              </button>
+                              <button onClick={() => setConfirmDelete(null)} style={{ background: 'none', border: '1px solid var(--color-border)', padding: '6px 14px', borderRadius: 6, cursor: 'pointer', fontSize: '0.8rem' }}>
+                                Annuler
+                              </button>
+                            </div>
+                          </div>
+                        ) : (
+                          <button
+                            onClick={() => setConfirmDelete(selectedUser.id)}
+                            style={{ background: 'none', border: '1px solid #ef4444', color: '#ef4444', padding: '6px 14px', borderRadius: 6, cursor: 'pointer', fontSize: '0.8rem', fontWeight: 600 }}
+                          >
+                            🗑️ Supprimer le profil
+                          </button>
+                        )}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
           </div>
         )}
 
