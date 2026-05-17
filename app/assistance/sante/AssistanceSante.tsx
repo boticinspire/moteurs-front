@@ -1,6 +1,12 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import { createClient } from '@supabase/supabase-js'
+
+const _sb = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+)
 import {
   type ZoneGeo, type ProfilVoyageur, type TypeVoyage, type DureeSejour,
   type SanteData, type ResultatSante,
@@ -125,6 +131,7 @@ function Accordion({ title, children }: { title: string; children: React.ReactNo
 // ── Composant principal ─────────────────────────────────────────────────────────
 
 export default function AssistanceSante() {
+  const [authUser, setAuthUser]     = useState<any>(undefined) // undefined=chargement
   const [step, setStep] = useState<Step>(1)
   const [data, setData] = useState<SanteData>({
     zone: null,
@@ -136,6 +143,39 @@ export default function AssistanceSante() {
     animauxContacts: false,
   })
   const [resultat, setResultat] = useState<ResultatSante | null>(null)
+
+  // ── Vérification auth ────────────────────────────────────────────────────────
+  useEffect(() => {
+    _sb.auth.getUser().then(({ data }) => setAuthUser(data.user ?? null))
+  }, [])
+
+  if (authUser === undefined) return (
+    <div style={{ textAlign: 'center', padding: '60px 0', color: 'var(--color-text-muted)' }}>
+      ⏳ Vérification de votre accès…
+    </div>
+  )
+
+  if (!authUser) return (
+    <div style={{ maxWidth: 520, margin: '0 auto', background: 'var(--color-bg-card)', border: '1.5px solid var(--color-border)', borderRadius: 20, overflow: 'hidden', textAlign: 'center' }}>
+      <div style={{ padding: '32px 32px 24px', background: 'linear-gradient(135deg,rgba(219,39,119,0.07)0%,rgba(14,165,233,0.07)100%)', borderBottom: '1px solid var(--color-border)' }}>
+        <div style={{ fontSize: '3rem', marginBottom: 12 }}>🏥</div>
+        <span style={{ display: 'inline-block', fontSize: '0.72rem', fontWeight: 800, padding: '3px 12px', borderRadius: 20, background: 'rgba(14,165,233,0.12)', color: '#0ea5e9', border: '1px solid rgba(14,165,233,0.25)', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 14 }}>Réservé aux membres</span>
+        <h2 style={{ fontSize: '1.25rem', fontWeight: 800, marginBottom: 10 }}>Santé Voyage — Analyse personnalisée</h2>
+        <p style={{ fontSize: '0.9rem', color: 'var(--color-text-muted)', lineHeight: 1.6, margin: 0 }}>Vaccins recommandés par destination, trousse médicale sur-mesure, protocoles premiers secours et analyse de votre couverture rapatriement.</p>
+      </div>
+      <div style={{ padding: '24px 32px 32px' }}>
+        {['Vaccins recommandés pour 8 zones géographiques','Trousse médicale adaptée (bébé, senior, femme enceinte)','Protocoles premiers secours illustrés','Analyse couverture CB et assurance rapatriement'].map((a, i) => (
+          <div key={i} style={{ display: 'flex', gap: 10, alignItems: 'flex-start', marginBottom: 8, fontSize: '0.88rem', textAlign: 'left' }}>
+            <span style={{ color: '#0ea5e9', fontWeight: 700, flexShrink: 0 }}>✓</span>{a}
+          </div>
+        ))}
+        <a href="/espace-membres" style={{ display: 'block', marginTop: 20, padding: '13px 24px', background: '#0ea5e9', color: '#0a1628', borderRadius: 10, fontWeight: 800, fontSize: '0.97rem', textDecoration: 'none' }}>Créer mon compte gratuit →</a>
+        <a href="/espace-membres" style={{ display: 'block', marginTop: 10, padding: '11px 24px', background: 'transparent', color: 'var(--color-text-muted)', border: '1.5px solid var(--color-border)', borderRadius: 10, fontWeight: 600, fontSize: '0.88rem', textDecoration: 'none' }}>J&apos;ai déjà un compte — me connecter</a>
+        <p style={{ marginTop: 16, fontSize: '0.75rem', color: 'var(--color-text-muted)' }}>✦ Sans mot de passe · Gratuit · Sans engagement</p>
+      </div>
+    </div>
+  )
+
 
   function toggleProfil(p: ProfilVoyageur) {
     setData(d => {
