@@ -14,45 +14,91 @@ export default async function HomePage() {
 
   return (
     <>
+      {/* ===== BANDEAU SAISONNIER ===== */}
+      <div style={{
+        background: 'linear-gradient(90deg, #0369a1 0%, #0ea5e9 40%, #06b6d4 70%, #10b981 100%)',
+        color: '#fff',
+        textAlign: 'center',
+        padding: '11px 16px',
+        fontSize: '0.88rem',
+        fontWeight: 600,
+        letterSpacing: '0.01em',
+      }}>
+        🌅 Spécial Été 2026 — Calculez le vrai coût de votre trajet vacances avant de partir&nbsp;
+        <Link href="/comparer-trajet" style={{ color: '#fff', textDecoration: 'underline', textUnderlineOffset: 3, marginLeft: 6 }}>
+          Essayer →
+        </Link>
+      </div>
+
       {/* ===== HERO ===== */}
-      <section className="hero">
+      <section className="hero" style={{
+        background: 'linear-gradient(160deg, #0c1a2e 0%, #0a3050 55%, #073d3a 100%)',
+      }}>
         <div className="container">
-          <div style={{ fontSize: '0.82rem', color: 'var(--color-primary)', fontWeight: 600, marginBottom: 14, letterSpacing: '0.06em', textTransform: 'uppercase' }}>
-            Moteurs.com · Données 2026
+          <div style={{
+            display: 'inline-flex', alignItems: 'center', gap: 8,
+            fontSize: '0.78rem', fontWeight: 700, marginBottom: 18,
+            letterSpacing: '0.07em', textTransform: 'uppercase',
+            background: 'rgba(14,165,233,0.15)', border: '1px solid rgba(14,165,233,0.35)',
+            borderRadius: 20, padding: '5px 14px', color: '#7af0c2',
+          }}>
+            🏖️ Spécial Vacances · Été 2026
           </div>
+
           <h1>
-            Votre voiture vous coûte<br />
-            <span className="accent">combien vraiment ?</span>
+            Vos vacances en voiture —<br />
+            <span className="accent">quel est le vrai coût selon votre motorisation&nbsp;?</span>
           </h1>
           <p className="lead">
-            Carburant, péages, entretien, fiscalité, aides — calculez le vrai coût de votre motorisation
-            et découvrez combien vous pouvez économiser en 2026.
+            Péages, carburant, recharge, coût autoroute — comparez diesel, essence et électrique
+            sur votre trajet réel. Partez informé, pas surpris.
           </p>
           <div className="hero-actions">
             <Link href="/comparer-trajet" className="btn btn-primary btn-lg">
-              🏖️ Mon trajet vacances →
+              🏖️ Calculer mon trajet vacances →
             </Link>
-            <Link href="/outils" className="btn btn-secondary btn-lg">
-              Tous les calculateurs
+            <Link href="/checklist-depart" className="btn btn-secondary btn-lg">
+              ✅ Ma checklist départ
             </Link>
           </div>
 
-          <h2 style={{ fontSize: '1.05rem', color: 'var(--color-text-soft)', marginTop: 32, fontWeight: 600 }}>
-            Vous êtes&nbsp;:
-          </h2>
-          <div className="profile-selector">
-            <Link href="/b2b" className="profile-card">
-              <div className="icon">🚐</div>
-              <h3>Une entreprise, un artisan, une flotte</h3>
-              <p>VUL, fourgons, camions — TCO, CEE, suramortissement, ZFE.</p>
-              <div className="arrow">Voir l&apos;espace B2B →</div>
-            </Link>
-            <Link href="/particulier" className="profile-card">
-              <div className="icon">🚗</div>
-              <h3>Un particulier, une famille</h3>
-              <p>Voiture, VAE, trottinette — bonus écologique, recharge, trajets quotidiens.</p>
-              <div className="arrow">Voir l&apos;espace Particulier →</div>
-            </Link>
+          {/* Badges rassurants */}
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10, marginTop: 28 }}>
+            {[
+              '25 routes populaires',
+              'Péages inclus',
+              'Bornes de recharge',
+              'Coût réel, pas WLTP',
+              'Gratuit & sans inscription',
+            ].map(b => (
+              <span key={b} style={{
+                padding: '4px 13px', borderRadius: 20,
+                fontSize: '0.75rem', fontWeight: 600,
+                background: 'rgba(255,255,255,0.07)',
+                border: '1px solid rgba(255,255,255,0.15)',
+                color: 'rgba(255,255,255,0.75)',
+              }}>{b}</span>
+            ))}
+          </div>
+
+          <div style={{ marginTop: 36, borderTop: '1px solid rgba(255,255,255,0.08)', paddingTop: 28 }}>
+            <div style={{ fontSize: '0.82rem', color: 'rgba(255,255,255,0.5)', marginBottom: 14, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+              Vous êtes&nbsp;:
+            </div>
+            <div className="profile-selector">
+              <Link href="/b2b" className="profile-card">
+                <div className="icon">🚐</div>
+                <h3>Une entreprise, un artisan, une flotte</h3>
+                <p>VUL, fourgons, camions — TCO, CEE, suramortissement, ZFE.</p>
+                <div className="arrow">Voir l&apos;espace B2B →</div>
+              </Link>
+              <Link href="/particulier" className="profile-card">
+                <div className="icon">🚗</div>
+                <h3>Un particulier, une famille</h3>
+                <p>Voiture, VAE, trottinette — bonus écologique, recharge, trajets quotidiens.</p>
+                <div className="arrow">Voir l&apos;espace Particulier →</div>
+              </Link>
+            </div>
           </div>
         </div>
       </section>
@@ -66,12 +112,12 @@ export default async function HomePage() {
               <div className="stat-label">Économie aller-retour Paris-Nice élec vs diesel</div>
             </div>
             <div className="stat">
-              <div className="stat-value">8 600 €</div>
-              <div className="stat-label">CEE max VUL électrique <span className="confidence high">FR</span></div>
+              <div className="stat-value">25</div>
+              <div className="stat-label">Routes de vacances analysées avec péages réels</div>
             </div>
             <div className="stat">
               <div className="stat-value">100 %</div>
-              <div className="stat-label">Déductibilité VE entreprise Belgique jusqu'en 2027</div>
+              <div className="stat-label">Déductibilité VE entreprise Belgique jusqu&apos;en 2027</div>
             </div>
             <div className="stat">
               <div className="stat-value">2035</div>
@@ -81,36 +127,55 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* ===== OUTILS ===== */}
-      <section style={{ padding: '56px 0 48px' }}>
+      {/* ===== ENCART VACANCES ===== */}
+      <section style={{
+        padding: '52px 0 48px',
+        background: 'linear-gradient(135deg, rgba(3,105,161,0.05) 0%, rgba(16,185,129,0.05) 100%)',
+        borderBottom: '1px solid var(--color-border)',
+      }}>
         <div className="container">
-          <h2 className="section-title">Nos calculateurs gratuits</h2>
-          <p className="section-subtitle">
-            Des chiffres réels, pas des estimations marketing. Péages, consommation autoroute, aides 2026 — tout est inclus.
-          </p>
+          <div style={{ textAlign: 'center', marginBottom: 36 }}>
+            <div style={{
+              display: 'inline-block', marginBottom: 12,
+              fontSize: '0.72rem', fontWeight: 800, letterSpacing: '0.08em',
+              padding: '4px 14px', borderRadius: 20,
+              background: 'rgba(14,165,233,0.1)', color: '#0369a1',
+              border: '1px solid rgba(14,165,233,0.2)',
+              textTransform: 'uppercase',
+            }}>
+              🌅 Spécial Départ en Vacances
+            </div>
+            <h2 style={{ fontSize: 'clamp(1.25rem, 3vw, 1.75rem)', marginBottom: 10 }}>
+              Tout pour préparer votre départ — sans mauvaises surprises
+            </h2>
+            <p style={{ color: 'var(--color-text-soft)', maxWidth: 540, margin: '0 auto', fontSize: '0.94rem', lineHeight: 1.65 }}>
+              Coût du trajet, checklist voiture et animaux, assistance en cas de panne —
+              nos outils vous préparent avant même de boucler les valises.
+            </p>
+          </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: 20, marginBottom: 32 }}>
-            {/* Outil phare */}
-            <Link href="/comparer-trajet" style={{ textDecoration: 'none', gridColumn: 'span 1' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))', gap: 18 }}>
+            {/* Trajet vacances — STAR */}
+            <Link href="/comparer-trajet" style={{ textDecoration: 'none' }}>
               <div style={{
-                background: 'linear-gradient(135deg, rgba(122,240,194,0.08), rgba(59,130,246,0.06))',
-                border: '2px solid rgba(122,240,194,0.35)',
-                borderRadius: 14, padding: '26px 24px',
+                background: 'linear-gradient(135deg, rgba(14,165,233,0.1), rgba(16,185,129,0.08))',
+                border: '2px solid rgba(14,165,233,0.3)',
+                borderRadius: 16, padding: '28px 24px',
                 display: 'flex', flexDirection: 'column', gap: 12, height: '100%',
-                cursor: 'pointer', transition: 'transform .15s',
+                cursor: 'pointer',
               }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-                  <span style={{ fontSize: '2.2rem' }}>🏖️</span>
+                  <span style={{ fontSize: '2.2rem' }}>🗺️</span>
                   <span style={{
                     background: 'var(--color-primary)', color: '#0a1628',
                     borderRadius: 20, padding: '3px 12px',
-                    fontSize: '0.7rem', fontWeight: 800,
-                  }}>NOUVEAU</span>
+                    fontSize: '0.68rem', fontWeight: 800, letterSpacing: '0.04em',
+                  }}>INCONTOURNABLE</span>
                 </div>
                 <div>
-                  <h3 style={{ fontSize: '1.05rem', fontWeight: 700, marginBottom: 6 }}>Trajet vacances</h3>
-                  <p style={{ fontSize: '0.88rem', color: 'var(--color-text-muted)', lineHeight: 1.5, margin: 0 }}>
-                    Combien coûte votre trajet selon votre motorisation ? Péages et énergie inclus, 25 routes populaires.
+                  <h3 style={{ fontSize: '1.05rem', fontWeight: 800, marginBottom: 6 }}>Mon trajet vacances</h3>
+                  <p style={{ fontSize: '0.87rem', color: 'var(--color-text-muted)', lineHeight: 1.5, margin: 0 }}>
+                    Péages + énergie + recharge — calculez et comparez le coût exact selon votre motorisation sur 25 routes populaires.
                   </p>
                 </div>
                 <span style={{ fontSize: '0.88rem', fontWeight: 700, color: 'var(--color-primary)', marginTop: 'auto' }}>
@@ -119,21 +184,86 @@ export default async function HomePage() {
               </div>
             </Link>
 
-            <Link href="/simulateur" style={{ textDecoration: 'none' }}>
+            {/* Checklist départ */}
+            <Link href="/checklist-depart" style={{ textDecoration: 'none' }}>
               <div style={{
                 background: 'var(--color-bg-card)', border: '1.5px solid var(--color-border)',
-                borderRadius: 14, padding: '26px 24px',
+                borderRadius: 16, padding: '28px 24px',
                 display: 'flex', flexDirection: 'column', gap: 12, height: '100%',
-                cursor: 'pointer', transition: 'border-color .15s',
+                cursor: 'pointer',
               }}>
-                <span style={{ fontSize: '2.2rem' }}>🧮</span>
+                <span style={{ fontSize: '2.2rem' }}>✅</span>
                 <div>
-                  <h3 style={{ fontSize: '1.05rem', fontWeight: 700, marginBottom: 6 }}>Simulateur TCO</h3>
-                  <p style={{ fontSize: '0.88rem', color: 'var(--color-text-muted)', lineHeight: 1.5, margin: 0 }}>
-                    Coût total sur 3 à 5 ans selon votre profil : km/an, segment, pays, motorisation.
+                  <h3 style={{ fontSize: '1.05rem', fontWeight: 800, marginBottom: 6 }}>Checklist départ</h3>
+                  <p style={{ fontSize: '0.87rem', color: 'var(--color-text-muted)', lineHeight: 1.5, margin: 0 }}>
+                    Voiture, documents, animaux, bébé — votre liste personnalisée selon votre profil. Export PDF inclus.
                   </p>
                 </div>
                 <span style={{ fontSize: '0.88rem', fontWeight: 700, color: 'var(--color-primary)', marginTop: 'auto' }}>
+                  Préparer mon départ →
+                </span>
+              </div>
+            </Link>
+
+            {/* Assistant vacances */}
+            <Link href="/assistant-vacances" style={{ textDecoration: 'none' }}>
+              <div style={{
+                background: 'var(--color-bg-card)', border: '1.5px solid var(--color-border)',
+                borderRadius: 16, padding: '28px 24px',
+                display: 'flex', flexDirection: 'column', gap: 12, height: '100%',
+                cursor: 'pointer',
+              }}>
+                <span style={{ fontSize: '2.2rem' }}>🤖</span>
+                <div>
+                  <h3 style={{ fontSize: '1.05rem', fontWeight: 800, marginBottom: 6 }}>Assistant Vacances IA</h3>
+                  <p style={{ fontSize: '0.87rem', color: 'var(--color-text-muted)', lineHeight: 1.5, margin: 0 }}>
+                    Posez vos questions : recharge sur route, bornes autoroute, ZFE à éviter, budget carburant réaliste.
+                  </p>
+                </div>
+                <span style={{ fontSize: '0.88rem', fontWeight: 700, color: 'var(--color-primary)', marginTop: 'auto' }}>
+                  Poser une question →
+                </span>
+              </div>
+            </Link>
+          </div>
+
+          <div style={{ textAlign: 'center', marginTop: 28 }}>
+            <Link href="/outils" style={{
+              display: 'inline-block', padding: '10px 22px',
+              background: 'transparent', border: '1.5px solid rgba(14,165,233,0.3)',
+              borderRadius: 10, color: '#0369a1', fontWeight: 600, fontSize: '0.88rem',
+              textDecoration: 'none',
+            }}>
+              Voir tous les outils →
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* ===== AUTRES CALCULATEURS ===== */}
+      <section style={{ padding: '52px 0 44px' }}>
+        <div className="container">
+          <h2 className="section-title">Nos calculateurs TCO</h2>
+          <p className="section-subtitle">
+            Coût total sur 3 à 5 ans, aides 2026, fiscalité par pays — pour les décisions d&apos;achat et de flotte.
+          </p>
+
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))', gap: 18, marginBottom: 28 }}>
+            <Link href="/simulateur" style={{ textDecoration: 'none' }}>
+              <div style={{
+                background: 'var(--color-bg-card)', border: '1.5px solid var(--color-border)',
+                borderRadius: 14, padding: '24px 22px',
+                display: 'flex', flexDirection: 'column', gap: 12, height: '100%',
+                cursor: 'pointer',
+              }}>
+                <span style={{ fontSize: '2rem' }}>🧮</span>
+                <div>
+                  <h3 style={{ fontSize: '1rem', fontWeight: 700, marginBottom: 5 }}>Simulateur TCO</h3>
+                  <p style={{ fontSize: '0.86rem', color: 'var(--color-text-muted)', lineHeight: 1.5, margin: 0 }}>
+                    Coût total sur 3 à 5 ans selon votre profil : km/an, segment, pays, motorisation.
+                  </p>
+                </div>
+                <span style={{ fontSize: '0.86rem', fontWeight: 700, color: 'var(--color-primary)', marginTop: 'auto' }}>
                   Lancer le simulateur →
                 </span>
               </div>
@@ -142,27 +272,41 @@ export default async function HomePage() {
             <Link href="/comparer" style={{ textDecoration: 'none' }}>
               <div style={{
                 background: 'var(--color-bg-card)', border: '1.5px solid var(--color-border)',
-                borderRadius: 14, padding: '26px 24px',
+                borderRadius: 14, padding: '24px 22px',
                 display: 'flex', flexDirection: 'column', gap: 12, height: '100%',
-                cursor: 'pointer', transition: 'border-color .15s',
+                cursor: 'pointer',
               }}>
-                <span style={{ fontSize: '2.2rem' }}>📊</span>
+                <span style={{ fontSize: '2rem' }}>📊</span>
                 <div>
-                  <h3 style={{ fontSize: '1.05rem', fontWeight: 700, marginBottom: 6 }}>Comparateur motorisations</h3>
-                  <p style={{ fontSize: '0.88rem', color: 'var(--color-text-muted)', lineHeight: 1.5, margin: 0 }}>
-                    Diesel, essence, électrique, hydrogène — visualisez le TCO côte à côte.
+                  <h3 style={{ fontSize: '1rem', fontWeight: 700, marginBottom: 5 }}>Comparateur motorisations</h3>
+                  <p style={{ fontSize: '0.86rem', color: 'var(--color-text-muted)', lineHeight: 1.5, margin: 0 }}>
+                    Diesel, essence, électrique, hybride, hydrogène — TCO côte à côte avec graphiques.
                   </p>
                 </div>
-                <span style={{ fontSize: '0.88rem', fontWeight: 700, color: 'var(--color-primary)', marginTop: 'auto' }}>
+                <span style={{ fontSize: '0.86rem', fontWeight: 700, color: 'var(--color-primary)', marginTop: 'auto' }}>
                   Comparer →
                 </span>
               </div>
             </Link>
-          </div>
 
-          <div style={{ textAlign: 'center' }}>
-            <Link href="/outils" className="btn btn-secondary">
-              Voir tous les calculateurs →
+            <Link href="/assistance" style={{ textDecoration: 'none' }}>
+              <div style={{
+                background: 'var(--color-bg-card)', border: '1.5px solid var(--color-border)',
+                borderRadius: 14, padding: '24px 22px',
+                display: 'flex', flexDirection: 'column', gap: 12, height: '100%',
+                cursor: 'pointer',
+              }}>
+                <span style={{ fontSize: '2rem' }}>🛡️</span>
+                <div>
+                  <h3 style={{ fontSize: '1rem', fontWeight: 700, marginBottom: 5 }}>Hub Assistance Voyage</h3>
+                  <p style={{ fontSize: '0.86rem', color: 'var(--color-text-muted)', lineHeight: 1.5, margin: 0 }}>
+                    Santé, location, surprises, surprises en route — guides et conseils pratiques.
+                  </p>
+                </div>
+                <span style={{ fontSize: '0.86rem', fontWeight: 700, color: 'var(--color-primary)', marginTop: 'auto' }}>
+                  Voir les guides →
+                </span>
+              </div>
             </Link>
           </div>
         </div>
