@@ -27,6 +27,7 @@ const PAGES_STATIQUES: { url: string; priority: number; changeFreq: MetadataRout
 
   // Assistances
   { url: '/assistant-vacances',      priority: 0.8, changeFreq: 'monthly' },
+  { url: '/checklist-depart',        priority: 0.8, changeFreq: 'monthly' },
   { url: '/assistance/couts',        priority: 0.8, changeFreq: 'monthly' },
   { url: '/assistance/recharge',     priority: 0.8, changeFreq: 'monthly' },
   { url: '/assistance/achat',        priority: 0.8, changeFreq: 'monthly' },

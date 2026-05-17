@@ -56,6 +56,14 @@ const OUTILS_PHARES = [
 
 const OUTILS_COMPLEMENTAIRES = [
   {
+    href: '/checklist-depart',
+    icon: '✅',
+    titre: 'Check-list départ vacances',
+    desc: 'Checklist interactive sur-mesure avant de prendre la route : véhicule, documents, sécurité, bébé, VE, animaux. Estimation fatigue + pauses intelligentes.',
+    tags: ['Famille', 'Bébé', 'VE', 'Étranger'],
+    cta: 'Générer ma checklist',
+  },
+  {
     href: '/tco',
     icon: '📈',
     titre: 'Comparatifs TCO par profil',
