@@ -27,12 +27,13 @@ export default function MembreGate({
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    sb.auth.getSession().then(({ data }) => {
-      setSession(data.session ?? null)
+    // getUser() fait une vérification réseau réelle — plus fiable que getSession() (cache localStorage)
+    sb.auth.getUser().then(({ data }) => {
+      setSession(data.user ?? null)
       setLoading(false)
     })
     const { data: listener } = sb.auth.onAuthStateChange((_e, s) => {
-      setSession(s ?? null)
+      setSession(s?.user ?? null)
       setLoading(false)
     })
     return () => listener.subscription.unsubscribe()
@@ -48,7 +49,7 @@ export default function MembreGate({
     )
   }
 
-  // Connecté → accès libre
+  // Connecté (user valide côté serveur) → accès libre
   if (session) return <>{children}</>
 
   // Non connecté → page d'invite
