@@ -121,8 +121,7 @@ export default function EspaceMembresPage() {
 
   async function seDeconnecter() {
     await sb.auth.signOut()
-    setSession(null)
-    setArticles([])
+    window.location.href = '/espace-membres'
   }
 
   function togglePays(p: string) {
