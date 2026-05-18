@@ -10,6 +10,8 @@ import {
 } from '@/lib/trajet'
 import { geocoderEtCalculer } from '@/lib/openrouteservice'
 import { getRouteFromCache, saveRouteToCache, normaliserVille } from '@/lib/trajets-cache'
+import { type Coords } from '@/lib/openchargemaps'
+import StationsRecharge from './StationsRecharge'
 import routesData from '@/data/routes-vacances.json'
 import villesData from '@/data/villes.json'
 
@@ -425,6 +427,9 @@ export default function ComparateurTrajet({ routeInitiale }: { routeInitiale?: R
   const [orsEtat, setOrsEtat] = useState<OrsEtat>('idle')
   const [orsRoute, setOrsRoute] = useState<Route | null>(null)
 
+  // ── Coordonnées GPS (pour les stations de recharge) ──
+  const [routeCoords, setRouteCoords] = useState<{ depart: Coords; arrivee: Coords } | null>(null)
+
   // ── Fallback manuel ──
   const [customDistance, setCustomDistance] = useState('')
   const [customPeages, setCustomPeages] = useState('')
@@ -505,6 +510,11 @@ export default function ComparateurTrajet({ routeInitiale }: { routeInitiale?: R
       }).catch(() => {})
 
       setOrsRoute(route)
+      // ORSCoordonnees utilise `lon`, Coords utilise `lng`
+      setRouteCoords({
+        depart:  { lat: coordDepart.lat,  lng: coordDepart.lon },
+        arrivee: { lat: coordArrivee.lat, lng: coordArrivee.lon },
+      })
       setOrsEtat('idle')
       setConfirmed(true)
       saveRecent(d, a)
@@ -571,6 +581,7 @@ export default function ComparateurTrajet({ routeInitiale }: { routeInitiale?: R
     setConfirmed(false)
     setOrsRoute(null)
     setOrsEtat('idle')
+    setRouteCoords(null)
   }
   const handlePickPopular = (r: Route) => {
     setDepart(r.depart); setArrivee(r.arrivee)
@@ -587,10 +598,10 @@ export default function ComparateurTrajet({ routeInitiale }: { routeInitiale?: R
     setConfirmed(true)
   }
   const handleChangeDepart = (v: string) => {
-    setDepart(v); setConfirmed(false); setOrsRoute(null); setOrsEtat('idle')
+    setDepart(v); setConfirmed(false); setOrsRoute(null); setOrsEtat('idle'); setRouteCoords(null)
   }
   const handleChangeArrivee = (v: string) => {
-    setArrivee(v); setConfirmed(false); setOrsRoute(null); setOrsEtat('idle')
+    setArrivee(v); setConfirmed(false); setOrsRoute(null); setOrsEtat('idle'); setRouteCoords(null)
   }
 
   return (
@@ -889,6 +900,17 @@ export default function ComparateurTrajet({ routeInitiale }: { routeInitiale?: R
               : `Tarifs location haute saison juillet-août 2026, kilométrage illimité (moyennes Europcar, Hertz, Sixt). Carburant non inclus dans le tarif de location. Péages à la charge du locataire.`
             }
           </p>
+
+          {/* ── Stations de recharge ── */}
+          {routeSelectionnee && (
+            <StationsRecharge
+              coordDepart={routeCoords?.depart}
+              coordArrivee={routeCoords?.arrivee}
+              villeDepart={routeSelectionnee.depart}
+              villeArrivee={routeSelectionnee.arrivee}
+              distanceTrajet={routeSelectionnee.distance_km}
+            />
+          )}
         </>
       )}
 
