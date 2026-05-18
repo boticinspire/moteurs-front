@@ -1158,5 +1158,3 @@ const inputStyle: React.CSSProperties = {
   background: 'var(--color-bg-alt)', color: 'var(--color-text)',
   border: '1.5px solid var(--color-border)', outline: 'none',
 }
-ne',
-}
