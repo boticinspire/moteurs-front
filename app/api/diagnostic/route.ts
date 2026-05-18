@@ -4,6 +4,11 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server'
+import {
+  genererCacheKey,
+  getDiagnosticFromCache,
+  saveDiagnosticToCache,
+} from '@/lib/diagnostics-cache'
 
 const ANTHROPIC_URL  = 'https://api.anthropic.com/v1/messages'
 const MODEL          = 'claude-haiku-4-5-20251001'
@@ -20,6 +25,13 @@ export async function POST(req: NextRequest) {
   }
 
   const { symptome_label, motorisation, reponses } = body
+
+  // ── Tier 1 : Cache Supabase ──────────────────────────────────────────────
+  const cacheKey = genererCacheKey(motorisation, symptome_label, reponses ?? [])
+  const cached   = await getDiagnosticFromCache(cacheKey)
+  if (cached) {
+    return NextResponse.json({ ...cached, _cache: true })
+  }
 
   const reponsesFormatees = (reponses as { question: string; reponse: string }[])
     .map(r => `- ${r.question} → ${r.reponse}`)
@@ -88,6 +100,15 @@ Sois simple, rassurant, accessible à un non-mécanicien. Maximum 3 pannes proba
       console.error('[/api/diagnostic] JSON invalide:', cleaned.slice(0, 300))
       return NextResponse.json({ error: `JSON invalide reçu de Claude: ${cleaned.slice(0, 100)}` }, { status: 502 })
     }
+
+    // ── Sauvegarder en cache (fire & forget) ────────────────────────────────
+    saveDiagnosticToCache({
+      cacheKey,
+      motorisation,
+      symptome_label,
+      reponses:   reponses ?? [],
+      diagnostic,
+    }).catch(e => console.error('[/api/diagnostic] Erreur cache save', e))
 
     return NextResponse.json(diagnostic)
   } catch (err) {
