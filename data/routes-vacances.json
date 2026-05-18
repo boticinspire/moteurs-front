@@ -2803,5 +2803,105 @@
     "pays_depart": "FR",
     "region": "Bretagne",
     "popular": false
+  },
+  {
+    "slug": "eupen-nice",
+    "depart": "Eupen",
+    "arrivee": "Nice",
+    "distance_km": 1170,
+    "peages_eur": 82,
+    "duree_base_min": 689,
+    "pays_depart": "FR",
+    "popular": true
+  },
+  {
+    "slug": "eupen-rome",
+    "depart": "eupen",
+    "arrivee": "rome",
+    "distance_km": 1481,
+    "peages_eur": 104,
+    "duree_base_min": 847,
+    "pays_depart": "FR",
+    "popular": true
+  },
+  {
+    "slug": "eupen-paris",
+    "depart": "eupen",
+    "arrivee": "Paris",
+    "distance_km": 406,
+    "peages_eur": 28,
+    "duree_base_min": 251,
+    "pays_depart": "FR",
+    "popular": true
+  },
+  {
+    "slug": "eupen-rom",
+    "depart": "eupen",
+    "arrivee": "rom",
+    "distance_km": 1481,
+    "peages_eur": 104,
+    "duree_base_min": 847,
+    "pays_depart": "FR",
+    "popular": true
+  },
+  {
+    "slug": "eupen-ni",
+    "depart": "Eupen",
+    "arrivee": "Ni",
+    "distance_km": 398,
+    "peages_eur": 28,
+    "duree_base_min": 221,
+    "pays_depart": "FR",
+    "popular": true
+  },
+  {
+    "slug": "eupen-nic",
+    "depart": "Eupen",
+    "arrivee": "Nic",
+    "distance_km": 4144,
+    "peages_eur": 290,
+    "duree_base_min": 2309,
+    "pays_depart": "FR",
+    "popular": true
+  },
+  {
+    "slug": "liege-luxembourg",
+    "depart": "Liège",
+    "arrivee": "Luxembourg",
+    "distance_km": 110,
+    "peages_eur": 8,
+    "duree_base_min": 77,
+    "pays_depart": "FR",
+    "popular": true
+  },
+  {
+    "slug": "villers-le-gambon-paris",
+    "depart": "villers le gambon",
+    "arrivee": "Paris",
+    "distance_km": 295,
+    "peages_eur": 21,
+    "duree_base_min": 185,
+    "pays_depart": "FR",
+    "popular": true
+  },
+  {
+    "slug": "eupen-marseille",
+    "depart": "eupen",
+    "arrivee": "Marseille",
+    "distance_km": 1015,
+    "peages_eur": 71,
+    "duree_base_min": 605,
+    "pays_depart": "FR",
+    "popular": true
+  },
+  {
+    "slug": "namur-eupen",
+    "depart": "namur",
+    "arrivee": "eupen",
+    "distance_km": 99,
+    "peages_eur": 7,
+    "duree_base_min": 73,
+    "pays_depart": "FR",
+    "popular": true
   }
 ]
