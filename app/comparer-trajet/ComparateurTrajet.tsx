@@ -8,6 +8,8 @@ import {
   type Route, type ResultatTrajet, type ResultatLocation,
   type CategorieLocation,
 } from '@/lib/trajet'
+import { geocoderEtCalculer } from '@/lib/openrouteservice'
+import { getRouteFromCache, saveRouteToCache, normaliserVille } from '@/lib/trajets-cache'
 import routesData from '@/data/routes-vacances.json'
 import villesData from '@/data/villes.json'
 
@@ -35,7 +37,11 @@ function findRoute(depart: string, arrivee: string): Route | null {
   ) ?? null
 }
 
-// Persistance recherches récentes
+// ─── État ORS ─────────────────────────────────────────────────────────────────
+
+type OrsEtat = 'idle' | 'loading' | 'erreur_ville' | 'erreur_ors' | 'manuel'
+
+// ─── Persistance recherches récentes ─────────────────────────────────────────
 const RECENT_KEY = 'moteurs_trajets_recents'
 function loadRecents(): { depart: string; arrivee: string }[] {
   if (typeof window === 'undefined') return []
@@ -412,10 +418,16 @@ export default function ComparateurTrajet({ routeInitiale }: { routeInitiale?: R
   // ── Sélection trajet ──
   const [depart, setDepart] = useState(routeInitiale?.depart ?? '')
   const [arrivee, setArrivee] = useState(routeInitiale?.arrivee ?? '')
-  const [customDistance, setCustomDistance] = useState('')
-  const [customPeages, setCustomPeages] = useState('')
   const [confirmed, setConfirmed] = useState(!!routeInitiale)
   const [recents, setRecents] = useState<{ depart: string; arrivee: string }[]>([])
+
+  // ── Trajet ORS (routes inconnues) ──
+  const [orsEtat, setOrsEtat] = useState<OrsEtat>('idle')
+  const [orsRoute, setOrsRoute] = useState<Route | null>(null)
+
+  // ── Fallback manuel ──
+  const [customDistance, setCustomDistance] = useState('')
+  const [customPeages, setCustomPeages] = useState('')
 
   // ── Suggestions populaires ──
   const [filtreRegion, setFiltreRegion] = useState('Toutes')
@@ -428,14 +440,86 @@ export default function ComparateurTrajet({ routeInitiale }: { routeInitiale?: R
   // Charge les recherches récentes au montage
   useEffect(() => { setRecents(loadRecents()) }, [])
 
-  // Cherche un trajet pré-calculé matching la paire départ/arrivée
+  // Cherche un trajet pré-calculé dans routes-vacances.json
   const routeMatch = useMemo(() => findRoute(depart, arrivee), [depart, arrivee])
-  const needsCustom = !!depart.trim() && !!arrivee.trim() && !routeMatch
+  const needsOrs = !!depart.trim() && !!arrivee.trim() && !routeMatch
+
+  // ── Résolution ORS (cache → API) ──────────────────────────────────────────
+  async function resoudreViaORS() {
+    setOrsEtat('loading')
+    setOrsRoute(null)
+
+    const d = depart.trim()
+    const a = arrivee.trim()
+
+    // 1. Cherche dans le cache Supabase
+    try {
+      const cached = await getRouteFromCache(d, a)
+      if (cached) {
+        const route: Route = {
+          slug: `${normaliserVille(d)}-${normaliserVille(a)}`,
+          depart: cached.depart,
+          arrivee: cached.arrivee,
+          distance_km: cached.distance_km,
+          peages_eur: cached.peages_eur,
+          duree_base_min: cached.duree_base_min,
+          pays_depart: 'FR',
+        }
+        setOrsRoute(route)
+        setOrsEtat('idle')
+        setConfirmed(true)
+        saveRecent(d, a)
+        setRecents(loadRecents())
+        return
+      }
+    } catch { /* cache indisponible — continue vers ORS */ }
+
+    // 2. Appel ORS
+    try {
+      const result = await geocoderEtCalculer(d, a, 'recommended')
+      if (!result) {
+        setOrsEtat('erreur_ors')
+        return
+      }
+      const { itineraire, coordDepart, coordArrivee } = result
+      const peages = Math.round(itineraire.distance_km * 0.07)
+
+      const route: Route = {
+        slug: `${normaliserVille(d)}-${normaliserVille(a)}`,
+        depart: d,
+        arrivee: a,
+        distance_km: itineraire.distance_km,
+        peages_eur: peages,
+        duree_base_min: itineraire.duree_min,
+        pays_depart: 'FR',
+      }
+
+      // 3. Sauvegarde en cache (fire & forget)
+      saveRouteToCache({
+        depart: d,
+        arrivee: a,
+        coordDepart,
+        coordArrivee,
+        itineraire,
+        peages_eur: peages,
+      }).catch(() => {})
+
+      setOrsRoute(route)
+      setOrsEtat('idle')
+      setConfirmed(true)
+      saveRecent(d, a)
+      setRecents(loadRecents())
+    } catch {
+      setOrsEtat('erreur_ors')
+    }
+  }
 
   // Construit la Route à utiliser pour les calculs
   const routeSelectionnee = useMemo<Route | null>(() => {
     if (!depart.trim() || !arrivee.trim()) return null
     if (routeMatch) return routeMatch
+    if (orsRoute) return orsRoute
+    // Fallback manuel
     const dist = parseFloat(customDistance)
     if (!dist || dist <= 0) return null
     return {
@@ -447,7 +531,7 @@ export default function ComparateurTrajet({ routeInitiale }: { routeInitiale?: R
       duree_base_min: Math.round((dist / 105) * 60),
       pays_depart: 'FR',
     }
-  }, [depart, arrivee, routeMatch, customDistance, customPeages])
+  }, [depart, arrivee, routeMatch, orsRoute, customDistance, customPeages])
 
   const resultatsVoiture = useMemo<ResultatTrajet[]>(() => {
     if (!routeSelectionnee || !confirmed) return []
@@ -467,19 +551,31 @@ export default function ComparateurTrajet({ routeInitiale }: { routeInitiale?: R
 
   // ── Handlers ──
   const handleCalculer = () => {
-    if (!routeSelectionnee) return
-    setConfirmed(true)
-    saveRecent(routeSelectionnee.depart, routeSelectionnee.arrivee)
-    setRecents(loadRecents())
+    if (!depart.trim() || !arrivee.trim()) return
+    if (routeMatch) {
+      // Trajet connu localement — résultat immédiat
+      setConfirmed(true)
+      saveRecent(depart.trim(), arrivee.trim())
+      setRecents(loadRecents())
+    } else if (orsRoute) {
+      // Trajet ORS déjà calculé, on reconfirme
+      setConfirmed(true)
+    } else {
+      // Lance la résolution ORS (cache → API)
+      resoudreViaORS()
+    }
   }
   const handleSwap = () => {
     setDepart(arrivee)
     setArrivee(depart)
     setConfirmed(false)
+    setOrsRoute(null)
+    setOrsEtat('idle')
   }
   const handlePickPopular = (r: Route) => {
     setDepart(r.depart); setArrivee(r.arrivee)
     setCustomDistance(''); setCustomPeages('')
+    setOrsRoute(null); setOrsEtat('idle')
     setConfirmed(true)
     saveRecent(r.depart, r.arrivee)
     setRecents(loadRecents())
@@ -487,10 +583,15 @@ export default function ComparateurTrajet({ routeInitiale }: { routeInitiale?: R
   const handlePickRecent = (r: { depart: string; arrivee: string }) => {
     setDepart(r.depart); setArrivee(r.arrivee)
     setCustomDistance(''); setCustomPeages('')
+    setOrsRoute(null); setOrsEtat('idle')
     setConfirmed(true)
   }
-  const handleChangeDepart = (v: string) => { setDepart(v); setConfirmed(false) }
-  const handleChangeArrivee = (v: string) => { setArrivee(v); setConfirmed(false) }
+  const handleChangeDepart = (v: string) => {
+    setDepart(v); setConfirmed(false); setOrsRoute(null); setOrsEtat('idle')
+  }
+  const handleChangeArrivee = (v: string) => {
+    setArrivee(v); setConfirmed(false); setOrsRoute(null); setOrsEtat('idle')
+  }
 
   return (
     <div>
@@ -534,29 +635,45 @@ export default function ComparateurTrajet({ routeInitiale }: { routeInitiale?: R
           />
           <button
             onClick={handleCalculer}
-            disabled={!routeSelectionnee}
+            disabled={!depart.trim() || !arrivee.trim() || orsEtat === 'loading'}
             style={{
-              padding: '12px 24px', borderRadius: 10, cursor: routeSelectionnee ? 'pointer' : 'not-allowed',
+              padding: '12px 24px', borderRadius: 10,
+              cursor: (!depart.trim() || !arrivee.trim() || orsEtat === 'loading') ? 'not-allowed' : 'pointer',
               fontWeight: 700, fontSize: '0.95rem', height: 50, marginBottom: 0,
-              background: routeSelectionnee ? 'var(--color-primary)' : 'var(--color-border)',
-              color: routeSelectionnee ? '#0a1628' : 'var(--color-text-muted)',
+              background: (!depart.trim() || !arrivee.trim()) ? 'var(--color-border)' : 'var(--color-primary)',
+              color: (!depart.trim() || !arrivee.trim()) ? 'var(--color-text-muted)' : '#0a1628',
               border: 'none', transition: 'background .15s',
               whiteSpace: 'nowrap',
             }}
           >
-            Calculer →
+            {orsEtat === 'loading' ? '⏳ Calcul…' : 'Calculer →'}
           </button>
         </div>
 
-        {/* Champs distance/péages affichés uniquement si trajet inconnu */}
-        {needsCustom && (
+        {/* Statut ORS — loading */}
+        {orsEtat === 'loading' && (
+          <div style={{
+            marginTop: 14, padding: '12px 16px',
+            background: 'rgba(8,145,178,0.07)', border: '1px solid rgba(8,145,178,0.25)',
+            borderRadius: 10, display: 'flex', alignItems: 'center', gap: 10,
+            fontSize: '0.85rem', color: '#0891b2',
+          }}>
+            <span style={{ animation: 'spin 1s linear infinite', display: 'inline-block' }}>⏳</span>
+            Géocodage et calcul d&apos;itinéraire en cours via OpenRouteService…
+          </div>
+        )}
+
+        {/* Statut ORS — erreur → fallback manuel */}
+        {(orsEtat === 'erreur_ors' || orsEtat === 'erreur_ville' || orsEtat === 'manuel') && needsOrs && (
           <div style={{
             marginTop: 16, padding: '14px 16px',
             background: 'rgba(245,158,11,0.07)', border: '1px solid rgba(245,158,11,0.25)',
             borderRadius: 10,
           }}>
             <div style={{ fontSize: '0.82rem', color: '#f59e0b', fontWeight: 600, marginBottom: 10 }}>
-              ℹ️ Ce trajet n&apos;est pas dans notre base — saisissez la distance pour calculer
+              {orsEtat === 'erreur_ville'
+                ? '⚠️ Ville introuvable — saisissez la distance manuellement'
+                : '⚠️ Calcul automatique indisponible — saisissez la distance manuellement'}
             </div>
             <div style={{ display: 'grid', gap: 12, gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))' }}>
               <div>
@@ -572,8 +689,38 @@ export default function ComparateurTrajet({ routeInitiale }: { routeInitiale?: R
                   placeholder="auto (0,07 €/km)" style={inputStyle} />
               </div>
             </div>
-            <p style={{ fontSize: '0.74rem', color: 'var(--color-text-muted)', margin: '10px 0 0' }}>
-              * Trouvez la distance sur <a href="https://maps.google.com" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--color-primary)' }}>Google Maps</a>.
+            <div style={{ display: 'flex', gap: 10, marginTop: 10, alignItems: 'center' }}>
+              <button
+                onClick={() => {
+                  const dist = parseFloat(customDistance)
+                  if (!dist) return
+                  setConfirmed(true)
+                }}
+                disabled={!customDistance || parseFloat(customDistance) <= 0}
+                style={{
+                  padding: '8px 18px', borderRadius: 8, border: 'none', cursor: 'pointer',
+                  background: 'var(--color-primary)', color: '#0a1628',
+                  fontWeight: 700, fontSize: '0.85rem',
+                  opacity: (!customDistance || parseFloat(customDistance) <= 0) ? 0.5 : 1,
+                }}
+              >
+                Calculer avec ces valeurs →
+              </button>
+              <button
+                onClick={() => resoudreViaORS()}
+                style={{
+                  padding: '8px 14px', borderRadius: 8,
+                  border: '1px solid var(--color-border)', cursor: 'pointer',
+                  background: 'transparent', color: 'var(--color-text-muted)',
+                  fontSize: '0.82rem',
+                }}
+              >
+                🔄 Réessayer ORS
+              </button>
+            </div>
+            <p style={{ fontSize: '0.74rem', color: 'var(--color-text-muted)', margin: '8px 0 0' }}>
+              Trouvez la distance sur{' '}
+              <a href="https://maps.google.com" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--color-primary)' }}>Google Maps</a>.
             </p>
           </div>
         )}
