@@ -22,7 +22,17 @@ type Article = {
 type Post = { id: number; article_id: number; plateforme: string; contenu: string; publie: boolean }
 type AlerteGov = { id: number; nom: string; pays: string; resume_changement: string; statut: string; created_at: string }
 
-type Tab = 'articles' | 'social' | 'alertes' | 'users'
+type Tab = 'articles' | 'social' | 'alertes' | 'users' | 'outils'
+
+type ScanVoyant = {
+  id: number; voyant_nom: string; urgence: 'stop' | 'attention' | 'info'
+  peut_rouler: boolean; confiance: string | null; nb_requetes: number; last_used: string
+}
+
+type TrajetCacheItem = {
+  id: number; depart: string; arrivee: string
+  distance_km: number; peages_eur: number; nb_requetes: number; last_used: string
+}
 
 type AdminUser = {
   id: string; email: string; prenom: string | null; profil_type: string | null
@@ -48,6 +58,12 @@ export default function AdminPage() {
   const [alertes, setAlertes]         = useState<AlerteGov[]>([])
   const [nbAlertes, setNbAlertes]     = useState(0)
   const [expandPost, setExpandPost]   = useState<number | null>(null)
+
+  // Outils tab
+  const [scans,         setScans]         = useState<ScanVoyant[]>([])
+  const [trajetsCache,  setTrajetsCache]  = useState<TrajetCacheItem[]>([])
+  const [outilsLoaded,  setOutilsLoaded]  = useState(false)
+  const [outilsSection, setOutilsSection] = useState<'scans' | 'trajets'>('scans')
 
   // Users tab
   const [users, setUsers]               = useState<AdminUser[]>([])
@@ -115,6 +131,7 @@ export default function AdminPage() {
     if (t === 'social') chargerPosts()
     if (t === 'alertes') chargerAlertes()
     if (t === 'users') chargerUsers()
+    if (t === 'outils') chargerOutils()
   }
 
   // ── Actions articles ──
@@ -210,6 +227,24 @@ export default function AdminPage() {
     msg('✓ Profil supprimé (données utilisateur effacées — compte auth conservé).')
   }
 
+  // ── Chargement outils ──
+  async function chargerOutils() {
+    if (outilsLoaded) return
+    const [{ data: s }, { data: t }] = await Promise.all([
+      sb.from('scan_voyants_logs')
+        .select('id, voyant_nom, urgence, peut_rouler, confiance, nb_requetes, last_used')
+        .order('nb_requetes', { ascending: false })
+        .limit(50),
+      sb.from('trajets_cache')
+        .select('id, depart, arrivee, distance_km, peages_eur, nb_requetes, last_used')
+        .order('nb_requetes', { ascending: false })
+        .limit(50),
+    ])
+    setScans((s || []) as ScanVoyant[])
+    setTrajetsCache((t || []) as TrajetCacheItem[])
+    setOutilsLoaded(true)
+  }
+
   // ── Actions alertes ──
   async function marquerAlerteLue(id: number) {
     await sb.from('alertes_gov_events').update({ statut: 'LU' }).eq('id', id)
@@ -287,6 +322,7 @@ export default function AdminPage() {
             ['social',   '📣 Posts sociaux'],
             ['alertes',  `🏛️ Alertes gov.${nbAlertes > 0 ? ` (${nbAlertes})` : ''}`],
             ['users',    `👥 Utilisateurs${users.length > 0 ? ` (${users.length})` : ''}`],
+            ['outils',   '🔧 Outils'],
           ] as const).map(([t, label]) => (
             <button key={t} onClick={() => switchTab(t)} style={{
               padding: '8px 20px', background: 'none', border: 'none', cursor: 'pointer',
@@ -751,6 +787,175 @@ export default function AdminPage() {
                     </div>
                   )}
                 </div>
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* ════════════════ TAB OUTILS ════════════════ */}
+        {tab === 'outils' && (
+          <div>
+            {/* Sous-navigation */}
+            <div style={{ display: 'flex', gap: 0, marginBottom: 20, borderBottom: '1px solid var(--color-border)' }}>
+              {(['scans', 'trajets'] as const).map(s => (
+                <button key={s} onClick={() => setOutilsSection(s)} style={{
+                  padding: '7px 18px', background: 'none', border: 'none', cursor: 'pointer',
+                  fontWeight: outilsSection === s ? 700 : 400,
+                  color: outilsSection === s ? 'var(--color-primary)' : 'var(--color-text-soft)',
+                  borderBottom: outilsSection === s ? '2px solid var(--color-primary)' : '2px solid transparent',
+                  marginBottom: -1, fontSize: '0.88rem',
+                }}>
+                  {s === 'scans' ? '🔍 Scans voyants' : '🗺️ Trajets cache'}
+                </button>
+              ))}
+              <button
+                className="btn btn-secondary btn-sm"
+                onClick={() => { setOutilsLoaded(false); chargerOutils() }}
+                style={{ marginLeft: 'auto', alignSelf: 'center' }}
+              >
+                ↻ Rafraîchir
+              </button>
+            </div>
+
+            {/* ── Section scans voyants ── */}
+            {outilsSection === 'scans' && (
+              <div>
+                <div style={{ display: 'flex', gap: 12, marginBottom: 18, flexWrap: 'wrap' }}>
+                  {[
+                    { label: 'Total scans', value: scans.reduce((acc, v) => acc + v.nb_requetes, 0), color: '#7af0c2' },
+                    { label: 'Voyants distincts', value: scans.length, color: '#3b82f6' },
+                    { label: 'Stop (urgents)', value: scans.filter(v => v.urgence === 'stop').length, color: '#ef4444' },
+                    { label: 'Attention', value: scans.filter(v => v.urgence === 'attention').length, color: '#f59e0b' },
+                  ].map(s => (
+                    <div key={s.label} style={{ background: 'var(--color-bg-alt)', border: '1px solid var(--color-border)', borderRadius: 8, padding: '10px 18px', minWidth: 110 }}>
+                      <div style={{ fontSize: '1.4rem', fontWeight: 700, color: s.color }}>{s.value}</div>
+                      <div style={{ fontSize: '0.75rem', color: 'var(--color-text-soft)' }}>{s.label}</div>
+                    </div>
+                  ))}
+                </div>
+
+                {scans.length === 0 ? (
+                  <div style={{ padding: 40, textAlign: 'center', color: 'var(--color-text-soft)', background: 'var(--color-bg-alt)', border: '1px solid var(--color-border)', borderRadius: 10 }}>
+                    <div style={{ fontSize: '2rem', marginBottom: 8 }}>📷</div>
+                    <p style={{ margin: 0 }}>Aucun scan voyant enregistré. Les analyses apparaîtront ici après utilisation de l&apos;assistant.</p>
+                  </div>
+                ) : (
+                  <div style={{ background: 'var(--color-bg-alt)', border: '1px solid var(--color-border)', borderRadius: 10, overflow: 'hidden' }}>
+                    <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.83rem' }}>
+                      <thead>
+                        <tr style={{ borderBottom: '2px solid var(--color-border)', background: 'var(--color-bg)' }}>
+                          <th style={{ padding: '10px 14px', textAlign: 'left', fontWeight: 700, color: 'var(--color-text-soft)' }}>Voyant identifié</th>
+                          <th style={{ padding: '10px 8px', textAlign: 'center', fontWeight: 700, color: 'var(--color-text-soft)' }}>Urgence</th>
+                          <th style={{ padding: '10px 8px', textAlign: 'center', fontWeight: 700, color: 'var(--color-text-soft)' }}>Peut rouler</th>
+                          <th style={{ padding: '10px 8px', textAlign: 'center', fontWeight: 700, color: 'var(--color-text-soft)' }}>Confiance</th>
+                          <th style={{ padding: '10px 8px', textAlign: 'center', fontWeight: 700, color: 'var(--color-text-soft)' }}>Nb scans</th>
+                          <th style={{ padding: '10px 14px', textAlign: 'right', fontWeight: 700, color: 'var(--color-text-soft)' }}>Dernier</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {scans.map(v => {
+                          const urgColor = v.urgence === 'stop' ? '#ef4444' : v.urgence === 'attention' ? '#d97706' : '#16a34a'
+                          const urgBg    = v.urgence === 'stop' ? 'rgba(239,68,68,0.1)' : v.urgence === 'attention' ? 'rgba(245,158,11,0.1)' : 'rgba(34,197,94,0.1)'
+                          const urgLabel = v.urgence === 'stop' ? '🛑 Stop' : v.urgence === 'attention' ? '⚠️ Attention' : 'ℹ️ Info'
+                          const confColor = v.confiance === 'haute' ? '#16a34a' : v.confiance === 'faible' ? '#ef4444' : '#d97706'
+                          const confBg    = v.confiance === 'haute' ? 'rgba(34,197,94,0.1)' : v.confiance === 'faible' ? 'rgba(239,68,68,0.1)' : 'rgba(245,158,11,0.1)'
+                          return (
+                            <tr key={v.id} style={{ borderBottom: '1px solid var(--color-border)' }}>
+                              <td style={{ padding: '10px 14px', fontWeight: 600 }}>{v.voyant_nom}</td>
+                              <td style={{ padding: '10px 8px', textAlign: 'center' }}>
+                                <span style={{ fontSize: '0.72rem', padding: '2px 8px', borderRadius: 10, background: urgBg, color: urgColor, fontWeight: 700 }}>{urgLabel}</span>
+                              </td>
+                              <td style={{ padding: '10px 8px', textAlign: 'center', fontSize: '0.82rem' }}>
+                                {v.peut_rouler
+                                  ? <span style={{ color: '#16a34a', fontWeight: 700 }}>✓ Oui</span>
+                                  : <span style={{ color: '#ef4444', fontWeight: 700 }}>✗ Non</span>}
+                              </td>
+                              <td style={{ padding: '10px 8px', textAlign: 'center' }}>
+                                <span style={{ fontSize: '0.72rem', padding: '2px 7px', borderRadius: 10, background: confBg, color: confColor }}>
+                                  {v.confiance ?? '—'}
+                                </span>
+                              </td>
+                              <td style={{ padding: '10px 8px', textAlign: 'center', fontWeight: 700, color: 'var(--color-primary)' }}>{v.nb_requetes}</td>
+                              <td style={{ padding: '10px 14px', textAlign: 'right', fontSize: '0.75rem', color: 'var(--color-text-soft)' }}>
+                                {new Date(v.last_used).toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit', year: '2-digit' })}
+                              </td>
+                            </tr>
+                          )
+                        })}
+                      </tbody>
+                    </table>
+                  </div>
+                )}
+                <p style={{ marginTop: 12, fontSize: '0.75rem', color: 'var(--color-text-soft)' }}>
+                  Cache SHA-256 — les scans identiques ne re-consomment pas de tokens Claude.{' '}
+                  <a href="/assistant-depannage" target="_blank" rel="noreferrer" style={{ color: 'var(--color-primary)' }}>Tester le scanner →</a>
+                </p>
+              </div>
+            )}
+
+            {/* ── Section trajets cache ── */}
+            {outilsSection === 'trajets' && (
+              <div>
+                <div style={{ display: 'flex', gap: 12, marginBottom: 18, flexWrap: 'wrap', alignItems: 'flex-start' }}>
+                  <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap' }}>
+                    {[
+                      { label: 'Trajets en cache', value: trajetsCache.length, color: '#7af0c2' },
+                      { label: 'Total requêtes ORS', value: trajetsCache.reduce((acc, t) => acc + t.nb_requetes, 0), color: '#3b82f6' },
+                      { label: 'Max requêtes', value: trajetsCache[0]?.nb_requetes ?? 0, color: '#7c3aed' },
+                    ].map(s => (
+                      <div key={s.label} style={{ background: 'var(--color-bg-alt)', border: '1px solid var(--color-border)', borderRadius: 8, padding: '10px 18px', minWidth: 120 }}>
+                        <div style={{ fontSize: '1.4rem', fontWeight: 700, color: s.color }}>{s.value}</div>
+                        <div style={{ fontSize: '0.75rem', color: 'var(--color-text-soft)' }}>{s.label}</div>
+                      </div>
+                    ))}
+                  </div>
+                  <div style={{ marginLeft: 'auto', background: 'rgba(122,240,194,0.07)', border: '1px solid rgba(122,240,194,0.25)', borderRadius: 10, padding: '10px 16px', fontSize: '0.82rem', maxWidth: 300 }}>
+                    <div style={{ fontWeight: 700, marginBottom: 4 }}>💡 Enrichir routes-vacances.json</div>
+                    <p style={{ margin: '0 0 6px', color: 'var(--color-text-soft)', fontSize: '0.78rem' }}>Lancez en local pour ajouter les top trajets :</p>
+                    <code style={{ background: 'var(--color-bg)', padding: '4px 8px', borderRadius: 5, fontSize: '0.78rem', display: 'block' }}>npm run export-routes</code>
+                  </div>
+                </div>
+
+                {trajetsCache.length === 0 ? (
+                  <div style={{ padding: 40, textAlign: 'center', color: 'var(--color-text-soft)', background: 'var(--color-bg-alt)', border: '1px solid var(--color-border)', borderRadius: 10 }}>
+                    <div style={{ fontSize: '2rem', marginBottom: 8 }}>🗺️</div>
+                    <p style={{ margin: 0 }}>Aucun trajet en cache. Les itinéraires calculés via OpenRouteService apparaîtront ici.</p>
+                  </div>
+                ) : (
+                  <div style={{ background: 'var(--color-bg-alt)', border: '1px solid var(--color-border)', borderRadius: 10, overflow: 'hidden' }}>
+                    <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.83rem' }}>
+                      <thead>
+                        <tr style={{ borderBottom: '2px solid var(--color-border)', background: 'var(--color-bg)' }}>
+                          <th style={{ padding: '10px 14px', textAlign: 'left', fontWeight: 700, color: 'var(--color-text-soft)' }}>Trajet</th>
+                          <th style={{ padding: '10px 8px', textAlign: 'center', fontWeight: 700, color: 'var(--color-text-soft)' }}>Distance</th>
+                          <th style={{ padding: '10px 8px', textAlign: 'center', fontWeight: 700, color: 'var(--color-text-soft)' }}>Péages</th>
+                          <th style={{ padding: '10px 8px', textAlign: 'center', fontWeight: 700, color: 'var(--color-text-soft)' }}>Requêtes</th>
+                          <th style={{ padding: '10px 14px', textAlign: 'right', fontWeight: 700, color: 'var(--color-text-soft)' }}>Dernier</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {trajetsCache.map((t, i) => (
+                          <tr key={t.id} style={{ borderBottom: '1px solid var(--color-border)' }}>
+                            <td style={{ padding: '10px 14px' }}>
+                              <div style={{ fontWeight: 600 }}>{t.depart} → {t.arrivee}</div>
+                              {i === 0 && <span style={{ fontSize: '0.68rem', background: 'rgba(122,240,194,0.15)', color: 'var(--color-primary)', padding: '1px 6px', borderRadius: 10, fontWeight: 700 }}>+ demandé</span>}
+                            </td>
+                            <td style={{ padding: '10px 8px', textAlign: 'center', color: 'var(--color-text-soft)' }}>{Math.round(t.distance_km)} km</td>
+                            <td style={{ padding: '10px 8px', textAlign: 'center', color: 'var(--color-text-soft)' }}>{Math.round(t.peages_eur)} €</td>
+                            <td style={{ padding: '10px 8px', textAlign: 'center', fontWeight: 700, color: t.nb_requetes >= 3 ? 'var(--color-primary)' : 'var(--color-text)' }}>{t.nb_requetes}</td>
+                            <td style={{ padding: '10px 14px', textAlign: 'right', fontSize: '0.75rem', color: 'var(--color-text-soft)' }}>
+                              {new Date(t.last_used).toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit', year: '2-digit' })}
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                )}
+                <p style={{ marginTop: 12, fontSize: '0.75rem', color: 'var(--color-text-soft)' }}>
+                  Trajets en vert (≥ 3 requêtes) = bons candidats pour <code>routes-vacances.json</code>.{' '}
+                  <a href="/comparer-trajet" target="_blank" rel="noreferrer" style={{ color: 'var(--color-primary)' }}>Comparateur →</a>
+                </p>
               </div>
             )}
           </div>
