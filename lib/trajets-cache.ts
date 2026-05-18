@@ -67,7 +67,7 @@ export async function getRouteFromCache(
       `and(depart_norm.eq.${na},arrivee_norm.eq.${nd})`,
     )
     .limit(1)
-    .single()
+    .maybeSingle()   // retourne null (pas d'erreur) si 0 résultats
 
   if (error || !data) return null
 

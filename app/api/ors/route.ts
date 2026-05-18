@@ -1,0 +1,69 @@
+/**
+ * Moteurs.com — Proxy ORS server-side
+ * Évite le blocage CORS du free tier ORS quand appelé depuis le navigateur.
+ * Le navigateur appelle /api/ors (même domaine), le serveur appelle ORS.
+ */
+
+import { NextRequest, NextResponse } from 'next/server'
+
+const ORS_KEY  = process.env.NEXT_PUBLIC_ORS_API_KEY  ?? ''
+const ORS_BASE = process.env.NEXT_PUBLIC_ORS_BASE_URL ?? 'https://api.openrouteservice.org'
+
+export async function POST(req: NextRequest) {
+  if (!ORS_KEY) {
+    return NextResponse.json({ error: 'ORS API key manquante' }, { status: 500 })
+  }
+
+  const body = await req.json().catch(() => null)
+  if (!body?.action) {
+    return NextResponse.json({ error: 'action manquante' }, { status: 400 })
+  }
+
+  // ── Géocodage : nom de ville → coordonnées ──────────────────────────────
+  if (body.action === 'geocode') {
+    const text = String(body.text ?? '').trim()
+    if (!text) return NextResponse.json({ error: 'text vide' }, { status: 400 })
+
+    const url = new URL(`${ORS_BASE}/geocode/search`)
+    url.searchParams.set('api_key', ORS_KEY)
+    url.searchParams.set('text', text)
+    url.searchParams.set('size', '1')
+    url.searchParams.set('layers', 'locality,region,localadmin')
+
+    try {
+      const res  = await fetch(url.toString())
+      const data = await res.json()
+      return NextResponse.json(data, { status: res.status })
+    } catch (err) {
+      console.error('[/api/ors] geocode erreur', err)
+      return NextResponse.json({ error: 'ORS geocode indisponible' }, { status: 502 })
+    }
+  }
+
+  // ── Itinéraire : coordonnées → distance + durée ──────────────────────────
+  if (body.action === 'directions') {
+    const { coordinates, preference = 'recommended' } = body
+    if (!Array.isArray(coordinates) || coordinates.length < 2) {
+      return NextResponse.json({ error: 'coordinates invalides' }, { status: 400 })
+    }
+
+    try {
+      const res = await fetch(`${ORS_BASE}/v2/directions/driving-car`, {
+        method:  'POST',
+        headers: {
+          Authorization:   ORS_KEY,
+          'Content-Type':  'application/json',
+          Accept:          'application/json',
+        },
+        body: JSON.stringify({ coordinates, preference }),
+      })
+      const data = await res.json()
+      return NextResponse.json(data, { status: res.status })
+    } catch (err) {
+      console.error('[/api/ors] directions erreur', err)
+      return NextResponse.json({ error: 'ORS directions indisponible' }, { status: 502 })
+    }
+  }
+
+  return NextResponse.json({ error: `action inconnue: ${body.action}` }, { status: 400 })
+}
