@@ -1,12 +1,14 @@
 'use client'
 
-import { useState, useMemo, useEffect, useRef } from 'react'
+import { useState, useMemo, useEffect, useRef, useCallback } from 'react'
 import {
   fmtEur, fmtDuree,
   PRIX_ENERGIE, type Route, type MotorisationTrajet,
 } from '@/lib/trajet'
 import routesData from '@/data/routes-vacances.json'
 import villesData from '@/data/villes.json'
+import { geocoderEtCalculer } from '@/lib/openrouteservice'
+import { getRouteFromCache, saveRouteToCache } from '@/lib/trajets-cache'
 
 const ROUTES = routesData as Route[]
 
@@ -46,6 +48,7 @@ function saveRecent(depart: string, arrivee: string) {
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
+type OrsEtat = 'idle' | 'loading' | 'erreur' | 'ok'
 type Motorisation = MotorisationTrajet
 type CategorieVehicule = 'citadine' | 'berline' | 'suv' | 'monospace'
 type TypeHebergement = 'hotel' | 'airbnb' | 'camping' | 'famille'
@@ -609,12 +612,51 @@ export default function AssistantVacances() {
   const [data,  setData]    = useState<WizardData>(DEFAULT)
   const set = (patch: Partial<WizardData>) => setData(d => ({ ...d, ...patch }))
 
+  // ── ORS ──────────────────────────────────────────────────────────────────────
+  const [orsEtat,  setOrsEtat]  = useState<OrsEtat>('idle')
+  const [orsRoute, setOrsRoute] = useState<Route | null>(null)
+
+  const resoudreViaORS = useCallback(async (depart: string, arrivee: string) => {
+    setOrsEtat('loading')
+    setOrsRoute(null)
+    try {
+      // Tier 2 — cache Supabase
+      const cached = await getRouteFromCache(depart, arrivee)
+      if (cached) {
+        setOrsRoute({ slug: 'ors', depart, arrivee, distance_km: cached.distance_km, peages_eur: cached.peages_eur, duree_base_min: cached.duree_base_min, pays_depart: 'FR' })
+        setOrsEtat('ok')
+        return
+      }
+      // Tier 3 — ORS API
+      const result = await geocoderEtCalculer(depart, arrivee)
+      if (!result) { setOrsEtat('erreur'); return }
+      const peages = Math.round(result.itineraire.distance_km * 0.07)
+      const r: Route = { slug: 'ors', depart, arrivee, distance_km: result.itineraire.distance_km, peages_eur: peages, duree_base_min: result.itineraire.duree_min, pays_depart: 'FR' }
+      await saveRouteToCache({ depart, arrivee, coordDepart: result.coordDepart, coordArrivee: result.coordArrivee, itineraire: result.itineraire, peages_eur: peages })
+      setOrsRoute(r)
+      setOrsEtat('ok')
+    } catch {
+      setOrsEtat('erreur')
+    }
+  }, [])
+
+  // Auto-déclenche ORS quand les 2 villes sont saisies et absentes du JSON
+  useEffect(() => {
+    const d = data.depart.trim()
+    const a = data.arrivee.trim()
+    if (!d || !a) { setOrsEtat('idle'); setOrsRoute(null); return }
+    if (findRoute(d, a)) { setOrsEtat('idle'); setOrsRoute(null); return }
+    resoudreViaORS(d, a)
+  }, [data.depart, data.arrivee, resoudreViaORS])
+
   const route = useMemo<Route | null>(() => {
     if (!data.depart.trim() || !data.arrivee.trim()) return null
-    // 1. Cherche d'abord un trajet pré-calculé
+    // 1. Trajet pré-calculé (JSON local)
     const match = findRoute(data.depart, data.arrivee)
     if (match) return match
-    // 2. Sinon, construit à partir de la distance saisie
+    // 2. Résultat ORS (cache Supabase ou API live)
+    if (orsRoute) return orsRoute
+    // 3. Fallback saisie manuelle (si ORS en erreur)
     const dist = parseFloat(data.customDistance)
     if (!dist || dist <= 0) return null
     return {
@@ -626,7 +668,7 @@ export default function AssistantVacances() {
       duree_base_min: Math.round((dist / 105) * 60),
       pays_depart: 'FR',
     }
-  }, [data])
+  }, [data, orsRoute])
 
   const peutAvancer = etape === 1 ? !!route : true
 
@@ -663,7 +705,13 @@ export default function AssistantVacances() {
       {/* ── Étape 1 : Trajet ── */}
       {etape === 1 && (
         <EtapeCard titre="📍 Votre trajet" sousTitre="Saisissez votre départ et votre destination">
-          <EtapeTrajet data={data} set={set} />
+          <EtapeTrajet
+            data={data}
+            set={set}
+            orsEtat={orsEtat}
+            orsRoute={orsRoute}
+            onRetryOrs={() => resoudreViaORS(data.depart.trim(), data.arrivee.trim())}
+          />
         </EtapeCard>
       )}
 
@@ -842,14 +890,23 @@ export default function AssistantVacances() {
 
 // ─── Étape 1 : sélecteur de trajet (autocomplétion) ───────────────────────────
 
-function EtapeTrajet({ data, set }: { data: WizardData; set: (patch: Partial<WizardData>) => void }) {
+function EtapeTrajet({
+  data, set, orsEtat, orsRoute: orsRouteResult, onRetryOrs,
+}: {
+  data: WizardData
+  set: (patch: Partial<WizardData>) => void
+  orsEtat: OrsEtat
+  orsRoute: Route | null
+  onRetryOrs: () => void
+}) {
   const [recents, setRecents] = useState<{ depart: string; arrivee: string }[]>([])
   const [filtreRegion, setFiltreRegion] = useState('Toutes')
 
   useEffect(() => { setRecents(loadRecents()) }, [])
 
   const routeMatch = useMemo(() => findRoute(data.depart, data.arrivee), [data.depart, data.arrivee])
-  const needsCustom = !!data.depart.trim() && !!data.arrivee.trim() && !routeMatch
+  const hasBothCities = !!data.depart.trim() && !!data.arrivee.trim()
+  const routeNotInJson = hasBothCities && !routeMatch
 
   const REGIONS_LOCAL = useMemo(() => ['Toutes', ...Array.from(new Set(ROUTES.map(r => r.region).filter(Boolean)))], [])
   const popularRoutes = useMemo(() => {
@@ -916,15 +973,47 @@ function EtapeTrajet({ data, set }: { data: WizardData; set: (patch: Partial<Wiz
         </div>
       )}
 
-      {/* Saisie distance si trajet inconnu */}
-      {needsCustom && (
+      {/* ORS — Calcul en cours */}
+      {routeNotInJson && orsEtat === 'loading' && (
+        <div style={{
+          padding: '10px 14px', marginBottom: 14,
+          background: 'rgba(59,130,246,0.07)', border: '1px solid rgba(59,130,246,0.25)',
+          borderRadius: 10, fontSize: '0.84rem', color: '#3b82f6',
+          display: 'flex', alignItems: 'center', gap: 10,
+        }}>
+          <span style={{ fontSize: '1.1rem', display: 'inline-block', animation: 'spin 1.2s linear infinite' }}>⏳</span>
+          Calcul du trajet via OpenRouteService…
+        </div>
+      )}
+
+      {/* ORS — Résultat OK */}
+      {routeNotInJson && orsEtat === 'ok' && orsRouteResult && (
+        <div style={{
+          padding: '10px 14px', marginBottom: 14,
+          background: 'rgba(5,150,105,0.07)', border: '1px solid rgba(5,150,105,0.25)',
+          borderRadius: 10, fontSize: '0.84rem', color: '#059669',
+        }}>
+          ✅ {orsRouteResult.distance_km} km · {fmtDuree(orsRouteResult.duree_base_min)} · péages ~{orsRouteResult.peages_eur} €
+          <span style={{ color: 'var(--color-text-muted)', fontSize: '0.75rem', marginLeft: 6 }}>(OpenRouteService)</span>
+        </div>
+      )}
+
+      {/* ORS — Erreur + fallback saisie manuelle */}
+      {routeNotInJson && orsEtat === 'erreur' && (
         <div style={{
           padding: '14px 16px', marginBottom: 14,
           background: 'rgba(245,158,11,0.07)', border: '1px solid rgba(245,158,11,0.25)',
           borderRadius: 10,
         }}>
-          <div style={{ fontSize: '0.82rem', color: '#f59e0b', fontWeight: 600, marginBottom: 10 }}>
-            ℹ️ Ce trajet n&apos;est pas dans notre base — saisissez la distance pour calculer
+          <div style={{ fontSize: '0.82rem', color: '#f59e0b', fontWeight: 600, marginBottom: 10, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <span>⚠️ Calcul automatique indisponible</span>
+            <button onClick={onRetryOrs} style={{
+              background: 'rgba(245,158,11,0.15)', border: '1px solid rgba(245,158,11,0.4)',
+              borderRadius: 6, padding: '4px 10px', cursor: 'pointer',
+              fontSize: '0.76rem', color: '#f59e0b', fontWeight: 600,
+            }}>
+              🔄 Réessayer ORS
+            </button>
           </div>
           <div style={{ display: 'grid', gap: 12, gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))' }}>
             <div>
