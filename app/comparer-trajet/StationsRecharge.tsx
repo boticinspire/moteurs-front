@@ -151,11 +151,13 @@ function CarteStation({ s, index }: { s: Station; index: number }) {
 // ─── Composant principal ──────────────────────────────────────────────────────
 
 export default function StationsRecharge({ coordDepart, coordArrivee, villeDepart, villeArrivee, distanceTrajet }: Props) {
-  const [stations,      setStations]      = useState<Station[]>([])
-  const [chargement,    setChargement]    = useState(false)
-  const [erreur,        setErreur]        = useState('')
-  const [charge,        setCharge]        = useState(false)   // si l'utilisateur a cliqué
-  const [vue,           setVue]           = useState<'liste' | 'carte'>('liste')
+  const [stations,       setStations]       = useState<Station[]>([])
+  const [chargement,     setChargement]     = useState(false)
+  const [erreur,         setErreur]         = useState('')
+  const [charge,         setCharge]         = useState(false)   // si l'utilisateur a cliqué
+  const [vue,            setVue]            = useState<'liste' | 'carte'>('liste')
+  // Coordonnées résolues (soit issues des props, soit géocodées à la demande)
+  const [resolvedCoords, setResolvedCoords] = useState<{ depart: Coords; arrivee: Coords } | null>(null)
 
   // Filtres
   const [puissance,     setPuissance]     = useState<FiltrePuissance>('tous')
@@ -192,6 +194,7 @@ export default function StationsRecharge({ coordDepart, coordArrivee, villeDepar
         cA = { lat: gA.lat, lng: gA.lon }
       }
 
+      setResolvedCoords({ depart: cD, arrivee: cA })
       const radius = Math.min(15, Math.max(8, distanceTrajet / 40))
       const nbPoints = distanceTrajet > 300 ? 6 : distanceTrajet > 150 ? 4 : 3
       const data = await fetchStationsAlongRoute(cD, cA, {
@@ -435,12 +438,12 @@ export default function StationsRecharge({ coordDepart, coordArrivee, villeDepar
       )}
 
       {/* ── Carte Leaflet ── */}
-      {vue === 'carte' && stationsFiltrees.length > 0 && (
+      {vue === 'carte' && stationsFiltrees.length > 0 && resolvedCoords && (
         <div style={{ marginBottom: 16 }}>
           <CarteStations
             stations={stationsFiltrees}
-            coordDepart={coordDepart}
-            coordArrivee={coordArrivee}
+            coordDepart={resolvedCoords.depart}
+            coordArrivee={resolvedCoords.arrivee}
           />
         </div>
       )}
