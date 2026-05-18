@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import ScanVoyant from './ScanVoyant'
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -340,7 +341,10 @@ const btnOption = (actif = false, danger = false): React.CSSProperties => ({
 
 // ─── Composant principal ──────────────────────────────────────────────────────
 
+type Mode = 'wizard' | 'scan'
+
 export default function AssistantDepannage() {
+  const [mode,         setMode]         = useState<Mode>('wizard')
   const [etape,        setEtape]        = useState<EtapeWizard>('symptome')
   const [motorisation, setMotorisation] = useState<Motorisation>('essence')
   const [symptome,     setSymptome]     = useState<Symptome | null>(null)
@@ -417,6 +421,43 @@ export default function AssistantDepannage() {
 
   return (
     <div style={{ maxWidth: 680, margin: '0 auto' }}>
+
+      {/* ── Toggle Wizard / Scan photo ── */}
+      <div style={{
+        display: 'flex', gap: 0, marginBottom: 28,
+        background: 'var(--color-bg-alt)',
+        border: '1.5px solid var(--color-border)',
+        borderRadius: 12, overflow: 'hidden', padding: 4,
+      }}>
+        {([
+          { id: 'wizard', label: '🔍 Diagnostic guidé',   desc: 'Questions pas à pas' },
+          { id: 'scan',   label: '📸 Scan voyant photo',  desc: 'Analyse visuelle IA'  },
+        ] as { id: Mode; label: string; desc: string }[]).map(tab => (
+          <button
+            key={tab.id}
+            onClick={() => setMode(tab.id)}
+            style={{
+              flex: 1, border: 'none', cursor: 'pointer', borderRadius: 9,
+              padding: '11px 14px', transition: 'all .15s',
+              background: mode === tab.id ? 'var(--color-bg-card)' : 'transparent',
+              boxShadow: mode === tab.id ? '0 1px 4px rgba(0,0,0,0.18)' : 'none',
+            }}
+          >
+            <div style={{ fontWeight: 700, fontSize: '0.88rem', color: mode === tab.id ? 'var(--color-primary)' : 'var(--color-text)' }}>
+              {tab.label}
+            </div>
+            <div style={{ fontSize: '0.72rem', color: 'var(--color-text-muted)', marginTop: 2 }}>
+              {tab.desc}
+            </div>
+          </button>
+        ))}
+      </div>
+
+      {/* ── Mode Scan photo ── */}
+      {mode === 'scan' && <ScanVoyant />}
+
+      {/* ── Mode Wizard (masqué si scan actif) ── */}
+      {mode === 'wizard' && <>
 
       {/* ── Étape 1 : Choix symptôme + motorisation ── */}
       {etape === 'symptome' && (
@@ -558,6 +599,8 @@ export default function AssistantDepannage() {
           onReset={reset}
         />
       )}
+
+      </> /* fin mode wizard */}
     </div>
   )
 }

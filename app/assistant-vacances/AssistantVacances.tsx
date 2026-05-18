@@ -62,7 +62,8 @@ interface WizardData {
   // Étape 2 — Véhicule
   motorisation:     Motorisation
   categorieVehicule:CategorieVehicule
-  autonomieVE:      number   // km autoroute réels
+  modeleVESlug:     string   // slug MODELES_VE ou 'custom'
+  autonomieVE:      number   // km autoroute réels (utilisé uniquement si modeleVESlug === 'custom')
   avecGalerie:      boolean  // coffre/galerie de toit
   // Étape 3 — Voyage
   nbAdultes:        number
@@ -87,6 +88,80 @@ const COFFRE_LITRES: Record<CategorieVehicule, number> = {
 }
 
 const MOIS_LABELS = ['','Jan','Fév','Mar','Avr','Mai','Juin','Juil','Août','Sep','Oct','Nov','Déc']
+
+// ─── Modèles VE ───────────────────────────────────────────────────────────────
+
+interface ModeleVE {
+  slug:        string
+  nom:         string
+  categorie:   CategorieVehicule
+  batterie_kwh: number   // capacité utile (kWh)
+  conso_auto:   number   // consommation autoroute réelle (kWh/100km)
+  dc_kw:        number   // puissance DC max (kW)
+}
+
+const MODELES_VE: ModeleVE[] = [
+  // Citadines
+  { slug: 'spring',   nom: 'Dacia Spring',          categorie: 'citadine', batterie_kwh: 26.8, conso_auto: 18, dc_kw: 30  },
+  { slug: 'e208',     nom: 'Peugeot e-208',          categorie: 'citadine', batterie_kwh: 50,   conso_auto: 19, dc_kw: 100 },
+  { slug: 'zoe',      nom: 'Renault Zoé (52 kWh)',   categorie: 'citadine', batterie_kwh: 52,   conso_auto: 22, dc_kw: 50  },
+  { slug: 'e500',     nom: 'Fiat 500e',              categorie: 'citadine', batterie_kwh: 42,   conso_auto: 16, dc_kw: 85  },
+  // Berlines
+  { slug: 'model3sr', nom: 'Tesla Model 3 SR+',      categorie: 'berline',  batterie_kwh: 57.5, conso_auto: 17, dc_kw: 170 },
+  { slug: 'model3lr', nom: 'Tesla Model 3 LR',       categorie: 'berline',  batterie_kwh: 75,   conso_auto: 18, dc_kw: 250 },
+  { slug: 'id3',      nom: 'VW ID.3 (77 kWh)',       categorie: 'berline',  batterie_kwh: 77,   conso_auto: 19, dc_kw: 170 },
+  { slug: 'megane',   nom: 'Renault Mégane E-Tech',  categorie: 'berline',  batterie_kwh: 60,   conso_auto: 19, dc_kw: 130 },
+  // SUV
+  { slug: 'modely',   nom: 'Tesla Model Y',          categorie: 'suv',      batterie_kwh: 75,   conso_auto: 20, dc_kw: 250 },
+  { slug: 'id4',      nom: 'VW ID.4 (77 kWh)',       categorie: 'suv',      batterie_kwh: 77,   conso_auto: 21, dc_kw: 135 },
+  { slug: 'ioniq5',   nom: 'Hyundai IONIQ 5',        categorie: 'suv',      batterie_kwh: 72.6, conso_auto: 20, dc_kw: 220 },
+  { slug: 'ev6',      nom: 'Kia EV6',                categorie: 'suv',      batterie_kwh: 77.4, conso_auto: 20, dc_kw: 233 },
+  { slug: 'q4etron',  nom: 'Audi Q4 e-tron',         categorie: 'suv',      batterie_kwh: 77,   conso_auto: 21, dc_kw: 135 },
+  { slug: 'ix3',      nom: 'BMW iX3',                categorie: 'suv',      batterie_kwh: 74,   conso_auto: 21, dc_kw: 150 },
+  // Monospace
+  { slug: 'models',   nom: 'Tesla Model S',          categorie: 'monospace',batterie_kwh: 95,   conso_auto: 21, dc_kw: 250 },
+  { slug: 'modelx',   nom: 'Tesla Model X',          categorie: 'monospace',batterie_kwh: 95,   conso_auto: 24, dc_kw: 250 },
+  { slug: 'espace',   nom: 'Renault Espace E-Tech',  categorie: 'monospace',batterie_kwh: 87,   conso_auto: 23, dc_kw: 150 },
+  { slug: 'esprinter',nom: 'Mercedes eVito / EQV',   categorie: 'monospace',batterie_kwh: 90,   conso_auto: 26, dc_kw: 110 },
+]
+
+/** Infos VE calculées à partir du modèle sélectionné (ou null si 'custom') */
+interface InfoVE {
+  batterie_kwh:  number
+  conso_auto:    number   // avec galerie si applicable
+  dc_kw:         number
+  km_first_leg:  number   // 100% → 20%
+  km_per_leg:    number   // 80% → 20%
+  temps_arret_min: number // temps DC par arrêt (20→80%)
+  modele_nom:    string
+}
+
+function getInfoVE(data: WizardData): InfoVE | null {
+  if (data.motorisation !== 'elec') return null
+  const m = MODELES_VE.find(x => x.slug === data.modeleVESlug)
+  if (!m) return null
+  const galerie    = data.avecGalerie ? 1.10 : 1
+  const conso      = m.conso_auto * galerie
+  const km_first   = Math.round(m.batterie_kwh * 0.80 / conso * 100)  // 100% → 20%
+  const km_leg     = Math.round(m.batterie_kwh * 0.60 / conso * 100)  // 80%  → 20%
+  const kwhPerStop = m.batterie_kwh * 0.60
+  const powerEff   = Math.min(m.dc_kw, 100)   // bornes FR typiques : plafond ~100 kW effectif
+  const tStop      = Math.round(kwhPerStop / powerEff * 60)
+  return {
+    batterie_kwh:    m.batterie_kwh,
+    conso_auto:      conso,
+    dc_kw:           m.dc_kw,
+    km_first_leg:    km_first,
+    km_per_leg:      km_leg,
+    temps_arret_min: tStop,
+    modele_nom:      m.nom,
+  }
+}
+
+function nbArretsDC(distance: number, info: InfoVE): number {
+  if (distance <= info.km_first_leg) return 0
+  return Math.ceil((distance - info.km_first_leg) / info.km_per_leg)
+}
 
 // ─── Hébergement ──────────────────────────────────────────────────────────────
 
@@ -133,8 +208,11 @@ const ALERTES_TRAFIC: Record<number, AlerteTrafic> = {
 // ─── Calcul budget transport ──────────────────────────────────────────────────
 
 function calculerBudget(route: Route, data: WizardData) {
-  const conso_base = CONSO_AUTOROUTE[data.categorieVehicule][data.motorisation]
-  const conso = data.avecGalerie ? conso_base * 1.10 : conso_base   // +10% avec galerie
+  const infoVE     = getInfoVE(data)
+  const conso_base = infoVE ? infoVE.conso_auto : CONSO_AUTOROUTE[data.categorieVehicule][data.motorisation]
+  const conso      = (data.motorisation === 'elec' && infoVE)
+    ? infoVE.conso_auto   // galerie déjà intégrée dans getInfoVE
+    : (data.avecGalerie ? conso_base * 1.10 : conso_base)
   let coutEnergie = 0
   let nbArrets = 0
   let tempsRecharge = 0
@@ -145,8 +223,15 @@ function calculerBudget(route: Route, data: WizardData) {
     coutEnergie = (conso / 100) * route.distance_km * PRIX_ENERGIE.essence
   } else if (data.motorisation === 'elec') {
     coutEnergie = (conso / 100) * route.distance_km * PRIX_ENERGIE.elec_blended
-    nbArrets = Math.max(0, Math.ceil(route.distance_km / data.autonomieVE) - 1)
-    tempsRecharge = nbArrets * 30
+    if (infoVE) {
+      // Stratégie réelle : 100%→20% (1ère étape), puis 80%→20% (suivantes)
+      nbArrets     = nbArretsDC(route.distance_km, infoVE)
+      tempsRecharge = nbArrets * infoVE.temps_arret_min
+    } else {
+      // Fallback slider custom
+      nbArrets      = Math.max(0, Math.ceil(route.distance_km / data.autonomieVE) - 1)
+      tempsRecharge = nbArrets * 30
+    }
   } else {
     const kme = Math.min(50, route.distance_km)
     const kmt = route.distance_km - kme
@@ -227,20 +312,43 @@ function calculerBagages(data: WizardData) {
 
 function calculerRecharge(route: Route, data: WizardData) {
   if (data.motorisation !== 'elec') return null
-  const conso       = CONSO_AUTOROUTE[data.categorieVehicule]['elec'] * (data.avecGalerie ? 1.10 : 1)
-  const kwh_total   = (conso / 100) * route.distance_km
-  const nbArrets    = Math.max(0, Math.ceil(route.distance_km / data.autonomieVE) - 1)
+  const infoVE    = getInfoVE(data)
+  const conso     = infoVE
+    ? infoVE.conso_auto
+    : CONSO_AUTOROUTE[data.categorieVehicule]['elec'] * (data.avecGalerie ? 1.10 : 1)
+  const kwh_total = (conso / 100) * route.distance_km
 
-  const cout_dc     = Math.round(kwh_total * 0.45)   // tout bornes DC autoroute
-  const cout_ac     = Math.round(kwh_total * 0.18)   // tout AC hôtel
-  const kwh_dc_mix  = (conso / 100) * Math.min(route.distance_km, nbArrets * data.autonomieVE * 0.5)
-  const cout_mix    = Math.round(kwh_dc_mix * 0.45 + (kwh_total - kwh_dc_mix) * 0.18)
+  let nbArrets: number
+  let temps_par_arret: number
+  let km_par_etape: number
+  let batterie_kwh: number
+
+  if (infoVE) {
+    nbArrets        = nbArretsDC(route.distance_km, infoVE)
+    temps_par_arret = infoVE.temps_arret_min
+    km_par_etape    = infoVE.km_per_leg
+    batterie_kwh    = infoVE.batterie_kwh
+  } else {
+    nbArrets        = Math.max(0, Math.ceil(route.distance_km / data.autonomieVE) - 1)
+    temps_par_arret = 30
+    km_par_etape    = data.autonomieVE
+    batterie_kwh    = 0
+  }
+
+  const cout_dc    = Math.round(kwh_total * 0.45)
+  const cout_ac    = Math.round(kwh_total * 0.18)
+  const kwh_dc_mix = (conso / 100) * Math.min(route.distance_km, nbArrets * km_par_etape * 0.5)
+  const cout_mix   = Math.round(kwh_dc_mix * 0.45 + (kwh_total - kwh_dc_mix) * 0.18)
 
   return {
-    kwh_total: Math.round(kwh_total),
+    kwh_total:      Math.round(kwh_total),
     cout_dc, cout_ac, cout_mix,
     nbArrets,
+    temps_par_arret,
+    km_par_etape,
+    batterie_kwh,
     economie_vs_dc: cout_dc - cout_ac,
+    infoVE,
   }
 }
 
@@ -493,10 +601,18 @@ function Bilan({ data, route }: { data: WizardData; route: Route }) {
               </div>
             ))}
           </div>
+          {/* Détail de la stratégie de charge */}
+          {recharge.infoVE && (
+            <div style={{ background: 'rgba(255,255,255,0.03)', borderRadius: 8, padding: '10px 14px', marginBottom: 10, fontSize: '0.8rem', color: 'var(--color-text-muted)', lineHeight: 1.55 }}>
+              <strong style={{ color: 'var(--color-text)' }}>Stratégie optimale ({recharge.infoVE.modele_nom})</strong><br/>
+              Batterie {recharge.batterie_kwh} kWh · {recharge.infoVE.conso_auto.toFixed(1)} kWh/100km · DC max {recharge.infoVE.dc_kw} kW<br/>
+              1ère étape : {recharge.infoVE.km_first_leg} km (100%→20%) · Étapes suivantes : {recharge.km_par_etape} km (80%→20%) · Recharge DC : ~{recharge.temps_par_arret} min/arrêt
+            </div>
+          )}
           <div style={{ fontSize: '0.85rem', color: 'var(--color-text-muted)', marginBottom: 14, lineHeight: 1.5 }}>
             {recharge.nbArrets === 0
-              ? `✅ Votre autonomie de ${data.autonomieVE} km couvre le trajet sans arrêt de recharge nécessaire.`
-              : `${recharge.nbArrets} arrêt${recharge.nbArrets > 1 ? 's' : ''} DC nécessaire${recharge.nbArrets > 1 ? 's' : ''} (~30 min chacun). Stratégie gagnante : rechargez la nuit à l'hôtel pour économiser ${fmtEur(recharge.economie_vs_dc)} vs tout DC.`
+              ? `✅ ${recharge.infoVE ? `${recharge.infoVE.modele_nom} : votre batterie couvre le trajet en une seule charge (${recharge.infoVE.km_first_leg} km disponibles).` : `Votre autonomie de ${data.autonomieVE} km couvre le trajet sans arrêt de recharge nécessaire.`}`
+              : `${recharge.nbArrets} arrêt${recharge.nbArrets > 1 ? 's' : ''} DC nécessaire${recharge.nbArrets > 1 ? 's' : ''} (~${recharge.temps_par_arret} min chacun). Stratégie gagnante : rechargez la nuit à l'hôtel pour économiser ${fmtEur(recharge.economie_vs_dc)} vs tout DC.`
             }
           </div>
           <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
@@ -602,7 +718,7 @@ function Bilan({ data, route }: { data: WizardData; route: Route }) {
 
 const DEFAULT: WizardData = {
   depart: '', arrivee: '', customDistance: '', customPeages: '',
-  motorisation: 'diesel', categorieVehicule: 'berline', autonomieVE: 300, avecGalerie: false,
+  motorisation: 'diesel', categorieVehicule: 'berline', modeleVESlug: 'custom', autonomieVE: 300, avecGalerie: false,
   nbAdultes: 2, nbEnfants: 0, avecAnimal: false,
   moisDepart: 7, nbNuits: 7, typeHebergement: 'hotel',
 }
@@ -736,13 +852,83 @@ export default function AssistantVacances() {
 
           {data.motorisation === 'elec' && (
             <div style={{ marginBottom: 22 }}>
-              <Label>Autonomie réelle en autoroute : <strong style={{ color: 'var(--color-primary)' }}>{data.autonomieVE} km</strong></Label>
-              <input type="range" min={100} max={600} step={10} value={data.autonomieVE}
-                onChange={e => set({ autonomieVE: parseInt(e.target.value) })}
-                style={{ width: '100%', accentColor: 'var(--color-primary)' }} />
-              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.73rem', color: 'var(--color-text-muted)', marginTop: 4 }}>
-                <span>100 km (citadine)</span><span>600 km (Tesla Model S)</span>
+              <Label>Modèle de véhicule électrique</Label>
+
+              {/* Grille de modèles par catégorie */}
+              {(['citadine','berline','suv','monospace'] as CategorieVehicule[]).map(cat => {
+                const modelesCat = MODELES_VE.filter(m => m.categorie === cat)
+                const catLabels: Record<CategorieVehicule, string> = { citadine: 'Citadines', berline: 'Berlines', suv: 'SUV', monospace: 'Monospace / Grand format' }
+                return (
+                  <div key={cat} style={{ marginBottom: 10 }}>
+                    <div style={{ fontSize: '0.72rem', color: 'var(--color-text-muted)', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: 6 }}>
+                      {catLabels[cat]}
+                    </div>
+                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
+                      {modelesCat.map(m => {
+                        const actif = data.modeleVESlug === m.slug
+                        const galerie = data.avecGalerie ? 1.10 : 1
+                        const kmLeg = Math.round(m.batterie_kwh * 0.60 / (m.conso_auto * galerie) * 100)
+                        return (
+                          <button key={m.slug}
+                            onClick={() => set({ modeleVESlug: m.slug, categorieVehicule: m.categorie })}
+                            style={{
+                              textAlign: 'left', padding: '8px 12px', borderRadius: 10, cursor: 'pointer',
+                              background: actif ? 'rgba(122,240,194,0.12)' : 'var(--color-bg-card)',
+                              border: actif ? '2px solid var(--color-primary)' : '1.5px solid var(--color-border)',
+                              color: 'var(--color-text)', transition: 'all .15s', minWidth: 140,
+                            }}>
+                            <div style={{ fontWeight: 600, fontSize: '0.82rem' }}>{m.nom}</div>
+                            <div style={{ fontSize: '0.70rem', color: 'var(--color-text-muted)', marginTop: 2 }}>
+                              {m.batterie_kwh} kWh · {m.conso_auto} kWh/100 · <span style={{ color: actif ? 'var(--color-primary)' : 'var(--color-text-muted)' }}>~{kmLeg} km/étape</span>
+                            </div>
+                          </button>
+                        )
+                      })}
+                    </div>
+                  </div>
+                )
+              })}
+
+              {/* Option "Autre modèle" avec slider */}
+              <div style={{ marginTop: 10 }}>
+                <button
+                  onClick={() => set({ modeleVESlug: 'custom' })}
+                  style={{
+                    textAlign: 'left', padding: '8px 14px', borderRadius: 10, cursor: 'pointer',
+                    background: data.modeleVESlug === 'custom' ? 'rgba(122,240,194,0.12)' : 'var(--color-bg-card)',
+                    border: data.modeleVESlug === 'custom' ? '2px solid var(--color-primary)' : '1.5px solid var(--color-border)',
+                    color: 'var(--color-text)', transition: 'all .15s', width: '100%',
+                  }}>
+                  <div style={{ fontWeight: 600, fontSize: '0.82rem' }}>🔧 Autre modèle — saisie manuelle</div>
+                </button>
+                {data.modeleVESlug === 'custom' && (
+                  <div style={{ paddingTop: 12 }}>
+                    <Label>Autonomie réelle en autoroute : <strong style={{ color: 'var(--color-primary)' }}>{data.autonomieVE} km</strong></Label>
+                    <input type="range" min={100} max={600} step={10} value={data.autonomieVE}
+                      onChange={e => set({ autonomieVE: parseInt(e.target.value) })}
+                      style={{ width: '100%', accentColor: 'var(--color-primary)' }} />
+                    <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.73rem', color: 'var(--color-text-muted)', marginTop: 4 }}>
+                      <span>100 km</span><span>600 km</span>
+                    </div>
+                  </div>
+                )}
               </div>
+
+              {/* Récapitulatif si modèle sélectionné */}
+              {data.modeleVESlug !== 'custom' && (() => {
+                const info = getInfoVE(data)
+                if (!info) return null
+                return (
+                  <div style={{ marginTop: 12, padding: '10px 14px', background: 'rgba(5,150,105,0.07)', border: '1px solid rgba(5,150,105,0.25)', borderRadius: 10, fontSize: '0.82rem', lineHeight: 1.6 }}>
+                    <strong style={{ color: '#059669' }}>⚡ Stratégie autoroute — {info.modele_nom}</strong><br/>
+                    <span style={{ color: 'var(--color-text-muted)' }}>
+                      Départ 100% → 1er arrêt à {info.km_first_leg} km (seuil 20%) ·
+                      Recharges suivantes : {info.km_per_leg} km/étape (80→20%) ·
+                      Temps par arrêt : ~{info.temps_arret_min} min (DC {Math.min(info.dc_kw, 100)} kW effectif)
+                    </span>
+                  </div>
+                )
+              })()}
             </div>
           )}
 
