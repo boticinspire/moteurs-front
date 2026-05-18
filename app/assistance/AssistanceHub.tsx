@@ -6,6 +6,12 @@ import { useRouter } from 'next/navigation'
 
 // ─── Modules ──────────────────────────────────────────────────────────────────
 
+interface SousLien {
+  label: string
+  href:  string
+  emoji: string
+}
+
 interface Module {
   id:         string
   icon:       string
@@ -15,7 +21,8 @@ interface Module {
   href:       string
   disponible: boolean
   couleur:    string
-  membre?:    boolean   // réservé aux membres inscrits
+  membre?:    boolean     // réservé aux membres inscrits
+  sousLiens?: SousLien[] // remplace le CTA unique par plusieurs liens
 }
 
 const MODULES: Module[] = [
@@ -45,9 +52,13 @@ const MODULES: Module[] = [
   },
   {
     id: 'panne', icon: '🚨', label: 'Assistance Panne',
-    desc: 'VE · Dépannage · Urgence',
-    detail: 'Que faire en cas de panne sur autoroute ? Spécificités VE. Contacts utiles par pays.',
+    desc: 'VE · Dépannage · Urgence · Diagnostic',
+    detail: 'Protocole urgence sur route, ou diagnostic mécanique guidé avec scan voyant par photo.',
     href: '/assistance/panne', disponible: true, couleur: '#ef4444',
+    sousLiens: [
+      { emoji: '🚨', label: 'Protocole urgence',    href: '/assistance/panne'      },
+      { emoji: '🔍', label: 'Diagnostic / Voyants', href: '/assistant-depannage'   },
+    ],
   },
   {
     id: 'location', icon: '🔑', label: 'Location & Assurance',
@@ -86,7 +97,7 @@ const ROUTING_PATTERNS: { patterns: string[]; moduleId: string }[] = [
   { moduleId: 'vacances',   patterns: ['vacances', 'trajet', 'péages', 'autoroute', 'voyage', 'partir', 'barcelone', 'nice', 'espagne', 'italie', 'routier'] },
   { moduleId: 'couts',      patterns: ['coût', 'cout', 'cher', 'budget', 'mensuel', 'mois', 'leasing', 'loa', 'tco', 'dépense', 'paie', 'paye', 'économie', 'economie', 'rentable', 'combien', 'facture', 'entretien', 'crédit', 'credit'] },
   { moduleId: 'recharge',   patterns: ['recharge', 'charge', 'borne', 'kwh', 'autonomie', 'wallbox', 'irve', 'superchargeur', 'ionity', 'domicile', 'chargeur'] },
-  { moduleId: 'panne',      patterns: ['panne', 'dépannage', 'dépanner', 'tomber', 'en rade', 'secours', 'accident', 'garage', 'urgence', 'crevé', 'crevaison'] },
+  { moduleId: 'panne',      patterns: ['panne', 'dépannage', 'dépanner', 'tomber', 'en rade', 'secours', 'accident', 'garage', 'urgence', 'crevé', 'crevaison', 'voyant', 'diagnostic', 'bruit', 'frein', 'huile', 'batterie', 'démarrage'] },
   { moduleId: 'achat',      patterns: ['acheter', 'achat', 'choisir', 'laquelle', 'comparaison', 'modèle', 'quelle voiture', 'nouveau', 'occasion', 'lequel'] },
   { moduleId: 'location',   patterns: ['location', 'louer', 'loué', 'loueur', 'rent', 'hertz', 'avis', 'europcar', 'cdw', 'franchise', 'état des lieux', 'litige location', 'assurance location'] },
   { moduleId: 'sante',      patterns: ['médecin', 'médical', 'maladie', 'tourista', 'diarrhée', 'bébé', 'enfant', 'fièvre', 'pharmacie', 'secours', 'urgence médicale', 'coup de chaleur', 'piqûre'] },
@@ -328,17 +339,46 @@ function ModuleCard({ module: m }: { module: Module }) {
         </p>
       </div>
 
-      {/* CTA */}
+      {/* CTA — soit double lien, soit lien unique */}
       {m.disponible && (
         <div style={{ marginTop: 'auto', paddingTop: 8 }}>
-          <span style={{ fontSize: '0.88rem', fontWeight: 700, color: m.couleur }}>
-            Démarrer →
-          </span>
+          {m.sousLiens ? (
+            <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+              {m.sousLiens.map(sl => (
+                <Link
+                  key={sl.href}
+                  href={sl.href}
+                  onClick={e => e.stopPropagation()}
+                  style={{
+                    flex: 1, minWidth: 120,
+                    display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6,
+                    padding: '9px 12px', borderRadius: 9, textDecoration: 'none',
+                    fontSize: '0.82rem', fontWeight: 700,
+                    background: `${m.couleur}14`,
+                    border: `1.5px solid ${m.couleur}40`,
+                    color: m.couleur,
+                    transition: 'background .15s',
+                  }}
+                >
+                  <span>{sl.emoji}</span>
+                  <span>{sl.label}</span>
+                </Link>
+              ))}
+            </div>
+          ) : (
+            <span style={{ fontSize: '0.88rem', fontWeight: 700, color: m.couleur }}>
+              Démarrer →
+            </span>
+          )}
         </div>
       )}
     </div>
   )
 
+  // Modules avec sousLiens : div cliquable (pas Link) pour éviter les liens imbriqués
+  if (m.disponible && m.sousLiens) {
+    return <div style={{ height: '100%' }}>{card}</div>
+  }
   if (m.disponible) {
     return <Link href={m.href} style={{ textDecoration: 'none' }}>{card}</Link>
   }

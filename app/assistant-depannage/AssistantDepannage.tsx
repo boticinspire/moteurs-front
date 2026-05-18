@@ -749,6 +749,14 @@ function DiagnosticView({
         }}>
           🔍 Nouveau diagnostic
         </button>
+        <a href="/assistance/panne" style={{
+          flex: 1, padding: '12px 20px', borderRadius: 10, cursor: 'pointer',
+          fontWeight: 700, fontSize: '0.92rem', textAlign: 'center', textDecoration: 'none',
+          background: 'var(--color-bg-card)', color: 'var(--color-text)',
+          border: '1.5px solid var(--color-border)',
+        }}>
+          🚨 Protocole urgence
+        </a>
         <a href="/assistant-vacances" style={{
           flex: 1, padding: '12px 20px', borderRadius: 10, cursor: 'pointer',
           fontWeight: 700, fontSize: '0.92rem', textAlign: 'center', textDecoration: 'none',

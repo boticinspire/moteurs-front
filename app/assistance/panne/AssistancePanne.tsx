@@ -402,6 +402,28 @@ export default function AssistancePanne() {
       {/* ── Bandeau SOS ── */}
       <BandeauSOS pays={data.pays} />
 
+      {/* ── Bannière diagnostic mécanique ── */}
+      <Link href="/assistant-depannage" style={{
+        display: 'flex', alignItems: 'center', gap: 14, textDecoration: 'none',
+        padding: '14px 18px', borderRadius: 12, marginBottom: 20,
+        background: 'rgba(122,240,194,0.07)',
+        border: '1.5px solid rgba(122,240,194,0.3)',
+        transition: 'background .15s',
+      }}>
+        <span style={{ fontSize: '1.5rem', flexShrink: 0 }}>🔍</span>
+        <div style={{ flex: 1 }}>
+          <div style={{ fontWeight: 700, fontSize: '0.92rem', color: 'var(--color-text)', marginBottom: 2 }}>
+            Identifier la panne mécanique ?
+          </div>
+          <div style={{ fontSize: '0.78rem', color: 'var(--color-text-soft)' }}>
+            Diagnostic guidé pas-à-pas · Scan voyant par photo (Claude Vision)
+          </div>
+        </div>
+        <span style={{ fontSize: '0.82rem', fontWeight: 700, color: '#7af0c2', flexShrink: 0 }}>
+          Démarrer →
+        </span>
+      </Link>
+
       {/* ── Progress bar ── */}
       <div style={{ marginBottom: 28 }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 10 }}>
