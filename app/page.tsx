@@ -4,6 +4,12 @@ import NewsletterForm from '@/components/NewsletterForm'
 
 export const revalidate = 60
 
+export const metadata = {
+  title: 'Calculateur TCO & Coût de Trajet Motorisation | Moteurs.com — France, Belgique, Suisse',
+  description:
+    'Comparez le vrai coût de vos trajets et le TCO sur 5 ans : diesel, essence, électrique, hybride. Péages réels, recharge, aides 2026 — pour particuliers, PME et flottes en France, Belgique, Suisse et Canada.',
+}
+
 export default async function HomePage() {
   const { data: articles } = await supabase
     .from('articles')
@@ -46,12 +52,16 @@ export default async function HomePage() {
           </div>
 
           <h1>
-            Vos vacances en voiture —<br />
-            <span className="accent">quel est le vrai coût selon votre motorisation&nbsp;?</span>
+            Calculateur TCO &amp; coût de trajet —<br />
+            <span className="accent">diesel, essence, électrique, hybride</span>
           </h1>
           <p className="lead">
-            Péages, carburant, recharge, coût autoroute — comparez diesel, essence et électrique
-            sur votre trajet réel. Partez informé, pas surpris.
+            Comparez le vrai coût de vos déplacements selon votre motorisation : TCO sur 5 ans,
+            coût de trajet avec péages et recharge, aides 2026. Pour particuliers, artisans et
+            flottes en France, Belgique, Suisse et Canada.
+          </p>
+          <p style={{ fontSize: '0.87rem', color: 'rgba(255,255,255,0.65)', marginTop: -8, marginBottom: 4 }}>
+            🌅 Été 2026 — 25 routes de vacances analysées avec péages réels
           </p>
           <div className="hero-actions">
             <Link href="/comparer-trajet" className="btn btn-primary btn-lg">

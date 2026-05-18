@@ -6,7 +6,9 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "export-routes": "node scripts/export-routes.mjs",
+    "export-routes:dry": "node scripts/export-routes.mjs --dry-run"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2",

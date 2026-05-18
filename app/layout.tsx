@@ -14,11 +14,11 @@ const inter = Inter({
 
 export const metadata: Metadata = {
   title: {
-    default: 'Moteurs.com — Transition énergétique des transports',
+    default: 'Calculateur TCO & Coût de Trajet par Motorisation | Moteurs.com — France, Belgique, Suisse',
     template: '%s — Moteurs.com',
   },
   description:
-    'Décryptage de la transition énergétique des transports routiers : TCO, ZFE, aides 2026 pour PME, artisans, flottes et particuliers en France, Belgique, Suisse et Canada.',
+    'Comparez le coût total (TCO) et le coût de trajet selon votre motorisation : diesel, essence, électrique, hybride. Péages inclus, aides 2026, ZFE — pour particuliers, PME et flottes en France, Belgique, Suisse et Canada.',
   metadataBase: new URL('https://moteurs.com'),
 }
 
