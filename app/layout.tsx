@@ -22,6 +22,36 @@ export const metadata: Metadata = {
   metadataBase: new URL('https://moteurs.com'),
 }
 
+const orgJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Organization',
+  name: 'Moteurs.com',
+  url: 'https://moteurs.com',
+  logo: 'https://moteurs.com/logo.png',
+  description:
+    'Média éditorial de référence sur la transition énergétique des transports routiers. Calculateurs TCO, comparateur de motorisations, décryptage des aides 2026 pour PME, artisans, flottes et particuliers.',
+  knowsAbout: [
+    'Transition énergétique des transports routiers',
+    'Coût Total de Possession (TCO) automobile',
+    'Véhicules électriques et hybrides',
+    'Zones à Faibles Émissions (ZFE)',
+    'Aides à l\'achat de véhicules propres 2026',
+    'Bonus écologique France',
+    'Déductibilité fiscale véhicules électriques Belgique',
+    'Subventions cantonales véhicules électriques Suisse',
+    'Programme iZEV Canada',
+    'Recharge électrique infrastructure',
+    'Calculateur coût trajet motorisation',
+  ],
+  areaServed: [
+    { '@type': 'Country', name: 'France' },
+    { '@type': 'Country', name: 'Belgique' },
+    { '@type': 'Country', name: 'Suisse' },
+    { '@type': 'Country', name: 'Canada' },
+  ],
+  sameAs: [],
+}
+
 export default function RootLayout({
   children,
 }: {
@@ -29,6 +59,12 @@ export default function RootLayout({
 }) {
   return (
     <html lang="fr" className={inter.variable}>
+      <head>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(orgJsonLd) }}
+        />
+      </head>
       <body>
         <Header />
         {children}

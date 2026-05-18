@@ -75,13 +75,27 @@ export default async function ArticlePage({
 
   const faq = article.faq_json ?? []
 
+  // ── JSON-LD BreadcrumbList ──
+  // NB : le JSON-LD Article + FAQPage est généré par l'Agent SEO et injecté dans contenu_html.
+  const breadcrumbJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Accueil', item: 'https://moteurs.com' },
+      { '@type': 'ListItem', position: 2, name: 'Décryptages', item: 'https://moteurs.com/articles' },
+      { '@type': 'ListItem', position: 3, name: article.titre_provisoire, item: `https://moteurs.com/article/${article.slug}` },
+    ],
+  }
+
   return (
     <article>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }} />
+
       {/* ── En-tête sombre ── */}
       <header className="page-hero">
         <div className="container" style={{ maxWidth: 820, margin: '0 auto' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <nav className="breadcrumb">
+            <nav aria-label="Fil d'Ariane">
               <a href="/articles">← Décryptages</a>
             </nav>
             <ArticleActions
@@ -98,6 +112,24 @@ export default async function ArticlePage({
           <h1 style={{ position: 'relative', lineHeight: 1.18, maxWidth: 720 }}>
             {article.titre_provisoire}
           </h1>
+
+          {/* ── Byline auteur YMYL ── */}
+          <div style={{
+            display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: 10,
+            marginTop: 14, marginBottom: 4,
+            fontSize: '0.8rem', color: 'rgba(255,255,255,0.6)',
+          }}>
+            <span style={{
+              display: 'inline-flex', alignItems: 'center', gap: 6,
+              background: 'rgba(255,255,255,0.08)', borderRadius: 20,
+              padding: '4px 13px', border: '1px solid rgba(255,255,255,0.15)',
+              color: 'rgba(255,255,255,0.85)', fontWeight: 600,
+            }}>
+              ✍️ La Rédaction Moteurs.com
+            </span>
+            <span>· Triangulation systématique · Sources officielles · Niveaux de confiance affichés</span>
+          </div>
+
           {article.resume_50mots && (
             <p style={{ marginTop: 14, maxWidth: 680, fontSize: '1.02rem' }}>
               {article.resume_50mots}

@@ -1,5 +1,37 @@
+export const metadata = {
+  title: 'À propos — Moteurs.com, média de la transition énergétique des transports',
+  description:
+    'Découvrez la mission, la méthodologie et l\'équipe éditoriale de Moteurs.com : triangulation systématique, sources officielles, expertise TCO, ZFE et aides 2026 pour PME, flottes et particuliers en France, Belgique, Suisse et Canada.',
+}
+
+const aboutJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'AboutPage',
+  name: 'À propos de Moteurs.com',
+  url: 'https://moteurs.com/a-propos',
+  description:
+    'Média éditorial spécialisé en transition énergétique des transports routiers. Expertise TCO, ZFE, aides à l\'achat et fiscalité automobile pour France, Belgique, Suisse et Canada.',
+  about: {
+    '@type': 'Organization',
+    name: 'Moteurs.com',
+    url: 'https://moteurs.com',
+    foundingDate: '2025',
+    knowsAbout: [
+      'Transition énergétique des transports routiers',
+      'Coût Total de Possession (TCO) automobile',
+      'Zones à Faibles Émissions (ZFE)',
+      'Véhicules électriques et hybrides',
+      'Aides gouvernementales à l\'achat de véhicules propres',
+      'Fiscalité automobile France Belgique Suisse Canada',
+    ],
+    areaServed: ['France', 'Belgique', 'Suisse', 'Canada'],
+  },
+}
+
 export default function AProposPage() {
   return (
+    <>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(aboutJsonLd) }} />
     <div dangerouslySetInnerHTML={{ __html: `<section class="page-hero">
 <div class="container">
 <h1>À propos de Moteurs.com</h1>
@@ -65,5 +97,6 @@ export default function AProposPage() {
 </div>
 </div>
 </section>` }} />
+    </>
   )
 }
