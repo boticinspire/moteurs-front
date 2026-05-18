@@ -1,13 +1,48 @@
 'use client'
 
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useEffect, useRef } from 'react'
 import {
   fmtEur, fmtDuree,
   PRIX_ENERGIE, type Route, type MotorisationTrajet,
 } from '@/lib/trajet'
 import routesData from '@/data/routes-vacances.json'
+import villesData from '@/data/villes.json'
 
 const ROUTES = routesData as Route[]
+
+interface Ville { nom: string; region: string; pays: string; pays_code: string }
+const VILLES = villesData as Ville[]
+
+// Normalise pour matching insensible aux accents/casse
+function norm(s: string): string {
+  return s.toLowerCase()
+    .normalize('NFD').replace(/[̀-ͯ]/g, '')
+    .replace(/[^a-z0-9 -]/g, '')
+    .trim()
+}
+
+// Cherche un trajet pré-calculé matching la paire départ/arrivée (dans les 2 sens)
+function findRoute(depart: string, arrivee: string): Route | null {
+  const nd = norm(depart), na = norm(arrivee)
+  if (!nd || !na) return null
+  return ROUTES.find(r =>
+    (norm(r.depart) === nd && norm(r.arrivee) === na) ||
+    (norm(r.depart) === na && norm(r.arrivee) === nd)
+  ) ?? null
+}
+
+// Recherches récentes
+const RECENT_KEY = 'moteurs_trajets_recents'
+function loadRecents(): { depart: string; arrivee: string }[] {
+  if (typeof window === 'undefined') return []
+  try { return JSON.parse(localStorage.getItem(RECENT_KEY) || '[]') } catch { return [] }
+}
+function saveRecent(depart: string, arrivee: string) {
+  if (typeof window === 'undefined') return
+  const current = loadRecents().filter(r => !(norm(r.depart) === norm(depart) && norm(r.arrivee) === norm(arrivee)))
+  const next = [{ depart, arrivee }, ...current].slice(0, 5)
+  try { localStorage.setItem(RECENT_KEY, JSON.stringify(next)) } catch {}
+}
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -16,13 +51,11 @@ type CategorieVehicule = 'citadine' | 'berline' | 'suv' | 'monospace'
 type TypeHebergement = 'hotel' | 'airbnb' | 'camping' | 'famille'
 
 interface WizardData {
-  // Étape 1 — Trajet
-  modeRoute:    'populaire' | 'libre'
-  routeSlug:    string
-  libreDepart:  string
-  libreArrivee: string
-  libreDistance:string
-  librePeages:  string
+  // Étape 1 — Trajet (champs autocomplétés)
+  depart:         string
+  arrivee:        string
+  customDistance: string   // utilisé si la paire n'est pas dans routes-vacances.json
+  customPeages:   string
   // Étape 2 — Véhicule
   motorisation:     Motorisation
   categorieVehicule:CategorieVehicule
@@ -565,8 +598,7 @@ function Bilan({ data, route }: { data: WizardData; route: Route }) {
 // ─── Wizard principal ─────────────────────────────────────────────────────────
 
 const DEFAULT: WizardData = {
-  modeRoute: 'populaire', routeSlug: 'paris-nice',
-  libreDepart: '', libreArrivee: '', libreDistance: '', librePeages: '',
+  depart: '', arrivee: '', customDistance: '', customPeages: '',
   motorisation: 'diesel', categorieVehicule: 'berline', autonomieVE: 300, avecGalerie: false,
   nbAdultes: 2, nbEnfants: 0, avecAnimal: false,
   moisDepart: 7, nbNuits: 7, typeHebergement: 'hotel',
@@ -578,16 +610,20 @@ export default function AssistantVacances() {
   const set = (patch: Partial<WizardData>) => setData(d => ({ ...d, ...patch }))
 
   const route = useMemo<Route | null>(() => {
-    if (data.modeRoute === 'populaire') return ROUTES.find(r => r.slug === data.routeSlug) ?? null
-    const dist = parseFloat(data.libreDistance)
-    if (!dist) return null
+    if (!data.depart.trim() || !data.arrivee.trim()) return null
+    // 1. Cherche d'abord un trajet pré-calculé
+    const match = findRoute(data.depart, data.arrivee)
+    if (match) return match
+    // 2. Sinon, construit à partir de la distance saisie
+    const dist = parseFloat(data.customDistance)
+    if (!dist || dist <= 0) return null
     return {
       slug: 'libre',
-      depart: data.libreDepart || 'Départ',
-      arrivee: data.libreArrivee || 'Arrivée',
+      depart: data.depart.trim(),
+      arrivee: data.arrivee.trim(),
       distance_km: dist,
-      peages_eur: parseFloat(data.librePeages) || Math.round(dist * 0.07),
-      duree_base_min: Math.round((dist / 110) * 60),
+      peages_eur: parseFloat(data.customPeages) || Math.round(dist * 0.07),
+      duree_base_min: Math.round((dist / 105) * 60),
       pays_depart: 'FR',
     }
   }, [data])
@@ -626,47 +662,8 @@ export default function AssistantVacances() {
 
       {/* ── Étape 1 : Trajet ── */}
       {etape === 1 && (
-        <EtapeCard titre="📍 Votre trajet" sousTitre="Choisissez votre destination ou saisissez votre propre trajet">
-          <div style={{ display: 'flex', gap: 8, marginBottom: 20 }}>
-            {(['populaire', 'libre'] as const).map(m => (
-              <button key={m} onClick={() => set({ modeRoute: m })} style={tabBtnStyle(data.modeRoute === m)}>
-                {m === 'populaire' ? '🗺️ Routes populaires' : '✏️ Saisie libre'}
-              </button>
-            ))}
-          </div>
-
-          {data.modeRoute === 'populaire' && (
-            <div style={{ display: 'grid', gap: 8, gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))' }}>
-              {ROUTES.filter(r => r.popular).map(r => (
-                <button key={r.slug} onClick={() => set({ routeSlug: r.slug })} style={{
-                  textAlign: 'left', padding: '12px 14px', borderRadius: 10, cursor: 'pointer',
-                  background: data.routeSlug === r.slug ? 'rgba(122,240,194,0.1)' : 'var(--color-bg-card)',
-                  border: data.routeSlug === r.slug ? '2px solid var(--color-primary)' : '1.5px solid var(--color-border)',
-                  color: 'var(--color-text)', transition: 'all .15s',
-                }}>
-                  <div style={{ fontWeight: 600, fontSize: '0.88rem' }}>{r.depart} → {r.arrivee}</div>
-                  <div style={{ fontSize: '0.74rem', color: 'var(--color-text-muted)', marginTop: 3 }}>{r.distance_km} km · {fmtDuree(r.duree_base_min)}</div>
-                </button>
-              ))}
-            </div>
-          )}
-
-          {data.modeRoute === 'libre' && (
-            <div style={{ display: 'grid', gap: 14, gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))' }}>
-              {([
-                { label: 'Départ',       key: 'libreDepart',    placeholder: 'Paris',  type: 'text' },
-                { label: 'Arrivée',      key: 'libreArrivee',   placeholder: 'Nice',   type: 'text' },
-                { label: 'Distance (km)',key: 'libreDistance',   placeholder: '750',    type: 'number' },
-                { label: 'Péages (€)',   key: 'librePeages',    placeholder: 'auto',   type: 'number' },
-              ] as { label: string; key: keyof WizardData; placeholder: string; type: string }[]).map(f => (
-                <div key={f.key}>
-                  <label style={{ display: 'block', fontSize: '0.8rem', color: 'var(--color-text-muted)', marginBottom: 6, fontWeight: 600 }}>{f.label}</label>
-                  <input type={f.type} value={data[f.key] as string} onChange={e => set({ [f.key]: e.target.value })}
-                    placeholder={f.placeholder} style={inputStyle} />
-                </div>
-              ))}
-            </div>
-          )}
+        <EtapeCard titre="📍 Votre trajet" sousTitre="Saisissez votre départ et votre destination">
+          <EtapeTrajet data={data} set={set} />
         </EtapeCard>
       )}
 
@@ -843,6 +840,279 @@ export default function AssistantVacances() {
 
 // ─── Sous-composants ──────────────────────────────────────────────────────────
 
+// ─── Étape 1 : sélecteur de trajet (autocomplétion) ───────────────────────────
+
+function EtapeTrajet({ data, set }: { data: WizardData; set: (patch: Partial<WizardData>) => void }) {
+  const [recents, setRecents] = useState<{ depart: string; arrivee: string }[]>([])
+  const [filtreRegion, setFiltreRegion] = useState('Toutes')
+
+  useEffect(() => { setRecents(loadRecents()) }, [])
+
+  const routeMatch = useMemo(() => findRoute(data.depart, data.arrivee), [data.depart, data.arrivee])
+  const needsCustom = !!data.depart.trim() && !!data.arrivee.trim() && !routeMatch
+
+  const REGIONS_LOCAL = useMemo(() => ['Toutes', ...Array.from(new Set(ROUTES.map(r => r.region).filter(Boolean)))], [])
+  const popularRoutes = useMemo(() => {
+    if (filtreRegion === 'Toutes') return ROUTES.filter(r => r.popular)
+    return ROUTES.filter(r => r.region === filtreRegion)
+  }, [filtreRegion])
+
+  const handleSwap = () => set({ depart: data.arrivee, arrivee: data.depart })
+  const handlePickPopular = (r: Route) => {
+    set({ depart: r.depart, arrivee: r.arrivee, customDistance: '', customPeages: '' })
+    saveRecent(r.depart, r.arrivee)
+    setRecents(loadRecents())
+  }
+  const handlePickRecent = (r: { depart: string; arrivee: string }) => {
+    set({ depart: r.depart, arrivee: r.arrivee, customDistance: '', customPeages: '' })
+  }
+
+  return (
+    <div>
+      {/* Champs autocomplétion */}
+      <div style={{
+        display: 'grid', gap: 12, alignItems: 'end',
+        gridTemplateColumns: 'minmax(0,1fr) auto minmax(0,1fr)', marginBottom: 14,
+      }}>
+        <AutocompleteVille
+          label="Départ"
+          value={data.depart}
+          onChange={v => set({ depart: v })}
+          placeholder="Paris"
+        />
+        <button
+          type="button"
+          onClick={handleSwap}
+          aria-label="Inverser départ et arrivée"
+          title="Inverser"
+          style={{
+            width: 44, height: 44, borderRadius: '50%',
+            background: 'var(--color-bg-alt)', border: '1.5px solid var(--color-border)',
+            cursor: 'pointer', fontSize: '1.1rem', color: 'var(--color-text-muted)',
+            transition: 'transform .4s ease, color .15s',
+            marginBottom: 4,
+          }}
+          onMouseEnter={e => { e.currentTarget.style.transform = 'rotate(180deg)'; e.currentTarget.style.color = 'var(--color-primary)' }}
+          onMouseLeave={e => { e.currentTarget.style.transform = 'rotate(0deg)'; e.currentTarget.style.color = 'var(--color-text-muted)' }}
+        >
+          ⇄
+        </button>
+        <AutocompleteVille
+          label="Arrivée"
+          value={data.arrivee}
+          onChange={v => set({ arrivee: v })}
+          placeholder="Nice"
+        />
+      </div>
+
+      {/* Détail si trajet trouvé */}
+      {routeMatch && (
+        <div style={{
+          padding: '10px 14px', background: 'rgba(5,150,105,0.07)',
+          border: '1px solid rgba(5,150,105,0.25)', borderRadius: 10,
+          fontSize: '0.84rem', color: '#059669', marginBottom: 14,
+        }}>
+          ✅ {routeMatch.distance_km} km · {fmtDuree(routeMatch.duree_base_min)} · péages {routeMatch.peages_eur} €
+        </div>
+      )}
+
+      {/* Saisie distance si trajet inconnu */}
+      {needsCustom && (
+        <div style={{
+          padding: '14px 16px', marginBottom: 14,
+          background: 'rgba(245,158,11,0.07)', border: '1px solid rgba(245,158,11,0.25)',
+          borderRadius: 10,
+        }}>
+          <div style={{ fontSize: '0.82rem', color: '#f59e0b', fontWeight: 600, marginBottom: 10 }}>
+            ℹ️ Ce trajet n&apos;est pas dans notre base — saisissez la distance pour calculer
+          </div>
+          <div style={{ display: 'grid', gap: 12, gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))' }}>
+            <div>
+              <label style={{ display: 'block', fontSize: '0.78rem', color: 'var(--color-text-muted)', marginBottom: 5, fontWeight: 600 }}>Distance (km) *</label>
+              <input type="number" value={data.customDistance}
+                onChange={e => set({ customDistance: e.target.value })}
+                placeholder="ex : 750" style={inputStyle} />
+            </div>
+            <div>
+              <label style={{ display: 'block', fontSize: '0.78rem', color: 'var(--color-text-muted)', marginBottom: 5, fontWeight: 600 }}>Péages estimés (€)</label>
+              <input type="number" value={data.customPeages}
+                onChange={e => set({ customPeages: e.target.value })}
+                placeholder="auto (0,07 €/km)" style={inputStyle} />
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Recherches récentes */}
+      {recents.length > 0 && (
+        <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', alignItems: 'center', marginBottom: 22 }}>
+          <span style={{ fontSize: '0.78rem', color: 'var(--color-text-muted)', fontWeight: 500 }}>Récents :</span>
+          {recents.map((r, i) => (
+            <button key={i} onClick={() => handlePickRecent(r)} style={{
+              background: 'var(--color-bg-alt)', border: '1px solid var(--color-border)',
+              padding: '5px 12px', borderRadius: 999, fontSize: '0.78rem', cursor: 'pointer',
+              color: 'var(--color-text)', transition: 'all .15s',
+            }}>
+              {r.depart} → {r.arrivee}
+            </button>
+          ))}
+        </div>
+      )}
+
+      {/* Trajets populaires */}
+      <div style={{ borderTop: '1px solid var(--color-border)', paddingTop: 18 }}>
+        <h3 style={{ margin: '0 0 10px', fontSize: '0.95rem', display: 'flex', alignItems: 'center', gap: 10 }}>
+          🗺️ Trajets populaires
+          <span style={{
+            background: 'var(--color-bg-alt)', color: 'var(--color-text-muted)',
+            padding: '2px 10px', borderRadius: 999, fontSize: '0.7rem', fontWeight: 500,
+          }}>
+            {popularRoutes.length}
+          </span>
+        </h3>
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginBottom: 12 }}>
+          {REGIONS_LOCAL.map(r => (
+            <button key={r} onClick={() => setFiltreRegion(r as string)} style={{
+              padding: '4px 11px', borderRadius: 20, fontSize: '0.76rem', cursor: 'pointer',
+              fontWeight: filtreRegion === r ? 700 : 400,
+              background: filtreRegion === r ? 'rgba(122,240,194,0.15)' : 'transparent',
+              color: filtreRegion === r ? 'var(--color-primary)' : 'var(--color-text-muted)',
+              border: filtreRegion === r ? '1.5px solid var(--color-primary)' : '1.5px solid var(--color-border)',
+              transition: 'all .15s',
+            }}>{r}</button>
+          ))}
+        </div>
+        {popularRoutes.length === 0 ? (
+          <div style={{
+            textAlign: 'center', padding: '20px 16px',
+            color: 'var(--color-text-muted)', fontSize: '0.84rem',
+            border: '1.5px dashed var(--color-border)', borderRadius: 10,
+          }}>
+            Aucun trajet dans cette catégorie. Tapez votre départ et arrivée ci-dessus.
+          </div>
+        ) : (
+          <div style={{ display: 'grid', gap: 8, gridTemplateColumns: 'repeat(auto-fill, minmax(190px, 1fr))' }}>
+            {popularRoutes.map(r => {
+              const isSelected = norm(r.depart) === norm(data.depart) && norm(r.arrivee) === norm(data.arrivee)
+              return (
+                <button key={r.slug} onClick={() => handlePickPopular(r)} style={{
+                  textAlign: 'left', padding: '10px 12px', borderRadius: 10, cursor: 'pointer',
+                  background: isSelected ? 'rgba(122,240,194,0.1)' : 'var(--color-bg-card)',
+                  border: isSelected ? '2px solid var(--color-primary)' : '1.5px solid var(--color-border)',
+                  color: 'var(--color-text)', transition: 'all .15s',
+                }}>
+                  <div style={{ fontWeight: 600, fontSize: '0.86rem' }}>
+                    {r.depart} → {r.arrivee}
+                    {r.popular && <span style={{ marginLeft: 5, color: 'var(--color-primary)' }}>⭐</span>}
+                  </div>
+                  <div style={{ fontSize: '0.72rem', color: 'var(--color-text-muted)', marginTop: 2 }}>
+                    {r.distance_km} km · {fmtDuree(r.duree_base_min)}
+                  </div>
+                </button>
+              )
+            })}
+          </div>
+        )}
+      </div>
+    </div>
+  )
+}
+
+// ─── Champ ville avec autocomplétion ──────────────────────────────────────────
+
+function AutocompleteVille({
+  label, value, onChange, placeholder,
+}: {
+  label: string
+  value: string
+  onChange: (v: string) => void
+  placeholder: string
+}) {
+  const [open, setOpen] = useState(false)
+  const [highlighted, setHighlighted] = useState(-1)
+  const ref = useRef<HTMLDivElement>(null)
+
+  const matches = useMemo(() => {
+    const q = norm(value)
+    if (!q) return VILLES.slice(0, 8)
+    return VILLES.filter(v => norm(v.nom).includes(q)).slice(0, 8)
+  }, [value])
+
+  useEffect(() => {
+    if (!open) return
+    const handler = (e: MouseEvent) => {
+      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false)
+    }
+    document.addEventListener('mousedown', handler)
+    return () => document.removeEventListener('mousedown', handler)
+  }, [open])
+
+  const pick = (v: string) => {
+    onChange(v)
+    setOpen(false)
+    setHighlighted(-1)
+  }
+
+  return (
+    <div ref={ref} style={{ position: 'relative' }}>
+      <label style={{
+        display: 'block', fontSize: '0.72rem', fontWeight: 700,
+        color: 'var(--color-text-muted)', marginBottom: 6,
+        textTransform: 'uppercase', letterSpacing: '0.06em',
+      }}>
+        {label}
+      </label>
+      <input
+        type="text"
+        value={value}
+        placeholder={placeholder}
+        onFocus={() => setOpen(true)}
+        onChange={e => { onChange(e.target.value); setOpen(true); setHighlighted(-1) }}
+        onKeyDown={e => {
+          if (e.key === 'ArrowDown') { e.preventDefault(); setOpen(true); setHighlighted(h => Math.min(h + 1, matches.length - 1)) }
+          else if (e.key === 'ArrowUp') { e.preventDefault(); setHighlighted(h => Math.max(h - 1, 0)) }
+          else if (e.key === 'Enter' && highlighted >= 0 && matches[highlighted]) { e.preventDefault(); pick(matches[highlighted].nom) }
+          else if (e.key === 'Escape') { setOpen(false) }
+        }}
+        autoComplete="off"
+        style={{
+          width: '100%', boxSizing: 'border-box',
+          padding: '12px 14px', borderRadius: 10, fontSize: '0.95rem',
+          background: 'var(--color-bg-alt)', color: 'var(--color-text)',
+          border: '2px solid var(--color-border)', outline: 'none',
+          transition: 'border-color .15s',
+        }}
+      />
+      {open && matches.length > 0 && (
+        <div style={{
+          position: 'absolute', top: '100%', left: 0, right: 0, marginTop: 4,
+          background: 'var(--color-bg-card)', border: '1.5px solid var(--color-border)',
+          borderRadius: 10, maxHeight: 320, overflowY: 'auto', zIndex: 100,
+          boxShadow: '0 12px 32px rgba(0,0,0,0.18)',
+        }}>
+          {matches.map((v, i) => (
+            <div key={v.nom}
+              onMouseDown={e => { e.preventDefault(); pick(v.nom) }}
+              onMouseEnter={() => setHighlighted(i)}
+              style={{
+                padding: '10px 14px', cursor: 'pointer',
+                display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+                background: highlighted === i ? 'rgba(122,240,194,0.08)' : 'transparent',
+                borderBottom: i < matches.length - 1 ? '1px solid var(--color-border)' : 'none',
+              }}
+            >
+              <span style={{ fontWeight: 500, fontSize: '0.92rem' }}>{v.nom}</span>
+              <span style={{ fontSize: '0.74rem', color: 'var(--color-text-muted)' }}>
+                {v.region || v.pays}
+              </span>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  )
+}
+
 function EtapeCard({ titre, sousTitre, children }: { titre: string; sousTitre: string; children: React.ReactNode }) {
   return (
     <div style={{ background: 'var(--color-bg-card)', border: '1.5px solid var(--color-border)', borderRadius: 16, padding: '28px 28px 24px' }}>
@@ -867,14 +1137,6 @@ function CompteurPassagers({ value, min, max, onChange }: { value: number; min: 
   )
 }
 
-const tabBtnStyle = (actif: boolean): React.CSSProperties => ({
-  padding: '10px 18px', borderRadius: 10, cursor: 'pointer', fontWeight: 600, fontSize: '0.9rem',
-  background: actif ? 'var(--color-primary)' : 'var(--color-bg-card)',
-  color: actif ? '#0a1628' : 'var(--color-text)',
-  border: actif ? '2px solid var(--color-primary)' : '1.5px solid var(--color-border)',
-  transition: 'all .15s',
-})
-
 const selectBtnStyle = (actif: boolean): React.CSSProperties => ({
   padding: '10px 16px', borderRadius: 10, cursor: 'pointer', fontWeight: 600, fontSize: '0.86rem',
   background: actif ? 'rgba(122,240,194,0.1)' : 'var(--color-bg-card)',
@@ -895,4 +1157,6 @@ const inputStyle: React.CSSProperties = {
   width: '100%', boxSizing: 'border-box', padding: '10px 12px', borderRadius: 8, fontSize: '0.9rem',
   background: 'var(--color-bg-alt)', color: 'var(--color-text)',
   border: '1.5px solid var(--color-border)', outline: 'none',
+}
+ne',
 }
