@@ -5,18 +5,18 @@
 
 import { NextRequest, NextResponse } from 'next/server'
 
-const ANTHROPIC_KEY  = process.env.ANTHROPIC_API_KEY ?? ''
 const ANTHROPIC_URL  = 'https://api.anthropic.com/v1/messages'
 const MODEL          = 'claude-haiku-4-5-20251001'
 
 export async function POST(req: NextRequest) {
+  const ANTHROPIC_KEY = process.env.ANTHROPIC_API_KEY ?? ''
   if (!ANTHROPIC_KEY) {
-    return NextResponse.json({ error: 'ANTHROPIC_API_KEY manquante' }, { status: 500 })
+    return NextResponse.json({ error: 'ANTHROPIC_API_KEY manquante — à configurer dans Vercel env vars' }, { status: 500 })
   }
 
   const body = await req.json().catch(() => null)
-  if (!body?.symptome || !body?.motorisation) {
-    return NextResponse.json({ error: 'Paramètres manquants' }, { status: 400 })
+  if (!body?.symptome_label || !body?.motorisation) {
+    return NextResponse.json({ error: `Paramètres manquants (symptome_label=${body?.symptome_label}, motorisation=${body?.motorisation})` }, { status: 400 })
   }
 
   const { symptome_label, motorisation, reponses } = body
@@ -69,19 +69,30 @@ Sois simple, rassurant, accessible à un non-mécanicien. Maximum 3 pannes proba
     if (!res.ok) {
       const err = await res.text()
       console.error('[/api/diagnostic] Anthropic error', res.status, err)
-      return NextResponse.json({ error: 'Service IA indisponible' }, { status: 502 })
+      return NextResponse.json({ error: `Anthropic ${res.status}: ${err.slice(0, 200)}` }, { status: 502 })
     }
 
     const data = await res.json()
     const text = data.content?.[0]?.text ?? ''
 
-    // Parse JSON — Claude Haiku peut parfois ajouter des backticks
+    if (!text) {
+      return NextResponse.json({ error: 'Réponse vide de Claude' }, { status: 502 })
+    }
+
+    // Parse JSON — Claude peut parfois ajouter des backticks
     const cleaned = text.replace(/^```json\s*/i, '').replace(/```\s*$/i, '').trim()
-    const diagnostic = JSON.parse(cleaned)
+    let diagnostic
+    try {
+      diagnostic = JSON.parse(cleaned)
+    } catch {
+      console.error('[/api/diagnostic] JSON invalide:', cleaned.slice(0, 300))
+      return NextResponse.json({ error: `JSON invalide reçu de Claude: ${cleaned.slice(0, 100)}` }, { status: 502 })
+    }
 
     return NextResponse.json(diagnostic)
   } catch (err) {
-    console.error('[/api/diagnostic] erreur', err)
-    return NextResponse.json({ error: 'Erreur de traitement' }, { status: 500 })
+    const msg = err instanceof Error ? err.message : String(err)
+    console.error('[/api/diagnostic] erreur', msg)
+    return NextResponse.json({ error: `Erreur serveur: ${msg}` }, { status: 500 })
   }
 }

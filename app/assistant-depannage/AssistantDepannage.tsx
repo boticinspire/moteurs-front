@@ -348,6 +348,7 @@ export default function AssistantDepannage() {
   const [reponses,     setReponses]     = useState<Reponse[]>([])
   const [diagnostic,   setDiagnostic]   = useState<DiagnosticResult | null>(null)
   const [erreur,       setErreur]       = useState<string>('')
+  const [derniersRep,  setDerniersRep]  = useState<Reponse[]>([])
 
   const currentNode = TREE[nodeId]
 
@@ -378,6 +379,7 @@ export default function AssistantDepannage() {
   const lancerDiagnostic = async (rep: Reponse[]) => {
     setEtape('loading')
     setErreur('')
+    setDerniersRep(rep)
     try {
       const res = await fetch('/api/diagnostic', {
         method:  'POST',
@@ -388,13 +390,13 @@ export default function AssistantDepannage() {
           reponses:       rep,
         }),
       })
-      if (!res.ok) throw new Error(`HTTP ${res.status}`)
       const data = await res.json()
-      if (data.error) throw new Error(data.error)
+      if (!res.ok || data.error) throw new Error(data.error ?? `HTTP ${res.status}`)
       setDiagnostic(data)
       setEtape('resultat')
     } catch (e) {
-      setErreur('Le service de diagnostic est momentanément indisponible. Réessayez dans quelques secondes.')
+      const msg = e instanceof Error ? e.message : String(e)
+      setErreur(msg)
       setEtape('questions')
     }
   }
@@ -507,8 +509,16 @@ export default function AssistantDepannage() {
             </div>
 
             {erreur && (
-              <div style={{ marginTop: 16, padding: '10px 14px', background: 'rgba(239,68,68,0.07)', border: '1px solid rgba(239,68,68,0.25)', borderRadius: 8, fontSize: '0.83rem', color: '#ef4444' }}>
-                ⚠️ {erreur}
+              <div style={{ marginTop: 16, padding: '12px 14px', background: 'rgba(239,68,68,0.07)', border: '1px solid rgba(239,68,68,0.25)', borderRadius: 8 }}>
+                <div style={{ fontSize: '0.83rem', color: '#ef4444', marginBottom: 8 }}>
+                  ⚠️ Erreur : {erreur}
+                </div>
+                <button
+                  onClick={() => lancerDiagnostic(derniersRep)}
+                  style={{ fontSize: '0.8rem', fontWeight: 700, padding: '6px 14px', borderRadius: 7, cursor: 'pointer', background: 'rgba(239,68,68,0.12)', border: '1px solid rgba(239,68,68,0.3)', color: '#ef4444' }}
+                >
+                  🔄 Réessayer le diagnostic
+                </button>
               </div>
             )}
 
