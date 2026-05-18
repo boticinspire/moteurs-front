@@ -56,8 +56,9 @@ const MODULES: Module[] = [
     detail: 'Protocole urgence sur route, ou diagnostic mécanique guidé avec scan voyant par photo.',
     href: '/assistance/panne', disponible: true, couleur: '#ef4444',
     sousLiens: [
-      { emoji: '🚨', label: 'Protocole urgence',    href: '/assistance/panne'      },
-      { emoji: '🔍', label: 'Diagnostic / Voyants', href: '/assistant-depannage'   },
+      { emoji: '🚨', label: 'Protocole urgence',    href: '/assistance/panne'    },
+      { emoji: '🔍', label: 'Diagnostic / Voyants', href: '/assistant-depannage' },
+      { emoji: '📋', label: 'Constat amiable',      href: '/constat'             },
     ],
   },
   {
@@ -97,7 +98,7 @@ const ROUTING_PATTERNS: { patterns: string[]; moduleId: string }[] = [
   { moduleId: 'vacances',   patterns: ['vacances', 'trajet', 'péages', 'autoroute', 'voyage', 'partir', 'barcelone', 'nice', 'espagne', 'italie', 'routier'] },
   { moduleId: 'couts',      patterns: ['coût', 'cout', 'cher', 'budget', 'mensuel', 'mois', 'leasing', 'loa', 'tco', 'dépense', 'paie', 'paye', 'économie', 'economie', 'rentable', 'combien', 'facture', 'entretien', 'crédit', 'credit'] },
   { moduleId: 'recharge',   patterns: ['recharge', 'charge', 'borne', 'kwh', 'autonomie', 'wallbox', 'irve', 'superchargeur', 'ionity', 'domicile', 'chargeur'] },
-  { moduleId: 'panne',      patterns: ['panne', 'dépannage', 'dépanner', 'tomber', 'en rade', 'secours', 'accident', 'garage', 'urgence', 'crevé', 'crevaison', 'voyant', 'diagnostic', 'bruit', 'frein', 'huile', 'batterie', 'démarrage'] },
+  { moduleId: 'panne',      patterns: ['panne', 'dépannage', 'dépanner', 'tomber', 'en rade', 'secours', 'accident', 'constat', 'garage', 'urgence', 'crevé', 'crevaison', 'voyant', 'diagnostic', 'bruit', 'frein', 'huile', 'batterie', 'démarrage', 'collision', 'accrochage'] },
   { moduleId: 'achat',      patterns: ['acheter', 'achat', 'choisir', 'laquelle', 'comparaison', 'modèle', 'quelle voiture', 'nouveau', 'occasion', 'lequel'] },
   { moduleId: 'location',   patterns: ['location', 'louer', 'loué', 'loueur', 'rent', 'hertz', 'avis', 'europcar', 'cdw', 'franchise', 'état des lieux', 'litige location', 'assurance location'] },
   { moduleId: 'sante',      patterns: ['médecin', 'médical', 'maladie', 'tourista', 'diarrhée', 'bébé', 'enfant', 'fièvre', 'pharmacie', 'secours', 'urgence médicale', 'coup de chaleur', 'piqûre'] },

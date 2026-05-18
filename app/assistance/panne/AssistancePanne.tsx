@@ -402,6 +402,22 @@ export default function AssistancePanne() {
       {/* ── Bandeau SOS ── */}
       <BandeauSOS pays={data.pays} />
 
+      {/* ── Bannières outils complémentaires ── */}
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10, marginBottom: 20 }}>
+
+      <Link href="/constat" style={{
+        display: 'flex', alignItems: 'center', gap: 10, textDecoration: 'none',
+        padding: '12px 14px', borderRadius: 12,
+        background: 'rgba(239,68,68,0.07)',
+        border: '1.5px solid rgba(239,68,68,0.25)',
+      }}>
+        <span style={{ fontSize: '1.3rem', flexShrink: 0 }}>📋</span>
+        <div>
+          <div style={{ fontWeight: 700, fontSize: '0.85rem', color: 'var(--color-text)', marginBottom: 1 }}>Remplir le constat</div>
+          <div style={{ fontSize: '0.74rem', color: 'var(--color-text-soft)' }}>Formulaire guidé + PDF</div>
+        </div>
+      </Link>
+
       {/* ── Bannière diagnostic mécanique ── */}
       <Link href="/assistant-depannage" style={{
         display: 'flex', alignItems: 'center', gap: 14, textDecoration: 'none',
@@ -423,6 +439,8 @@ export default function AssistancePanne() {
           Démarrer →
         </span>
       </Link>
+
+      </div> {/* fin grille bannières */}
 
       {/* ── Progress bar ── */}
       <div style={{ marginBottom: 28 }}>
