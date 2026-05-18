@@ -1,10 +1,12 @@
 /**
  * Moteurs.com — Scan voyant par photo
- * Reçoit { image_base64, mime_type } depuis le navigateur,
- * appelle Claude Sonnet Vision directement et retourne le diagnostic structuré.
+ * 1. Hash l'image → lookup cache Supabase (0 token si déjà vu)
+ * 2. Si miss → appelle Claude Sonnet Vision
+ * 3. Sauvegarde résultat en cache + log (fire & forget)
  */
 
 import { NextRequest, NextResponse } from 'next/server'
+import { hashImage, getScanFromCache, saveScanToCache } from '@/lib/scan-voyant-cache'
 
 const ANTHROPIC_URL = 'https://api.anthropic.com/v1/messages'
 const MODEL         = 'claude-sonnet-4-6'
@@ -52,18 +54,25 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Champ image_base64 manquant' }, { status: 400 })
   }
 
-  const mimeType   = body.mime_type ?? 'image/jpeg'
-  const image_b64  = body.image_base64
+  const mimeType  = body.mime_type ?? 'image/jpeg'
+  const imageB64  = body.image_base64
 
   // Vérification taille (~5 Mo max)
-  const approxBytes = image_b64.length * 3 / 4
-  if (approxBytes > 5 * 1024 * 1024) {
+  if (imageB64.length * 3 / 4 > 5 * 1024 * 1024) {
     return NextResponse.json(
       { error: 'Image trop volumineuse (max 5 Mo). Réduisez la résolution.' },
       { status: 413 }
     )
   }
 
+  // ── Tier 1 : Cache Supabase ───────────────────────────────────────────────
+  const imageHash = hashImage(imageB64)
+  const cached    = await getScanFromCache(imageHash)
+  if (cached) {
+    return NextResponse.json({ ...cached, _cache: true })
+  }
+
+  // ── Tier 2 : Claude Vision ────────────────────────────────────────────────
   try {
     const res = await fetch(ANTHROPIC_URL, {
       method:  'POST',
@@ -80,16 +89,9 @@ export async function POST(req: NextRequest) {
           content: [
             {
               type:   'image',
-              source: {
-                type:       'base64',
-                media_type: mimeType,
-                data:        image_b64,
-              },
+              source: { type: 'base64', media_type: mimeType, data: imageB64 },
             },
-            {
-              type: 'text',
-              text: PROMPT_VISION,
-            },
+            { type: 'text', text: PROMPT_VISION },
           ],
         }],
       }),
@@ -106,20 +108,16 @@ export async function POST(req: NextRequest) {
 
     const data = await res.json()
     const text = data.content?.[0]?.text ?? ''
-
     if (!text) {
       return NextResponse.json({ error: 'Réponse vide de Claude Vision' }, { status: 502 })
     }
 
     // Nettoyer si Claude ajoute des backticks
-    const cleaned = text
-      .replace(/^```json\s*/i, '')
-      .replace(/```\s*$/i, '')
-      .trim()
+    const cleaned = text.replace(/^```json\s*/i, '').replace(/```\s*$/i, '').trim()
 
-    let diagnostic
+    let raw
     try {
-      diagnostic = JSON.parse(cleaned)
+      raw = JSON.parse(cleaned)
     } catch {
       console.error('[/api/scan-voyant] JSON invalide:', cleaned.slice(0, 300))
       return NextResponse.json(
@@ -128,24 +126,29 @@ export async function POST(req: NextRequest) {
       )
     }
 
-    // Normaliser les champs
-    const urgence = ['stop', 'attention', 'info'].includes(diagnostic.urgence)
-      ? diagnostic.urgence
+    const urgence   = (['stop', 'attention', 'info'] as const).includes(raw.urgence)
+      ? raw.urgence as 'stop' | 'attention' | 'info'
       : 'attention'
-
-    const confiance = ['haute', 'moyenne', 'faible'].includes(diagnostic.confiance)
-      ? diagnostic.confiance
+    const confiance = (['haute', 'moyenne', 'faible'] as const).includes(raw.confiance)
+      ? raw.confiance as 'haute' | 'moyenne' | 'faible'
       : 'moyenne'
 
-    return NextResponse.json({
-      voyant_nom:   diagnostic.voyant_nom   ?? 'Voyant non identifié',
-      description:  diagnostic.description  ?? '',
+    const result = {
+      voyant_nom:   raw.voyant_nom  ?? 'Voyant non identifié',
+      description:  raw.description ?? '',
       urgence,
       peut_rouler:  urgence !== 'stop',
-      actions:      (diagnostic.actions ?? []).slice(0, 4),
-      article_lien: null,
+      actions:      (raw.actions ?? []).slice(0, 4) as string[],
+      article_lien: null as null,
       confiance,
-    })
+    }
+
+    // ── Sauvegarder en cache (fire & forget) ──────────────────────────────
+    saveScanToCache(imageHash, result).catch(e =>
+      console.error('[/api/scan-voyant] Erreur cache save', e)
+    )
+
+    return NextResponse.json(result)
   } catch (err) {
     const msg = err instanceof Error ? err.message : String(err)
     console.error('[/api/scan-voyant] erreur', msg)
