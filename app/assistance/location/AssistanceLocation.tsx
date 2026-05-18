@@ -123,6 +123,7 @@ export default function AssistanceLocation() {
   })
   const [resultat, setResultat] = useState<ResultatLocation | null>(null)
   const [checklistOpen, setChecklistOpen] = useState(false)
+  const [restitutionOpen, setRestitutionOpen] = useState(false)
 
   useEffect(() => {
     _sb.auth.getUser().then(({ data }) => setAuthUser(data.user ?? null))
@@ -149,8 +150,6 @@ export default function AssistanceLocation() {
       </div>
     </div>
   )
-  const [restitutionOpen, setRestitutionOpen] = useState(false)
-
   const COULEUR = '#0891b2'
 
   // ── Étape 1 ────────────────────────────────────────────────────────────────
