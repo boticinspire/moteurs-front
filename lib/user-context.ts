@@ -3,7 +3,7 @@
  * Types, helpers localStorage et Supabase pour le contexte utilisateur mémorisé.
  */
 
-import { createBrowserClient } from '@supabase/ssr'
+import { createClient } from '@supabase/supabase-js'
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -65,7 +65,7 @@ const LS_KEY = 'moteurs_user_context'
 // ─── Supabase client (browser) ────────────────────────────────────────────────
 
 export function getSupabaseClient() {
-  return createBrowserClient(
+  return createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
   )
