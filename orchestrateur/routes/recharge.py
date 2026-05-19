@@ -1,7 +1,7 @@
 """
 Routes FastAPI — Agent Recharge
 """
-from fastapi import APIRouter, HTTPException, Query
+from fastapi import APIRouter, BackgroundTasks, HTTPException, Query
 from pydantic import BaseModel
 
 from agents.recharge.agent import (
@@ -18,19 +18,23 @@ router = APIRouter()
 # ── Lancer le batch complet ───────────────────────────────────────────────────
 
 @router.post("/lancer")
-async def lancer_batch():
-    """Scrape toutes les cartes de recharge et met à jour Supabase."""
-    result = await run_recharge_batch()
-    return result
+async def lancer_batch(background_tasks: BackgroundTasks):
+    """Lance le scraping de toutes les cartes en arrière-plan — retourne immédiatement."""
+    background_tasks.add_task(run_recharge_batch)
+    return {
+        "statut": "démarré",
+        "message": "Scraping lancé en arrière-plan. Vérifiez /recharge/cartes dans 3-5 minutes.",
+        "nb_cartes": len(CARTES),
+    }
 
 
 @router.post("/lancer/{carte_id}")
-async def lancer_une_carte(carte_id: str):
-    """Scrape une carte spécifique par son ID."""
+async def lancer_une_carte(carte_id: str, background_tasks: BackgroundTasks):
+    """Lance le scraping d'une carte spécifique en arrière-plan."""
     if carte_id not in CARTES_BY_ID:
         raise HTTPException(status_code=404, detail=f"Carte inconnue : {carte_id}")
-    result = await scraper_carte(carte_id)
-    return result
+    background_tasks.add_task(scraper_carte, carte_id)
+    return {"statut": "démarré", "carte": carte_id}
 
 
 # ── Lecture des cartes ────────────────────────────────────────────────────────
