@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 import AssistanceSurprises from './AssistanceSurprises'
 import MembreGate from '@/components/MembreGate'
+import QuizSurprises from './QuizSurprises'
 
 export const metadata: Metadata = {
   title: "Mauvaises Surprises — Amende, fourrière, vol, ZTL, accident à l'étranger | Moteurs.com",
@@ -67,6 +68,17 @@ export default function PageAssistanceSurprises() {
       >
         <AssistanceSurprises />
       </MembreGate>
+
+      {/* ── Quiz ── */}
+      <section style={{ marginTop: 72, borderTop: '1px solid var(--color-border)', paddingTop: 48 }}>
+        <h2 style={{ textAlign: 'center', marginBottom: 10, fontSize: '1.2rem' }}>
+          🎯 Saurez-vous réagir ?
+        </h2>
+        <p style={{ textAlign: 'center', color: 'var(--color-text-soft)', marginBottom: 32, maxWidth: 520, margin: '0 auto 32px' }}>
+          6 scénarios réels. Choisissez la bonne réponse — chaque erreur coûte cher en voyage.
+        </p>
+        <QuizSurprises />
+      </section>
 
       {/* ── Pédagogie ── */}
       <section style={{ marginTop: 72, borderTop: '1px solid var(--color-border)', paddingTop: 48 }}>
