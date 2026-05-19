@@ -64,8 +64,9 @@ export default function UserContextProvider({ children }: { children: ReactNode 
   const [isReady, setIsReady] = useState(false)
   const [userId, setUserId] = useState<string | null>(null)
 
-  // Ref pour eviter les sauvegardes distantes en boucle
   const userIdRef = useRef<string | null>(null)
+  // Garde la valeur locale pour la fusion (stable, ref)
+  const localRef = useRef<UserContext>({})
 
   // ── Persistance ───────────────────────────────────────────────────────────
 
@@ -89,71 +90,57 @@ export default function UserContextProvider({ children }: { children: ReactNode 
     [persist]
   )
 
-  // ── Initialisation ────────────────────────────────────────────────────────
+  // ── Initialisation via onAuthStateChange uniquement ───────────────────────
+  // onAuthStateChange déclenche INITIAL_SESSION immédiatement — pas besoin
+  // d'un getSession() séparé qui créerait une contention sur le verrou auth.
 
   useEffect(() => {
     let cancelled = false
 
-    async function init() {
-      // 1. Charge localStorage immédiatement
-      const local = expireContext(loadContextLocal())
+    // 1. Charge localStorage immédiatement (synchrone, pas de réseau)
+    const local = expireContext(loadContextLocal())
+    localRef.current = local
+    setContextState(local)
 
-      if (!cancelled) setContextState(local)
-
-      // 2. Vérifie session Supabase
-      const supabase = getSupabaseClient()
-      const { data: { session } } = await supabase.auth.getSession()
-
-      if (cancelled) return
-
-      if (session?.user) {
-        const uid = session.user.id
-        userIdRef.current = uid
-        setUserId(uid)
-
-        // 3. Charge contexte distant et fusionne
-        const remote = await loadContextRemote(uid)
-        if (cancelled) return
-
-        const merged = expireContext(
-          remote ? mergeContexts(local, remote) : local
-        )
-        saveContextLocal(merged)
-        setContextState(merged)
-      }
-
-      if (!cancelled) setIsReady(true)
-    }
-
-    init()
-
-    // 4. Écoute les changements d'auth
+    // 2. S'abonne aux événements auth — INITIAL_SESSION arrive en premier
     const supabase = getSupabaseClient()
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (event, session) => {
         if (cancelled) return
 
-        if (event === 'SIGNED_IN' && session?.user) {
-          const uid = session.user.id
-          userIdRef.current = uid
-          setUserId(uid)
+        if (event === 'INITIAL_SESSION' || event === 'SIGNED_IN') {
+          if (session?.user) {
+            const uid = session.user.id
+            userIdRef.current = uid
+            setUserId(uid)
 
-          // Sync local → remote au login
-          const currentLocal = loadContextLocal()
-          const remote = await loadContextRemote(uid)
-          const merged = expireContext(
-            remote ? mergeContexts(currentLocal, remote) : currentLocal
-          )
-          saveContextLocal(merged)
-          await saveContextRemote(uid, merged)
-          setContextState(merged)
+            // Fusion localStorage ↔ Supabase
+            try {
+              const remote = await loadContextRemote(uid)
+              if (cancelled) return
+              const merged = expireContext(
+                remote ? mergeContexts(localRef.current, remote) : localRef.current
+              )
+              saveContextLocal(merged)
+              localRef.current = merged
+              setContextState(merged)
+            } catch {
+              // Réseau indisponible — on reste sur le localStorage
+            }
+          } else {
+            // Pas de session → utilisateur non connecté
+            userIdRef.current = null
+            setUserId(null)
+          }
+          if (!cancelled) setIsReady(true)
 
         } else if (event === 'SIGNED_OUT') {
           userIdRef.current = null
           setUserId(null)
-          // Revient au localStorage uniquement
-          const local = expireContext(loadContextLocal())
-          setContextState(local)
+          const freshLocal = expireContext(loadContextLocal())
+          localRef.current = freshLocal
+          setContextState(freshLocal)
+          if (!cancelled) setIsReady(true)
         }
       }
     )
@@ -162,7 +149,7 @@ export default function UserContextProvider({ children }: { children: ReactNode 
       cancelled = true
       subscription.unsubscribe()
     }
-  }, [persist])
+  }, []) // [] — ne tourne qu'une fois au montage
 
   // ── Actions publiques ─────────────────────────────────────────────────────
 
