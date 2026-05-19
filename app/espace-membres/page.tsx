@@ -344,8 +344,8 @@ export default function EspaceMembresPage() {
                       📋 Constat en cours {sinExpire && '⚠️ expire bientôt'}
                     </div>
                     <div style={{ fontSize: '0.82rem', color: 'var(--color-text-soft)', lineHeight: 1.7 }}>
-                      <div>Déclaré le : {new Date(context.sinistre.date_sinistre).toLocaleDateString('fr-FR')}</div>
-                      <div>Expire le : {new Date(context.sinistre.expires_at).toLocaleDateString('fr-FR')}</div>
+                      {context.sinistre.date_sinistre && <div>Déclaré le : {new Date(context.sinistre.date_sinistre).toLocaleDateString('fr-FR')}</div>}
+                      {context.sinistre.expires_at && <div>Expire le : {new Date(context.sinistre.expires_at).toLocaleDateString('fr-FR')}</div>}
                     </div>
                     <div style={{ marginTop: 12, display: 'flex', gap: 8 }}>
                       <Link href="/constat" style={{ fontSize: '0.78rem', padding: '5px 12px', borderRadius: 6, background: '#ef4444', color: '#fff', fontWeight: 700, textDecoration: 'none' }}>
