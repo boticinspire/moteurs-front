@@ -85,28 +85,73 @@ CARTES: list[dict] = [
         "id": "electra",
         "nom": "Electra",
         "operateur": "Electra",
-        "pays_origine": ["FR", "BE", "DE", "ES", "IT", "NL", "AT", "CH"],
+        "pays_origine": ["FR", "BE", "DE", "ES", "IT", "NL", "AT", "CH", "LU"],
         "url_officielle": "https://fr.electra.charging",
-        "url_tarifs": "https://fr.electra.charging/tarifs",
+        "url_tarifs": "https://intercom.help/go-electra/fr/articles/7987274-les-differents-tarifs-de-charge",
         "methode": "httpx",
         "ideal_voyage": True,
         "ideal_quotidien": False,
         "flotte_pro": False,
-        "points_forts": ["Réseau ultra-rapide ≥150 kW en croissance", "Stations urbaines premium"],
-        "points_faibles": ["Réseau encore limité en zones rurales", "Pas d'AC slow"],
+        "points_forts": [
+            "Facturation au kWh réel (AC et DC — même tarif)",
+            "Réseau ultra-rapide ≥150 kW en croissance rapide",
+            "Stations urbaines premium + autoroute",
+            "Tarif app compétitif (dès 0,39 €/kWh en France)",
+        ],
+        "points_faibles": [
+            "Tarif dynamique en France : varie selon la station (0,39–0,61 €/kWh)",
+            "Badge RFID peut avoir des frais supplémentaires",
+            "Réseau encore limité hors grandes villes en zones rurales",
+        ],
         "donnees_init": {
+            # Sans abonnement — tarif via App Electra ou Autocharge
+            # Source : https://intercom.help/go-electra/fr/articles/7987274 — 02/03/2026
+            # Electra ne distingue pas AC lent / DC rapide / DC ultra — tarif unique par kWh
             "abonnement": {"mensuel_eur": 0, "annuel_eur": 0, "engagement_mois": 0},
             "tarifs_fr": {
-                "ac_slow":    {"modele": "kwh", "prix": None, "frais_session": 0.0},
+                # Tarif dynamique : 0,39–0,61 €/kWh via app. On retient 0,49 comme valeur médiane.
+                # Carte bancaire borne : 0,61 €/kWh (tarif plafond)
+                "ac_slow":    {"modele": "kwh", "prix": 0.49, "frais_session": 0.0},
                 "dc_rapide":  {"modele": "kwh", "prix": 0.49, "frais_session": 0.0},
+                "dc_ultra":   {"modele": "kwh", "prix": 0.49, "frais_session": 0.0},
+                "_note": "Tarif dynamique 0,39–0,61 €/kWh. Autoroute: tarif supérieur affiché sur borne.",
+                "_tarif_cb_borne": 0.61,
+                "_plage_min": 0.39,
+                "_plage_max": 0.61,
+            },
+            # Belgique — 0,54–0,75 €/kWh via app, 0,75 €/kWh CB borne — TVA 21%
+            "tarifs_be": {
+                "ac_slow":    {"modele": "kwh", "prix": 0.65, "frais_session": 0.0},
+                "dc_rapide":  {"modele": "kwh", "prix": 0.65, "frais_session": 0.0},
+                "dc_ultra":   {"modele": "kwh", "prix": 0.65, "frais_session": 0.0},
+                "_tarif_cb_borne": 0.75,
+                "_plage_min": 0.54,
+                "_plage_max": 0.75,
+            },
+            # Suisse — 0,59 CHF/kWh via app, 0,64 CHF CB borne — TVA 8,1%
+            "tarifs_ch": {
+                "devise": "CHF",
                 "dc_ultra":   {"modele": "kwh", "prix": 0.59, "frais_session": 0.0},
+                "_tarif_cb_borne": 0.64,
+            },
+            # Autres pays couverts (roaming via app Electra)
+            "tarifs_par_pays": {
+                "DE": {"prix_app": 0.54, "prix_cb": 0.69, "tva_pct": 19},
+                "AT": {"prix_app": 0.59, "prix_cb": 0.69, "tva_pct": 20},
+                "NL": {"prix_app": 0.64, "prix_cb": 0.69, "tva_pct": 21},
+                "LU": {"prix_app": 0.49, "prix_cb": 0.59, "tva_pct": 17},
+                "ES": {"prix_app": 0.44, "prix_cb": 0.54, "tva_pct": 21},
+                "IT": {"prix_app": 0.64, "prix_cb": 0.79, "tva_pct": 22},
             },
             "roaming": {
                 "disponible": True,
-                "pays_couverts": ["FR","BE","DE","ES","IT","NL","AT","CH","PT"],
-                "tarif_dc_rapide": {"modele": "kwh", "prix": 0.59},
-                "tarif_dc_ultra":  {"modele": "kwh", "prix": 0.69},
+                "pays_couverts": ["FR","BE","DE","ES","IT","NL","AT","CH","LU"],
+                # Tarif roaming = tarif local du pays de la station via app Electra
+                "tarif_dc_rapide": {"modele": "kwh", "prix": 0.49},
+                "tarif_dc_ultra":  {"modele": "kwh", "prix": 0.49},
+                "_note": "Le tarif appliqué est celui du pays de la station, non un tarif roaming fixe.",
             },
+            "_source": "Aide Electra — 02/03/2026",
         },
     },
 
@@ -431,70 +476,4 @@ CARTES: list[dict] = [
             "roaming": {
                 "disponible": False,
                 "pays_couverts": ["BE"],
-                "tarif_dc_rapide": None,
-                "tarif_dc_ultra":  None,
-            },
-        },
-    },
-
-    {
-        "id": "allego",
-        "nom": "Allego",
-        "operateur": "Allego",
-        "pays_origine": ["BE", "NL", "DE", "FR"],
-        "url_officielle": "https://www.allego.eu/fr-fr",
-        "url_tarifs": "https://www.allego.eu/fr-fr/conducteurs/tarifs",
-        "methode": "httpx",
-        "ideal_voyage": True,
-        "ideal_quotidien": False,
-        "flotte_pro": False,
-        "points_forts": ["Gros opérateur NL/BE", "Réseau autoroute NL/BE/DE bien maillé"],
-        "points_faibles": ["Moins de présence en France"],
-        "donnees_init": {
-            "abonnement": {"mensuel_eur": 0, "annuel_eur": 0, "engagement_mois": 0},
-            "tarifs_be": {
-                "ac_slow":    {"modele": "kwh", "prix": 0.40, "frais_session": 0.0},
-                "dc_rapide":  {"modele": "kwh", "prix": 0.54, "frais_session": 0.0},
-                "dc_ultra":   {"modele": "kwh", "prix": 0.70, "frais_session": 0.0},
-            },
-            "roaming": {
-                "disponible": True,
-                "pays_couverts": ["BE","NL","DE","FR","LU","AT","CH"],
-                "tarif_dc_rapide": {"modele": "kwh", "prix": 0.60},
-                "tarif_dc_ultra":  {"modele": "kwh", "prix": 0.78},
-            },
-        },
-    },
-
-    {
-        "id": "luminus-electric",
-        "nom": "Luminus Electric",
-        "operateur": "Luminus",
-        "pays_origine": ["BE"],
-        "url_officielle": "https://www.luminus.be/fr/mobilite-electrique",
-        "url_tarifs": "https://www.luminus.be/fr/mobilite-electrique/recharge-publique",
-        "methode": "httpx",
-        "ideal_voyage": False,
-        "ideal_quotidien": True,
-        "flotte_pro": False,
-        "points_forts": ["Intégration facture énergie Luminus", "Tarif nocturne avantageux"],
-        "points_faibles": ["Réseau limité hors Belgique"],
-        "donnees_init": {
-            "abonnement": {"mensuel_eur": 0, "annuel_eur": 0, "engagement_mois": 0},
-            "tarifs_be": {
-                "ac_slow":    {"modele": "kwh", "prix": 0.36, "frais_session": 0.0},
-                "dc_rapide":  {"modele": "kwh", "prix": 0.52, "frais_session": 0.0},
-                "dc_ultra":   {"modele": "kwh", "prix": 0.67, "frais_session": 0.0},
-            },
-            "roaming": {
-                "disponible": False,
-                "pays_couverts": ["BE"],
-                "tarif_dc_rapide": None,
-                "tarif_dc_ultra":  None,
-            },
-        },
-    },
-]
-
-# Index rapide par ID
-CARTES_BY_ID: dict[str, dict] = {c["id"]: c for c in CARTES}
+    
