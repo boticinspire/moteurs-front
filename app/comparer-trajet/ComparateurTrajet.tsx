@@ -581,7 +581,7 @@ export default function ComparateurTrajet({ routeInitiale }: { routeInitiale?: R
   // ── Sauvegarde trajet dans le contexte utilisateur ──
   function sauvegarderTrajetCtx(dep: string, arr: string) {
     const date = dateDepart || new Date().toISOString().slice(0, 10)
-    setTrajet(makeTrajetCtx(dep.trim(), arr.trim(), date)).catch(() => {})
+    setTrajet(makeTrajetCtx(dep.trim(), arr.trim(), date))
   }
 
   // ── Handlers ──
