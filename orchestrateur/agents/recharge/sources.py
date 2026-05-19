@@ -199,32 +199,94 @@ CARTES: list[dict] = [
 
     {
         "id": "ionity-passport",
-        "nom": "IONITY Passport",
+        "nom": "IONITY Charge League",
         "operateur": "IONITY",
-        "pays_origine": ["FR", "BE", "DE", "AT", "CH", "NL", "NO", "SE", "GB"],
+        "pays_origine": ["FR", "BE", "DE", "AT", "CH", "NL", "NO", "SE", "GB", "ES", "IT", "DK", "LU"],
         "url_officielle": "https://ionity.eu/fr/tarification",
         "url_tarifs": "https://ionity.eu/fr/tarification",
+        # PDF officiel "Charge League" du 01/04/2026 — tarifs certifiés réseaux partenaires
+        # (Atlante, Electra, Fastned). Scraping httpx maintenu en complément.
         "methode": "httpx",
         "ideal_voyage": True,
         "ideal_quotidien": False,
         "flotte_pro": False,
-        "points_forts": ["Réseau ultra-rapide exclusif ≥350 kW", "Présent sur toutes autoroutes EU"],
-        "points_faibles": ["Très cher sans abonnement", "Uniquement DC ultra-rapide"],
+        "points_forts": [
+            "Réseau ultra-rapide exclusif ≥350 kW",
+            "Présent sur toutes les autoroutes EU",
+            "Accès aux réseaux Electra, Fastned, Atlante avec la même carte",
+        ],
+        "points_faibles": [
+            "Uniquement DC ultra-rapide (≥150 kW)",
+            "Abonnement annuel obligatoire pour les meilleurs tarifs",
+        ],
+        "plans": [
+            {
+                "nom": "IONITY Go",
+                "abonnement_eur_an": 0,
+                "description": "Sans engagement — paiement à la session",
+            },
+            {
+                "nom": "IONITY Motion",
+                "abonnement_eur_an": 365,
+                "description": "Abonnement annuel — tarif réduit sur tous les réseaux partenaires",
+            },
+            {
+                "nom": "IONITY Power",
+                "abonnement_eur_an": 365,
+                "description": "Abonnement annuel premium — meilleur tarif disponible",
+            },
+        ],
         "donnees_init": {
-            "abonnement": {"mensuel_eur": 17.99, "annuel_eur": 0, "engagement_mois": 0},
+            # Tarifs plan Motion (365 €/an) — source : PDF Charge League 01/04/2026
+            "abonnement": {"mensuel_eur": 0, "annuel_eur": 365, "engagement_mois": 12},
             "tarifs_fr": {
+                # DC ultra-rapide ≥150 kW — moyenne Electra/Fastned
                 "ac_slow":    {"modele": "kwh", "prix": None,  "frais_session": 0.0},
                 "dc_rapide":  {"modele": "kwh", "prix": None,  "frais_session": 0.0},
-                "dc_ultra":   {"modele": "kwh", "prix": 0.35, "frais_session": 0.0},
+                "dc_ultra":   {"modele": "kwh", "prix": 0.60,  "frais_session": 0.0},
             },
+            # Plan IONITY Go (sans abonnement) — PDF 01/04/2026
             "tarifs_fr_sans_abo": {
-                "dc_ultra":   {"modele": "kwh", "prix": 0.79, "frais_session": 0.0},
+                "dc_ultra":   {"modele": "kwh", "prix": 0.66,  "frais_session": 0.0},
+            },
+            # Plan IONITY Power (365 €/an) — tarif le plus bas disponible
+            "tarifs_fr_power": {
+                "dc_ultra":   {"modele": "kwh", "prix": 0.55,  "frais_session": 0.0},
+            },
+            # Belgique — PDF 01/04/2026 (Electra + Fastned)
+            "tarifs_be": {
+                "ac_slow":    {"modele": "kwh", "prix": None,  "frais_session": 0.0},
+                "dc_rapide":  {"modele": "kwh", "prix": None,  "frais_session": 0.0},
+                "dc_ultra":   {"modele": "kwh", "prix": 0.75,  "frais_session": 0.0},
+            },
+            "tarifs_be_sans_abo": {
+                "dc_ultra":   {"modele": "kwh", "prix": 0.85,  "frais_session": 0.0},
+            },
+            # Suisse — PDF 01/04/2026 (Electra, en CHF)
+            "tarifs_ch": {
+                "devise": "CHF",
+                "dc_ultra":   {"modele": "kwh", "prix": 0.67,  "frais_session": 0.0},
+            },
+            "tarifs_ch_sans_abo": {
+                "devise": "CHF",
+                "dc_ultra":   {"modele": "kwh", "prix": 0.74,  "frais_session": 0.0},
             },
             "roaming": {
                 "disponible": True,
-                "pays_couverts": ["FR","BE","DE","AT","CH","NL","NO","SE","GB","DK","FI","CZ","HU","PL","SK"],
-                "tarif_dc_ultra": {"modele": "kwh", "prix": 0.35},
+                "pays_couverts": [
+                    "FR","BE","DE","AT","CH","NL","NO","SE","GB",
+                    "ES","IT","DK","LU","FI","CZ","HU","PL","SK",
+                ],
+                # Tarif roaming Motion sur réseaux partenaires EU — FR comme référence
+                "tarif_dc_ultra": {"modele": "kwh", "prix": 0.60},
             },
+            # Métadonnées source
+            "_source": "PDF IONITY Charge League — 01/04/2026",
+            "_note": (
+                "Tarifs minimum garantis au 01/04/2026. Prix en vigueur sur réseaux partenaires "
+                "(Atlante, Electra, Fastned). Les stations IONITY propres peuvent afficher des tarifs "
+                "différents selon la localisation (sur/hors autoroute)."
+            ),
         },
     },
 
