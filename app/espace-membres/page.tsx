@@ -58,7 +58,7 @@ export default function EspaceMembresPage() {
   async function chargerDonnees(userId: string) {
     // Profil
     const { data: p } = await sb.from('profils_membres').select('*').eq('user_id', userId).single()
-    if (p) setProfil({ prenom: p.prenom || '', type_profil: p.type_profil || 'B2B', pays: p.pays || 'FR' })
+    if (p) setProfil({ prenom: p.prenom || '', type_profil: p.profil_type || 'B2B', pays: p.pays || 'FR' })
 
     // Alertes
     const { data: a } = await sb.from('alertes_utilisateurs').select('*').eq('user_id', userId).single()
@@ -101,7 +101,7 @@ export default function EspaceMembresPage() {
       user_id: session.user.id,
       email: session.user.email,
       prenom: profil.prenom,
-      type_profil: profil.type_profil,
+      profil_type: profil.type_profil,
       pays: profil.pays,
     }, { onConflict: 'user_id' })
     setSaveStatus(error ? '✗ Erreur' : '✓ Enregistré')
