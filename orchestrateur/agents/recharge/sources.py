@@ -104,54 +104,89 @@ CARTES: list[dict] = [
             "Réseau encore limité hors grandes villes en zones rurales",
         ],
         "donnees_init": {
-            # Sans abonnement — tarif via App Electra ou Autocharge
-            # Source : https://intercom.help/go-electra/fr/articles/7987274 — 02/03/2026
-            # Electra ne distingue pas AC lent / DC rapide / DC ultra — tarif unique par kWh
+            # Sources croisées :
+            #   (1) https://intercom.help/go-electra/fr/articles/7987274 — 02/03/2026
+            #   (2) https://www.go-electra.com/en/price/ — mai 2026
+            # Electra facture au kWh, sans distinction AC/DC (tarif unique par station).
+            # L'abonnement Electra+ (sans engagement) économise jusqu'à 0,20 €/kWh.
+
+            # Plan sans abonnement (App Electra / Autocharge)
             "abonnement": {"mensuel_eur": 0, "annuel_eur": 0, "engagement_mois": 0},
+
+            # Plan Electra+ — sans engagement, économie jusqu'à 0,20 €/kWh
+            "abonnement_plus": {
+                "nom": "Electra+",
+                "engagement_mois": 0,
+                "economie_max_eur_kwh": 0.20,
+                "_note": "1 mois offert avec le code PLUS2. Tarif réduit sur toutes les stations Electra.",
+            },
+
+            # ── France ──────────────────────────────────────────────────────────
+            # Tarif dynamique selon occupation station — sources (1) et (2) concordent
             "tarifs_fr": {
-                # Tarif dynamique : 0,39–0,61 €/kWh via app. On retient 0,49 comme valeur médiane.
-                # Carte bancaire borne : 0,61 €/kWh (tarif plafond)
                 "ac_slow":    {"modele": "kwh", "prix": 0.49, "frais_session": 0.0},
                 "dc_rapide":  {"modele": "kwh", "prix": 0.49, "frais_session": 0.0},
                 "dc_ultra":   {"modele": "kwh", "prix": 0.49, "frais_session": 0.0},
-                "_note": "Tarif dynamique 0,39–0,61 €/kWh. Autoroute: tarif supérieur affiché sur borne.",
-                "_tarif_cb_borne": 0.61,
+                "_dynamique": True,
                 "_plage_min": 0.39,
                 "_plage_max": 0.61,
+                "_tarif_cb_borne": 0.61,
+                "_note": "Prix médian retenu (0,49). Autoroute : tarif supérieur affiché sur borne.",
             },
-            # Belgique — 0,54–0,75 €/kWh via app, 0,75 €/kWh CB borne — TVA 21%
+
+            # ── Belgique ─────────────────────────────────────────────────────────
+            # Tarif dynamique — sources (1) et (2) concordent
             "tarifs_be": {
                 "ac_slow":    {"modele": "kwh", "prix": 0.65, "frais_session": 0.0},
                 "dc_rapide":  {"modele": "kwh", "prix": 0.65, "frais_session": 0.0},
                 "dc_ultra":   {"modele": "kwh", "prix": 0.65, "frais_session": 0.0},
-                "_tarif_cb_borne": 0.75,
+                "_dynamique": True,
                 "_plage_min": 0.54,
                 "_plage_max": 0.75,
+                "_tarif_cb_borne": 0.75,
             },
-            # Suisse — 0,59 CHF/kWh via app, 0,64 CHF CB borne — TVA 8,1%
+
+            # ── Suisse ───────────────────────────────────────────────────────────
+            # Source (2) corrige source (1) : 0,64 CHF app (pas 0,59), 0,69 CHF CB (pas 0,64)
             "tarifs_ch": {
                 "devise": "CHF",
-                "dc_ultra":   {"modele": "kwh", "prix": 0.59, "frais_session": 0.0},
-                "_tarif_cb_borne": 0.64,
+                "dc_ultra":   {"modele": "kwh", "prix": 0.64, "frais_session": 0.0},
+                "_tarif_cb_borne": 0.69,
+                "_dynamique": False,
             },
-            # Autres pays couverts (roaming via app Electra)
+
+            # ── Autres pays (tarif app sans abonnement) ──────────────────────────
+            # Source principale : site go-electra.com/en/price — mai 2026
             "tarifs_par_pays": {
-                "DE": {"prix_app": 0.54, "prix_cb": 0.69, "tva_pct": 19},
-                "AT": {"prix_app": 0.59, "prix_cb": 0.69, "tva_pct": 20},
-                "NL": {"prix_app": 0.64, "prix_cb": 0.69, "tva_pct": 21},
-                "LU": {"prix_app": 0.49, "prix_cb": 0.59, "tva_pct": 17},
-                "ES": {"prix_app": 0.44, "prix_cb": 0.54, "tva_pct": 21},
-                "IT": {"prix_app": 0.64, "prix_cb": 0.79, "tva_pct": 22},
+                "DE": {"prix_app": 0.54, "prix_cb": 0.69, "tva_pct": 19,  "dynamique": False},
+                "AT": {"prix_app": 0.59, "prix_cb": 0.69, "tva_pct": 20,  "dynamique": False},
+                "LU": {"prix_app": 0.49, "prix_cb": 0.59, "tva_pct": 17,  "dynamique": False},
+                # Espagne : tarif dynamique confirmé FAQ site — source (2) corrige source (1)
+                "ES": {"prix_app_min": 0.39, "prix_app_max": 0.59, "prix_cb": 0.59, "tva_pct": 21, "dynamique": True},
+                # Italie : "à partir de 0,69" — tarif dynamique — source (2) corrige source (1)
+                "IT": {"prix_app_min": 0.69, "prix_cb": 0.79, "tva_pct": 22, "dynamique": True},
             },
+
+            # ── Roaming ──────────────────────────────────────────────────────────
             "roaming": {
                 "disponible": True,
-                "pays_couverts": ["FR","BE","DE","ES","IT","NL","AT","CH","LU"],
-                # Tarif roaming = tarif local du pays de la station via app Electra
+                "pays_couverts": ["FR","BE","DE","ES","IT","AT","CH","LU"],
+                # Pas de tarif roaming fixe : prix local du pays de la station via app
                 "tarif_dc_rapide": {"modele": "kwh", "prix": 0.49},
                 "tarif_dc_ultra":  {"modele": "kwh", "prix": 0.49},
-                "_note": "Le tarif appliqué est celui du pays de la station, non un tarif roaming fixe.",
+                "_note": "Le tarif appliqué est celui du pays de la station (pas de surcoût roaming).",
             },
-            "_source": "Aide Electra — 02/03/2026",
+
+            # ── Frais de stationnement (info consommateur) ───────────────────────
+            "_frais_stationnement": {
+                "via_app": "0,40 €/min après 80% de charge si station saturée (grâce 5 min, plafond 50 €)",
+                "via_badge_roaming": "0,40 €/min après 75 min de connexion (plafond 100 €)",
+            },
+
+            "_sources": [
+                "Intercom Electra — 02/03/2026",
+                "go-electra.com/en/price — mai 2026 (source prioritaire pour divergences)",
+            ],
         },
     },
 
@@ -425,55 +460,4 @@ CARTES: list[dict] = [
     # ── BELGIQUE ───────────────────────────────────────────────────────────────
 
     {
-        "id": "eneco-emobility",
-        "nom": "Eneco eMobility",
-        "operateur": "Eneco",
-        "pays_origine": ["BE", "NL"],
-        "url_officielle": "https://emobility.eneco.be/fr",
-        "url_tarifs": "https://emobility.eneco.be/fr/tarifs",
-        "methode": "httpx",
-        "ideal_voyage": True,
-        "ideal_quotidien": True,
-        "flotte_pro": True,
-        "points_forts": ["Leader belge", "Roaming EU large", "Offre flotte complète"],
-        "points_faibles": ["Tarif AC moins compétitif que Lidl"],
-        "donnees_init": {
-            "abonnement": {"mensuel_eur": 0, "annuel_eur": 0, "engagement_mois": 0},
-            "tarifs_be": {
-                "ac_slow":    {"modele": "kwh", "prix": 0.38, "frais_session": 0.0},
-                "dc_rapide":  {"modele": "kwh", "prix": 0.52, "frais_session": 0.0},
-                "dc_ultra":   {"modele": "kwh", "prix": 0.68, "frais_session": 0.0},
-            },
-            "roaming": {
-                "disponible": True,
-                "pays_couverts": ["BE","NL","DE","FR","LU","AT","CH","GB","NO","SE"],
-                "tarif_dc_rapide": {"modele": "kwh", "prix": 0.58},
-                "tarif_dc_ultra":  {"modele": "kwh", "prix": 0.76},
-            },
-        },
-    },
-
-    {
-        "id": "blue-corner",
-        "nom": "Blue Corner",
-        "operateur": "Blue Corner",
-        "pays_origine": ["BE"],
-        "url_officielle": "https://www.blue-corner.be/fr",
-        "url_tarifs": "https://www.blue-corner.be/fr/tarifs",
-        "methode": "httpx",
-        "ideal_voyage": False,
-        "ideal_quotidien": True,
-        "flotte_pro": True,
-        "points_forts": ["Réseau belge dense", "Gestion flotte avancée", "Facturation TVA BE simple"],
-        "points_faibles": ["Quasi uniquement en Belgique"],
-        "donnees_init": {
-            "abonnement": {"mensuel_eur": 0, "annuel_eur": 0, "engagement_mois": 0},
-            "tarifs_be": {
-                "ac_slow":    {"modele": "kwh", "prix": 0.37, "frais_session": 0.0},
-                "dc_rapide":  {"modele": "kwh", "prix": 0.51, "frais_session": 0.0},
-                "dc_ultra":   {"modele": "kwh", "prix": 0.65, "frais_session": 0.0},
-            },
-            "roaming": {
-                "disponible": False,
-                "pays_couverts": ["BE"],
-    
+        
