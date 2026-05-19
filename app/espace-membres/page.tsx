@@ -1,14 +1,11 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { createClient } from '@supabase/supabase-js'
 import Link from 'next/link'
 import { useUserContext } from '@/context/UserContextProvider'
+import { getSupabaseClient } from '@/lib/user-context'
 
-const sb = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-)
+const sb = getSupabaseClient()
 
 type Profil = {
   prenom: string
@@ -44,11 +41,13 @@ export default function EspaceMembresPage() {
   const [articles, setArticles] = useState<any[]>([])
 
   useEffect(() => {
-    sb.auth.getSession().then(({ data: { session } }) => {
-      setSession(session)
-      setLoading(false)
-      if (session) chargerDonnees(session.user.id)
-    })
+    sb.auth.getSession()
+      .then(({ data: { session } }) => {
+        setSession(session)
+        setLoading(false)
+        if (session) chargerDonnees(session.user.id)
+      })
+      .catch(() => setLoading(false))
     const { data: { subscription } } = sb.auth.onAuthStateChange((_event, session) => {
       setSession(session)
       if (session) chargerDonnees(session.user.id)

@@ -3,7 +3,7 @@
  * Types, helpers localStorage et Supabase pour le contexte utilisateur mémorisé.
  */
 
-import { createClient } from '@supabase/supabase-js'
+import { createClient, type SupabaseClient } from '@supabase/supabase-js'
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -64,11 +64,17 @@ const LS_KEY = 'moteurs_user_context'
 
 // ─── Supabase client (browser) ────────────────────────────────────────────────
 
-export function getSupabaseClient() {
-  return createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-  )
+// Singleton — une seule instance partagée dans tout le front
+let _client: SupabaseClient | null = null
+
+export function getSupabaseClient(): SupabaseClient {
+  if (!_client) {
+    _client = createClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+    )
+  }
+  return _client
 }
 
 // ─── Expiry ───────────────────────────────────────────────────────────────────
