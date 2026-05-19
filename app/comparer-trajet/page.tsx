@@ -1,5 +1,39 @@
 import type { Metadata } from 'next'
 import ComparateurTrajet from './ComparateurTrajet'
+import FaqAccordion from '@/components/FaqAccordion'
+
+const FAQ_TRAJET = [
+  {
+    question: "Comment le coût de recharge sur autoroute est-il calculé ?",
+    answer:
+      "Le comparateur utilise le tarif de recharge rapide (DC ≥ 50 kW) en station publique autoroute, soit environ 0,55–0,65 €/kWh en France en 2026. Ce tarif est nettement plus élevé que la recharge à domicile (~0,20 €/kWh). Si vous avez accès à un abonnement opérateur ou rechargez principalement chez vous avant de partir, le coût réel peut être inférieur. Modifiez le pays pour adapter les tarifs.",
+  },
+  {
+    question: "Combien d'arrêts de recharge faut-il prévoir Paris–Marseille en électrique ?",
+    answer:
+      "Pour un trajet d'environ 780 km, avec une autonomie autoroute réaliste d'environ 270 km, il faut prévoir 2 à 3 arrêts de recharge selon le niveau de charge de départ. Le comparateur calcule automatiquement le nombre d'arrêts et ajoute le temps de recharge (~25 min par arrêt en recharge rapide) à la durée totale du trajet.",
+  },
+  {
+    question: "Les péages sont-ils inclus dans le coût total ?",
+    answer:
+      "Oui, pour les 25 trajets pré-renseignés, les montants de péage sont intégrés au coût total (tarif standard 2026, sans abonnement télépéage). Les péages s'appliquent de la même façon à toutes les motorisations, donc ils influencent le classement uniquement si une motorisation bénéficie d'une exonération partielle ou totale (certains péages européens exonèrent les VE).",
+  },
+  {
+    question: "Un PHEV (hybride rechargeable) est-il vraiment avantageux sur autoroute ?",
+    answer:
+      "Sur autoroute, les PHEV perdent leur avantage électrique rapidement : après 50 km environ, le moteur thermique prend le relais avec une consommation souvent supérieure à un diesel équivalent (5–7 L/100 km). L'avantage du PHEV est surtout visible sur des trajets mixtes (ville + route). Le comparateur le modélise honnêtement : les 50 premiers km en électrique, puis thermique.",
+  },
+  {
+    question: "Puis-je saisir un trajet qui n'est pas dans la liste ?",
+    answer:
+      "Oui. En plus des 25 trajets populaires pré-renseignés, vous pouvez saisir librement une adresse de départ et d'arrivée. Le comparateur géocode les adresses, calcule la distance réelle via l'API OpenRouteService et estime les coûts. La distance est une estimation (itinéraire routier recommandé) et les péages sont calculés approximativement pour les trajets libres.",
+  },
+  {
+    question: "Les prix de l'énergie sont-ils à jour ?",
+    answer:
+      "Les prix sont mis à jour régulièrement par l'Agent Simulateur de Moteurs.com à partir des sources officielles (DGEC France, Commission Européenne). Ils reflètent les moyennes nationales 2026 pour l'essence, le diesel, l'électricité (recharge rapide publique) et le GNV. Les prix réels peuvent varier selon les enseignes et les régions.",
+  },
+]
 
 export const metadata: Metadata = {
   title: 'Comparateur coût trajet vacances — Diesel, Électrique, Hybride | Moteurs.com',
@@ -105,6 +139,9 @@ export default function PageComparateurTrajet() {
           </a>
         </div>
       </section>
+
+      {/* ── FAQ ── */}
+      <FaqAccordion items={FAQ_TRAJET} />
     </main>
   )
 }

@@ -1,6 +1,40 @@
 'use client'
 
 import { useEffect } from 'react'
+import FaqAccordion from '@/components/FaqAccordion'
+
+const FAQ_SIMULATEUR = [
+  {
+    question: "Qu'est-ce que le TCO (coût total de possession) ?",
+    answer:
+      "Le TCO (Total Cost of Ownership) est le coût réel d'un véhicule sur toute sa durée d'utilisation : prix d'achat net des aides, carburant ou électricité, entretien, assurance et fiscalité. Contrairement au simple prix d'achat, le TCO permet de comparer objectivement toutes les motorisations sur la même base.",
+  },
+  {
+    question: "Quelle motorisation est la moins chère sur 4 ans en France ?",
+    answer:
+      "Pour un fourgon moyen B2B roulant 25 000 km/an en France, le véhicule électrique est généralement le moins coûteux sur 4 ans grâce aux aides (bonus écologique, aides régionales) et au faible coût d'énergie. Le GNV arrive souvent en deuxième position pour les gros kilométrages. Le diesel reste compétitif pour les flottes qui chargent peu ou roulent principalement sur autoroute. Modifiez les paramètres dans le simulateur pour obtenir le résultat propre à votre situation.",
+  },
+  {
+    question: "Les aides gouvernementales sont-elles incluses dans le calcul ?",
+    answer:
+      "Oui. Le simulateur intègre les principales aides 2026 pour la France (bonus écologique, malus au poids), la Belgique (déductibilité à 100 % pour les BEV), la Suisse (exonérations cantonales) et le Canada (programme iZEV fédéral). Les aides sont appliquées automatiquement selon le pays et le segment sélectionnés. Vérifiez toujours votre éligibilité auprès d'un professionnel avant tout engagement.",
+  },
+  {
+    question: "Comment modifier le prix d'achat dans le simulateur ?",
+    answer:
+      "Dans la colonne gauche, la section « Prix d'achat réel » vous permet de saisir le prix après remise concessionnaire pour chaque motorisation. Vous pouvez aussi appliquer une remise globale uniforme (en euros) qui s'ajoute aux prix individuels. Si vous laissez les champs vides, le simulateur utilise les prix catalogue de référence 2026.",
+  },
+  {
+    question: "Le simulateur fonctionne-t-il pour la Belgique, la Suisse et le Canada ?",
+    answer:
+      "Oui. Sélectionnez le pays dans le menu déroulant : les prix de l'énergie, les aides fiscales et la TVA s'adaptent automatiquement. Les données sont mises à jour régulièrement par l'Agent Simulateur de Moteurs.com à partir des sources officielles (DGEC, Commission Européenne).",
+  },
+  {
+    question: "Que signifie « profil de conduite » et pourquoi est-ce important ?",
+    answer:
+      "Le profil de conduite (urbain, mixte, route, autoroute) influence directement les consommations. Un véhicule électrique consomme beaucoup moins en ville qu'en autoroute, alors que c'est l'inverse pour le diesel. Pour les VUL, le profil « mixte » est le plus représentatif d'un usage livraison classique. Ajustez selon votre réalité terrain pour obtenir l'estimation la plus précise.",
+  },
+]
 
 export default function SimulateurPage() {
   useEffect(() => {
@@ -15,6 +49,7 @@ export default function SimulateurPage() {
   }, [])
 
   return (
+    <>
     <div dangerouslySetInnerHTML={{ __html: `<section class="page-hero">
 <div class="container">
 <h1>Simulateur TCO Moteurs.com</h1>
@@ -111,5 +146,9 @@ export default function SimulateurPage() {
 </div>
 </section>
 ` }} />
+    <div className="container" style={{ paddingBottom: 80 }}>
+      <FaqAccordion items={FAQ_SIMULATEUR} />
+    </div>
+    </>
   )
 }
