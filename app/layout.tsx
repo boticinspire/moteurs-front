@@ -5,6 +5,7 @@ import './globals.css'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 import CookieBanner from '@/components/CookieBanner'
+import Providers from '@/components/Providers'
 
 const inter = Inter({
   subsets: ['latin'],
@@ -35,7 +36,7 @@ const orgJsonLd = {
     'Coût Total de Possession (TCO) automobile',
     'Véhicules électriques et hybrides',
     'Zones à Faibles Émissions (ZFE)',
-    'Aides à l\'achat de véhicules propres 2026',
+    "Aides à l'achat de véhicules propres 2026",
     'Bonus écologique France',
     'Déductibilité fiscale véhicules électriques Belgique',
     'Subventions cantonales véhicules électriques Suisse',
@@ -52,11 +53,7 @@ const orgJsonLd = {
   sameAs: [],
 }
 
-export default function RootLayout({
-  children,
-}: {
-  children: ReactNode
-}) {
+export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="fr" className={inter.variable}>
       <head>
@@ -66,10 +63,12 @@ export default function RootLayout({
         />
       </head>
       <body>
-        <Header />
-        {children}
-        <Footer />
-        <CookieBanner />
+        <Providers>
+          <Header />
+          {children}
+          <Footer />
+          <CookieBanner />
+        </Providers>
       </body>
     </html>
   )

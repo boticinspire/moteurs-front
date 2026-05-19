@@ -2,6 +2,7 @@
 
 import { useEffect } from 'react'
 import FaqAccordion from '@/components/FaqAccordion'
+import { useUserContext } from '@/context/UserContextProvider'
 
 const FAQ_SIMULATEUR = [
   {
@@ -37,6 +38,8 @@ const FAQ_SIMULATEUR = [
 ]
 
 export default function SimulateurPage() {
+  const { context, isReady } = useUserContext()
+
   useEffect(() => {
     // Charger simulateur.js depuis les assets statiques
     const script = document.createElement('script')
@@ -47,6 +50,22 @@ export default function SimulateurPage() {
       if (document.body.contains(script)) document.body.removeChild(script)
     }
   }, [])
+
+  // Pré-remplir le pays depuis le contexte utilisateur
+  useEffect(() => {
+    if (!isReady) return
+    const timer = setTimeout(() => {
+      const paysCtx = context.preferences?.pays
+      if (paysCtx) {
+        const selectPays = document.getElementById('pays') as HTMLSelectElement | null
+        if (selectPays && selectPays.value !== paysCtx) {
+          selectPays.value = paysCtx
+          selectPays.dispatchEvent(new Event('change', { bubbles: true }))
+        }
+      }
+    }, 600)
+    return () => clearTimeout(timer)
+  }, [isReady, context.preferences?.pays])
 
   return (
     <>

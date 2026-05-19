@@ -14,6 +14,8 @@ import { type Coords } from '@/lib/openchargemaps'
 import StationsRecharge from './StationsRecharge'
 import routesData from '@/data/routes-vacances.json'
 import villesData from '@/data/villes.json'
+import { useUserContext } from '@/context/UserContextProvider'
+import { makeTrajetCtx } from '@/lib/user-context'
 
 const ROUTES = routesData as Route[]
 const REGIONS = ['Toutes', ...Array.from(new Set(ROUTES.map(r => r.region).filter(Boolean)))]
@@ -417,11 +419,17 @@ function AutocompleteVille({
 // ─── Composant principal ──────────────────────────────────────────────────────
 
 export default function ComparateurTrajet({ routeInitiale }: { routeInitiale?: Route }) {
+  // ── Contexte utilisateur global ──
+  const { context, isReady, setTrajet, updateVoiture } = useUserContext()
+
   // ── Sélection trajet ──
   const [depart, setDepart] = useState(routeInitiale?.depart ?? '')
   const [arrivee, setArrivee] = useState(routeInitiale?.arrivee ?? '')
   const [confirmed, setConfirmed] = useState(!!routeInitiale)
   const [recents, setRecents] = useState<{ depart: string; arrivee: string }[]>([])
+
+  // ── Date de départ (optionnelle — déclenche l'expiration auto du contexte) ──
+  const [dateDepart, setDateDepart] = useState('')
 
   // ── Trajet ORS (routes inconnues) ──
   const [orsEtat, setOrsEtat] = useState<OrsEtat>('idle')
@@ -444,6 +452,17 @@ export default function ComparateurTrajet({ routeInitiale }: { routeInitiale?: R
 
   // Charge les recherches récentes au montage
   useEffect(() => { setRecents(loadRecents()) }, [])
+
+  // ── Pré-remplissage depuis le contexte (une seule fois, quand isReady) ──
+  const prefilledRef = useRef(false)
+  useEffect(() => {
+    if (!isReady || prefilledRef.current || routeInitiale) return
+    prefilledRef.current = true
+    const t = context.trajet
+    if (t?.depart)      setDepart(t.depart)
+    if (t?.arrivee)     setArrivee(t.arrivee)
+    if (t?.date_depart) setDateDepart(t.date_depart)
+  }, [isReady, context.trajet, routeInitiale])
 
   // Cherche un trajet pré-calculé dans routes-vacances.json
   const routeMatch = useMemo(() => findRoute(depart, arrivee), [depart, arrivee])
@@ -559,6 +578,12 @@ export default function ComparateurTrajet({ routeInitiale }: { routeInitiale?: R
     return ROUTES.filter(r => r.region === filtreRegion)
   }, [filtreRegion])
 
+  // ── Sauvegarde trajet dans le contexte utilisateur ──
+  function sauvegarderTrajetCtx(dep: string, arr: string) {
+    const date = dateDepart || new Date().toISOString().slice(0, 10)
+    setTrajet(makeTrajetCtx(dep.trim(), arr.trim(), date)).catch(() => {})
+  }
+
   // ── Handlers ──
   const handleCalculer = () => {
     if (!depart.trim() || !arrivee.trim()) return
@@ -567,9 +592,11 @@ export default function ComparateurTrajet({ routeInitiale }: { routeInitiale?: R
       setConfirmed(true)
       saveRecent(depart.trim(), arrivee.trim())
       setRecents(loadRecents())
+      sauvegarderTrajetCtx(depart, arrivee)
     } else if (orsRoute) {
       // Trajet ORS déjà calculé, on reconfirme
       setConfirmed(true)
+      sauvegarderTrajetCtx(depart, arrivee)
     } else {
       // Lance la résolution ORS (cache → API)
       resoudreViaORS()
@@ -590,6 +617,7 @@ export default function ComparateurTrajet({ routeInitiale }: { routeInitiale?: R
     setConfirmed(true)
     saveRecent(r.depart, r.arrivee)
     setRecents(loadRecents())
+    sauvegarderTrajetCtx(r.depart, r.arrivee)
   }
   const handlePickRecent = (r: { depart: string; arrivee: string }) => {
     setDepart(r.depart); setArrivee(r.arrivee)
@@ -735,6 +763,26 @@ export default function ComparateurTrajet({ routeInitiale }: { routeInitiale?: R
             </p>
           </div>
         )}
+
+
+        {/* Date de départ + puce voiture habituelle */}
+        <div style={{ marginTop: 14, display: 'flex', alignItems: 'center', gap: 12, flexWrap: 'wrap' }}>
+          <label style={{ fontSize: '0.8rem', color: 'var(--color-text-muted)', fontWeight: 500, whiteSpace: 'nowrap' }}>
+            📅 Date de départ <span style={{ opacity: 0.6 }}>(optionnel — mémorisé)</span>
+          </label>
+          <input
+            type="date"
+            value={dateDepart}
+            min={new Date().toISOString().slice(0, 10)}
+            onChange={e => setDateDepart(e.target.value)}
+            style={{ padding: '6px 10px', borderRadius: 8, fontSize: '0.85rem', border: '1.5px solid var(--color-border)', background: 'var(--color-bg-alt)', color: 'var(--color-text)', cursor: 'pointer' }}
+          />
+          {context.voiture && (
+            <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6, padding: '5px 12px', borderRadius: 999, fontSize: '0.78rem', fontWeight: 600, background: 'rgba(8,145,178,0.08)', border: '1px solid rgba(8,145,178,0.25)', color: '#0891b2' }}>
+              🚗 {context.voiture.marque ? `${context.voiture.marque} ` : ''}{context.voiture.motorisation}
+            </span>
+          )}
+        </div>
 
         {/* Recherches récentes */}
         {recents.length > 0 && !confirmed && (
