@@ -21,7 +21,7 @@ Champs :
 
 CARTES: list[dict] = [
 
-    # ── FRANCE ─────────────────────────────────────────────────────────────────
+    # -- FRANCE -----------------------------------------------------------------
 
     {
         "id": "chargemap-pass",
@@ -121,7 +121,7 @@ CARTES: list[dict] = [
                 "_note": "1 mois offert avec le code PLUS2. Tarif réduit sur toutes les stations Electra.",
             },
 
-            # ── France ──────────────────────────────────────────────────────────
+            # -- France ----------------------------------------------------------
             # Tarif dynamique selon occupation station — sources (1) et (2) concordent
             "tarifs_fr": {
                 "ac_slow":    {"modele": "kwh", "prix": 0.49, "frais_session": 0.0},
@@ -134,7 +134,7 @@ CARTES: list[dict] = [
                 "_note": "Prix médian retenu (0,49). Autoroute : tarif supérieur affiché sur borne.",
             },
 
-            # ── Belgique ─────────────────────────────────────────────────────────
+            # -- Belgique ---------------------------------------------------------
             # Tarif dynamique — sources (1) et (2) concordent
             "tarifs_be": {
                 "ac_slow":    {"modele": "kwh", "prix": 0.65, "frais_session": 0.0},
@@ -146,7 +146,7 @@ CARTES: list[dict] = [
                 "_tarif_cb_borne": 0.75,
             },
 
-            # ── Suisse ───────────────────────────────────────────────────────────
+            # -- Suisse -----------------------------------------------------------
             # Source (2) corrige source (1) : 0,64 CHF app (pas 0,59), 0,69 CHF CB (pas 0,64)
             "tarifs_ch": {
                 "devise": "CHF",
@@ -155,7 +155,7 @@ CARTES: list[dict] = [
                 "_dynamique": False,
             },
 
-            # ── Autres pays (tarif app sans abonnement) ──────────────────────────
+            # -- Autres pays (tarif app sans abonnement) --------------------------
             # Source principale : site go-electra.com/en/price — mai 2026
             "tarifs_par_pays": {
                 "DE": {"prix_app": 0.54, "prix_cb": 0.69, "tva_pct": 19,  "dynamique": False},
@@ -167,7 +167,7 @@ CARTES: list[dict] = [
                 "IT": {"prix_app_min": 0.69, "prix_cb": 0.79, "tva_pct": 22, "dynamique": True},
             },
 
-            # ── Roaming ──────────────────────────────────────────────────────────
+            # -- Roaming ----------------------------------------------------------
             "roaming": {
                 "disponible": True,
                 "pays_couverts": ["FR","BE","DE","ES","IT","AT","CH","LU"],
@@ -177,7 +177,7 @@ CARTES: list[dict] = [
                 "_note": "Le tarif appliqué est celui du pays de la station (pas de surcoût roaming).",
             },
 
-            # ── Frais de stationnement (info consommateur) ───────────────────────
+            # -- Frais de stationnement (info consommateur) -----------------------
             "_frais_stationnement": {
                 "via_app": "0,40 €/min après 80% de charge si station saturée (grâce 5 min, plafond 50 €)",
                 "via_badge_roaming": "0,40 €/min après 75 min de connexion (plafond 100 €)",
@@ -429,6 +429,98 @@ CARTES: list[dict] = [
     },
 
     {
+        "id": "fastned-gold",
+        "nom": "Fastned Gold",
+        "operateur": "Fastned",
+        "pays_origine": ["FR", "BE", "DE", "NL", "CH", "ES", "IT", "DK", "GB"],
+        "url_officielle": "https://www.fastnedcharging.com/fr",
+        "url_tarifs": "https://www.fastnedcharging.com/fr/recharge/tarifs",
+        "methode": "httpx",
+        "ideal_voyage": True,
+        "ideal_quotidien": False,
+        "flotte_pro": False,
+        "points_forts": [
+            "3 niveaux tarifaires clairs : standard / app (-10%) / Gold (-30%)",
+            "400+ stations DC rapide/ultra en Europe",
+            "Abonnement Gold résiliable à tout moment (après 1 mois)",
+            "Couverture 9 pays dont FR, BE, DE, NL, CH, ES, IT",
+        ],
+        "points_faibles": [
+            "Uniquement DC rapide/ultra — pas d'AC lent",
+            "Réseau propre Fastned (pas d'accès à d'autres opérateurs)",
+            "Badge roaming : tarif standard + frais fournisseur badge",
+        ],
+        "donnees_init": {
+            # Source : fastnedcharging.com/fr/recharge/tarifs — mai 2026
+            # Structure : Standard (CB borne) / App sans abo (-10%) / Gold Member (-30%, 11,99€/mois)
+            # Formule vérifiée : App = Standard × 0,90 ; Gold = Standard × 0,70
+
+            "abonnement": {
+                "nom": "Gold Member",
+                "mensuel_eur": 11.99,
+                "annuel_eur": 0,
+                "engagement_mois": 1,
+                "reduction_pct": 30,
+                "_note": "Résiliable à tout moment après le 1er mois. UK : 9,98 £/mois.",
+            },
+
+            # -- France --
+            # Standard : 0,61 € | App : 0,55 € (-10%) | Gold : 0,43 € (-30%)
+            "tarifs_fr": {
+                "ac_slow":    {"modele": "kwh", "prix": None,  "frais_session": 0.0},
+                "dc_rapide":  {"modele": "kwh", "prix": 0.43,  "frais_session": 0.0},
+                "dc_ultra":   {"modele": "kwh", "prix": 0.43,  "frais_session": 0.0},
+                "_standard":  0.61,
+                "_app_sans_abo": 0.55,
+                "_gold_abo":  0.43,
+            },
+
+            # -- Belgique --
+            # Standard : 0,77 € | App : 0,69 € | Gold : 0,54 €
+            "tarifs_be": {
+                "ac_slow":    {"modele": "kwh", "prix": None,  "frais_session": 0.0},
+                "dc_rapide":  {"modele": "kwh", "prix": 0.54,  "frais_session": 0.0},
+                "dc_ultra":   {"modele": "kwh", "prix": 0.54,  "frais_session": 0.0},
+                "_standard":  0.77,
+                "_app_sans_abo": 0.69,
+                "_gold_abo":  0.54,
+            },
+
+            # -- Suisse --
+            # Standard : 0,75 CHF | App : 0,67 CHF | Gold : 0,53 CHF
+            "tarifs_ch": {
+                "devise": "CHF",
+                "dc_ultra":   {"modele": "kwh", "prix": 0.53,  "frais_session": 0.0},
+                "_standard":  0.75,
+                "_app_sans_abo": 0.67,
+                "_gold_abo":  0.53,
+                "_abonnement_mensuel_chf": 11.99,
+            },
+
+            # -- Autres pays -- tarifs Gold Member
+            "tarifs_par_pays": {
+                "DE": {"standard": 0.69, "app": 0.62, "gold": 0.49, "devise": "EUR", "abo_mois": 11.99},
+                "NL": {"standard": 0.77, "app": 0.69, "gold": 0.54, "devise": "EUR", "abo_mois": 11.99},
+                "ES": {"standard": 0.59, "app": 0.53, "gold": 0.41, "devise": "EUR", "abo_mois": 11.99},
+                "IT": {"standard": 0.83, "app": 0.75, "gold": 0.58, "devise": "EUR", "abo_mois": 11.99},
+                "DK": {"standard": 3.79, "app": 3.41, "gold": 2.65, "devise": "DKK", "abo_mois": 89.99},
+                "GB": {"standard": 0.79, "app": 0.71, "gold": 0.55, "devise": "GBP", "abo_mois": 9.98},
+            },
+
+            # -- Roaming (badge partenaire sur reseau Fastned)
+            "roaming": {
+                "disponible": True,
+                "pays_couverts": ["FR","BE","DE","NL","CH","ES","IT","DK","GB"],
+                "tarif_dc_rapide": {"modele": "kwh", "prix": 0.61},
+                "tarif_dc_ultra":  {"modele": "kwh", "prix": 0.61},
+                "_note": "Tarif standard applique via badge ; le fournisseur badge peut ajouter des frais.",
+            },
+
+            "_source": "fastnedcharging.com/fr/recharge/tarifs -- mai 2026",
+        },
+    },
+
+    {
         "id": "enbw-mobility",
         "nom": "EnBW mobility+",
         "operateur": "EnBW",
@@ -457,7 +549,124 @@ CARTES: list[dict] = [
         },
     },
 
-    # ── BELGIQUE ───────────────────────────────────────────────────────────────
+    # -- BELGIQUE --
 
     {
-        
+        "id": "eneco-emobility",
+        "nom": "Eneco eMobility",
+        "operateur": "Eneco",
+        "pays_origine": ["BE", "NL"],
+        "url_officielle": "https://emobility.eneco.be/fr",
+        "url_tarifs": "https://emobility.eneco.be/fr/tarifs",
+        "methode": "httpx",
+        "ideal_voyage": True,
+        "ideal_quotidien": True,
+        "flotte_pro": True,
+        "points_forts": ["Leader belge", "Roaming EU large", "Offre flotte complète"],
+        "points_faibles": ["Tarif AC moins compétitif que Lidl"],
+        "donnees_init": {
+            "abonnement": {"mensuel_eur": 0, "annuel_eur": 0, "engagement_mois": 0},
+            "tarifs_be": {
+                "ac_slow":    {"modele": "kwh", "prix": 0.38, "frais_session": 0.0},
+                "dc_rapide":  {"modele": "kwh", "prix": 0.52, "frais_session": 0.0},
+                "dc_ultra":   {"modele": "kwh", "prix": 0.68, "frais_session": 0.0},
+            },
+            "roaming": {
+                "disponible": True,
+                "pays_couverts": ["BE","NL","DE","FR","LU","AT","CH","GB","NO","SE"],
+                "tarif_dc_rapide": {"modele": "kwh", "prix": 0.58},
+                "tarif_dc_ultra":  {"modele": "kwh", "prix": 0.76},
+            },
+        },
+    },
+
+    {
+        "id": "blue-corner",
+        "nom": "Blue Corner",
+        "operateur": "Blue Corner",
+        "pays_origine": ["BE"],
+        "url_officielle": "https://www.blue-corner.be/fr",
+        "url_tarifs": "https://www.blue-corner.be/fr/tarifs",
+        "methode": "httpx",
+        "ideal_voyage": False,
+        "ideal_quotidien": True,
+        "flotte_pro": True,
+        "points_forts": ["Réseau belge dense", "Gestion flotte avancée", "Facturation TVA BE simple"],
+        "points_faibles": ["Quasi uniquement en Belgique"],
+        "donnees_init": {
+            "abonnement": {"mensuel_eur": 0, "annuel_eur": 0, "engagement_mois": 0},
+            "tarifs_be": {
+                "ac_slow":    {"modele": "kwh", "prix": 0.37, "frais_session": 0.0},
+                "dc_rapide":  {"modele": "kwh", "prix": 0.51, "frais_session": 0.0},
+                "dc_ultra":   {"modele": "kwh", "prix": 0.65, "frais_session": 0.0},
+            },
+            "roaming": {
+                "disponible": False,
+                "pays_couverts": ["BE"],
+                "tarif_dc_rapide": None,
+                "tarif_dc_ultra":  None,
+            },
+        },
+    },
+
+    {
+        "id": "allego",
+        "nom": "Allego",
+        "operateur": "Allego",
+        "pays_origine": ["BE", "NL", "DE", "FR"],
+        "url_officielle": "https://www.allego.eu/fr-fr",
+        "url_tarifs": "https://www.allego.eu/fr-fr/conducteurs/tarifs",
+        "methode": "httpx",
+        "ideal_voyage": True,
+        "ideal_quotidien": False,
+        "flotte_pro": False,
+        "points_forts": ["Gros opérateur NL/BE", "Réseau autoroute NL/BE/DE bien maillé"],
+        "points_faibles": ["Moins de présence en France"],
+        "donnees_init": {
+            "abonnement": {"mensuel_eur": 0, "annuel_eur": 0, "engagement_mois": 0},
+            "tarifs_be": {
+                "ac_slow":    {"modele": "kwh", "prix": 0.40, "frais_session": 0.0},
+                "dc_rapide":  {"modele": "kwh", "prix": 0.54, "frais_session": 0.0},
+                "dc_ultra":   {"modele": "kwh", "prix": 0.70, "frais_session": 0.0},
+            },
+            "roaming": {
+                "disponible": True,
+                "pays_couverts": ["BE","NL","DE","FR","LU","AT","CH"],
+                "tarif_dc_rapide": {"modele": "kwh", "prix": 0.60},
+                "tarif_dc_ultra":  {"modele": "kwh", "prix": 0.78},
+            },
+        },
+    },
+
+    {
+        "id": "luminus-electric",
+        "nom": "Luminus Electric",
+        "operateur": "Luminus",
+        "pays_origine": ["BE"],
+        "url_officielle": "https://www.luminus.be/fr/mobilite-electrique",
+        "url_tarifs": "https://www.luminus.be/fr/mobilite-electrique/recharge-publique",
+        "methode": "httpx",
+        "ideal_voyage": False,
+        "ideal_quotidien": True,
+        "flotte_pro": False,
+        "points_forts": ["Intégration facture énergie Luminus", "Tarif nocturne avantageux"],
+        "points_faibles": ["Réseau limité hors Belgique"],
+        "donnees_init": {
+            "abonnement": {"mensuel_eur": 0, "annuel_eur": 0, "engagement_mois": 0},
+            "tarifs_be": {
+                "ac_slow":    {"modele": "kwh", "prix": 0.36, "frais_session": 0.0},
+                "dc_rapide":  {"modele": "kwh", "prix": 0.52, "frais_session": 0.0},
+                "dc_ultra":   {"modele": "kwh", "prix": 0.67, "frais_session": 0.0},
+            },
+            "roaming": {
+                "disponible": False,
+                "pays_couverts": ["BE"],
+                "tarif_dc_rapide": None,
+                "tarif_dc_ultra":  None,
+            },
+        },
+    },
+]
+
+# Index rapide par ID
+CARTES_BY_ID: dict[str, dict] = {c["id"]: c for c in CARTES}
