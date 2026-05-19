@@ -302,7 +302,7 @@ export default function EspaceMembresPage() {
                     <div style={{ fontWeight: 700, fontSize: '0.88rem', marginBottom: 10 }}>⚙️ Préférences</div>
                     <div style={{ fontSize: '0.82rem', color: 'var(--color-text-soft)', lineHeight: 1.7 }}>
                       <div><strong>Pays :</strong> {context.preferences.pays}</div>
-                      {context.preferences.carte_recharge && <div><strong>Carte recharge :</strong> {context.preferences.carte_recharge}</div>}
+                      {context.voiture?.carte_recharge && <div><strong>Carte recharge :</strong> {context.voiture.carte_recharge}</div>}
                     </div>
                     <div style={{ marginTop: 10 }}>
                       <select
