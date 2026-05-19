@@ -289,14 +289,18 @@ def _upsert_carte(source: dict, donnees: dict, needs_review: bool, anomalies: li
 
 def _creer_event(carte_id: str, type_event: str, ancien: dict | None,
                  nouveau: dict | None, note: str = "") -> None:
-    supabase = get_supabase()
-    supabase.table("recharge_events").insert({
-        "carte_id":  carte_id,
-        "type":      type_event,
-        "ancien":    ancien,
-        "nouveau":   nouveau,
-        "note":      note,
-    }).execute()
+    """Crée un événement de traçabilité. Silencieux en cas d'erreur FK."""
+    try:
+        supabase = get_supabase()
+        supabase.table("recharge_events").insert({
+            "carte_id":  carte_id,
+            "type":      type_event,
+            "ancien":    ancien,
+            "nouveau":   nouveau,
+            "note":      note,
+        }).execute()
+    except Exception as e:
+        logger.warning(f"[AgentRecharge] Event non créé pour {carte_id} : {e}")
 
 
 # ── Scraping d'une carte ──────────────────────────────────────────────────────
@@ -322,6 +326,14 @@ async def scraper_carte(carte_id: str) -> dict:
             logger.info(f"[AgentRecharge] {nom} — initialisée manuellement")
             return {"carte": carte_id, "statut": "init_manuel", "changement": True}
         return {"carte": carte_id, "statut": "manuel_inchange", "changement": False}
+
+    # ── Cartes httpx : initialiser en base si première fois ──────────────────
+    # Garantit que la carte existe avant toute création d'event (contrainte FK)
+    existant = _lire_carte(carte_id)
+    if not existant:
+        _upsert_carte(source, source["donnees_init"], True,
+                      ["Init automatique — scraping en cours"])
+        logger.info(f"[AgentRecharge] {nom} — initialisée avec données par défaut")
 
     # ── Cartes httpx : scraping ───────────────────────────────────────────────
     url_tarifs = source.get("url_tarifs")
@@ -350,7 +362,7 @@ async def scraper_carte(carte_id: str) -> dict:
     nouvelles_donnees = _construire_donnees(source, extrait)
 
     # ── Diff vs Supabase ──────────────────────────────────────────────────────
-    existant = _lire_carte(carte_id)
+    # Note : existant a déjà été chargé en début de fonction
     nouveau_hash = _hash_donnees(nouvelles_donnees)
 
     if existant and existant.get("hash_donnees") == nouveau_hash:
