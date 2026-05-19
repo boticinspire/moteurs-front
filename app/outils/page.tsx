@@ -8,6 +8,15 @@ export const metadata: Metadata = {
 
 const OUTILS_PHARES = [
   {
+    href: '/outils/cartes-recharge',
+    icon: '⚡',
+    titre: 'Comparateur cartes de recharge',
+    desc: '14 cartes FR & BE comparées : Chargemap, Freshmile, Electra, IONITY, Lidl… Calculez votre coût mensuel réel selon votre profil — AC/DC, voyages EU, flotte.',
+    tags: ['14 cartes', 'Roaming EU', 'Flotte Pro', 'FR & BE'],
+    cta: 'Trouver ma carte',
+    badge: 'Nouveau',
+  },
+  {
     href: '/assistant-vacances',
     icon: '🏖️',
     titre: 'Assistant Vacances Auto',
