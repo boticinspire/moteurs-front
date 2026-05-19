@@ -25,6 +25,7 @@ import httpx
 from config import get_settings
 from database import get_supabase
 from agents.recharge.sources import CARTES, CARTES_BY_ID
+from agents.recharge.playwright_scraper import scrape_with_playwright, html_est_probablement_vide
 
 logger = logging.getLogger(__name__)
 settings = get_settings()
@@ -341,8 +342,14 @@ async def scraper_carte(carte_id: str) -> dict:
         return {"carte": carte_id, "statut": "pas_url", "changement": False}
 
     html = await _fetch_html(url_tarifs)
+
+    # Fallback Playwright si httpx a échoué ou retourné une page non-rendue
+    if html_est_probablement_vide(html):
+        logger.info(f"[AgentRecharge] {nom} — httpx insuffisant, fallback Playwright")
+        html = await scrape_with_playwright(url_tarifs)
+
     if not html:
-        logger.warning(f"[AgentRecharge] {nom} — fetch échoué")
+        logger.warning(f"[AgentRecharge] {nom} — fetch échoué (httpx + Playwright)")
         _creer_event(carte_id, "scrape_error", None, None, f"Fetch échoué : {url_tarifs}")
         return {"carte": carte_id, "statut": "fetch_error", "changement": False}
 
