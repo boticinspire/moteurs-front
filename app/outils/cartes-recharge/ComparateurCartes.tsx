@@ -22,6 +22,7 @@ interface Carte {
   nom: string
   operateur: string
   pays_origine: string[]
+  url_officielle?: string
   ideal_voyage: boolean
   ideal_quotidien: boolean
   flotte_pro: boolean
