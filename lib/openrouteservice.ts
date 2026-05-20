@@ -18,6 +18,8 @@ export interface ORSCoordonnees {
 export interface ORSItineraire {
   distance_km: number
   duree_min:   number
+  /** Géométrie GeoJSON LineString — tableau de [lon, lat]. Vide si non récupérée. */
+  geometry:    Array<[number, number]>
 }
 
 export type ORSProfil = 'recommended' | 'fastest' | 'shortest'
@@ -128,11 +130,15 @@ export async function calculerRoute(
       return null
     }
     const data    = await res.json()
-    const summary = data.routes?.[0]?.summary
+    // Réponse GeoJSON : { features: [{ geometry: {coordinates}, properties: {summary} }] }
+    const feature = data.features?.[0]
+    const summary = feature?.properties?.summary
     if (!summary) return null
+    const coords  = (feature?.geometry?.coordinates ?? []) as Array<[number, number]>
     return {
       distance_km: Math.round(summary.distance / 1000),
       duree_min:   Math.round(summary.duration  / 60),
+      geometry:    coords,
     }
   } catch (err) {
     console.error('[ORS] Directions erreur', err)

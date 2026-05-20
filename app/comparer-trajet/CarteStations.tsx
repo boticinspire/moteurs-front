@@ -12,9 +12,12 @@ interface Props {
   stations: Station[]
   coordDepart: Coords
   coordArrivee: Coords
+  /** Géométrie GeoJSON LineString de la route (array de [lon, lat]). Si fournie,
+   *  on dessine la vraie route ; sinon on tombe sur une ligne droite A→B pointillée. */
+  routeGeometry?: Array<[number, number]> | null
 }
 
-export default function CarteStations({ stations, coordDepart, coordArrivee }: Props) {
+export default function CarteStations({ stations, coordDepart, coordArrivee, routeGeometry }: Props) {
   const mapRef = useRef<HTMLDivElement>(null)
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const leafletMap = useRef<any>(null)
@@ -54,10 +57,17 @@ export default function CarteStations({ stations, coordDepart, coordArrivee }: P
       }).addTo(map)
 
       // ── Ligne du trajet ──
-      L.polyline(
-        [[coordDepart.lat, coordDepart.lng], [coordArrivee.lat, coordArrivee.lng]],
-        { color: '#7af0c2', weight: 3, opacity: 0.7, dashArray: '8 5' }
-      ).addTo(map)
+      // Si on a la géométrie ORS (array de [lon, lat]), on trace la vraie route
+      // en trait plein. Sinon on tombe sur la ligne droite pointillée A→B.
+      if (routeGeometry && routeGeometry.length > 1) {
+        const latlngs = routeGeometry.map(([lon, lat]) => [lat, lon] as [number, number])
+        L.polyline(latlngs, { color: '#0891b2', weight: 4, opacity: 0.85 }).addTo(map)
+      } else {
+        L.polyline(
+          [[coordDepart.lat, coordDepart.lng], [coordArrivee.lat, coordArrivee.lng]],
+          { color: '#7af0c2', weight: 3, opacity: 0.7, dashArray: '8 5' }
+        ).addTo(map)
+      }
 
       // ── Marqueur départ ──
       const iconDepart = L.divIcon({
@@ -122,13 +132,20 @@ export default function CarteStations({ stations, coordDepart, coordArrivee }: P
           .bindPopup(popupHtml)
       }
 
-      // Ajuster le zoom pour englober départ + arrivée
-      const bounds = L.latLngBounds([
+      // Ajuster le zoom pour englober tout : départ + arrivée + géométrie + stations
+      const boundsPoints: [number, number][] = [
         [coordDepart.lat, coordDepart.lng],
         [coordArrivee.lat, coordArrivee.lng],
         ...stations.slice(0, 20).map(s => [s.coords.lat, s.coords.lng] as [number, number]),
-      ])
-      map.fitBounds(bounds, { padding: [40, 40] })
+      ]
+      if (routeGeometry && routeGeometry.length > 1) {
+        // Échantillonne 1 point sur 10 pour éviter de surcharger les bounds
+        for (let i = 0; i < routeGeometry.length; i += Math.max(1, Math.floor(routeGeometry.length / 50))) {
+          const [lon, lat] = routeGeometry[i]
+          boundsPoints.push([lat, lon])
+        }
+      }
+      map.fitBounds(L.latLngBounds(boundsPoints), { padding: [40, 40] })
     })
 
     return () => {
@@ -138,7 +155,7 @@ export default function CarteStations({ stations, coordDepart, coordArrivee }: P
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [stations])
+  }, [stations, routeGeometry])
 
   return (
     <>

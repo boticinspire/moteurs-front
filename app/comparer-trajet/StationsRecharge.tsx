@@ -37,6 +37,8 @@ interface Props {
   villeDepart?: string
   villeArrivee?: string
   distanceTrajet: number  // pour l'info contextuelle
+  // Géométrie GeoJSON LineString de la route (array de [lon, lat]) — dessinée sur la carte
+  routeGeometry?: Array<[number, number]> | null
 }
 
 // ─── Sous-composant : carte d'une station ────────────────────────────────────
@@ -150,7 +152,7 @@ function CarteStation({ s, index }: { s: Station; index: number }) {
 
 // ─── Composant principal ──────────────────────────────────────────────────────
 
-export default function StationsRecharge({ coordDepart, coordArrivee, villeDepart, villeArrivee, distanceTrajet }: Props) {
+export default function StationsRecharge({ coordDepart, coordArrivee, villeDepart, villeArrivee, distanceTrajet, routeGeometry }: Props) {
   const [stations,       setStations]       = useState<Station[]>([])
   const [chargement,     setChargement]     = useState(false)
   const [erreur,         setErreur]         = useState('')
@@ -464,6 +466,7 @@ export default function StationsRecharge({ coordDepart, coordArrivee, villeDepar
             stations={stationsFiltrees}
             coordDepart={resolvedCoords.depart}
             coordArrivee={resolvedCoords.arrivee}
+            routeGeometry={routeGeometry}
           />
         </div>
       )}

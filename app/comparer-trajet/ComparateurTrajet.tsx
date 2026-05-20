@@ -8,7 +8,7 @@ import {
   type Route, type ResultatTrajet, type ResultatLocation,
   type CategorieLocation,
 } from '@/lib/trajet'
-import { geocoderEtCalculer, geocoderCandidats, calculerRoute, type ORSCoordonnees } from '@/lib/openrouteservice'
+import { geocoderEtCalculer, geocoderCandidats, calculerRoute, type ORSCoordonnees, type ORSItineraire } from '@/lib/openrouteservice'
 import { getRouteFromCache, saveRouteToCache, normaliserVille } from '@/lib/trajets-cache'
 import { type Coords } from '@/lib/openchargemaps'
 import StationsRecharge from './StationsRecharge'
@@ -513,6 +513,8 @@ export default function ComparateurTrajet({ routeInitiale }: { routeInitiale?: R
 
   // ── Coordonnées GPS (pour les stations de recharge) ──
   const [routeCoords, setRouteCoords] = useState<{ depart: Coords; arrivee: Coords } | null>(null)
+  // ── Géométrie de la route ORS (LineString — pour tracer la vraie route sur la carte) ──
+  const [routeGeometry, setRouteGeometry] = useState<Array<[number, number]> | null>(null)
 
   // ── Labels normalisés renvoyés par ORS — permet à l'utilisateur de vérifier
   //    qu'une saisie ambiguë (ex. "varena") a été résolue où il pensait.
@@ -566,6 +568,7 @@ export default function ComparateurTrajet({ routeInitiale }: { routeInitiale?: R
     setOrsEtat('loading')
     setOrsRoute(null)
     setResolvedLabels(null)
+    setRouteGeometry(null)
 
     const d = depart.trim()
     const a = arrivee.trim()
@@ -595,7 +598,7 @@ export default function ComparateurTrajet({ routeInitiale }: { routeInitiale?: R
     // 2. Appel ORS — court-circuit si l'utilisateur a déjà pické dans les
     //    suggestions live (on a déjà les coords, pas besoin de re-géocoder).
     try {
-      let itineraire: { distance_km: number; duree_min: number }
+      let itineraire: ORSItineraire
       let coordDepart:  ORSCoordonnees
       let coordArrivee: ORSCoordonnees
 
@@ -640,6 +643,7 @@ export default function ComparateurTrajet({ routeInitiale }: { routeInitiale?: R
         depart:  { lat: coordDepart.lat,  lng: coordDepart.lon },
         arrivee: { lat: coordArrivee.lat, lng: coordArrivee.lon },
       })
+      setRouteGeometry(itineraire.geometry?.length ? itineraire.geometry : null)
       setResolvedLabels({
         depart:     coordDepart.label,
         arrivee:    coordArrivee.label,
@@ -1112,6 +1116,7 @@ export default function ComparateurTrajet({ routeInitiale }: { routeInitiale?: R
             <StationsRecharge
               coordDepart={routeCoords?.depart}
               coordArrivee={routeCoords?.arrivee}
+              routeGeometry={routeGeometry}
               villeDepart={routeSelectionnee.depart}
               villeArrivee={routeSelectionnee.arrivee}
               distanceTrajet={routeSelectionnee.distance_km}

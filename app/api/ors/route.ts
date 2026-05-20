@@ -52,7 +52,7 @@ export async function POST(req: NextRequest) {
     }
 
     try {
-      const res = await fetch(`${ORS_BASE}/v2/directions/driving-car`, {
+      const res = await fetch(`${ORS_BASE}/v2/directions/driving-car/geojson`, {
         method:  'POST',
         headers: {
           Authorization:   ORS_KEY,
