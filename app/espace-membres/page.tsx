@@ -22,16 +22,17 @@ type Alerte = {
 }
 
 export default function EspaceMembresPage() {
-  // Contexte utilisateur global (voiture, trajet mémorisé, préférences)
+  // Auth et contexte viennent exclusivement du Provider global
+  // → zéro onAuthStateChange ni getSession() ici, plus de double _recoverAndRefresh
   const {
     context, isReady,
+    userId, userEmail,
     updateVoiture, updatePreferences,
     resetTrajet, resetSinistre, resetAll,
+    signOut,
     sinistreExpireSoon: sinExpire,
   } = useUserContext()
 
-  const [session, setSession]   = useState<any>(null)
-  const [loading, setLoading]   = useState(true)
   const [email, setEmail]       = useState('')
   const [sending, setSending]   = useState(false)
   const [status, setStatus]     = useState<{ msg: string; ok: boolean } | null>(null)
@@ -40,29 +41,10 @@ export default function EspaceMembresPage() {
   const [saveStatus, setSaveStatus] = useState('')
   const [articles, setArticles] = useState<any[]>([])
 
+  // Charger les données dès que l'utilisateur est identifié
   useEffect(() => {
-    let ready = false
-
-    // onAuthStateChange envoie INITIAL_SESSION immédiatement — pas besoin de getSession()
-    // (avoir les deux en parallèle crée une contention sur le verrou interne Supabase v2)
-    const { data: { subscription } } = sb.auth.onAuthStateChange((event, session) => {
-      setSession(session)
-      if (!ready) {
-        ready = true
-        setLoading(false)
-        if (session) chargerDonnees(session.user.id)
-      } else if (event === 'SIGNED_IN' && session) {
-        chargerDonnees(session.user.id)
-      }
-    })
-
-    // Filet de sécurité : si l'événement ne se déclenche pas dans 4s, débloquer quand même
-    const t = setTimeout(() => {
-      if (!ready) { ready = true; setLoading(false) }
-    }, 4000)
-
-    return () => { subscription.unsubscribe(); clearTimeout(t) }
-  }, [])
+    if (isReady && userId) chargerDonnees(userId)
+  }, [isReady, userId])
 
   async function chargerDonnees(userId: string) {
     // Profil
@@ -104,26 +86,26 @@ export default function EspaceMembresPage() {
   }
 
   async function sauvegarderProfil() {
-    if (!session) return
+    if (!userId) return
     setSaveStatus('…')
     const { error } = await sb.from('profils_membres').upsert({
-      user_id: session.user.id,
-      email: session.user.email,
+      user_id: userId,
+      email: userEmail,
       prenom: profil.prenom,
       profil_type: profil.type_profil,
       pays: profil.pays,
     }, { onConflict: 'user_id' })
     setSaveStatus(error ? '✗ Erreur' : '✓ Enregistré')
     setTimeout(() => setSaveStatus(''), 2000)
-    if (!error) chargerDonnees(session.user.id)
+    if (!error) chargerDonnees(userId)
   }
 
   async function sauvegarderAlerte() {
-    if (!session) return
+    if (!userId) return
     setSaveStatus('…')
     const mots_cles = alerte.mots_cles.split(',').map(s => s.trim()).filter(Boolean)
     const payload: any = {
-      user_id: session.user.id,
+      user_id: userId,
       pays: alerte.pays,
       segments: alerte.segments,
       mots_cles,
@@ -137,7 +119,7 @@ export default function EspaceMembresPage() {
   }
 
   async function seDeconnecter() {
-    await sb.auth.signOut()
+    await signOut()
     window.location.href = '/espace-membres'
   }
 
@@ -155,7 +137,8 @@ export default function EspaceMembresPage() {
     }))
   }
 
-  if (loading) return (
+  // Provider pas encore prêt → spinner
+  if (!isReady) return (
     <div style={{ textAlign: 'center', padding: '80px 24px' }}>
       <div className="loader" />
       <p style={{ color: 'var(--color-text-soft)', marginTop: 16 }}>Vérification de votre session…</p>
@@ -163,7 +146,7 @@ export default function EspaceMembresPage() {
   )
 
   // ── VUE LOGIN ──
-  if (!session) return (
+  if (!userId) return (
     <div className="membre-wrapper">
       <div className="login-card">
         <div className="logo-sm">Moteurs<span>.com</span></div>
@@ -192,7 +175,7 @@ export default function EspaceMembresPage() {
   )
 
   // ── VUE DASHBOARD ──
-  const prenom = profil.prenom || session.user.email.split('@')[0]
+  const prenom = profil.prenom || (userEmail ?? '').split('@')[0]
   const PAYS_LIST = [{ v: 'FR', l: 'France' }, { v: 'BE', l: 'Belgique' }, { v: 'CH', l: 'Suisse' }, { v: 'CA', l: 'Canada' }]
   const SEG_LIST = [{ v: 'B2B', l: 'B2B / Flottes' }, { v: 'Particulier', l: 'Particuliers' }, { v: 'ZFE', l: 'ZFE' }, { v: 'Aides', l: 'Aides & Fiscalité' }]
 
@@ -202,7 +185,7 @@ export default function EspaceMembresPage() {
         <div className="dashboard-header">
           <div>
             <h1>👋 Bonjour {prenom} !</h1>
-            <div className="user-info">{session.user.email}</div>
+            <div className="user-info">{userEmail}</div>
           </div>
           <button className="btn-logout" onClick={seDeconnecter}>Déconnexion</button>
         </div>

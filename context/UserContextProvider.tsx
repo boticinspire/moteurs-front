@@ -31,6 +31,7 @@ export interface UserContextValue {
   context: UserContext
   isReady: boolean
   userId: string | null
+  userEmail: string | null
 
   // Setters
   updateVoiture: (v: VoitureCtx | null) => void
@@ -42,6 +43,9 @@ export interface UserContextValue {
   resetTrajet: () => void
   resetSinistre: () => void
   resetAll: () => void
+
+  // Auth
+  signOut: () => Promise<void>
 
   // Helpers
   sinistreExpireSoon: boolean
@@ -63,6 +67,7 @@ export default function UserContextProvider({ children }: { children: ReactNode 
   const [context, setContextState] = useState<UserContext>({})
   const [isReady, setIsReady] = useState(false)
   const [userId, setUserId] = useState<string | null>(null)
+  const [userEmail, setUserEmail] = useState<string | null>(null)
 
   const userIdRef = useRef<string | null>(null)
   // Garde la valeur locale pour la fusion (stable, ref)
@@ -111,8 +116,10 @@ export default function UserContextProvider({ children }: { children: ReactNode 
         if (event === 'INITIAL_SESSION' || event === 'SIGNED_IN') {
           if (session?.user) {
             const uid = session.user.id
+            const email = session.user.email ?? null
             userIdRef.current = uid
             setUserId(uid)
+            setUserEmail(email)
 
             // Fusion localStorage ↔ Supabase
             try {
@@ -131,12 +138,14 @@ export default function UserContextProvider({ children }: { children: ReactNode 
             // Pas de session → utilisateur non connecté
             userIdRef.current = null
             setUserId(null)
+            setUserEmail(null)
           }
           if (!cancelled) setIsReady(true)
 
         } else if (event === 'SIGNED_OUT') {
           userIdRef.current = null
           setUserId(null)
+          setUserEmail(null)
           const freshLocal = expireContext(loadContextLocal())
           localRef.current = freshLocal
           setContextState(freshLocal)
@@ -189,10 +198,15 @@ export default function UserContextProvider({ children }: { children: ReactNode 
 
   // ── Valeur exposée ────────────────────────────────────────────────────────
 
+  const signOut = useCallback(async () => {
+    await getSupabaseClient().auth.signOut()
+  }, [])
+
   const value: UserContextValue = {
     context,
     isReady,
     userId,
+    userEmail,
     updateVoiture,
     updatePreferences,
     setTrajet,
@@ -200,6 +214,7 @@ export default function UserContextProvider({ children }: { children: ReactNode 
     resetTrajet,
     resetSinistre,
     resetAll,
+    signOut,
     sinistreExpireSoon: isSinistreExpiringSoon(context),
   }
 
