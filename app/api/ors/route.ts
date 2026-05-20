@@ -57,10 +57,20 @@ export async function POST(req: NextRequest) {
         headers: {
           Authorization:   ORS_KEY,
           'Content-Type':  'application/json',
-          Accept:          'application/json',
+          // ORS /geojson exige application/geo+json — sinon retourne 406 Not Acceptable
+          Accept:          'application/geo+json, application/json',
         },
         body: JSON.stringify({ coordinates, preference }),
       })
+      if (!res.ok) {
+        // Log + remonter pour faciliter le diagnostic côté client
+        const errBody = await res.text().catch(() => '')
+        console.error('[/api/ors] directions échec', res.status, errBody.slice(0, 300))
+        return NextResponse.json(
+          { error: `ORS directions HTTP ${res.status}`, detail: errBody.slice(0, 200) },
+          { status: res.status }
+        )
+      }
       const data = await res.json()
       return NextResponse.json(data, { status: res.status })
     } catch (err) {
