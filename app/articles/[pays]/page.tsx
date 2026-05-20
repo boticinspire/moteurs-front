@@ -2,11 +2,6 @@ import { createClient } from '@supabase/supabase-js';
 import Link from 'next/link';
 import { Metadata } from 'next';
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
-const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
-
-const supabase = createClient(supabaseUrl, supabaseKey);
-
 // Countries mapping
 const paysMap: Record<string, { label: string; long: string }> = {
   fr: { label: 'France', long: 'Articles pour la France' },
@@ -15,18 +10,26 @@ const paysMap: Record<string, { label: string; long: string }> = {
   ca: { label: 'Canada', long: 'Articles pour le Canada' },
 };
 
+function getSupabase() {
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL!;
+  // Prefer service role key (server-only); fall back to anon key at build time
+  const key =
+    process.env.SUPABASE_SERVICE_ROLE_KEY ||
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
+  return createClient(url, key);
+}
+
 export async function generateStaticParams() {
-  return Object.keys(paysMap).map(pays => ({
-    pays,
-  }));
+  return Object.keys(paysMap).map(pays => ({ pays }));
 }
 
 export async function generateMetadata({
   params,
 }: {
-  params: { pays: string };
+  params: Promise<{ pays: string }>;
 }): Promise<Metadata> {
-  const paysConfig = paysMap[params.pays];
+  const { pays } = await params;
+  const paysConfig = paysMap[pays];
   if (!paysConfig) {
     return {
       title: 'Articles - Moteurs.com',
@@ -40,7 +43,7 @@ export async function generateMetadata({
     openGraph: {
       title: `Articles ${paysConfig.label} - Moteurs.com`,
       description: `${paysConfig.long} : décryptage TCO, ZFE, aides gouvernementales.`,
-      url: `https://moteurs.com/articles/${params.pays}`,
+      url: `https://moteurs.com/articles/${pays}`,
     },
   };
 }
@@ -48,9 +51,10 @@ export async function generateMetadata({
 export default async function ArticlesByCountry({
   params,
 }: {
-  params: { pays: string };
+  params: Promise<{ pays: string }>;
 }) {
-  const paysConfig = paysMap[params.pays];
+  const { pays } = await params;
+  const paysConfig = paysMap[pays];
 
   if (!paysConfig) {
     return (
@@ -66,11 +70,12 @@ export default async function ArticlesByCountry({
   }
 
   // Fetch articles for this country
+  const supabase = getSupabase();
   const { data: articles, error } = await supabase
     .from('articles')
     .select('id, titre, slug, resume, created_at, updated_at, pays, segment, image_url')
     .eq('statut', 'PUBLIE')
-    .eq('pays', params.pays.toUpperCase())
+    .eq('pays', pays.toUpperCase())
     .order('created_at', { ascending: false });
 
   if (error) {
