@@ -438,6 +438,10 @@ export default function ComparateurTrajet({ routeInitiale }: { routeInitiale?: R
   // ── Coordonnées GPS (pour les stations de recharge) ──
   const [routeCoords, setRouteCoords] = useState<{ depart: Coords; arrivee: Coords } | null>(null)
 
+  // ── Labels normalisés renvoyés par ORS — permet à l'utilisateur de vérifier
+  //    qu'une saisie ambiguë (ex. "varena") a été résolue où il pensait.
+  const [resolvedLabels, setResolvedLabels] = useState<{ depart: string; arrivee: string } | null>(null)
+
   // ── Fallback manuel ──
   const [customDistance, setCustomDistance] = useState('')
   const [customPeages, setCustomPeages] = useState('')
@@ -472,6 +476,7 @@ export default function ComparateurTrajet({ routeInitiale }: { routeInitiale?: R
   async function resoudreViaORS() {
     setOrsEtat('loading')
     setOrsRoute(null)
+    setResolvedLabels(null)
 
     const d = depart.trim()
     const a = arrivee.trim()
@@ -534,6 +539,7 @@ export default function ComparateurTrajet({ routeInitiale }: { routeInitiale?: R
         depart:  { lat: coordDepart.lat,  lng: coordDepart.lon },
         arrivee: { lat: coordArrivee.lat, lng: coordArrivee.lon },
       })
+      setResolvedLabels({ depart: coordDepart.label, arrivee: coordArrivee.label })
       setOrsEtat('idle')
       setConfirmed(true)
       saveRecent(d, a)
@@ -609,6 +615,7 @@ export default function ComparateurTrajet({ routeInitiale }: { routeInitiale?: R
     setOrsRoute(null)
     setOrsEtat('idle')
     setRouteCoords(null)
+    setResolvedLabels(null)
   }
   const handlePickPopular = (r: Route) => {
     setDepart(r.depart); setArrivee(r.arrivee)
@@ -626,10 +633,10 @@ export default function ComparateurTrajet({ routeInitiale }: { routeInitiale?: R
     setConfirmed(true)
   }
   const handleChangeDepart = (v: string) => {
-    setDepart(v); setConfirmed(false); setOrsRoute(null); setOrsEtat('idle'); setRouteCoords(null)
+    setDepart(v); setConfirmed(false); setOrsRoute(null); setOrsEtat('idle'); setRouteCoords(null); setResolvedLabels(null)
   }
   const handleChangeArrivee = (v: string) => {
-    setArrivee(v); setConfirmed(false); setOrsRoute(null); setOrsEtat('idle'); setRouteCoords(null)
+    setArrivee(v); setConfirmed(false); setOrsRoute(null); setOrsEtat('idle'); setRouteCoords(null); setResolvedLabels(null)
   }
 
   return (
@@ -639,10 +646,7 @@ export default function ComparateurTrajet({ routeInitiale }: { routeInitiale?: R
         background: 'var(--color-bg-card)', border: '1.5px solid var(--color-border)',
         borderRadius: 16, padding: '22px 24px', marginBottom: 24,
       }}>
-        <div style={{
-          display: 'grid', gap: 12, alignItems: 'end',
-          gridTemplateColumns: 'minmax(0,1fr) auto minmax(0,1fr) auto',
-        }}>
+        <div className="trajet-fields-grid with-action">
           <AutocompleteVille
             label="Départ"
             value={depart}
@@ -654,6 +658,7 @@ export default function ComparateurTrajet({ routeInitiale }: { routeInitiale?: R
             onClick={handleSwap}
             aria-label="Inverser départ et arrivée"
             title="Inverser"
+            className="trajet-swap-btn"
             style={{
               width: 44, height: 44, borderRadius: '50%',
               background: 'var(--color-bg-alt)', border: '1.5px solid var(--color-border)',
@@ -675,6 +680,7 @@ export default function ComparateurTrajet({ routeInitiale }: { routeInitiale?: R
           <button
             onClick={handleCalculer}
             disabled={!depart.trim() || !arrivee.trim() || orsEtat === 'loading'}
+            className="trajet-action-btn"
             style={{
               padding: '12px 24px', borderRadius: 10,
               cursor: (!depart.trim() || !arrivee.trim() || orsEtat === 'loading') ? 'not-allowed' : 'pointer',
@@ -699,6 +705,28 @@ export default function ComparateurTrajet({ routeInitiale }: { routeInitiale?: R
           }}>
             <span style={{ animation: 'spin 1s linear infinite', display: 'inline-block' }}>⏳</span>
             Géocodage et calcul d&apos;itinéraire en cours via OpenRouteService…
+          </div>
+        )}
+
+        {/* ── Labels résolus : l'utilisateur peut vérifier que "varena" a bien
+             été interprété comme Varena (Italie) et pas Varėna (Lituanie). */}
+        {resolvedLabels && orsEtat === 'idle' && orsRoute && (
+          <div style={{
+            marginTop: 14, padding: '10px 14px',
+            background: 'rgba(34,197,94,0.07)', border: '1px solid rgba(34,197,94,0.25)',
+            borderRadius: 10, fontSize: '0.82rem', color: 'var(--color-text)',
+          }}>
+            <div style={{ fontSize: '0.74rem', color: '#16a34a', fontWeight: 700, marginBottom: 4 }}>
+              ✓ Itinéraire résolu
+            </div>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr auto 1fr', alignItems: 'center', gap: 8 }}>
+              <span><strong>Départ :</strong> {resolvedLabels.depart}</span>
+              <span style={{ color: 'var(--color-text-muted)' }}>→</span>
+              <span style={{ textAlign: 'right' }}><strong>Arrivée :</strong> {resolvedLabels.arrivee}</span>
+            </div>
+            <div style={{ marginTop: 6, fontSize: '0.72rem', color: 'var(--color-text-muted)' }}>
+              Ce n&apos;est pas la bonne ville ? Précisez (ex. <em>« Verona, Italie »</em>) ou choisissez dans la liste de suggestions.
+            </div>
           </div>
         )}
 

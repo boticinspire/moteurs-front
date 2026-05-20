@@ -29,6 +29,9 @@ export async function POST(req: NextRequest) {
     url.searchParams.set('text', text)
     url.searchParams.set('size', '1')
     url.searchParams.set('layers', 'locality,region,localadmin')
+    // Filtre pays : restreint la recherche pour éviter Stuttgart Arkansas etc.
+    const country = typeof body.country === 'string' ? body.country.trim() : ''
+    if (country) url.searchParams.set('boundary.country', country)
 
     try {
       const res  = await fetch(url.toString())

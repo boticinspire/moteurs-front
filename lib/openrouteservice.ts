@@ -20,12 +20,26 @@ export type ORSProfil = 'recommended' | 'fastest' | 'shortest'
 
 // ─── Géocodage ────────────────────────────────────────────────────────────────
 
-export async function geocoderVille(texte: string): Promise<ORSCoordonnees | null> {
+/**
+ * Filtre pays par défaut (ISO 3166-1 alpha-3, comma-separated).
+ * Évite que "Stuttgart" résolve à Stuttgart, Arkansas ou "Verona" à Verona, NJ.
+ */
+const DEFAULT_BOUNDARY_COUNTRIES =
+  'FRA,BEL,CHE,LUX,DEU,ITA,ESP,PRT,AUT,NLD,GBR,IRL,MCO,SMR,VAT,LIE,AND,CAN,DNK,SWE,NOR,FIN,POL,CZE,HUN,SVK,SVN,HRV'
+
+export async function geocoderVille(
+  texte: string,
+  paysCode?: string | null,
+): Promise<ORSCoordonnees | null> {
   try {
     const res = await fetch('/api/ors', {
       method:  'POST',
       headers: { 'Content-Type': 'application/json' },
-      body:    JSON.stringify({ action: 'geocode', text: texte }),
+      body:    JSON.stringify({
+        action:  'geocode',
+        text:    texte,
+        country: paysCode ?? DEFAULT_BOUNDARY_COUNTRIES,
+      }),
     })
     if (!res.ok) {
       console.error('[ORS] Geocode HTTP', res.status, texte)
@@ -82,14 +96,15 @@ export async function geocoderEtCalculer(
   nomDepart:  string,
   nomArrivee: string,
   profil: ORSProfil = 'recommended',
+  paysCodes?: { depart?: string | null; arrivee?: string | null },
 ): Promise<{
   itineraire:   ORSItineraire
   coordDepart:  ORSCoordonnees
   coordArrivee: ORSCoordonnees
 } | null> {
   const [coordDepart, coordArrivee] = await Promise.all([
-    geocoderVille(nomDepart),
-    geocoderVille(nomArrivee),
+    geocoderVille(nomDepart,  paysCodes?.depart),
+    geocoderVille(nomArrivee, paysCodes?.arrivee),
   ])
 
   if (!coordDepart || !coordArrivee) {

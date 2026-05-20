@@ -56,6 +56,34 @@ const btnSecondary: React.CSSProperties = {
   background: 'var(--color-bg-alt)', color: 'var(--color-text)',
 }
 
+// ─── Champ réutilisable pour les fiches véhicule ─────────────────────────────
+// IMPORTANT : déclaré au niveau du module. Définir un composant à l'intérieur
+// d'un parent crée un nouveau type à chaque render → React démonte l'input et
+// le focus est perdu à chaque caractère.
+function VehiculeField({
+  label: lbl, field, placeholder, type = 'text', vehicule, patch,
+}: {
+  label:       string
+  field:       keyof VehiculeInfo
+  placeholder?: string
+  type?:       string
+  vehicule:    VehiculeInfo
+  patch:       (p: Partial<VehiculeInfo>) => void
+}) {
+  return (
+    <div>
+      <label style={label()}>{lbl}</label>
+      <input
+        style={input}
+        type={type}
+        placeholder={placeholder}
+        value={(vehicule[field] as string) ?? ''}
+        onChange={e => patch({ [field]: e.target.value } as Partial<VehiculeInfo>)}
+      />
+    </div>
+  )
+}
+
 // ─── Composant principal ──────────────────────────────────────────────────────
 
 export default function ConstantIntelligent() {
@@ -344,17 +372,6 @@ function EtapeVehicule({ titre, sousTitre, vehicule, patch, onNext, onPrev }: {
   onNext:    () => void
   onPrev:    () => void
 }) {
-  const Field = ({ label: lbl, field, placeholder, type = 'text' }: {
-    label: string; field: keyof VehiculeInfo; placeholder?: string; type?: string
-  }) => (
-    <div>
-      <label style={label()}>{lbl}</label>
-      <input style={input} type={type} placeholder={placeholder}
-        value={vehicule[field] as string}
-        onChange={e => patch({ [field]: e.target.value } as Partial<VehiculeInfo>)} />
-    </div>
-  )
-
   return (
     <div>
       <div style={card}>
@@ -366,8 +383,8 @@ function EtapeVehicule({ titre, sousTitre, vehicule, patch, onNext, onPrev }: {
             🚗 Véhicule
           </div>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
-            <Field label="Immatriculation" field="immatriculation" placeholder="AB-123-CD" />
-            <Field label="Marque / Modèle" field="marque_modele" placeholder="Renault Clio 5" />
+            <VehiculeField label="Immatriculation" field="immatriculation" placeholder="AB-123-CD" vehicule={vehicule} patch={patch} />
+            <VehiculeField label="Marque / Modèle" field="marque_modele" placeholder="Renault Clio 5" vehicule={vehicule} patch={patch} />
           </div>
         </div>
 
@@ -376,15 +393,15 @@ function EtapeVehicule({ titre, sousTitre, vehicule, patch, onNext, onPrev }: {
             👤 Conducteur
           </div>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
-            <Field label="Nom" field="nom_conducteur" placeholder="Dupont" />
-            <Field label="Prénom" field="prenom_conducteur" placeholder="Jean" />
+            <VehiculeField label="Nom" field="nom_conducteur" placeholder="Dupont" vehicule={vehicule} patch={patch} />
+            <VehiculeField label="Prénom" field="prenom_conducteur" placeholder="Jean" vehicule={vehicule} patch={patch} />
           </div>
           <div style={{ marginTop: 12 }}>
-            <Field label="Adresse" field="adresse_conducteur" placeholder="12 rue de la Paix, 75001 Paris" />
+            <VehiculeField label="Adresse" field="adresse_conducteur" placeholder="12 rue de la Paix, 75001 Paris" vehicule={vehicule} patch={patch} />
           </div>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12, marginTop: 12 }}>
-            <Field label="Téléphone" field="telephone" placeholder="+33 6 12 34 56 78" type="tel" />
-            <Field label="Email" field="email" placeholder="jean.dupont@email.com" type="email" />
+            <VehiculeField label="Téléphone" field="telephone" placeholder="+33 6 12 34 56 78" type="tel" vehicule={vehicule} patch={patch} />
+            <VehiculeField label="Email" field="email" placeholder="jean.dupont@email.com" type="email" vehicule={vehicule} patch={patch} />
           </div>
         </div>
 
@@ -393,12 +410,12 @@ function EtapeVehicule({ titre, sousTitre, vehicule, patch, onNext, onPrev }: {
             🛡️ Assurance
           </div>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
-            <Field label="Nom de l'assureur" field="assurance_nom" placeholder="AXA, MAAF, Allianz…" />
-            <Field label="N° de police" field="assurance_numero_police" placeholder="123456789" />
+            <VehiculeField label="Nom de l'assureur" field="assurance_nom" placeholder="AXA, MAAF, Allianz…" vehicule={vehicule} patch={patch} />
+            <VehiculeField label="N° de police" field="assurance_numero_police" placeholder="123456789" vehicule={vehicule} patch={patch} />
           </div>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12, marginTop: 12 }}>
-            <Field label="Agence / Contrat" field="assurance_agence" placeholder="Agence Paris Centre" />
-            <Field label="Tél. assurance" field="assurance_telephone" placeholder="+33 1 …" type="tel" />
+            <VehiculeField label="Agence / Contrat" field="assurance_agence" placeholder="Agence Paris Centre" vehicule={vehicule} patch={patch} />
+            <VehiculeField label="Tél. assurance" field="assurance_telephone" placeholder="+33 1 …" type="tel" vehicule={vehicule} patch={patch} />
           </div>
         </div>
 

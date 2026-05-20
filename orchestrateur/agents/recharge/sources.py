@@ -35,7 +35,10 @@ CARTES: list[dict] = [
         "ideal_quotidien": True,
         "flotte_pro": False,
         "points_forts": ["Plus grand réseau France", "Roaming 30+ pays EU", "App très complète"],
-        "points_faibles": ["Tarif ultra-rapide élevé sans abonnement"],
+        "points_faibles": [
+            "Tarif ultra-rapide élevé sans abonnement",
+            "Commission appliquée sur les chargeurs tiers — rarement la moins chère sur un usage régulier (à utiliser plutôt en badge de secours)",
+        ],
         "donnees_init": {
             "abonnement": {"mensuel_eur": 0, "annuel_eur": 0, "engagement_mois": 0},
             "tarifs_fr": {
@@ -64,7 +67,10 @@ CARTES: list[dict] = [
         "ideal_quotidien": True,
         "flotte_pro": True,
         "points_forts": ["Agrégateur multi-réseaux", "API flotte", "Facturation centralisée"],
-        "points_faibles": ["Interface moins intuitive que Chargemap"],
+        "points_faibles": [
+            "Interface moins intuitive que Chargemap",
+            "Tarification mixte kWh + minute selon le CPO : coût final imprévisible si la voiture charge lentement en fin de courbe",
+        ],
         "donnees_init": {
             "abonnement": {"mensuel_eur": 0, "annuel_eur": 0, "engagement_mois": 0},
             "tarifs_fr": {
@@ -93,21 +99,22 @@ CARTES: list[dict] = [
         "ideal_quotidien": False,
         "flotte_pro": False,
         "points_forts": [
-            "Facturation au kWh réel (AC et DC — même tarif)",
-            "Réseau ultra-rapide ≥150 kW en croissance rapide",
-            "Stations urbaines premium + autoroute",
-            "Tarif app compétitif (dès 0,39 €/kWh en France)",
+            "Opérateur pur DC ultra-rapide (≥150 kW) — réseau en forte croissance",
+            "Stations urbaines premium + autoroute, tarification transparente au kWh",
+            "Tarif app compétitif (dès 0,39 €/kWh en France selon station)",
+            "Abonnement Electra+ optionnel : jusqu'à -0,20 €/kWh",
         ],
         "points_faibles": [
+            "Quasi-absence d'AC lent (réseau DC uniquement, sauf très rares exceptions)",
             "Tarif dynamique en France : varie selon la station (0,39–0,61 €/kWh)",
-            "Badge RFID peut avoir des frais supplémentaires",
-            "Réseau encore limité hors grandes villes en zones rurales",
+            "Badge RFID tiers : surcoût possible facturé par le fournisseur du badge",
         ],
         "donnees_init": {
             # Sources croisées :
             #   (1) https://intercom.help/go-electra/fr/articles/7987274 — 02/03/2026
             #   (2) https://www.go-electra.com/en/price/ — mai 2026
-            # Electra facture au kWh, sans distinction AC/DC (tarif unique par station).
+            # Electra exploite essentiellement des stations DC ultra-rapides.
+            # Les bornes AC sont marginales : le tarif AC n'est pas représentatif.
             # L'abonnement Electra+ (sans engagement) économise jusqu'à 0,20 €/kWh.
 
             # Plan sans abonnement (App Electra / Autocharge)
@@ -122,9 +129,10 @@ CARTES: list[dict] = [
             },
 
             # -- France ----------------------------------------------------------
-            # Tarif dynamique selon occupation station — sources (1) et (2) concordent
+            # Tarif dynamique selon occupation station — sources (1) et (2) concordent.
+            # AC mis à None : Electra n'opère quasiment pas de bornes AC publiques.
             "tarifs_fr": {
-                "ac_slow":    {"modele": "kwh", "prix": 0.49, "frais_session": 0.0},
+                "ac_slow":    {"modele": "kwh", "prix": None, "frais_session": 0.0},
                 "dc_rapide":  {"modele": "kwh", "prix": 0.49, "frais_session": 0.0},
                 "dc_ultra":   {"modele": "kwh", "prix": 0.49, "frais_session": 0.0},
                 "_dynamique": True,
@@ -137,7 +145,7 @@ CARTES: list[dict] = [
             # -- Belgique ---------------------------------------------------------
             # Tarif dynamique — sources (1) et (2) concordent
             "tarifs_be": {
-                "ac_slow":    {"modele": "kwh", "prix": 0.65, "frais_session": 0.0},
+                "ac_slow":    {"modele": "kwh", "prix": None, "frais_session": 0.0},
                 "dc_rapide":  {"modele": "kwh", "prix": 0.65, "frais_session": 0.0},
                 "dc_ultra":   {"modele": "kwh", "prix": 0.65, "frais_session": 0.0},
                 "_dynamique": True,
@@ -248,25 +256,38 @@ CARTES: list[dict] = [
         },
     },
 
+    # ⚠ Suppression de l'ancienne carte "Recharge&Drive (Enedis)" — erreur factuelle.
+    # Enedis est le gestionnaire du réseau de distribution d'électricité en France et
+    # n'exploite aucune borne de recharge publique (loi de séparation des activités
+    # énergie). Remplacée par Izivia, filiale EDF, qui exploite réellement un réseau.
     {
-        "id": "recharge-and-drive",
-        "nom": "Recharge&Drive",
-        "operateur": "Enedis",
+        "id": "izivia-pass",
+        "nom": "Izivia Pass",
+        "operateur": "Izivia (groupe EDF)",
         "pays_origine": ["FR"],
-        "url_officielle": "https://www.recharge-and-drive.fr",
-        "url_tarifs": "https://www.recharge-and-drive.fr/nos-offres",
+        "url_officielle": "https://www.izivia.com/conducteurs-vehicules-electriques/le-pass-izivia/",
+        "url_tarifs": "https://www.izivia.com/conducteurs-vehicules-electriques/le-pass-izivia/",
         "methode": "httpx",
         "ideal_voyage": False,
         "ideal_quotidien": True,
-        "flotte_pro": False,
-        "points_forts": ["Réseau bornes Enedis partout en France", "Prix AC compétitif"],
-        "points_faibles": ["Pas de roaming EU", "DC rapide limité"],
+        "flotte_pro": True,
+        "points_forts": [
+            "Filiale EDF — facturation simple et reconnue",
+            "Accès au réseau Corri-Door et à de nombreux opérateurs partenaires en France",
+            "Offre Pro/Flotte avec facturation centralisée",
+        ],
+        "points_faibles": [
+            "Roaming EU limité (couverture principalement France)",
+            "Tarif ultra-rapide moins compétitif que les opérateurs DC purs (Electra, Fastned)",
+        ],
         "donnees_init": {
+            # Tarifs Pass Izivia à vérifier sur izivia.com — valeurs 2026 indicatives.
+            # Le Pass facture au tarif du CPO partenaire + commission Izivia variable.
             "abonnement": {"mensuel_eur": 0, "annuel_eur": 0, "engagement_mois": 0},
             "tarifs_fr": {
-                "ac_slow":    {"modele": "kwh", "prix": 0.34, "frais_session": 0.0},
-                "dc_rapide":  {"modele": "kwh", "prix": 0.49, "frais_session": 0.0},
-                "dc_ultra":   {"modele": "kwh", "prix": None,  "frais_session": 0.0},
+                "ac_slow":    {"modele": "kwh", "prix": 0.40, "frais_session": 0.0},
+                "dc_rapide":  {"modele": "kwh", "prix": 0.55, "frais_session": 0.0},
+                "dc_ultra":   {"modele": "kwh", "prix": 0.69, "frais_session": 0.0},
             },
             "roaming": {
                 "disponible": False,
@@ -274,82 +295,55 @@ CARTES: list[dict] = [
                 "tarif_dc_rapide": None,
                 "tarif_dc_ultra":  None,
             },
+            "_note": "Tarifs Pass Izivia indicatifs — variables selon CPO partenaire de la borne.",
         },
     },
 
     {
+        # Carte affichée par défaut = IONITY Passport (abonnement mensuel).
+        # Le tarif "Direct" (sans abonnement, ~0,79 €/kWh) n'est pas représenté
+        # par une fiche séparée car il n'a pas d'abonnement à comparer ; mentionné
+        # dans les points_forts comme alternative.
         "id": "ionity-passport",
-        "nom": "IONITY Charge League",
+        "nom": "IONITY Passport",
         "operateur": "IONITY",
         "pays_origine": ["FR", "BE", "DE", "AT", "CH", "NL", "NO", "SE", "GB", "ES", "IT", "DK", "LU"],
         "url_officielle": "https://ionity.eu/fr/tarification",
         "url_tarifs": "https://ionity.eu/fr/tarification",
-        # PDF officiel "Charge League" du 01/04/2026 — tarifs certifiés réseaux partenaires
-        # (Atlante, Electra, Fastned). Scraping httpx maintenu en complément.
         "methode": "httpx",
         "ideal_voyage": True,
         "ideal_quotidien": False,
         "flotte_pro": False,
         "points_forts": [
-            "Réseau ultra-rapide exclusif ≥350 kW",
-            "Présent sur toutes les autoroutes EU",
-            "Accès aux réseaux Electra, Fastned, Atlante avec la même carte",
+            "Réseau ultra-rapide propriétaire ≥350 kW sur toutes les autoroutes EU",
+            "Abonnement Passport ~5,99 €/mois → tarif kWh fortement réduit",
+            "Alternative sans abo (Direct) disponible mais à tarif spot élevé (~0,79 €/kWh)",
         ],
         "points_faibles": [
-            "Uniquement DC ultra-rapide (≥150 kW)",
-            "Abonnement annuel obligatoire pour les meilleurs tarifs",
-        ],
-        "plans": [
-            {
-                "nom": "IONITY Go",
-                "abonnement_eur_an": 0,
-                "description": "Sans engagement — paiement à la session",
-            },
-            {
-                "nom": "IONITY Motion",
-                "abonnement_eur_an": 365,
-                "description": "Abonnement annuel — tarif réduit sur tous les réseaux partenaires",
-            },
-            {
-                "nom": "IONITY Power",
-                "abonnement_eur_an": 365,
-                "description": "Abonnement annuel premium — meilleur tarif disponible",
-            },
+            "Uniquement DC ultra-rapide (≥150 kW), pas d'AC ni de DC lent",
+            "Réseau propre IONITY uniquement (pas de roaming vers d'autres opérateurs)",
+            "Tarif vraiment intéressant seulement si vous roulez beaucoup sur autoroute",
         ],
         "donnees_init": {
-            # Tarifs plan Motion (365 €/an) — source : PDF Charge League 01/04/2026
-            "abonnement": {"mensuel_eur": 0, "annuel_eur": 365, "engagement_mois": 12},
+            # IONITY Passport — abonnement mensuel ~5,99 € qui débloque un tarif kWh réduit.
+            # Source : ionity.eu/fr/tarification — à re-vérifier régulièrement (variabilité produits).
+            "abonnement": {"mensuel_eur": 5.99, "annuel_eur": 71.88, "engagement_mois": 1},
             "tarifs_fr": {
-                # DC ultra-rapide ≥150 kW — moyenne Electra/Fastned
                 "ac_slow":    {"modele": "kwh", "prix": None,  "frais_session": 0.0},
                 "dc_rapide":  {"modele": "kwh", "prix": None,  "frais_session": 0.0},
-                "dc_ultra":   {"modele": "kwh", "prix": 0.60,  "frais_session": 0.0},
+                "dc_ultra":   {"modele": "kwh", "prix": 0.49,  "frais_session": 0.0},
+                "_tarif_direct_sans_abo": 0.79,
             },
-            # Plan IONITY Go (sans abonnement) — PDF 01/04/2026
-            "tarifs_fr_sans_abo": {
-                "dc_ultra":   {"modele": "kwh", "prix": 0.66,  "frais_session": 0.0},
-            },
-            # Plan IONITY Power (365 €/an) — tarif le plus bas disponible
-            "tarifs_fr_power": {
-                "dc_ultra":   {"modele": "kwh", "prix": 0.55,  "frais_session": 0.0},
-            },
-            # Belgique — PDF 01/04/2026 (Electra + Fastned)
             "tarifs_be": {
                 "ac_slow":    {"modele": "kwh", "prix": None,  "frais_session": 0.0},
                 "dc_rapide":  {"modele": "kwh", "prix": None,  "frais_session": 0.0},
-                "dc_ultra":   {"modele": "kwh", "prix": 0.75,  "frais_session": 0.0},
+                "dc_ultra":   {"modele": "kwh", "prix": 0.55,  "frais_session": 0.0},
+                "_tarif_direct_sans_abo": 0.85,
             },
-            "tarifs_be_sans_abo": {
-                "dc_ultra":   {"modele": "kwh", "prix": 0.85,  "frais_session": 0.0},
-            },
-            # Suisse — PDF 01/04/2026 (Electra, en CHF)
             "tarifs_ch": {
                 "devise": "CHF",
-                "dc_ultra":   {"modele": "kwh", "prix": 0.67,  "frais_session": 0.0},
-            },
-            "tarifs_ch_sans_abo": {
-                "devise": "CHF",
-                "dc_ultra":   {"modele": "kwh", "prix": 0.74,  "frais_session": 0.0},
+                "dc_ultra":   {"modele": "kwh", "prix": 0.59,  "frais_session": 0.0},
+                "_tarif_direct_sans_abo": 0.79,
             },
             "roaming": {
                 "disponible": True,
@@ -357,15 +351,13 @@ CARTES: list[dict] = [
                     "FR","BE","DE","AT","CH","NL","NO","SE","GB",
                     "ES","IT","DK","LU","FI","CZ","HU","PL","SK",
                 ],
-                # Tarif roaming Motion sur réseaux partenaires EU — FR comme référence
-                "tarif_dc_ultra": {"modele": "kwh", "prix": 0.60},
+                "tarif_dc_ultra": {"modele": "kwh", "prix": 0.49},
             },
-            # Métadonnées source
-            "_source": "PDF IONITY Charge League — 01/04/2026",
+            "_source": "ionity.eu/fr/tarification — à re-vérifier (produits IONITY mis à jour fréquemment).",
             "_note": (
-                "Tarifs minimum garantis au 01/04/2026. Prix en vigueur sur réseaux partenaires "
-                "(Atlante, Electra, Fastned). Les stations IONITY propres peuvent afficher des tarifs "
-                "différents selon la localisation (sur/hors autoroute)."
+                "Le Passport implique un abonnement mensuel fixe (~5,99 €) qui débloque un tarif "
+                "kWh réduit sur tout le réseau IONITY. Sans abonnement, le tarif Direct est "
+                "beaucoup plus élevé (~0,79 €/kWh)."
             ),
         },
     },
@@ -440,83 +432,79 @@ CARTES: list[dict] = [
         "ideal_quotidien": False,
         "flotte_pro": False,
         "points_forts": [
-            "3 niveaux tarifaires clairs : standard / app (-10%) / Gold (-30%)",
-            "400+ stations DC rapide/ultra en Europe",
-            "Abonnement Gold résiliable à tout moment (après 1 mois)",
+            "Tarif simple : Standard (app/CB borne, prix unique) OU Gold Member -25 % via abonnement 11,99 €/mois",
+            "300+ stations DC rapide/ultra en Europe sur axes autoroutiers",
+            "Abonnement Gold résiliable à tout moment après le premier mois",
             "Couverture 9 pays dont FR, BE, DE, NL, CH, ES, IT",
         ],
         "points_faibles": [
             "Uniquement DC rapide/ultra — pas d'AC lent",
             "Réseau propre Fastned (pas d'accès à d'autres opérateurs)",
-            "Badge roaming : tarif standard + frais fournisseur badge",
+            "Abonnement Gold rentable uniquement à partir de ~110 kWh/mois sur Fastned",
         ],
         "donnees_init": {
             # Source : fastnedcharging.com/fr/recharge/tarifs — mai 2026
-            # Structure : Standard (CB borne) / App sans abo (-10%) / Gold Member (-30%, 11,99€/mois)
-            # Formule vérifiée : App = Standard × 0,90 ; Gold = Standard × 0,70
+            # Structure RÉELLE : Standard (app, CB borne, ou badge tiers, tous au même prix)
+            # OU abonnement Gold Member 11,99 €/mois qui débloque -25 % sur le tarif kWh.
+            # Pas de palier intermédiaire "-10 %" (corrigé d'une erreur précédente).
+            # Formule : Gold = Standard × 0,75
 
             "abonnement": {
                 "nom": "Gold Member",
                 "mensuel_eur": 11.99,
                 "annuel_eur": 0,
                 "engagement_mois": 1,
-                "reduction_pct": 30,
+                "reduction_pct": 25,
                 "_note": "Résiliable à tout moment après le 1er mois. UK : 9,98 £/mois.",
             },
 
-            # -- France --
-            # Standard : 0,61 € | App : 0,55 € (-10%) | Gold : 0,43 € (-30%)
+            # -- France -- Standard 0,61 € | Gold 0,46 € (-25 %)
             "tarifs_fr": {
                 "ac_slow":    {"modele": "kwh", "prix": None,  "frais_session": 0.0},
-                "dc_rapide":  {"modele": "kwh", "prix": 0.43,  "frais_session": 0.0},
-                "dc_ultra":   {"modele": "kwh", "prix": 0.43,  "frais_session": 0.0},
+                "dc_rapide":  {"modele": "kwh", "prix": 0.46,  "frais_session": 0.0},
+                "dc_ultra":   {"modele": "kwh", "prix": 0.46,  "frais_session": 0.0},
                 "_standard":  0.61,
-                "_app_sans_abo": 0.55,
-                "_gold_abo":  0.43,
+                "_gold_abo":  0.46,
             },
 
-            # -- Belgique --
-            # Standard : 0,77 € | App : 0,69 € | Gold : 0,54 €
+            # -- Belgique -- Standard 0,77 € | Gold 0,58 € (-25 %)
             "tarifs_be": {
                 "ac_slow":    {"modele": "kwh", "prix": None,  "frais_session": 0.0},
-                "dc_rapide":  {"modele": "kwh", "prix": 0.54,  "frais_session": 0.0},
-                "dc_ultra":   {"modele": "kwh", "prix": 0.54,  "frais_session": 0.0},
+                "dc_rapide":  {"modele": "kwh", "prix": 0.58,  "frais_session": 0.0},
+                "dc_ultra":   {"modele": "kwh", "prix": 0.58,  "frais_session": 0.0},
                 "_standard":  0.77,
-                "_app_sans_abo": 0.69,
-                "_gold_abo":  0.54,
+                "_gold_abo":  0.58,
             },
 
-            # -- Suisse --
-            # Standard : 0,75 CHF | App : 0,67 CHF | Gold : 0,53 CHF
+            # -- Suisse -- Standard 0,75 CHF | Gold 0,56 CHF (-25 %)
             "tarifs_ch": {
                 "devise": "CHF",
-                "dc_ultra":   {"modele": "kwh", "prix": 0.53,  "frais_session": 0.0},
+                "dc_ultra":   {"modele": "kwh", "prix": 0.56,  "frais_session": 0.0},
                 "_standard":  0.75,
-                "_app_sans_abo": 0.67,
-                "_gold_abo":  0.53,
+                "_gold_abo":  0.56,
                 "_abonnement_mensuel_chf": 11.99,
             },
 
-            # -- Autres pays -- tarifs Gold Member
+            # -- Autres pays -- tarifs Gold Member (-25 % sur Standard)
             "tarifs_par_pays": {
-                "DE": {"standard": 0.69, "app": 0.62, "gold": 0.49, "devise": "EUR", "abo_mois": 11.99},
-                "NL": {"standard": 0.77, "app": 0.69, "gold": 0.54, "devise": "EUR", "abo_mois": 11.99},
-                "ES": {"standard": 0.59, "app": 0.53, "gold": 0.41, "devise": "EUR", "abo_mois": 11.99},
-                "IT": {"standard": 0.83, "app": 0.75, "gold": 0.58, "devise": "EUR", "abo_mois": 11.99},
-                "DK": {"standard": 3.79, "app": 3.41, "gold": 2.65, "devise": "DKK", "abo_mois": 89.99},
-                "GB": {"standard": 0.79, "app": 0.71, "gold": 0.55, "devise": "GBP", "abo_mois": 9.98},
+                "DE": {"standard": 0.69, "gold": 0.52, "devise": "EUR", "abo_mois": 11.99},
+                "NL": {"standard": 0.77, "gold": 0.58, "devise": "EUR", "abo_mois": 11.99},
+                "ES": {"standard": 0.59, "gold": 0.44, "devise": "EUR", "abo_mois": 11.99},
+                "IT": {"standard": 0.83, "gold": 0.62, "devise": "EUR", "abo_mois": 11.99},
+                "DK": {"standard": 3.79, "gold": 2.84, "devise": "DKK", "abo_mois": 89.99},
+                "GB": {"standard": 0.79, "gold": 0.59, "devise": "GBP", "abo_mois": 9.98},
             },
 
-            # -- Roaming (badge partenaire sur reseau Fastned)
+            # -- Roaming (badge partenaire sur réseau Fastned)
             "roaming": {
                 "disponible": True,
                 "pays_couverts": ["FR","BE","DE","NL","CH","ES","IT","DK","GB"],
                 "tarif_dc_rapide": {"modele": "kwh", "prix": 0.61},
                 "tarif_dc_ultra":  {"modele": "kwh", "prix": 0.61},
-                "_note": "Tarif standard applique via badge ; le fournisseur badge peut ajouter des frais.",
+                "_note": "Tarif standard appliqué via badge ; le fournisseur badge peut ajouter des frais.",
             },
 
-            "_source": "fastnedcharging.com/fr/recharge/tarifs -- mai 2026",
+            "_source": "fastnedcharging.com/fr/recharge/tarifs — mai 2026",
         },
     },
 
@@ -562,7 +550,11 @@ CARTES: list[dict] = [
         "ideal_voyage": True,
         "ideal_quotidien": True,
         "flotte_pro": True,
-        "points_forts": ["Leader belge", "Roaming EU large", "Offre flotte complète"],
+        "points_forts": [
+            "Leader belge — ancrage fort B2B et flottes",
+            "Roaming EU large via accords (>20 pays via partenaires européens)",
+            "Offre flotte complète avec facturation TVA BE simple",
+        ],
         "points_faibles": ["Tarif AC moins compétitif que Lidl"],
         "donnees_init": {
             "abonnement": {"mensuel_eur": 0, "annuel_eur": 0, "engagement_mois": 0},

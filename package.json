@@ -4,9 +4,11 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
+    "prebuild": "node scripts/sync-fallbacks.mjs",
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
+    "sync-fallbacks": "node scripts/sync-fallbacks.mjs",
     "export-routes": "node scripts/export-routes.mjs",
     "export-routes:dry": "node scripts/export-routes.mjs --dry-run"
   },

@@ -23,6 +23,7 @@ interface Carte {
   operateur: string
   pays_origine: string[]
   url_officielle?: string
+  url_tarifs?: string
   ideal_voyage: boolean
   ideal_quotidien: boolean
   flotte_pro: boolean
@@ -34,6 +35,14 @@ interface Carte {
     tarifs_be?: Tarifs
     roaming?: Roaming
   }
+}
+
+/** URL "Voir l'offre" — préfère url_tarifs (page de prix) sur url_officielle. */
+function urlOffre(carte: Carte): string | null {
+  const raw = carte.url_tarifs || carte.url_officielle
+  if (!raw) return null
+  if (/^https?:\/\//i.test(raw)) return raw
+  return `https://${raw}`
 }
 
 interface ProfilParticulier {
@@ -332,11 +341,13 @@ export default function ComparateurCartes() {
                     <div style={{ fontSize: '0.75rem', color: MUTED }}>
                       {onglet === 'flotte' ? `/ mois (${nbVeh} véh.)` : '/ mois estimé'}
                     </div>
-                    <a href={`https://${r.carte.url_officielle?.replace('https://', '')}`}
-                      target="_blank" rel="noopener noreferrer"
-                      style={{ fontSize: '0.78rem', color: PRIMARY, fontWeight: 600, textDecoration: 'none', display: 'block', marginTop: 4 }}>
-                      Voir l'offre →
-                    </a>
+                    {urlOffre(r.carte) && (
+                      <a href={urlOffre(r.carte) as string}
+                        target="_blank" rel="noopener noreferrer"
+                        style={{ fontSize: '0.78rem', color: PRIMARY, fontWeight: 600, textDecoration: 'none', display: 'block', marginTop: 4 }}>
+                        Voir l&apos;offre →
+                      </a>
+                    )}
                   </div>
                 </div>
               )

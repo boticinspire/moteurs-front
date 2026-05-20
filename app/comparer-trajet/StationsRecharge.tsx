@@ -156,6 +156,8 @@ export default function StationsRecharge({ coordDepart, coordArrivee, villeDepar
   const [erreur,         setErreur]         = useState('')
   const [charge,         setCharge]         = useState(false)   // si l'utilisateur a cliqué
   const [vue,            setVue]            = useState<'liste' | 'carte'>('liste')
+  // Rayon de recherche (km) — démarre serré, bouton "élargir" à 30 km en cas de zone rurale.
+  const [rayonKm,        setRayonKm]        = useState(12)
   // Coordonnées résolues (soit issues des props, soit géocodées à la demande)
   const [resolvedCoords, setResolvedCoords] = useState<{ depart: Coords; arrivee: Coords } | null>(null)
 
@@ -165,7 +167,7 @@ export default function StationsRecharge({ coordDepart, coordArrivee, villeDepar
   const [sansHorsService, setSansHorsService] = useState(true)
 
   // Charger les stations au clic sur le bouton
-  const chargerStations = async () => {
+  const chargerStations = async (rayonOverride?: number) => {
     setCharge(true)
     setChargement(true)
     setErreur('')
@@ -195,10 +197,11 @@ export default function StationsRecharge({ coordDepart, coordArrivee, villeDepar
       }
 
       setResolvedCoords({ depart: cD, arrivee: cA })
-      const radius = Math.min(15, Math.max(8, distanceTrajet / 40))
+      const rayon = rayonOverride ?? Math.min(18, Math.max(12, distanceTrajet / 30))
       const nbPoints = distanceTrajet > 300 ? 6 : distanceTrajet > 150 ? 4 : 3
+      setRayonKm(Math.round(rayon))
       const data = await fetchStationsAlongRoute(cD, cA, {
-        radius: Math.round(radius),
+        radius: Math.round(rayon),
         nbPoints,
       })
       setStations(data)
@@ -246,7 +249,7 @@ export default function StationsRecharge({ coordDepart, coordArrivee, villeDepar
             </p>
           </div>
           <button
-            onClick={chargerStations}
+            onClick={() => chargerStations()}
             style={{
               padding: '11px 22px', borderRadius: 10, border: 'none', cursor: 'pointer',
               background: 'var(--color-primary)', color: '#0a1628',
@@ -289,7 +292,7 @@ export default function StationsRecharge({ coordDepart, coordArrivee, villeDepar
         <div style={{ fontWeight: 700, color: '#ef4444', marginBottom: 6 }}>⚠️ Erreur de chargement</div>
         <p style={{ margin: '0 0 12px', fontSize: '0.85rem', color: 'var(--color-text-muted)' }}>{erreur}</p>
         <button
-          onClick={chargerStations}
+          onClick={() => chargerStations()}
           style={{
             padding: '9px 18px', borderRadius: 8, border: 'none', cursor: 'pointer',
             background: 'var(--color-primary)', color: '#0a1628', fontWeight: 700,
@@ -433,12 +436,29 @@ export default function StationsRecharge({ coordDepart, coordArrivee, villeDepar
           borderRadius: 12, padding: '20px', textAlign: 'center',
           color: 'var(--color-text-muted)', fontSize: '0.87rem',
         }}>
-          Aucune station de recharge trouvée sur ce trajet. Les données OpenChargeMap peuvent être incomplètes.
+          <div style={{ marginBottom: 10 }}>
+            Aucune borne trouvée dans un rayon de {rayonKm} km autour du trajet.
+            Les données OpenChargeMap sont souvent plus complètes en ville qu&apos;en zones rurales.
+          </div>
+          {rayonKm < 30 && (
+            <button
+              onClick={() => chargerStations(30)}
+              style={{
+                padding: '8px 16px', borderRadius: 8, border: 'none', cursor: 'pointer',
+                background: 'var(--color-primary)', color: '#0a1628',
+                fontWeight: 700, fontSize: '0.82rem',
+              }}
+            >
+              🔍 Élargir la recherche (rayon 30 km)
+            </button>
+          )}
         </div>
       )}
 
-      {/* ── Carte Leaflet ── */}
-      {vue === 'carte' && stationsFiltrees.length > 0 && resolvedCoords && (
+      {/* ── Carte Leaflet ── Affichée dès qu'on a les coords, même si 0
+           stations : l'utilisateur voit au moins le trajet et les points A/B,
+           et peut zoomer/explorer pour comprendre pourquoi rien n'est trouvé. */}
+      {vue === 'carte' && resolvedCoords && (
         <div style={{ marginBottom: 16 }}>
           <CarteStations
             stations={stationsFiltrees}

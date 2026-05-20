@@ -527,11 +527,15 @@
   }
 
   // ---------- Données de fallback intégrées ----------
+  // ⚠ Bloc régénéré par `scripts/sync-fallbacks.mjs` depuis simulateur-data.json.
+  //   NE PAS éditer manuellement entre les marqueurs.
   function _chargerFallback() {
-    ENERGY_PRICES     = { FR:{diesel:1.72,elec:0.21,gnv:1.45,h2:13.5,efuel:4.20}, BE:{diesel:1.78,elec:0.30,gnv:1.55,h2:14.0,efuel:4.40}, CH:{diesel:1.85,elec:0.27,gnv:1.85,h2:15.5,efuel:5.00}, CA:{diesel:1.45,elec:0.13,gnv:1.25,h2:12.0,efuel:4.00} };
-    AIDES_B2B         = { FR:{vul_petit:4000,vul_moyen:6500,vul_grand:8600,camion:10000,poids_lourd:12000}, BE:{vul_petit:2500,vul_moyen:3500,vul_grand:5000,camion:6000,poids_lourd:8000}, CH:{vul_petit:0,vul_moyen:0,vul_grand:0,camion:0,poids_lourd:0}, CA:{vul_petit:5000,vul_moyen:7000,vul_grand:7000,camion:7000,poids_lourd:7000} };
-    AIDES_PARTICULIER = { FR:{voiture:4000,vae:400,trottinette:0,moto:900}, BE:{voiture:2500,vae:300,trottinette:0,moto:500}, CH:{voiture:0,vae:0,trottinette:0,moto:0}, CA:{voiture:5000,vae:200,trottinette:0,moto:0} };
-    REF_PRICES        = { voiture:{diesel:28000,elec:35000,phev:38000,h2:70000,efuel:32000,gnv:27000}, vul_petit:{diesel:22000,elec:32000,phev:34000,h2:60000,efuel:24000,gnv:23000}, vul_moyen:{diesel:32000,elec:45000,phev:0,h2:75000,efuel:34000,gnv:33000}, vul_grand:{diesel:42000,elec:62000,phev:0,h2:90000,efuel:44444,gnv:43000}, camion:{diesel:70000,elec:145000,phev:0,h2:220000,efuel:72000,gnv:80000}, poids_lourd:{diesel:110000,elec:380000,phev:0,h2:480000,efuel:115000,gnv:130000}, vae:{elec:1800}, trottinette:{elec:600}, moto:{diesel:5500,elec:9000} };
+    // >>> SYNC:FALLBACK START
+    ENERGY_PRICES     = {FR:{diesel:1.72,essence:1.79,elec:0.21,gnv:1.45,h2:13.5,efuel:4.2},BE:{diesel:1.78,essence:1.83,elec:0.3,gnv:1.55,h2:14,efuel:4.4},CH:{diesel:1.85,essence:1.92,elec:0.27,gnv:1.85,h2:15.5,efuel:5},CA:{diesel:1.45,essence:1.4,elec:0.13,gnv:1.25,h2:12,efuel:4}};
+    AIDES_B2B         = {FR:{vul_petit:4000,vul_moyen:6500,vul_grand:8600,camion:10000,poids_lourd:12000},BE:{vul_petit:2500,vul_moyen:3500,vul_grand:5000,camion:6000,poids_lourd:8000},CH:{vul_petit:0,vul_moyen:0,vul_grand:0,camion:0,poids_lourd:0},CA:{vul_petit:5000,vul_moyen:7000,vul_grand:7000,camion:7000,poids_lourd:7000}};
+    AIDES_PARTICULIER = {FR:{voiture:4000,vae:400,trottinette:0,moto:900},BE:{voiture:2500,vae:300,trottinette:0,moto:500},CH:{voiture:0,vae:0,trottinette:0,moto:0},CA:{voiture:5000,vae:200,trottinette:0,moto:0}};
+    REF_PRICES        = {voiture:{diesel:28000,essence:24000,elec:35000,phev:38000,h2:70000,efuel:32000,gnv:27000},vul_petit:{diesel:22000,essence:20000,elec:32000,phev:34000,h2:60000,efuel:24000,gnv:23000},vul_moyen:{diesel:32000,essence:29000,elec:45000,phev:0,h2:75000,efuel:34000,gnv:33000},vul_grand:{diesel:42000,essence:38000,elec:62000,phev:0,h2:90000,efuel:44000,gnv:43000},camion:{diesel:70000,elec:145000,phev:0,h2:220000,efuel:72000,gnv:80000},poids_lourd:{diesel:110000,elec:380000,phev:0,h2:480000,efuel:115000,gnv:130000},vae:{elec:1800},trottinette:{elec:600},moto:{diesel:5500,elec:9000}};
+    // >>> SYNC:FALLBACK END
   }
 
   // ---------- Init — démarre immédiatement, met à jour si JSON disponible ----------

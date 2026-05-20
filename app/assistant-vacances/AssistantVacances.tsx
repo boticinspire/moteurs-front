@@ -1112,11 +1112,8 @@ function EtapeTrajet({
 
   return (
     <div>
-      {/* Champs autocomplétion */}
-      <div style={{
-        display: 'grid', gap: 12, alignItems: 'end',
-        gridTemplateColumns: 'minmax(0,1fr) auto minmax(0,1fr)', marginBottom: 14,
-      }}>
+      {/* Champs autocomplétion — classe responsive (.trajet-fields-grid) */}
+      <div className="trajet-fields-grid">
         <AutocompleteVille
           label="Départ"
           value={data.depart}
@@ -1128,6 +1125,7 @@ function EtapeTrajet({
           onClick={handleSwap}
           aria-label="Inverser départ et arrivée"
           title="Inverser"
+          className="trajet-swap-btn"
           style={{
             width: 44, height: 44, borderRadius: '50%',
             background: 'var(--color-bg-alt)', border: '1.5px solid var(--color-border)',
