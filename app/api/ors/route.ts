@@ -27,7 +27,8 @@ export async function POST(req: NextRequest) {
     const url = new URL(`${ORS_BASE}/geocode/search`)
     url.searchParams.set('api_key', ORS_KEY)
     url.searchParams.set('text', text)
-    url.searchParams.set('size', '1')
+    const size = Math.min(10, Math.max(1, Number(body.size ?? 1)))
+    url.searchParams.set('size', String(size))
     url.searchParams.set('layers', 'locality,region,localadmin')
     // Filtre pays : restreint la recherche pour éviter Stuttgart Arkansas etc.
     const country = typeof body.country === 'string' ? body.country.trim() : ''

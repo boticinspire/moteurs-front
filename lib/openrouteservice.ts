@@ -66,6 +66,46 @@ export async function geocoderVille(
   }
 }
 
+// ─── Géocodage : N candidats (pour l'autocomplete) ────────────────────────────
+
+export async function geocoderCandidats(
+  texte:    string,
+  options?: { max?: number; paysCode?: string | null },
+): Promise<ORSCoordonnees[]> {
+  const max = Math.min(10, Math.max(1, options?.max ?? 5))
+  try {
+    const res = await fetch('/api/ors', {
+      method:  'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body:    JSON.stringify({
+        action:  'geocode',
+        text:    texte,
+        size:    max,
+        country: options?.paysCode ?? DEFAULT_BOUNDARY_COUNTRIES,
+      }),
+    })
+    if (!res.ok) return []
+    const data = await res.json()
+    const features = (data.features ?? []) as Array<{
+      geometry:   { coordinates: [number, number] }
+      properties: { label: string; confidence?: number; match_type?: string }
+    }>
+    return features.map(f => {
+      const [lon, lat] = f.geometry.coordinates
+      const props = f.properties
+      return {
+        lon, lat,
+        label:      props.label,
+        confidence: typeof props.confidence === 'number' ? props.confidence : 0.5,
+        match_type: props.match_type ?? 'unknown',
+      }
+    })
+  } catch (err) {
+    console.error('[ORS] geocoderCandidats erreur', err)
+    return []
+  }
+}
+
 // ─── Itinéraire ───────────────────────────────────────────────────────────────
 
 export async function calculerRoute(

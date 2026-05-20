@@ -8,7 +8,7 @@ import {
   type Route, type ResultatTrajet, type ResultatLocation,
   type CategorieLocation,
 } from '@/lib/trajet'
-import { geocoderEtCalculer } from '@/lib/openrouteservice'
+import { geocoderEtCalculer, geocoderCandidats, calculerRoute, type ORSCoordonnees } from '@/lib/openrouteservice'
 import { getRouteFromCache, saveRouteToCache, normaliserVille } from '@/lib/trajets-cache'
 import { type Coords } from '@/lib/openchargemaps'
 import StationsRecharge from './StationsRecharge'
@@ -323,22 +323,42 @@ const tdStyle: React.CSSProperties = { padding: '12px 12px' }
 // ─── Champ ville avec autocomplétion ──────────────────────────────────────────
 
 function AutocompleteVille({
-  label, value, onChange, onSelect, placeholder,
+  label, value, onChange, onSelect, onPickResolved, placeholder,
 }: {
   label: string
   value: string
   onChange: (v: string) => void
   onSelect?: (v: string) => void
+  /** Callback quand l'utilisateur pick un candidat ORS live (avec coords pré-résolues). */
+  onPickResolved?: (label: string, coords: { lon: number; lat: number; confidence: number }) => void
   placeholder: string
 }) {
-  const [open, setOpen] = useState(false)
+  const [open,        setOpen]        = useState(false)
   const [highlighted, setHighlighted] = useState(-1)
+  const [liveResults, setLiveResults] = useState<ORSCoordonnees[]>([])
+  const [loadingLive, setLoadingLive] = useState(false)
   const ref = useRef<HTMLDivElement>(null)
+  const lastQueryRef = useRef('')
 
-  const matches = useMemo(() => {
+  const prebakedMatches = useMemo(() => {
     const q = norm(value)
     if (!q) return VILLES.slice(0, 8)
-    return VILLES.filter(v => norm(v.nom).includes(q)).slice(0, 8)
+    return VILLES.filter(v => norm(v.nom).includes(q)).slice(0, 6)
+  }, [value])
+
+  // Live geocoding debounced (350ms, min 3 caractères)
+  useEffect(() => {
+    const q = value.trim()
+    if (q.length < 3) { setLiveResults([]); setLoadingLive(false); return }
+    if (q === lastQueryRef.current) return
+    const handle = setTimeout(async () => {
+      lastQueryRef.current = q
+      setLoadingLive(true)
+      const results = await geocoderCandidats(q, { max: 5 })
+      setLiveResults(results)
+      setLoadingLive(false)
+    }, 350)
+    return () => clearTimeout(handle)
   }, [value])
 
   // Ferme au clic extérieur
@@ -351,12 +371,15 @@ function AutocompleteVille({
     return () => document.removeEventListener('mousedown', handler)
   }, [open])
 
-  const pick = (v: string) => {
-    onChange(v)
-    onSelect?.(v)
-    setOpen(false)
-    setHighlighted(-1)
+  const pickPrebaked = (v: string) => {
+    onChange(v); onSelect?.(v); setOpen(false); setHighlighted(-1)
   }
+  const pickLive = (cand: ORSCoordonnees) => {
+    onChange(cand.label)
+    onPickResolved?.(cand.label, { lon: cand.lon, lat: cand.lat, confidence: cand.confidence })
+    setOpen(false); setHighlighted(-1)
+  }
+  const totalItems = prebakedMatches.length + liveResults.length
 
   return (
     <div ref={ref} style={{ position: 'relative' }}>
@@ -370,10 +393,19 @@ function AutocompleteVille({
         onFocus={() => setOpen(true)}
         onChange={e => { onChange(e.target.value); setOpen(true); setHighlighted(-1) }}
         onKeyDown={e => {
-          if (e.key === 'ArrowDown') { e.preventDefault(); setOpen(true); setHighlighted(h => Math.min(h + 1, matches.length - 1)) }
-          else if (e.key === 'ArrowUp') { e.preventDefault(); setHighlighted(h => Math.max(h - 1, 0)) }
-          else if (e.key === 'Enter' && highlighted >= 0 && matches[highlighted]) { e.preventDefault(); pick(matches[highlighted].nom) }
-          else if (e.key === 'Escape') { setOpen(false) }
+          if (e.key === 'ArrowDown') {
+            e.preventDefault(); setOpen(true)
+            setHighlighted(h => Math.min(h + 1, totalItems - 1))
+          } else if (e.key === 'ArrowUp') {
+            e.preventDefault(); setHighlighted(h => Math.max(h - 1, 0))
+          } else if (e.key === 'Enter' && highlighted >= 0) {
+            e.preventDefault()
+            if (highlighted < prebakedMatches.length) {
+              pickPrebaked(prebakedMatches[highlighted].nom)
+            } else {
+              pickLive(liveResults[highlighted - prebakedMatches.length])
+            }
+          } else if (e.key === 'Escape') { setOpen(false) }
         }}
         autoComplete="off"
         style={{
@@ -386,30 +418,74 @@ function AutocompleteVille({
         onBlur={e => { e.currentTarget.style.borderColor = 'var(--color-border)' }}
         onFocusCapture={e => { e.currentTarget.style.borderColor = 'var(--color-primary)' }}
       />
-      {open && matches.length > 0 && (
+      {open && (prebakedMatches.length > 0 || liveResults.length > 0 || loadingLive) && (
         <div style={{
           position: 'absolute', top: '100%', left: 0, right: 0, marginTop: 4,
           background: 'var(--color-bg-card)', border: '1.5px solid var(--color-border)',
-          borderRadius: 10, maxHeight: 320, overflowY: 'auto', zIndex: 100,
+          borderRadius: 10, maxHeight: 360, overflowY: 'auto', zIndex: 100,
           boxShadow: '0 12px 32px rgba(0,0,0,0.18)',
         }}>
-          {matches.map((v, i) => (
-            <div key={v.nom}
-              onMouseDown={e => { e.preventDefault(); pick(v.nom) }}
-              onMouseEnter={() => setHighlighted(i)}
-              style={{
-                padding: '10px 14px', cursor: 'pointer',
-                display: 'flex', justifyContent: 'space-between', alignItems: 'center',
-                background: highlighted === i ? 'rgba(122,240,194,0.08)' : 'transparent',
-                borderBottom: i < matches.length - 1 ? '1px solid var(--color-border)' : 'none',
-              }}
-            >
-              <span style={{ fontWeight: 500, fontSize: '0.92rem' }}>{v.nom}</span>
-              <span style={{ fontSize: '0.74rem', color: 'var(--color-text-muted)' }}>
-                {v.region || v.pays}
-              </span>
-            </div>
-          ))}
+          {/* Section villes principales (locale) */}
+          {prebakedMatches.length > 0 && (
+            <>
+              <div style={{
+                padding: '6px 14px', fontSize: '0.66rem', fontWeight: 700,
+                color: 'var(--color-text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em',
+                background: 'var(--color-bg-alt)', borderBottom: '1px solid var(--color-border)',
+              }}>📍 Villes principales</div>
+              {prebakedMatches.map((v, i) => (
+                <div key={`pre-${v.nom}`}
+                  onMouseDown={e => { e.preventDefault(); pickPrebaked(v.nom) }}
+                  onMouseEnter={() => setHighlighted(i)}
+                  style={{
+                    padding: '10px 14px', cursor: 'pointer',
+                    display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+                    background: highlighted === i ? 'rgba(122,240,194,0.08)' : 'transparent',
+                    borderBottom: '1px solid var(--color-border)',
+                  }}>
+                  <span style={{ fontWeight: 500, fontSize: '0.92rem' }}>{v.nom}</span>
+                  <span style={{ fontSize: '0.74rem', color: 'var(--color-text-muted)' }}>
+                    {v.region || v.pays}
+                  </span>
+                </div>
+              ))}
+            </>
+          )}
+          {/* Section suggestions ORS live */}
+          {(liveResults.length > 0 || loadingLive) && (
+            <>
+              <div style={{
+                padding: '6px 14px', fontSize: '0.66rem', fontWeight: 700,
+                color: 'var(--color-text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em',
+                background: 'var(--color-bg-alt)', borderBottom: '1px solid var(--color-border)',
+              }}>🌍 Suggestions ORS{loadingLive ? ' — chargement…' : ''}</div>
+              {liveResults.map((cand, i) => {
+                const idx = prebakedMatches.length + i
+                const confPct = Math.round(cand.confidence * 100)
+                const confColor = confPct >= 80 ? '#16a34a' : confPct >= 50 ? '#d97706' : '#dc2626'
+                const confBg    = confPct >= 80 ? 'rgba(34,197,94,0.12)' : confPct >= 50 ? 'rgba(245,158,11,0.12)' : 'rgba(239,68,68,0.12)'
+                return (
+                  <div key={`live-${i}-${cand.lat}-${cand.lon}`}
+                    onMouseDown={e => { e.preventDefault(); pickLive(cand) }}
+                    onMouseEnter={() => setHighlighted(idx)}
+                    style={{
+                      padding: '10px 14px', cursor: 'pointer',
+                      display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 8,
+                      background: highlighted === idx ? 'rgba(122,240,194,0.08)' : 'transparent',
+                      borderBottom: i < liveResults.length - 1 ? '1px solid var(--color-border)' : 'none',
+                    }}>
+                    <span style={{ fontWeight: 500, fontSize: '0.88rem', flex: 1, minWidth: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                      {cand.label}
+                    </span>
+                    <span style={{
+                      fontSize: '0.68rem', padding: '2px 6px', borderRadius: 4,
+                      background: confBg, color: confColor, flexShrink: 0, fontWeight: 600,
+                    }}>{confPct}%</span>
+                  </div>
+                )
+              })}
+            </>
+          )}
         </div>
       )}
     </div>
@@ -444,6 +520,11 @@ export default function ComparateurTrajet({ routeInitiale }: { routeInitiale?: R
   const [resolvedLabels, setResolvedLabels] = useState<
     { depart: string; arrivee: string; confDepart: number; confArrivee: number } | null
   >(null)
+
+  // ── Coords pré-résolues quand l'utilisateur a pické dans les suggestions ORS
+  //    de l'autocomplete. Permet de sauter le re-géocodage au moment du Calculer.
+  const [departCoords,  setDepartCoords]  = useState<{ lon: number; lat: number; confidence: number } | null>(null)
+  const [arriveeCoords, setArriveeCoords] = useState<{ lon: number; lat: number; confidence: number } | null>(null)
 
   // ── Fallback manuel ──
   const [customDistance, setCustomDistance] = useState('')
@@ -511,14 +592,26 @@ export default function ComparateurTrajet({ routeInitiale }: { routeInitiale?: R
       }
     } catch { /* cache indisponible — continue vers ORS */ }
 
-    // 2. Appel ORS
+    // 2. Appel ORS — court-circuit si l'utilisateur a déjà pické dans les
+    //    suggestions live (on a déjà les coords, pas besoin de re-géocoder).
     try {
-      const result = await geocoderEtCalculer(d, a, 'recommended')
-      if (!result) {
-        setOrsEtat('erreur_ors')
-        return
+      let itineraire: { distance_km: number; duree_min: number }
+      let coordDepart:  ORSCoordonnees
+      let coordArrivee: ORSCoordonnees
+
+      if (departCoords && arriveeCoords) {
+        coordDepart  = { lon: departCoords.lon,  lat: departCoords.lat,  label: d, confidence: departCoords.confidence,  match_type: 'picked' }
+        coordArrivee = { lon: arriveeCoords.lon, lat: arriveeCoords.lat, label: a, confidence: arriveeCoords.confidence, match_type: 'picked' }
+        const it = await calculerRoute(coordDepart, coordArrivee, 'recommended')
+        if (!it) { setOrsEtat('erreur_ors'); return }
+        itineraire = it
+      } else {
+        const result = await geocoderEtCalculer(d, a, 'recommended')
+        if (!result) { setOrsEtat('erreur_ors'); return }
+        itineraire   = result.itineraire
+        coordDepart  = result.coordDepart
+        coordArrivee = result.coordArrivee
       }
-      const { itineraire, coordDepart, coordArrivee } = result
       const peages = Math.round(itineraire.distance_km * 0.07)
 
       const route: Route = {
@@ -646,10 +739,19 @@ export default function ComparateurTrajet({ routeInitiale }: { routeInitiale?: R
     setConfirmed(true)
   }
   const handleChangeDepart = (v: string) => {
-    setDepart(v); setConfirmed(false); setOrsRoute(null); setOrsEtat('idle'); setRouteCoords(null); setResolvedLabels(null)
+    setDepart(v); setConfirmed(false); setOrsRoute(null); setOrsEtat('idle'); setRouteCoords(null); setResolvedLabels(null); setDepartCoords(null)
   }
   const handleChangeArrivee = (v: string) => {
-    setArrivee(v); setConfirmed(false); setOrsRoute(null); setOrsEtat('idle'); setRouteCoords(null); setResolvedLabels(null)
+    setArrivee(v); setConfirmed(false); setOrsRoute(null); setOrsEtat('idle'); setRouteCoords(null); setResolvedLabels(null); setArriveeCoords(null)
+  }
+  // Pick d'un candidat live ORS : stocke les coords pour skip le géocodage
+  const handlePickDepart  = (label: string, coords: { lon: number; lat: number; confidence: number }) => {
+    setDepart(label); setConfirmed(false); setOrsRoute(null); setOrsEtat('idle'); setRouteCoords(null); setResolvedLabels(null)
+    setDepartCoords(coords)
+  }
+  const handlePickArrivee = (label: string, coords: { lon: number; lat: number; confidence: number }) => {
+    setArrivee(label); setConfirmed(false); setOrsRoute(null); setOrsEtat('idle'); setRouteCoords(null); setResolvedLabels(null)
+    setArriveeCoords(coords)
   }
 
   return (
@@ -664,6 +766,7 @@ export default function ComparateurTrajet({ routeInitiale }: { routeInitiale?: R
             label="Départ"
             value={depart}
             onChange={handleChangeDepart}
+            onPickResolved={handlePickDepart}
             placeholder="Paris"
           />
           <button
@@ -688,6 +791,7 @@ export default function ComparateurTrajet({ routeInitiale }: { routeInitiale?: R
             label="Arrivée"
             value={arrivee}
             onChange={handleChangeArrivee}
+            onPickResolved={handlePickArrivee}
             placeholder="Marseille"
           />
           <button
@@ -727,7 +831,7 @@ export default function ComparateurTrajet({ routeInitiale }: { routeInitiale?: R
              warning orange pour inviter à corriger la saisie. */}
         {resolvedLabels && orsEtat === 'idle' && orsRoute && (() => {
           const conf = Math.min(resolvedLabels.confDepart, resolvedLabels.confArrivee)
-          const isFuzzy = conf < 0.9
+          const isFuzzy = conf < 0.6
           const color = isFuzzy ? '#d97706' : '#16a34a'
           const bg = isFuzzy ? 'rgba(217,119,6,0.08)' : 'rgba(34,197,94,0.07)'
           const border = isFuzzy ? 'rgba(217,119,6,0.3)' : 'rgba(34,197,94,0.25)'

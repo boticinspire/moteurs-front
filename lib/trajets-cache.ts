@@ -102,7 +102,7 @@ export interface SaveRouteCacheParams {
  * si le match n'est pas exact, pour ne pas polluer le cache avec des villes
  * mal saisies. Le calcul de trajet, lui, reste affiché à l'utilisateur courant.
  */
-const MIN_CONFIDENCE_FOR_CACHE = 0.8
+const MIN_CONFIDENCE_FOR_CACHE = 0.5
 
 export async function saveRouteToCache(params: SaveRouteCacheParams): Promise<void> {
   const {
