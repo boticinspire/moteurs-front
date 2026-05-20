@@ -90,23 +90,48 @@ export default function EspaceMembresPage() {
     else setStatus({ msg: '✓ Lien envoyé ! Vérifiez votre boîte mail.', ok: true })
   }
 
+  // Récupère le token JWT depuis localStorage (clé sb-moteurs-auth) sans passer par sb.auth.getSession()
+  // (qui peut rester bloqué sur navigator.locks malgré le bypass)
+  function getAccessToken(): string | null {
+    try {
+      const raw = localStorage.getItem('sb-moteurs-auth')
+      if (!raw) return null
+      const parsed = JSON.parse(raw)
+      return parsed?.access_token || parsed?.currentSession?.access_token || null
+    } catch { return null }
+  }
+
   async function sauvegarderProfil() {
     console.log('[profil save] START userId=', userId, 'profil=', profil)
     if (!userId) { console.warn('[profil save] userId NULL, abort'); return }
     setSaveStatus('…')
     try {
-      // .select() retiré : évite une seconde évaluation RLS qui pouvait stall
-      const { error } = await sb.from('profils_membres').upsert({
-        id: userId,                  // id = auth.uid() (modèle de la table + RLS)
+      // FETCH DIRECT vers PostgREST (bypass complet le SDK Supabase qui bloque)
+      const token = getAccessToken()
+      const url = `${process.env.NEXT_PUBLIC_SUPABASE_URL}/rest/v1/profils_membres?on_conflict=id`
+      const body = {
+        id: userId,
         email: userEmail,
         prenom: profil.prenom,
         profil_type: profil.type_profil,
         pays: profil.pays,
-      }, { onConflict: 'id' })
-      console.log('[profil save] upsert returned, error=', error)
-      if (error) {
-        console.error('[profil save] error details:', JSON.stringify(error))
-        setSaveStatus(`✗ ${(error.message || 'err').slice(0, 40)}`)
+      }
+      console.log('[profil save] fetch direct AVANT, token present=', !!token)
+      const res = await fetch(url, {
+        method: 'POST',
+        headers: {
+          'apikey': process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+          'Prefer': 'resolution=merge-duplicates,return=minimal',
+        },
+        body: JSON.stringify(body),
+      })
+      console.log('[profil save] fetch APRES, status=', res.status)
+      if (!res.ok) {
+        const errText = await res.text()
+        console.error('[profil save] HTTP error:', res.status, errText)
+        setSaveStatus(`✗ HTTP ${res.status}`)
       } else {
         console.log('[profil save] OK')
         setSaveStatus('✓ Enregistré')
