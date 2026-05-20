@@ -91,24 +91,32 @@ export default function EspaceMembresPage() {
   }
 
   async function sauvegarderProfil() {
-    if (!userId) return
+    console.log('[profil save] START userId=', userId, 'profil=', profil)
+    if (!userId) { console.warn('[profil save] userId NULL, abort'); return }
     setSaveStatus('…')
-    const { data, error } = await sb.from('profils_membres').upsert({
-      id: userId,                  // id = auth.uid() (modele de la table + RLS)
-      email: userEmail,
-      prenom: profil.prenom,
-      profil_type: profil.type_profil,
-      pays: profil.pays,
-    }, { onConflict: 'id' }).select()
-    if (error) {
-      console.error('[profil save] error:', error)
-      setSaveStatus(`✗ ${error.message.slice(0, 40)}`)
-    } else {
-      console.log('[profil save] OK:', data)
-      setSaveStatus('✓ Enregistré')
+    try {
+      // .select() retiré : évite une seconde évaluation RLS qui pouvait stall
+      const { error } = await sb.from('profils_membres').upsert({
+        id: userId,                  // id = auth.uid() (modèle de la table + RLS)
+        email: userEmail,
+        prenom: profil.prenom,
+        profil_type: profil.type_profil,
+        pays: profil.pays,
+      }, { onConflict: 'id' })
+      console.log('[profil save] upsert returned, error=', error)
+      if (error) {
+        console.error('[profil save] error details:', JSON.stringify(error))
+        setSaveStatus(`✗ ${(error.message || 'err').slice(0, 40)}`)
+      } else {
+        console.log('[profil save] OK')
+        setSaveStatus('✓ Enregistré')
+        chargerDonnees(userId)
+      }
+    } catch (e: any) {
+      console.error('[profil save] EXCEPTION:', e)
+      setSaveStatus(`✗ ${(e?.message || 'exception').slice(0, 40)}`)
     }
     setTimeout(() => setSaveStatus(''), 4000)
-    if (!error) chargerDonnees(userId)
   }
 
   async function sauvegarderAlerte() {
@@ -125,14 +133,19 @@ export default function EspaceMembresPage() {
     }
     if (alerte.id) payload.id = alerte.id
 
-    const { data, error } = await sb.from('alertes_utilisateurs').upsert(payload, { onConflict: 'user_id' }).select()
-    if (error) {
-      console.error('[alerte save] error:', error)
-      setSaveStatus(`✗ ${error.message.slice(0, 40)}`)
-    } else {
-      console.log('[alerte save] OK:', data)
-      setSaveStatus('✓ Enregistré')
-      if (data && data[0] && !alerte.id) setAlerte(a => ({ ...a, id: data[0].id }))
+    try {
+      const { error } = await sb.from('alertes_utilisateurs').upsert(payload, { onConflict: 'user_id' })
+      console.log('[alerte save] upsert returned, error=', error)
+      if (error) {
+        console.error('[alerte save] error details:', JSON.stringify(error))
+        setSaveStatus(`✗ ${(error.message || 'err').slice(0, 40)}`)
+      } else {
+        console.log('[alerte save] OK')
+        setSaveStatus('✓ Enregistré')
+      }
+    } catch (e: any) {
+      console.error('[alerte save] EXCEPTION:', e)
+      setSaveStatus(`✗ ${(e?.message || 'exception').slice(0, 40)}`)
     }
     setTimeout(() => setSaveStatus(''), 4000)
   }
