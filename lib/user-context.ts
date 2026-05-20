@@ -81,6 +81,8 @@ export function getSupabaseClient(): SupabaseClient {
           // (évite le deadlock du navigator lock observé en prod sur certains navigateurs)
           detectSessionInUrl: false,
           storageKey: 'sb-moteurs-auth',
+          // lock bypass : désactive navigator.locks (cause requêtes Supabase "Stalled" indéfiniment)
+          lock: async (_name: string, _acquireTimeout: number, fn: () => Promise<any>) => fn(),
         },
       }
     )
