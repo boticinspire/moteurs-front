@@ -159,11 +159,23 @@ export default function EspaceMembresPage() {
     if (alerte.id) payload.id = alerte.id
 
     try {
-      const { error } = await sb.from('alertes_utilisateurs').upsert(payload, { onConflict: 'user_id' })
-      console.log('[alerte save] upsert returned, error=', error)
-      if (error) {
-        console.error('[alerte save] error details:', JSON.stringify(error))
-        setSaveStatus(`✗ ${(error.message || 'err').slice(0, 40)}`)
+      const token = getAccessToken()
+      const url = `${process.env.NEXT_PUBLIC_SUPABASE_URL}/rest/v1/alertes_utilisateurs?on_conflict=user_id`
+      const res = await fetch(url, {
+        method: 'POST',
+        headers: {
+          'apikey': process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+          'Prefer': 'resolution=merge-duplicates,return=minimal',
+        },
+        body: JSON.stringify(payload),
+      })
+      console.log('[alerte save] fetch APRES, status=', res.status)
+      if (!res.ok) {
+        const errText = await res.text()
+        console.error('[alerte save] HTTP error:', res.status, errText)
+        setSaveStatus(`✗ HTTP ${res.status}`)
       } else {
         console.log('[alerte save] OK')
         setSaveStatus('✓ Enregistré')
@@ -176,7 +188,13 @@ export default function EspaceMembresPage() {
   }
 
   async function seDeconnecter() {
-    await signOut()
+    // signOut() du SDK peut bloquer sur navigator.locks — on clear directement le localStorage
+    try {
+      localStorage.removeItem('sb-moteurs-auth')
+      localStorage.removeItem('moteurs_user_context')
+    } catch {}
+    // Tente quand même un signOut() en arrière-plan, sans attendre
+    signOut().catch(() => {})
     window.location.href = '/espace-membres'
   }
 
