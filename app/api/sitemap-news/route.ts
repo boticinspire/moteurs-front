@@ -1,12 +1,18 @@
 import { createClient } from '@supabase/supabase-js';
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
-const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
-
-const supabase = createClient(supabaseUrl, supabaseKey);
-
 export async function GET() {
   try {
+    // Read env vars at runtime (not build time)
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+    const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+
+    if (!supabaseUrl || !supabaseKey) {
+      console.error('Missing Supabase env vars');
+      return new Response('Sitemap generation error', { status: 500 });
+    }
+
+    const supabase = createClient(supabaseUrl, supabaseKey);
+
     // Fetch articles published in the last 2 days
     const twoDaysAgo = new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString();
 

@@ -1,12 +1,13 @@
+# robots.txt — moteurs.com
+# Généré automatiquement — ne pas éditer manuellement
+# Le fichier canonique est app/robots.ts (Next.js)
+
 User-agent: *
 Allow: /
 Disallow: /admin
-Disallow: /api/
-Disallow: /*.json$
-
-# Crawl delay
-Crawl-delay: 1
+Disallow: /espace-membres
+Disallow: /desinscription
 
 # Sitemaps
-Sitemap: https://moteurs.com/api/sitemap
+Sitemap: https://moteurs.com/sitemap.xml
 Sitemap: https://moteurs.com/api/sitemap-news

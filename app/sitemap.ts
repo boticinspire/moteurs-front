@@ -43,6 +43,12 @@ const PAGES_STATIQUES: { url: string; priority: number; changeFreq: MetadataRout
   { url: '/outils/immatriculation-belgique', priority: 0.75, changeFreq: 'monthly' },
   { url: '/outils/convertisseur',           priority: 0.7,  changeFreq: 'monthly' },
 
+  // Articles par pays (SSG)
+  { url: '/articles/fr', priority: 0.8, changeFreq: 'daily'   },
+  { url: '/articles/be', priority: 0.8, changeFreq: 'daily'   },
+  { url: '/articles/ch', priority: 0.8, changeFreq: 'daily'   },
+  { url: '/articles/ca', priority: 0.8, changeFreq: 'daily'   },
+
   // Segments
   { url: '/b2b',        priority: 0.7, changeFreq: 'monthly' },
   { url: '/particulier', priority: 0.7, changeFreq: 'monthly' },
