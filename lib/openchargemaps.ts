@@ -108,6 +108,27 @@ function interpolatePoints(start: Coords, end: Coords, n: number): Coords[] {
   return points
 }
 
+/**
+ * Échantillonne n+1 points uniformément répartis LE LONG d'une géométrie
+ * GeoJSON (tableau de [lon, lat]). Beaucoup plus pertinent que l'interpolation
+ * en ligne droite quand l'autoroute contourne (ex : E411 Charleroi→Luxembourg
+ * passe par Namur/Arlon, pas en diagonale dans les Ardennes).
+ */
+function sampleAlongGeometry(geometry: Array<[number, number]>, n: number): Coords[] {
+  if (geometry.length === 0) return []
+  if (geometry.length === 1) {
+    const [lon, lat] = geometry[0]
+    return [{ lat, lng: lon }]
+  }
+  const result: Coords[] = []
+  for (let i = 0; i <= n; i++) {
+    const idx = Math.min(geometry.length - 1, Math.floor((i / n) * (geometry.length - 1)))
+    const [lon, lat] = geometry[idx]
+    result.push({ lat, lng: lon })
+  }
+  return result
+}
+
 // ─── Distance haversine (en km) ───────────────────────────────────────────────
 
 export function haversineKm(a: Coords, b: Coords): number {
@@ -155,14 +176,20 @@ export async function fetchStationsAlongRoute(
   start: Coords,
   end: Coords,
   options: {
-    radius?: number      // km autour de chaque point d'interpolation (défaut 10)
-    nbPoints?: number    // nombre de points intermédiaires (défaut 4)
+    radius?: number      // km autour de chaque point (défaut 10)
+    nbPoints?: number    // nombre de points (défaut 4)
+    /** Géométrie GeoJSON LineString [lon, lat]. Si fournie, on échantillonne
+     *  le long de la vraie route au lieu d'interpoler en ligne droite — bien
+     *  plus pertinent pour les autoroutes qui contournent (E411, A6, etc.). */
+    routeGeometry?: Array<[number, number]> | null
   } = {}
 ): Promise<Station[]> {
   const radius = options.radius ?? 10
   const nbPoints = options.nbPoints ?? 4
 
-  const points = interpolatePoints(start, end, nbPoints)
+  const points = options.routeGeometry && options.routeGeometry.length > 1
+    ? sampleAlongGeometry(options.routeGeometry, nbPoints)
+    : interpolatePoints(start, end, nbPoints)
 
   // Requêtes parallèles (une par point d'interpolation)
   const results = await Promise.allSettled(

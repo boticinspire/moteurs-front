@@ -24,12 +24,18 @@ export async function POST(req: NextRequest) {
     const text = String(body.text ?? '').trim()
     if (!text) return NextResponse.json({ error: 'text vide' }, { status: 400 })
 
-    const url = new URL(`${ORS_BASE}/geocode/search`)
+    // Endpoint : 'autocomplete' (type-ahead, mieux pour suggestions multi-villes)
+    // ou 'search' (full search, défaut, mieux pour résolution unique précise)
+    const endpoint = body.mode === 'autocomplete' ? '/geocode/autocomplete' : '/geocode/search'
+    const url = new URL(`${ORS_BASE}${endpoint}`)
     url.searchParams.set('api_key', ORS_KEY)
     url.searchParams.set('text', text)
-    const size = Math.min(10, Math.max(1, Number(body.size ?? 1)))
+    const size = Math.min(15, Math.max(1, Number(body.size ?? 1)))
     url.searchParams.set('size', String(size))
-    url.searchParams.set('layers', 'locality,region,localadmin')
+    // Drop 'region' (= arrondissement BE, département FR, etc.) qui vole la
+    // place à la commune dans les résultats — on veut des villes, pas des
+    // entités administratives englobantes.
+    url.searchParams.set('layers', 'locality,localadmin,borough')
     // Filtre pays : restreint la recherche pour éviter Stuttgart Arkansas etc.
     const country = typeof body.country === 'string' ? body.country.trim() : ''
     if (country) url.searchParams.set('boundary.country', country)

@@ -74,13 +74,14 @@ export async function geocoderCandidats(
   texte:    string,
   options?: { max?: number; paysCode?: string | null },
 ): Promise<ORSCoordonnees[]> {
-  const max = Math.min(10, Math.max(1, options?.max ?? 5))
+  const max = Math.min(15, Math.max(1, options?.max ?? 8))
   try {
     const res = await fetch('/api/ors', {
       method:  'POST',
       headers: { 'Content-Type': 'application/json' },
       body:    JSON.stringify({
         action:  'geocode',
+        mode:    'autocomplete',  // endpoint Pelias optimisé type-ahead (cite mieux les communes)
         text:    texte,
         size:    max,
         country: options?.paysCode ?? DEFAULT_BOUNDARY_COUNTRIES,

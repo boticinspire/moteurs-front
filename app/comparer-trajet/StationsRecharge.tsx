@@ -199,12 +199,15 @@ export default function StationsRecharge({ coordDepart, coordArrivee, villeDepar
       }
 
       setResolvedCoords({ depart: cD, arrivee: cA })
+      // Rayon adapté au trajet (min 12, max 18 km).
       const rayon = rayonOverride ?? Math.min(18, Math.max(12, distanceTrajet / 30))
-      const nbPoints = distanceTrajet > 300 ? 6 : distanceTrajet > 150 ? 4 : 3
+      // Densité ~50 km : couvre les longs trajets sans appels OCM excessifs.
+      const nbPoints = Math.min(12, Math.max(3, Math.ceil(distanceTrajet / 50)))
       setRayonKm(Math.round(rayon))
       const data = await fetchStationsAlongRoute(cD, cA, {
         radius: Math.round(rayon),
         nbPoints,
+        routeGeometry,   // ← échantillonne le long de la vraie route, pas ligne droite
       })
       setStations(data)
     } catch (e) {

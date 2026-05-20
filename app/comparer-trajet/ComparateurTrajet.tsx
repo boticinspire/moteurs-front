@@ -354,7 +354,7 @@ function AutocompleteVille({
     const handle = setTimeout(async () => {
       lastQueryRef.current = q
       setLoadingLive(true)
-      const results = await geocoderCandidats(q, { max: 5 })
+      const results = await geocoderCandidats(q, { max: 8 })
       setLiveResults(results)
       setLoadingLive(false)
     }, 350)
