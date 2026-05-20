@@ -51,13 +51,34 @@ export default function EspaceMembresPage() {
     if (userId) chargerDonnees(userId)
   }, [userId])
 
+  // Fetch helper : bypass SDK Supabase (qui stalle sur navigator.locks au 1er render)
+  async function pgFetch(path: string): Promise<any[]> {
+    const token = getAccessToken()
+    const url = `${process.env.NEXT_PUBLIC_SUPABASE_URL}/rest/v1/${path}`
+    const res = await fetch(url, {
+      headers: {
+        'apikey': process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+        'Authorization': `Bearer ${token}`,
+        'Accept': 'application/json',
+      },
+    })
+    if (!res.ok) {
+      console.warn('[chargerDonnees] HTTP', res.status, path)
+      return []
+    }
+    return res.json()
+  }
+
   async function chargerDonnees(userId: string) {
-    // Profil (id = auth.uid() — voir policy RLS membre_own_profil)
-    const { data: p } = await sb.from('profils_membres').select('*').eq('id', userId).maybeSingle()
+    console.log('[chargerDonnees] START userId=', userId)
+    // Profil
+    const profils = await pgFetch(`profils_membres?select=*&id=eq.${userId}`)
+    const p = profils[0]
     if (p) setProfil({ prenom: p.prenom || '', type_profil: p.profil_type || 'B2B', pays: p.pays || 'FR' })
 
     // Alertes
-    const { data: a } = await sb.from('alertes_utilisateurs').select('*').eq('user_id', userId).maybeSingle()
+    const alertes = await pgFetch(`alertes_utilisateurs?select=*&user_id=eq.${userId}`)
+    const a = alertes[0]
     if (a) setAlerte({
       id: a.id,
       pays: a.pays || ['FR'],
@@ -68,14 +89,9 @@ export default function EspaceMembresPage() {
 
     // Articles récents selon profil
     const paysUser = p?.pays || 'FR'
-    const { data: arts } = await sb
-      .from('articles')
-      .select('slug, titre_provisoire, resume_50mots, published_at')
-      .eq('etat_code', 'PUBLIE')
-      .eq('pays_cible', paysUser)
-      .order('published_at', { ascending: false })
-      .limit(5)
+    const arts = await pgFetch(`articles?select=slug,titre_provisoire,resume_50mots,published_at&etat_code=eq.PUBLIE&pays_cible=eq.${paysUser}&order=published_at.desc&limit=5`)
     if (arts) setArticles(arts)
+    console.log('[chargerDonnees] DONE')
   }
 
   async function envoyerMagicLink() {
