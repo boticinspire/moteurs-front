@@ -41,18 +41,27 @@ export default function EspaceMembresPage() {
   const [articles, setArticles] = useState<any[]>([])
 
   useEffect(() => {
-    sb.auth.getSession()
-      .then(({ data: { session } }) => {
-        setSession(session)
+    let ready = false
+
+    // onAuthStateChange envoie INITIAL_SESSION immédiatement — pas besoin de getSession()
+    // (avoir les deux en parallèle crée une contention sur le verrou interne Supabase v2)
+    const { data: { subscription } } = sb.auth.onAuthStateChange((event, session) => {
+      setSession(session)
+      if (!ready) {
+        ready = true
         setLoading(false)
         if (session) chargerDonnees(session.user.id)
-      })
-      .catch(() => setLoading(false))
-    const { data: { subscription } } = sb.auth.onAuthStateChange((_event, session) => {
-      setSession(session)
-      if (session) chargerDonnees(session.user.id)
+      } else if (event === 'SIGNED_IN' && session) {
+        chargerDonnees(session.user.id)
+      }
     })
-    return () => subscription.unsubscribe()
+
+    // Filet de sécurité : si l'événement ne se déclenche pas dans 4s, débloquer quand même
+    const t = setTimeout(() => {
+      if (!ready) { ready = true; setLoading(false) }
+    }, 4000)
+
+    return () => { subscription.unsubscribe(); clearTimeout(t) }
   }, [])
 
   async function chargerDonnees(userId: string) {
