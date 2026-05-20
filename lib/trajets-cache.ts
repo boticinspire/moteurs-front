@@ -97,7 +97,13 @@ export interface SaveRouteCacheParams {
 /**
  * Enregistre un itinéraire ORS dans le cache.
  * Utilise upsert pour éviter les doublons (contrainte UNIQUE sur depart_norm/arrivee_norm).
+ *
+ * ⚠ Refuse la sauvegarde si la confiance du géocodage est trop basse (< 0,8) ou
+ * si le match n'est pas exact, pour ne pas polluer le cache avec des villes
+ * mal saisies. Le calcul de trajet, lui, reste affiché à l'utilisateur courant.
  */
+const MIN_CONFIDENCE_FOR_CACHE = 0.8
+
 export async function saveRouteToCache(params: SaveRouteCacheParams): Promise<void> {
   const {
     depart, arrivee,
@@ -105,6 +111,20 @@ export async function saveRouteToCache(params: SaveRouteCacheParams): Promise<vo
     itineraire,
     peages_eur = 0,
   } = params
+
+  // Garde-fou anti-pollution : on ne cache que les trajets dont les deux villes
+  // ont été identifiées avec haute confiance par Pelias/ORS.
+  const cD = coordDepart.confidence ?? 0
+  const cA = coordArrivee.confidence ?? 0
+  if (cD < MIN_CONFIDENCE_FOR_CACHE || cA < MIN_CONFIDENCE_FOR_CACHE) {
+    console.warn(
+      `[TrajetCache] Sauvegarde ignorée : confiance trop basse ` +
+      `(départ=${cD.toFixed(2)}, arrivée=${cA.toFixed(2)}). ` +
+      `Saisies : "${depart}" → "${arrivee}". ` +
+      `Résolus : "${coordDepart.label}" → "${coordArrivee.label}".`
+    )
+    return
+  }
 
   const row = {
     depart,

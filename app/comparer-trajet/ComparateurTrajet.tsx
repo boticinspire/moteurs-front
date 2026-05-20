@@ -440,7 +440,10 @@ export default function ComparateurTrajet({ routeInitiale }: { routeInitiale?: R
 
   // ── Labels normalisés renvoyés par ORS — permet à l'utilisateur de vérifier
   //    qu'une saisie ambiguë (ex. "varena") a été résolue où il pensait.
-  const [resolvedLabels, setResolvedLabels] = useState<{ depart: string; arrivee: string } | null>(null)
+  //    On porte aussi la confidence pour alerter l'utilisateur si match flou.
+  const [resolvedLabels, setResolvedLabels] = useState<
+    { depart: string; arrivee: string; confDepart: number; confArrivee: number } | null
+  >(null)
 
   // ── Fallback manuel ──
   const [customDistance, setCustomDistance] = useState('')
@@ -457,15 +460,20 @@ export default function ComparateurTrajet({ routeInitiale }: { routeInitiale?: R
   // Charge les recherches récentes au montage
   useEffect(() => { setRecents(loadRecents()) }, [])
 
-  // ── Pré-remplissage depuis le contexte (une seule fois, quand isReady) ──
+  // ── Pré-remplissage depuis le contexte (une seule fois, quand un trajet est dispo) ──
+  // ⚠ Ne pas verrouiller prefilledRef tant que le contexte trajet n'est pas chargé.
+  // `isReady` passe à true dès le local storage, mais le contexte remote Supabase
+  // arrive ~200-800 ms plus tard. Si on verrouille avant l'arrivée du remote, le
+  // pré-remplissage ne se fait jamais (bug "trajet non reçu" depuis l'espace membres).
   const prefilledRef = useRef(false)
   useEffect(() => {
     if (!isReady || prefilledRef.current || routeInitiale) return
-    prefilledRef.current = true
     const t = context.trajet
-    if (t?.depart)      setDepart(t.depart)
-    if (t?.arrivee)     setArrivee(t.arrivee)
-    if (t?.date_depart) setDateDepart(t.date_depart)
+    if (!t || (!t.depart && !t.arrivee && !t.date_depart)) return  // attend le remote
+    prefilledRef.current = true
+    if (t.depart)      setDepart(t.depart)
+    if (t.arrivee)     setArrivee(t.arrivee)
+    if (t.date_depart) setDateDepart(t.date_depart)
   }, [isReady, context.trajet, routeInitiale])
 
   // Cherche un trajet pré-calculé dans routes-vacances.json
@@ -539,7 +547,12 @@ export default function ComparateurTrajet({ routeInitiale }: { routeInitiale?: R
         depart:  { lat: coordDepart.lat,  lng: coordDepart.lon },
         arrivee: { lat: coordArrivee.lat, lng: coordArrivee.lon },
       })
-      setResolvedLabels({ depart: coordDepart.label, arrivee: coordArrivee.label })
+      setResolvedLabels({
+        depart:     coordDepart.label,
+        arrivee:    coordArrivee.label,
+        confDepart:  coordDepart.confidence,
+        confArrivee: coordArrivee.confidence,
+      })
       setOrsEtat('idle')
       setConfirmed(true)
       saveRecent(d, a)
@@ -709,26 +722,39 @@ export default function ComparateurTrajet({ routeInitiale }: { routeInitiale?: R
         )}
 
         {/* ── Labels résolus : l'utilisateur peut vérifier que "varena" a bien
-             été interprété comme Varena (Italie) et pas Varėna (Lituanie). */}
-        {resolvedLabels && orsEtat === 'idle' && orsRoute && (
-          <div style={{
-            marginTop: 14, padding: '10px 14px',
-            background: 'rgba(34,197,94,0.07)', border: '1px solid rgba(34,197,94,0.25)',
-            borderRadius: 10, fontSize: '0.82rem', color: 'var(--color-text)',
-          }}>
-            <div style={{ fontSize: '0.74rem', color: '#16a34a', fontWeight: 700, marginBottom: 4 }}>
-              ✓ Itinéraire résolu
+             été interprété comme Varena (Italie) et pas Varėna (Lituanie).
+             Si la confidence Pelias est basse, on bascule le bandeau en mode
+             warning orange pour inviter à corriger la saisie. */}
+        {resolvedLabels && orsEtat === 'idle' && orsRoute && (() => {
+          const conf = Math.min(resolvedLabels.confDepart, resolvedLabels.confArrivee)
+          const isFuzzy = conf < 0.9
+          const color = isFuzzy ? '#d97706' : '#16a34a'
+          const bg = isFuzzy ? 'rgba(217,119,6,0.08)' : 'rgba(34,197,94,0.07)'
+          const border = isFuzzy ? 'rgba(217,119,6,0.3)' : 'rgba(34,197,94,0.25)'
+          return (
+            <div style={{
+              marginTop: 14, padding: '10px 14px',
+              background: bg, border: `1px solid ${border}`,
+              borderRadius: 10, fontSize: '0.82rem', color: 'var(--color-text)',
+            }}>
+              <div style={{ fontSize: '0.74rem', color, fontWeight: 700, marginBottom: 4 }}>
+                {isFuzzy
+                  ? `⚠ Itinéraire résolu — confiance moyenne (${Math.round(conf * 100)} %)`
+                  : '✓ Itinéraire résolu'}
+              </div>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr auto 1fr', alignItems: 'center', gap: 8 }}>
+                <span><strong>Départ :</strong> {resolvedLabels.depart}</span>
+                <span style={{ color: 'var(--color-text-muted)' }}>→</span>
+                <span style={{ textAlign: 'right' }}><strong>Arrivée :</strong> {resolvedLabels.arrivee}</span>
+              </div>
+              <div style={{ marginTop: 6, fontSize: '0.72rem', color: 'var(--color-text-muted)' }}>
+                {isFuzzy
+                  ? 'La résolution est approximative. Vérifiez les villes affichées — ce trajet ne sera pas mis en cache.'
+                  : 'Ce n\'est pas la bonne ville ? Précisez (ex. « Verona, Italie ») ou choisissez dans la liste de suggestions.'}
+              </div>
             </div>
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr auto 1fr', alignItems: 'center', gap: 8 }}>
-              <span><strong>Départ :</strong> {resolvedLabels.depart}</span>
-              <span style={{ color: 'var(--color-text-muted)' }}>→</span>
-              <span style={{ textAlign: 'right' }}><strong>Arrivée :</strong> {resolvedLabels.arrivee}</span>
-            </div>
-            <div style={{ marginTop: 6, fontSize: '0.72rem', color: 'var(--color-text-muted)' }}>
-              Ce n&apos;est pas la bonne ville ? Précisez (ex. <em>« Verona, Italie »</em>) ou choisissez dans la liste de suggestions.
-            </div>
-          </div>
-        )}
+          )
+        })()}
 
         {/* Statut ORS — erreur → fallback manuel */}
         {(orsEtat === 'erreur_ors' || orsEtat === 'erreur_ville' || orsEtat === 'manuel') && needsOrs && (

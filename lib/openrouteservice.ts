@@ -6,9 +6,13 @@
 // ─── Types ────────────────────────────────────────────────────────────────────
 
 export interface ORSCoordonnees {
-  lon:   number
-  lat:   number
-  label: string
+  lon:        number
+  lat:        number
+  label:      string
+  /** Confidence Pelias (0-1). 1.0 = exact, ≥0.8 = haute, ≥0.5 = moyenne, <0.5 = faible/interpolée. */
+  confidence: number
+  /** Type de match Pelias : 'exact', 'fallback', 'interpolated'. Sert à filtrer le cache. */
+  match_type: string
 }
 
 export interface ORSItineraire {
@@ -49,7 +53,13 @@ export async function geocoderVille(
     const feature = data.features?.[0]
     if (!feature) return null
     const [lon, lat] = feature.geometry.coordinates as [number, number]
-    return { lon, lat, label: feature.properties.label as string }
+    const props = feature.properties as { label: string; confidence?: number; match_type?: string }
+    return {
+      lon, lat,
+      label:      props.label,
+      confidence: typeof props.confidence === 'number' ? props.confidence : 0.5,
+      match_type: props.match_type ?? 'unknown',
+    }
   } catch (err) {
     console.error('[ORS] Geocode erreur', err)
     return null
