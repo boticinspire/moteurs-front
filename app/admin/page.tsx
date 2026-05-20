@@ -1,15 +1,15 @@
 'use client'
 
 import { useEffect, useState, useCallback } from 'react'
-import { createClient } from '@supabase/supabase-js'
 import Link from 'next/link'
 import Flag from '@/components/Flag'
 import { FLAGS } from '@/lib/supabase'
+import { getSupabaseClient } from '@/lib/user-context'
+import { useUserContext } from '@/context/UserContextProvider'
 
-const sb = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-)
+// IMPORTANT : on utilise le SINGLETON du Provider (meme storageKey, meme session)
+// que /espace-membres. Sinon /admin aurait son propre client sans session -> Chargement infini.
+const sb = getSupabaseClient()
 
 const RAIL = 'https://orchestrateur-production.up.railway.app'
 const ADMIN_EMAIL = '356904@gmail.com'
@@ -46,7 +46,8 @@ type UserDetail = {
 }
 
 export default function AdminPage() {
-  const [session, setSession]         = useState<any>(null)
+  // Auth depuis le Provider global (meme session que /espace-membres, zero race condition)
+  const { userId, userEmail, isReady } = useUserContext()
   const [loading, setLoading]         = useState(true)
   const [tab, setTab]                 = useState<Tab>('articles')
   const [articles, setArticles]       = useState<Article[]>([])
@@ -75,21 +76,19 @@ export default function AdminPage() {
 
   const msg = (m: string, delay = 4000) => { setActionMsg(m); setTimeout(() => setActionMsg(''), delay) }
 
-  // ── Auth ──
+  // ── Auth : on attend que le Provider ait fini son bootstrap ──
   useEffect(() => {
-    sb.auth.getSession().then(({ data: { session } }) => {
-      setSession(session)
-      setLoading(false)
-    })
-  }, [])
+    if (isReady) setLoading(false)
+  }, [isReady])
 
   // ── Chargements initiaux ──
   useEffect(() => {
-    if (session?.user?.email !== ADMIN_EMAIL) return
+    if (!isReady) return
+    if (userEmail !== ADMIN_EMAIL) return
     chargerArticles('EN_ATTENTE_VALIDATION')
     chargerStats()
     chargerNbAlertes()
-  }, [session])
+  }, [isReady, userEmail])
 
   // ── Loaders ──
   async function chargerArticles(etat: string) {
@@ -253,15 +252,15 @@ export default function AdminPage() {
   }
 
   // ─────────────────────────────────────────────────────────────────────────────
-  if (loading) return <div style={{ textAlign: 'center', padding: 80 }}>Chargement…</div>
-  if (!session) return (
+  if (loading || !isReady) return <div style={{ textAlign: 'center', padding: 80 }}>Chargement…</div>
+  if (!userId) return (
     <div style={{ textAlign: 'center', padding: '80px 24px' }}>
       <h1 style={{ marginBottom: 16 }}>Accès restreint</h1>
       <p style={{ color: 'var(--color-text-soft)', marginBottom: 24 }}>Connectez-vous avec le compte administrateur.</p>
       <Link href="/espace-membres" className="btn btn-primary">Se connecter →</Link>
     </div>
   )
-  if (session.user.email !== ADMIN_EMAIL) return (
+  if (userEmail !== ADMIN_EMAIL) return (
     <div style={{ textAlign: 'center', padding: '80px 24px' }}>
       <h1>Accès refusé</h1>
       <p style={{ color: 'var(--color-text-soft)' }}>Cette page est réservée à l&apos;administrateur.</p>

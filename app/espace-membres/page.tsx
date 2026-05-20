@@ -25,13 +25,18 @@ export default function EspaceMembresPage() {
   // Auth et contexte viennent exclusivement du Provider global
   // → zéro onAuthStateChange ni getSession() ici, plus de double _recoverAndRefresh
   const {
-    context, isReady,
+    context,
     userId, userEmail,
     updateVoiture, updatePreferences,
     resetTrajet, resetSinistre, resetAll,
     signOut,
     sinistreExpireSoon: sinExpire,
   } = useUserContext()
+
+  // mounted : 1er render SSR + 1er render client = meme HTML (placeholder vide)
+  // -> zero risque de mismatch d'hydratation React 18 / Next.js 15
+  const [mounted, setMounted] = useState(false)
+  useEffect(() => { setMounted(true) }, [])
 
   const [email, setEmail]       = useState('')
   const [sending, setSending]   = useState(false)
@@ -43,16 +48,16 @@ export default function EspaceMembresPage() {
 
   // Charger les données dès que l'utilisateur est identifié
   useEffect(() => {
-    if (isReady && userId) chargerDonnees(userId)
-  }, [isReady, userId])
+    if (userId) chargerDonnees(userId)
+  }, [userId])
 
   async function chargerDonnees(userId: string) {
-    // Profil
-    const { data: p } = await sb.from('profils_membres').select('*').eq('user_id', userId).single()
+    // Profil (id = auth.uid() — voir policy RLS membre_own_profil)
+    const { data: p } = await sb.from('profils_membres').select('*').eq('id', userId).maybeSingle()
     if (p) setProfil({ prenom: p.prenom || '', type_profil: p.profil_type || 'B2B', pays: p.pays || 'FR' })
 
     // Alertes
-    const { data: a } = await sb.from('alertes_utilisateurs').select('*').eq('user_id', userId).single()
+    const { data: a } = await sb.from('alertes_utilisateurs').select('*').eq('user_id', userId).maybeSingle()
     if (a) setAlerte({
       id: a.id,
       pays: a.pays || ['FR'],
@@ -88,15 +93,21 @@ export default function EspaceMembresPage() {
   async function sauvegarderProfil() {
     if (!userId) return
     setSaveStatus('…')
-    const { error } = await sb.from('profils_membres').upsert({
-      user_id: userId,
+    const { data, error } = await sb.from('profils_membres').upsert({
+      id: userId,                  // id = auth.uid() (modele de la table + RLS)
       email: userEmail,
       prenom: profil.prenom,
       profil_type: profil.type_profil,
       pays: profil.pays,
-    }, { onConflict: 'user_id' })
-    setSaveStatus(error ? '✗ Erreur' : '✓ Enregistré')
-    setTimeout(() => setSaveStatus(''), 2000)
+    }, { onConflict: 'id' }).select()
+    if (error) {
+      console.error('[profil save] error:', error)
+      setSaveStatus(`✗ ${error.message.slice(0, 40)}`)
+    } else {
+      console.log('[profil save] OK:', data)
+      setSaveStatus('✓ Enregistré')
+    }
+    setTimeout(() => setSaveStatus(''), 4000)
     if (!error) chargerDonnees(userId)
   }
 
@@ -106,6 +117,7 @@ export default function EspaceMembresPage() {
     const mots_cles = alerte.mots_cles.split(',').map(s => s.trim()).filter(Boolean)
     const payload: any = {
       user_id: userId,
+      email: userEmail,            // NOT NULL dans le schema
       pays: alerte.pays,
       segments: alerte.segments,
       mots_cles,
@@ -113,9 +125,16 @@ export default function EspaceMembresPage() {
     }
     if (alerte.id) payload.id = alerte.id
 
-    const { error } = await sb.from('alertes_utilisateurs').upsert(payload, { onConflict: 'user_id' })
-    setSaveStatus(error ? '✗ Erreur' : '✓ Enregistré')
-    setTimeout(() => setSaveStatus(''), 2000)
+    const { data, error } = await sb.from('alertes_utilisateurs').upsert(payload, { onConflict: 'user_id' }).select()
+    if (error) {
+      console.error('[alerte save] error:', error)
+      setSaveStatus(`✗ ${error.message.slice(0, 40)}`)
+    } else {
+      console.log('[alerte save] OK:', data)
+      setSaveStatus('✓ Enregistré')
+      if (data && data[0] && !alerte.id) setAlerte(a => ({ ...a, id: data[0].id }))
+    }
+    setTimeout(() => setSaveStatus(''), 4000)
   }
 
   async function seDeconnecter() {
@@ -137,13 +156,8 @@ export default function EspaceMembresPage() {
     }))
   }
 
-  // Provider pas encore prêt → spinner
-  if (!isReady) return (
-    <div style={{ textAlign: 'center', padding: '80px 24px' }}>
-      <div className="loader" />
-      <p style={{ color: 'var(--color-text-soft)', marginTop: 16 }}>Vérification de votre session…</p>
-    </div>
-  )
+  // Avant mount client -> placeholder vide (HTML SSR identique au 1er render client)
+  if (!mounted) return <div style={{ minHeight: '60vh' }} />
 
   // ── VUE LOGIN ──
   if (!userId) return (
@@ -257,7 +271,7 @@ export default function EspaceMembresPage() {
 
 
           {/* ── Mon contexte mémorisé ─────────────────────────────────────── */}
-          {isReady && (context.voiture || context.preferences || context.trajet || context.sinistre) && (
+          {(context.voiture || context.preferences || context.trajet || context.sinistre) && (
             <div className="dash-card dash-card-full">
               <h2>🧠 Mon contexte mémorisé</h2>
               <p style={{ fontSize: '0.82rem', color: 'var(--color-text-soft)', marginBottom: 18 }}>

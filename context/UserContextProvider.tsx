@@ -25,7 +25,7 @@ import {
   getSupabaseClient,
 } from '@/lib/user-context'
 
-// ─── Interface publique du contexte ──────────────────────────────────────────
+// Interface publique du contexte
 
 export interface UserContextValue {
   context: UserContext
@@ -33,35 +33,27 @@ export interface UserContextValue {
   userId: string | null
   userEmail: string | null
 
-  // Setters
   updateVoiture: (v: VoitureCtx | null) => void
   updatePreferences: (p: PreferencesCtx | null) => void
   setTrajet: (t: TrajetCtx | null) => void
   markSinistre: (s: SinistreCtx | null) => void
 
-  // Resets
   resetTrajet: () => void
   resetSinistre: () => void
   resetAll: () => void
 
-  // Auth
   signOut: () => Promise<void>
 
-  // Helpers
   sinistreExpireSoon: boolean
 }
 
 const UserCtx = createContext<UserContextValue | null>(null)
-
-// ─── Hook ────────────────────────────────────────────────────────────────────
 
 export function useUserContext(): UserContextValue {
   const ctx = useContext(UserCtx)
   if (!ctx) throw new Error('useUserContext must be used inside UserContextProvider')
   return ctx
 }
-
-// ─── Provider ────────────────────────────────────────────────────────────────
 
 export default function UserContextProvider({ children }: { children: ReactNode }) {
   const [context, setContextState] = useState<UserContext>({})
@@ -70,16 +62,13 @@ export default function UserContextProvider({ children }: { children: ReactNode 
   const [userEmail, setUserEmail] = useState<string | null>(null)
 
   const userIdRef = useRef<string | null>(null)
-  // Garde la valeur locale pour la fusion (stable, ref)
   const localRef = useRef<UserContext>({})
-
-  // ── Persistance ───────────────────────────────────────────────────────────
 
   const persist = useCallback((ctx: UserContext, uid: string | null) => {
     const fresh = expireContext(ctx)
     saveContextLocal(fresh)
     if (uid) {
-      saveContextRemote(uid, fresh).catch(() => {/* silently ignore */})
+      saveContextRemote(uid, fresh).catch(() => {})
     }
     return fresh
   }, [])
@@ -95,72 +84,104 @@ export default function UserContextProvider({ children }: { children: ReactNode 
     [persist]
   )
 
-  // ── Initialisation via onAuthStateChange uniquement ───────────────────────
-  // onAuthStateChange déclenche INITIAL_SESSION immédiatement — pas besoin
-  // d'un getSession() séparé qui créerait une contention sur le verrou auth.
+  const hydrateFromSession = useCallback(
+    async (
+      session: { user?: { id: string; email?: string | null } } | null,
+      cancelled: { v: boolean }
+    ) => {
+      if (session?.user) {
+        const uid = session.user.id
+        const email = session.user.email ?? null
+        userIdRef.current = uid
+        setUserId(uid)
+        setUserEmail(email)
+
+        try {
+          const remote = await loadContextRemote(uid)
+          if (cancelled.v) return
+          const merged = expireContext(
+            remote ? mergeContexts(localRef.current, remote) : localRef.current
+          )
+          saveContextLocal(merged)
+          localRef.current = merged
+          setContextState(merged)
+        } catch {
+          // reseau indisponible
+        }
+      } else {
+        userIdRef.current = null
+        setUserId(null)
+        setUserEmail(null)
+      }
+    },
+    []
+  )
+
+  // Initialisation : isReady=true immediat + bootstrap auth en background
+  // 1) isReady=true tout de suite -> la page affiche login form ou dashboard
+  // 2) En background : exchange PKCE manuel si ?code= dans l'URL, puis getSession()
+  // 3) onAuthStateChange gere les evenements FUTURS (SIGNED_IN/OUT/REFRESH)
 
   useEffect(() => {
-    let cancelled = false
+    const flag = { v: false }
 
-    // 1. Charge localStorage immédiatement (synchrone, pas de réseau)
     const local = expireContext(loadContextLocal())
     localRef.current = local
     setContextState(local)
 
-    // 2. S'abonne aux événements auth — INITIAL_SESSION arrive en premier
     const supabase = getSupabaseClient()
+
+    // isReady=true MAINTENANT - la page ne reste jamais bloquee
+    setIsReady(true)
+
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (event, session) => {
-        if (cancelled) return
-
-        if (event === 'INITIAL_SESSION' || event === 'SIGNED_IN') {
-          if (session?.user) {
-            const uid = session.user.id
-            const email = session.user.email ?? null
-            userIdRef.current = uid
-            setUserId(uid)
-            setUserEmail(email)
-
-            // Fusion localStorage ↔ Supabase
-            try {
-              const remote = await loadContextRemote(uid)
-              if (cancelled) return
-              const merged = expireContext(
-                remote ? mergeContexts(localRef.current, remote) : localRef.current
-              )
-              saveContextLocal(merged)
-              localRef.current = merged
-              setContextState(merged)
-            } catch {
-              // Réseau indisponible — on reste sur le localStorage
-            }
-          } else {
-            // Pas de session → utilisateur non connecté
-            userIdRef.current = null
-            setUserId(null)
-            setUserEmail(null)
-          }
-          if (!cancelled) setIsReady(true)
-
+        if (flag.v) return
+        if (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED' || event === 'USER_UPDATED') {
+          await hydrateFromSession(session, flag)
         } else if (event === 'SIGNED_OUT') {
-          userIdRef.current = null
-          setUserId(null)
-          setUserEmail(null)
+          await hydrateFromSession(null, flag)
           const freshLocal = expireContext(loadContextLocal())
           localRef.current = freshLocal
           setContextState(freshLocal)
-          if (!cancelled) setIsReady(true)
         }
       }
     )
 
+    ;(async () => {
+      try {
+        if (typeof window !== 'undefined') {
+          const params = new URLSearchParams(window.location.search)
+          const code = params.get('code')
+          if (code) {
+            try {
+              await supabase.auth.exchangeCodeForSession(code)
+            } catch (e) {
+              console.warn('[auth] exchangeCodeForSession failed:', e)
+            }
+            params.delete('code')
+            const newSearch = params.toString()
+            const newUrl =
+              window.location.pathname +
+              (newSearch ? '?' + newSearch : '') +
+              window.location.hash
+            window.history.replaceState({}, '', newUrl)
+          }
+        }
+
+        const { data: { session } } = await supabase.auth.getSession()
+        if (flag.v) return
+        await hydrateFromSession(session, flag)
+      } catch (e) {
+        console.warn('[auth] bootstrap failed:', e)
+      }
+    })()
+
     return () => {
-      cancelled = true
+      flag.v = true
       subscription.unsubscribe()
     }
-  }, []) // [] — ne tourne qu'une fois au montage
-
-  // ── Actions publiques ─────────────────────────────────────────────────────
+  }, [hydrateFromSession])
 
   const updateVoiture = useCallback(
     (v: VoitureCtx | null) => setContext(prev => ({ ...prev, voiture: v })),
@@ -195,8 +216,6 @@ export default function UserContextProvider({ children }: { children: ReactNode 
   const resetAll = useCallback(() => {
     setContext(() => ({}))
   }, [setContext])
-
-  // ── Valeur exposée ────────────────────────────────────────────────────────
 
   const signOut = useCallback(async () => {
     await getSupabaseClient().auth.signOut()

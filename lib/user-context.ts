@@ -71,7 +71,18 @@ export function getSupabaseClient(): SupabaseClient {
   if (!_client) {
     _client = createClient(
       process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+      {
+        auth: {
+          flowType: 'pkce',
+          autoRefreshToken: true,
+          persistSession: true,
+          // detectSessionInUrl: false → on prend la main sur l'exchange dans le Provider
+          // (évite le deadlock du navigator lock observé en prod sur certains navigateurs)
+          detectSessionInUrl: false,
+          storageKey: 'sb-moteurs-auth',
+        },
+      }
     )
   }
   return _client
