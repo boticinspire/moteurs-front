@@ -1,7 +1,9 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { ConstantData, CIRCONSTANCES, PHOTOS_CHECKLIST } from '@/lib/constat'
+import { useUserContext } from '@/context/UserContextProvider'
+import { saveConstat } from '@/lib/constats-membres'
 
 // ─── Styles ───────────────────────────────────────────────────────────────────
 
@@ -78,15 +80,36 @@ function VehiculeBlock({ titre, v, couleur }: {
 
 // ─── Composant principal ──────────────────────────────────────────────────────
 
-export default function ConstantResume({ constat, onEdit, onReset }: {
+export default function ConstantResume({ constat, onEdit, onReset, savedId }: {
   constat: ConstantData
   onEdit:  (etape: number) => void
   onReset: () => void
+  /** Si déjà chargé depuis l'espace membre, on update au lieu d'insert. */
+  savedId?: string
 }) {
+  const { userId } = useUserContext()
   const [email,        setEmail]        = useState('')
   const [sending,      setSending]      = useState(false)
   const [emailSent,    setEmailSent]    = useState(false)
   const [emailErreur,  setEmailErreur]  = useState('')
+
+  // ── Sauvegarde dans l'espace membre ──
+  const [saving,        setSaving]        = useState(false)
+  const [savedConstatId, setSavedConstatId] = useState<string | null>(savedId ?? null)
+  const [saveErreur,    setSaveErreur]    = useState('')
+
+  const handleSaveToMember = async () => {
+    if (!userId) return
+    setSaving(true)
+    setSaveErreur('')
+    const result = await saveConstat(userId, constat, savedConstatId ? { id: savedConstatId } : undefined)
+    setSaving(false)
+    if (result.ok) {
+      setSavedConstatId(result.id)
+    } else {
+      setSaveErreur(result.error)
+    }
+  }
 
   const sendEmail = async () => {
     if (!email.trim() || !email.includes('@')) {
@@ -164,6 +187,52 @@ export default function ConstantResume({ constat, onEdit, onReset }: {
         </button>
       </div>
 
+      {/* ── Sauvegarde dans l'espace membre ── */}
+      {userId && (
+        <div style={{
+          ...section,
+          borderColor: savedConstatId ? 'rgba(34,197,94,0.4)' : 'var(--color-border)',
+        }}>
+          <div style={sectionTitle}>💾 Sauvegarder dans mon espace</div>
+          {savedConstatId ? (
+            <div style={{ color: '#22c55e', fontWeight: 700, fontSize: '0.9rem' }}>
+              ✅ Constat sauvegardé dans votre espace membre. Vous pouvez le retrouver dans <a href="/espace-membres" style={{ color: 'var(--color-primary)', fontWeight: 700 }}>/espace-membres</a> à tout moment.
+              <button
+                onClick={handleSaveToMember}
+                disabled={saving}
+                style={{
+                  marginLeft: 10, padding: '4px 10px', borderRadius: 6, border: 'none',
+                  background: 'var(--color-bg-alt)', color: 'var(--color-text-soft)',
+                  fontSize: '0.78rem', cursor: 'pointer', fontWeight: 600,
+                }}
+              >
+                {saving ? '…' : '🔄 Mettre à jour'}
+              </button>
+            </div>
+          ) : (
+            <>
+              <p style={{ margin: '0 0 12px', fontSize: '0.85rem', color: 'var(--color-text-soft)' }}>
+                Stockez ce constat dans votre espace membre pour le retrouver, l&apos;imprimer ou le compléter plus tard.
+              </p>
+              <button
+                onClick={handleSaveToMember}
+                disabled={saving}
+                style={{
+                  padding: '11px 22px', borderRadius: 10, border: 'none', cursor: 'pointer',
+                  background: '#22c55e', color: 'white', fontWeight: 700, fontSize: '0.9rem',
+                  opacity: saving ? 0.7 : 1,
+                }}
+              >
+                {saving ? 'Sauvegarde…' : '💾 Sauvegarder dans mon espace'}
+              </button>
+            </>
+          )}
+          {saveErreur && (
+            <div style={{ marginTop: 10, fontSize: '0.8rem', color: '#ef4444' }}>⚠️ {saveErreur}</div>
+          )}
+        </div>
+      )}
+
       {/* ── Email ── */}
       <div style={{ ...section, borderColor: emailSent ? 'rgba(34,197,94,0.4)' : 'var(--color-border)' }}>
         <div style={sectionTitle}>📧 Recevoir par email</div>
@@ -201,7 +270,10 @@ export default function ConstantResume({ constat, onEdit, onReset }: {
           <div style={{ marginTop: 8, fontSize: '0.8rem', color: '#ef4444' }}>⚠️ {emailErreur}</div>
         )}
         <p style={{ margin: '8px 0 0', fontSize: '0.75rem', color: 'var(--color-text-soft)' }}>
-          Le résumé est envoyé à votre adresse uniquement. Aucun stockage permanent.
+          Le résumé est envoyé à votre adresse uniquement.
+          {userId
+            ? ' Vous pouvez aussi sauvegarder le constat dans votre espace membre (ci-dessus).'
+            : ' Pour stocker durablement le constat, connectez-vous à l\'espace membre.'}
         </p>
       </div>
 

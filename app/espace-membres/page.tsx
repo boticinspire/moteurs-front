@@ -4,6 +4,10 @@ import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { useUserContext } from '@/context/UserContextProvider'
 import { getSupabaseClient } from '@/lib/user-context'
+import {
+  listConstats, deleteConstat,
+  type ConstatMembreItem,
+} from '@/lib/constats-membres'
 
 const sb = getSupabaseClient()
 
@@ -27,7 +31,7 @@ export default function EspaceMembresPage() {
   const {
     context,
     userId, userEmail,
-    updateVoiture, updatePreferences,
+    updateVoiture, updateConducteur, updateAssurance, updatePreferences,
     resetTrajet, resetSinistre, resetAll,
     signOut,
     sinistreExpireSoon: sinExpire,
@@ -45,6 +49,79 @@ export default function EspaceMembresPage() {
   const [alerte, setAlerte]     = useState<Alerte>({ pays: ['FR'], segments: [], mots_cles: '', actif: true })
   const [saveStatus, setSaveStatus] = useState('')
   const [articles, setArticles] = useState<any[]>([])
+
+  // ── Form "Mon profil personnel" (conducteur + assurance + immatriculation) ──
+  const [profilPerso, setProfilPerso] = useState({
+    nom:               '',
+    prenom:            '',
+    adresse:           '',
+    telephone:         '',
+    immatriculation:   '',
+    assurance_nom:     '',
+    numero_police:     '',
+    agence:            '',
+    assurance_tel:     '',
+  })
+  const [profilPersoStatus, setProfilPersoStatus] = useState('')
+
+  // Initialise le form depuis le contexte (au montage + à chaque update)
+  useEffect(() => {
+    setProfilPerso({
+      nom:             context.conducteur?.nom            ?? '',
+      prenom:          context.conducteur?.prenom         ?? '',
+      adresse:         context.conducteur?.adresse        ?? '',
+      telephone:       context.conducteur?.telephone      ?? '',
+      immatriculation: context.voiture?.immatriculation   ?? '',
+      assurance_nom:   context.assurance?.nom_assureur    ?? '',
+      numero_police:   context.assurance?.numero_police   ?? '',
+      agence:          context.assurance?.agence          ?? '',
+      assurance_tel:   context.assurance?.telephone       ?? '',
+    })
+  }, [context.conducteur, context.voiture?.immatriculation, context.assurance])
+
+  const sauvegarderProfilPerso = () => {
+    setProfilPersoStatus('Enregistrement…')
+    updateConducteur({
+      nom:       profilPerso.nom.trim()       || undefined,
+      prenom:    profilPerso.prenom.trim()    || undefined,
+      adresse:   profilPerso.adresse.trim()   || undefined,
+      telephone: profilPerso.telephone.trim() || undefined,
+      email:     userEmail ?? undefined,
+    })
+    updateAssurance({
+      nom_assureur:  profilPerso.assurance_nom.trim() || undefined,
+      numero_police: profilPerso.numero_police.trim() || undefined,
+      agence:        profilPerso.agence.trim()        || undefined,
+      telephone:     profilPerso.assurance_tel.trim() || undefined,
+    })
+    // Mise à jour immatriculation dans le voiture existant
+    updateVoiture({
+      ...(context.voiture ?? {}),
+      immatriculation: profilPerso.immatriculation.trim() || undefined,
+    })
+    setTimeout(() => setProfilPersoStatus('✓ Enregistré'), 100)
+    setTimeout(() => setProfilPersoStatus(''), 2500)
+  }
+
+  // ── Liste des constats sauvegardés ──
+  const [constatsList,   setConstatsList]   = useState<ConstatMembreItem[]>([])
+  const [constatsLoaded, setConstatsLoaded] = useState(false)
+  const chargerConstats = async () => {
+    if (!userId) return
+    const list = await listConstats(userId)
+    setConstatsList(list)
+    setConstatsLoaded(true)
+  }
+  const supprimerConstat = async (id: string) => {
+    if (!userId) return
+    if (!confirm('Supprimer définitivement ce constat ?')) return
+    const ok = await deleteConstat(userId, id)
+    if (ok) setConstatsList(prev => prev.filter(c => c.id !== id))
+  }
+  useEffect(() => {
+    if (userId) chargerConstats()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [userId])
 
   // Charger les données dès que l'utilisateur est identifié
   useEffect(() => {
@@ -341,6 +418,106 @@ export default function EspaceMembresPage() {
             </button>
           </div>
 
+
+          {/* ── Mon profil personnel (pré-remplit le constat amiable) ─────── */}
+          <div className="dash-card dash-card-full">
+            <h2>🪪 Mon profil personnel</h2>
+            <p style={{ fontSize: '0.82rem', color: 'var(--color-text-soft)', marginBottom: 18 }}>
+              Ces données pré-remplissent automatiquement le constat amiable et autres formulaires. Modifiables à tout moment.
+            </p>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: 12, marginBottom: 14 }}>
+              {[
+                { key: 'nom',             label: 'Nom',                placeholder: 'Dupont' },
+                { key: 'prenom',          label: 'Prénom',             placeholder: 'Jean' },
+                { key: 'adresse',         label: 'Adresse complète',   placeholder: '12 rue de la Paix, 75001 Paris' },
+                { key: 'telephone',       label: 'Téléphone',          placeholder: '+33 6 12 34 56 78' },
+                { key: 'immatriculation', label: 'Immatriculation',    placeholder: 'AB-123-CD' },
+                { key: 'assurance_nom',   label: 'Nom de l\'assureur', placeholder: 'AXA, MAAF, Allianz…' },
+                { key: 'numero_police',   label: 'N° de police',       placeholder: '123456789' },
+                { key: 'agence',          label: 'Agence / Contrat',   placeholder: 'Agence Paris Centre' },
+                { key: 'assurance_tel',   label: 'Tél. assurance',     placeholder: '+33 1 …' },
+              ].map(({ key, label, placeholder }) => (
+                <div key={key}>
+                  <label style={{ display: 'block', fontWeight: 600, fontSize: '0.78rem', marginBottom: 4, color: 'var(--color-text-soft)' }}>{label}</label>
+                  <input
+                    type="text"
+                    placeholder={placeholder}
+                    value={profilPerso[key as keyof typeof profilPerso]}
+                    onChange={e => setProfilPerso(p => ({ ...p, [key]: e.target.value }))}
+                    style={{
+                      width: '100%', boxSizing: 'border-box',
+                      padding: '8px 11px', borderRadius: 7, fontSize: '0.86rem',
+                      background: 'var(--color-bg-alt)', color: 'var(--color-text)',
+                      border: '1.5px solid var(--color-border)', outline: 'none',
+                    }}
+                  />
+                </div>
+              ))}
+            </div>
+            <button className="btn-save" onClick={sauvegarderProfilPerso}>
+              Enregistrer <span className="save-status">{profilPersoStatus}</span>
+            </button>
+            <p style={{ marginTop: 10, fontSize: '0.74rem', color: 'var(--color-text-soft)' }}>
+              💡 L&apos;email du conducteur est récupéré de votre compte ({userEmail || '—'}).
+            </p>
+          </div>
+
+          {/* ── Mes constats sauvegardés ───────────────────────────────────── */}
+          <div className="dash-card dash-card-full">
+            <h2>📋 Mes constats sauvegardés</h2>
+            {!constatsLoaded && (
+              <p style={{ fontSize: '0.85rem', color: 'var(--color-text-soft)' }}>Chargement…</p>
+            )}
+            {constatsLoaded && constatsList.length === 0 && (
+              <p style={{ fontSize: '0.85rem', color: 'var(--color-text-soft)', margin: 0 }}>
+                Aucun constat sauvegardé pour l&apos;instant. Quand vous compléterez un{' '}
+                <Link href="/constat" style={{ color: 'var(--color-primary)', fontWeight: 700 }}>constat amiable</Link>,
+                vous pourrez le stocker dans cet espace.
+              </p>
+            )}
+            {constatsList.length > 0 && (
+              <div style={{ display: 'grid', gap: 10 }}>
+                {constatsList.map(c => (
+                  <div key={c.id} style={{
+                    background: 'var(--color-bg-alt)', borderRadius: 10,
+                    padding: '12px 14px', border: '1px solid var(--color-border)',
+                    display: 'grid', gridTemplateColumns: '1fr auto', gap: 10, alignItems: 'center',
+                  }}>
+                    <div>
+                      <div style={{ fontWeight: 700, fontSize: '0.9rem', marginBottom: 3 }}>
+                        🚗 {c.vehicule_a_immat || '—'} contre {c.vehicule_b_immat || '—'}
+                      </div>
+                      <div style={{ fontSize: '0.78rem', color: 'var(--color-text-soft)' }}>
+                        {c.date_accident || '—'} {c.lieu ? `· ${c.lieu}` : ''} {c.pays ? `· ${c.pays}` : ''}
+                      </div>
+                    </div>
+                    <div style={{ display: 'flex', gap: 6 }}>
+                      <Link
+                        href={`/constat?id=${c.id}`}
+                        style={{
+                          padding: '6px 12px', borderRadius: 6,
+                          background: 'var(--color-primary)', color: '#0a1628',
+                          fontWeight: 700, fontSize: '0.78rem', textDecoration: 'none',
+                        }}
+                      >
+                        Voir →
+                      </Link>
+                      <button
+                        onClick={() => supprimerConstat(c.id)}
+                        style={{
+                          padding: '6px 10px', borderRadius: 6, border: '1px solid rgba(239,68,68,0.35)',
+                          background: 'rgba(239,68,68,0.06)', color: '#ef4444',
+                          fontSize: '0.78rem', cursor: 'pointer', fontWeight: 600,
+                        }}
+                      >
+                        🗑️
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
 
           {/* ── Mon contexte mémorisé ─────────────────────────────────────── */}
           {(context.voiture || context.preferences || context.trajet || context.sinistre) && (

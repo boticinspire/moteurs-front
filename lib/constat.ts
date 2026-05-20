@@ -3,6 +3,8 @@
  * Types TypeScript + données de référence du constat amiable européen.
  */
 
+import type { UserContext } from './user-context'
+
 // ─── Types de base ────────────────────────────────────────────────────────────
 
 export interface VehiculeInfo {
@@ -147,6 +149,44 @@ export const PHOTOS_CHECKLIST: PhotoItem[] = [
   { id: 'temoins',   emoji: '👥', label: 'Témoins présents',                  desc: 'Coordonnées et consentement des témoins éventuels',        urgent: false },
   { id: 'signaux',   emoji: '🚦', label: 'Panneaux et feux de signalisation', desc: 'Stops, priorités, feux — utile si responsabilité contestée', urgent: false },
 ]
+
+// ─── Pré-remplissage depuis le contexte utilisateur ──────────────────────────
+
+/**
+ * Construit un Partial<VehiculeInfo> à partir du contexte utilisateur stocké.
+ * Utilisé pour pré-remplir le véhicule A (le sien) dans le constat.
+ */
+export function vehiculeInfoFromContext(ctx: UserContext): Partial<VehiculeInfo> {
+  const c = ctx.conducteur
+  const a = ctx.assurance
+  const v = ctx.voiture
+  const result: Partial<VehiculeInfo> = {}
+  if (v?.immatriculation)         result.immatriculation = v.immatriculation
+  if (v?.marque && v?.modele)     result.marque_modele = `${v.marque} ${v.modele}`
+  else if (v?.marque)             result.marque_modele = v.marque
+  if (c?.nom)                     result.nom_conducteur = c.nom
+  if (c?.prenom)                  result.prenom_conducteur = c.prenom
+  if (c?.adresse)                 result.adresse_conducteur = c.adresse
+  if (c?.telephone)               result.telephone = c.telephone
+  if (c?.email)                   result.email = c.email
+  if (a?.nom_assureur)            result.assurance_nom = a.nom_assureur
+  if (a?.numero_police)           result.assurance_numero_police = a.numero_police
+  if (a?.agence)                  result.assurance_agence = a.agence
+  if (a?.telephone)               result.assurance_telephone = a.telephone
+  return result
+}
+
+/** True si le contexte contient au moins une info utile pour pré-remplir un constat. */
+export function hasContextDataForConstat(ctx: UserContext): boolean {
+  return !!(
+    ctx.voiture?.immatriculation ||
+    ctx.voiture?.marque ||
+    ctx.conducteur?.nom ||
+    ctx.conducteur?.prenom ||
+    ctx.conducteur?.email ||
+    ctx.assurance?.nom_assureur
+  )
+}
 
 // ─── Pays et numéros d'urgence ────────────────────────────────────────────────
 

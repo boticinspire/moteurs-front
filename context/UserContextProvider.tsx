@@ -12,6 +12,8 @@ import {
 import {
   type UserContext,
   type VoitureCtx,
+  type ConducteurCtx,
+  type AssuranceCtx,
   type PreferencesCtx,
   type TrajetCtx,
   type SinistreCtx,
@@ -34,6 +36,8 @@ export interface UserContextValue {
   userEmail: string | null
 
   updateVoiture: (v: VoitureCtx | null) => void
+  updateConducteur: (c: ConducteurCtx | null) => void
+  updateAssurance: (a: AssuranceCtx | null) => void
   updatePreferences: (p: PreferencesCtx | null) => void
   setTrajet: (t: TrajetCtx | null) => void
   markSinistre: (s: SinistreCtx | null) => void
@@ -188,6 +192,16 @@ export default function UserContextProvider({ children }: { children: ReactNode 
     [setContext]
   )
 
+  const updateConducteur = useCallback(
+    (c: ConducteurCtx | null) => setContext(prev => ({ ...prev, conducteur: c })),
+    [setContext]
+  )
+
+  const updateAssurance = useCallback(
+    (a: AssuranceCtx | null) => setContext(prev => ({ ...prev, assurance: a })),
+    [setContext]
+  )
+
   const updatePreferences = useCallback(
     (p: PreferencesCtx | null) => setContext(prev => ({ ...prev, preferences: p })),
     [setContext]
@@ -227,6 +241,8 @@ export default function UserContextProvider({ children }: { children: ReactNode 
     userId,
     userEmail,
     updateVoiture,
+    updateConducteur,
+    updateAssurance,
     updatePreferences,
     setTrajet,
     markSinistre,

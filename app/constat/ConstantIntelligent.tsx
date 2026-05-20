@@ -1,10 +1,13 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import {
   ConstantData, VehiculeInfo, Temoin,
   emptyConstat, CIRCONSTANCES, PHOTOS_CHECKLIST, POINTS_CHOC, PAYS_URGENCE,
+  vehiculeInfoFromContext, hasContextDataForConstat,
 } from '@/lib/constat'
+import { useUserContext } from '@/context/UserContextProvider'
+import { getConstat } from '@/lib/constats-membres'
 import ConstantResume from './ConstantResume'
 
 // ─── Étapes ───────────────────────────────────────────────────────────────────
@@ -87,8 +90,33 @@ function VehiculeField({
 // ─── Composant principal ──────────────────────────────────────────────────────
 
 export default function ConstantIntelligent() {
+  const { context, userId } = useUserContext()
   const [etape,   setEtape]   = useState(0)
   const [constat, setConstat] = useState<ConstantData>(emptyConstat())
+  const [savedId, setSavedId] = useState<string | undefined>(undefined)
+  const hasPrefillData = hasContextDataForConstat(context)
+
+  // Si l'URL contient ?id=<uuid> et que l'utilisateur est connecté,
+  // on charge le constat sauvegardé et on saute direct à l'étape résumé.
+  useEffect(() => {
+    if (typeof window === 'undefined' || !userId) return
+    const params = new URLSearchParams(window.location.search)
+    const id = params.get('id')
+    if (!id) return
+    getConstat(userId, id).then(data => {
+      if (data) {
+        setConstat(data)
+        setSavedId(id)
+        setEtape(7)  // direct au résumé
+      }
+    })
+  }, [userId])
+  // Pré-remplit le véhicule A avec les infos sauvegardées du membre.
+  const prefillVehiculeA = () => {
+    const fill = vehiculeInfoFromContext(context)
+    if (Object.keys(fill).length === 0) return
+    setConstat(prev => ({ ...prev, vehicule_a: { ...prev.vehicule_a, ...fill } }))
+  }
 
   const patchConstat = (patch: Partial<ConstantData>) =>
     setConstat(prev => ({ ...prev, ...patch }))
@@ -150,6 +178,7 @@ export default function ConstantIntelligent() {
           vehicule={constat.vehicule_a}
           patch={patchA}
           onNext={next} onPrev={prev}
+          prefill={hasPrefillData ? prefillVehiculeA : undefined}
         />
       )}
 
@@ -190,7 +219,8 @@ export default function ConstantIntelligent() {
         <ConstantResume
           constat={constat}
           onEdit={(e) => setEtape(e)}
-          onReset={() => { setConstat(emptyConstat()); setEtape(0) }}
+          onReset={() => { setConstat(emptyConstat()); setEtape(0); setSavedId(undefined) }}
+          savedId={savedId}
         />
       )}
     </div>
@@ -364,19 +394,38 @@ function Etape1({ constat, patch, onNext, onPrev }: {
 
 // ─── Étape 2/3 : Véhicule ─────────────────────────────────────────────────────
 
-function EtapeVehicule({ titre, sousTitre, vehicule, patch, onNext, onPrev }: {
+function EtapeVehicule({ titre, sousTitre, vehicule, patch, onNext, onPrev, prefill }: {
   titre:     string
   sousTitre: string
   vehicule:  VehiculeInfo
   patch:     (p: Partial<VehiculeInfo>) => void
   onNext:    () => void
   onPrev:    () => void
+  prefill?:  () => void   // si fourni, affiche un bouton "Pré-remplir avec mes infos"
 }) {
   return (
     <div>
       <div style={card}>
         <h2 style={{ margin: '0 0 4px', fontSize: '1.1rem' }}>{titre}</h2>
         <p style={{ margin: '0 0 20px', color: 'var(--color-text-soft)', fontSize: '0.84rem' }}>{sousTitre}</p>
+
+        {prefill && (
+          <button
+            type="button"
+            onClick={prefill}
+            style={{
+              width: '100%', marginBottom: 18, padding: '11px 16px', borderRadius: 10,
+              border: '1.5px solid #3b82f6', background: 'rgba(59,130,246,0.08)',
+              cursor: 'pointer', fontWeight: 700, fontSize: '0.88rem', color: '#3b82f6',
+              display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
+              transition: 'background .15s',
+            }}
+            onMouseEnter={e => { e.currentTarget.style.background = 'rgba(59,130,246,0.14)' }}
+            onMouseLeave={e => { e.currentTarget.style.background = 'rgba(59,130,246,0.08)' }}
+          >
+            🪪 Pré-remplir avec mes infos sauvegardées
+          </button>
+        )}
 
         <div style={{ borderBottom: '1px solid var(--color-border)', paddingBottom: 16, marginBottom: 16 }}>
           <div style={{ fontWeight: 700, fontSize: '0.82rem', color: '#ef4444', marginBottom: 12, textTransform: 'uppercase', letterSpacing: '0.05em' }}>

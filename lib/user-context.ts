@@ -25,6 +25,22 @@ export interface VoitureCtx {
   conso_l100?: number            // pour thermique
   conso_kwh100?: number          // pour BEV
   carte_recharge?: string        // ex. "Ionity", "Chargemap"
+  immatriculation?: string       // ex. "AB-123-CD" — pré-remplit le constat amiable
+}
+
+export interface ConducteurCtx {
+  nom?:        string
+  prenom?:     string
+  adresse?:    string
+  telephone?:  string
+  email?:      string
+}
+
+export interface AssuranceCtx {
+  nom_assureur?:    string
+  numero_police?:   string
+  agence?:          string
+  telephone?:       string
 }
 
 export interface PreferencesCtx {
@@ -52,10 +68,12 @@ export interface SinistreCtx {
 }
 
 export interface UserContext {
-  voiture?: VoitureCtx | null
+  voiture?:     VoitureCtx     | null
+  conducteur?:  ConducteurCtx  | null
+  assurance?:   AssuranceCtx   | null
   preferences?: PreferencesCtx | null
-  trajet?: TrajetCtx | null
-  sinistre?: SinistreCtx | null
+  trajet?:      TrajetCtx      | null
+  sinistre?:    SinistreCtx    | null
 }
 
 // ─── Constants ────────────────────────────────────────────────────────────────
@@ -148,7 +166,7 @@ export async function loadContextRemote(userId: string): Promise<UserContext | n
     const supabase = getSupabaseClient()
     const { data, error } = await supabase
       .from('user_context')
-      .select('voiture, preferences, trajet, sinistre')
+      .select('voiture, conducteur, assurance, preferences, trajet, sinistre')
       .eq('user_id', userId)
       .maybeSingle()
 
@@ -166,12 +184,14 @@ export async function saveContextRemote(userId: string, ctx: UserContext): Promi
       .from('user_context')
       .upsert(
         {
-          user_id: userId,
-          voiture: ctx.voiture ?? null,
+          user_id:     userId,
+          voiture:     ctx.voiture     ?? null,
+          conducteur:  ctx.conducteur  ?? null,
+          assurance:   ctx.assurance   ?? null,
           preferences: ctx.preferences ?? null,
-          trajet: ctx.trajet ?? null,
-          sinistre: ctx.sinistre ?? null,
-          updated_at: new Date().toISOString(),
+          trajet:      ctx.trajet      ?? null,
+          sinistre:    ctx.sinistre    ?? null,
+          updated_at:  new Date().toISOString(),
         },
         { onConflict: 'user_id' }
       )
@@ -189,10 +209,12 @@ export async function saveContextRemote(userId: string, ctx: UserContext): Promi
  */
 export function mergeContexts(local: UserContext, remote: UserContext): UserContext {
   return {
-    voiture: remote.voiture ?? local.voiture ?? null,
+    voiture:     remote.voiture     ?? local.voiture     ?? null,
+    conducteur:  remote.conducteur  ?? local.conducteur  ?? null,
+    assurance:   remote.assurance   ?? local.assurance   ?? null,
     preferences: remote.preferences ?? local.preferences ?? null,
-    trajet: local.trajet ?? remote.trajet ?? null,
-    sinistre: local.sinistre ?? remote.sinistre ?? null,
+    trajet:      local.trajet       ?? remote.trajet     ?? null,
+    sinistre:    local.sinistre     ?? remote.sinistre   ?? null,
   }
 }
 
