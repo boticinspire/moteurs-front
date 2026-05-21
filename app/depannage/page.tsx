@@ -39,7 +39,7 @@ export default function PageDepannage() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(buildJsonLd()) }}
       />
 
-      <nav style={{ fontSize: '0.82rem', color: 'var(--color-text-muted)', marginBottom: 22 }}>
+      <nav className="hub-breadcrumb-dark" style={{ fontSize: '0.82rem', color: 'var(--color-text-muted)', marginBottom: 22 }}>
         <Link href="/" style={lienMuted}>Accueil</Link>
         {' / '}
         <span>Dépannage</span>

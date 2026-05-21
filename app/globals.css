@@ -2293,3 +2293,47 @@ body :not(.home-v2) main > nav + header h1 span{
     border-radius: 12px !important;
   }
 }
+
+
+/* =====================================================================
+   .hub-breadcrumb-dark — Breadcrumb integre VISUELLEMENT dans le bandeau
+   ===================================================================== */
+
+.hub-breadcrumb-dark{
+  background:
+    radial-gradient(ellipse at 75% 80%, rgba(0,184,135,.10) 0%, transparent 55%),
+    linear-gradient(160deg, #060f1e 0%, #0b1e38 100%) !important;
+  color: rgba(255,255,255,.55) !important;
+  padding: 22px 36px 18px !important;
+  margin: 0 -16px 0 !important;
+  border-radius: 16px 16px 0 0 !important;
+  font-size: 0.82rem !important;
+  border-bottom: 1px solid rgba(255,255,255,.05);
+}
+.hub-breadcrumb-dark a{
+  color: rgba(255,255,255,.7) !important;
+  text-decoration: none;
+}
+.hub-breadcrumb-dark a:hover{
+  color: #f5a524 !important;
+}
+.hub-breadcrumb-dark span{
+  color: rgba(255,255,255,.55) !important;
+}
+
+/* Quand le breadcrumb est juste avant le bandeau, on enlève le radius-top du bandeau pour qu'ils fusionnent */
+.hub-breadcrumb-dark + .hub-hero-dark{
+  border-radius: 0 0 16px 16px !important;
+  margin-top: 0 !important;
+}
+
+@media (max-width:768px){
+  .hub-breadcrumb-dark{
+    padding: 18px 20px 14px !important;
+    margin: 0 -8px 0 !important;
+    border-radius: 12px 12px 0 0 !important;
+  }
+  .hub-breadcrumb-dark + .hub-hero-dark{
+    border-radius: 0 0 12px 12px !important;
+  }
+}

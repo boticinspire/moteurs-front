@@ -41,7 +41,7 @@ export default function PageRechargeElectrique() {
       />
 
       {/* Fil d'Ariane */}
-      <nav style={{ fontSize: '0.82rem', color: 'var(--color-text-muted)', marginBottom: 22 }}>
+      <nav className="hub-breadcrumb-dark" style={{ fontSize: '0.82rem', color: 'var(--color-text-muted)', marginBottom: 22 }}>
         <Link href="/" style={lienMuted}>Accueil</Link>
         {' / '}
         <span>Recharge électrique</span>
