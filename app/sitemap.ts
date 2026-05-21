@@ -1,10 +1,20 @@
 import type { MetadataRoute } from 'next'
 import routesData from '@/data/routes-vacances.json'
+import { TRAJETS_SEO, variantesForTrajet } from '@/lib/trajets-seo'
 
 const BASE = 'https://moteurs.com'
 
-// ── Slugs trajets vacances ─────────────────────────────────────────────────────
+// ── Slugs trajets vacances (comparateur libre) ─────────────────────────────────
 const TRAJET_SLUGS = (routesData as { slug: string }[]).map(r => r.slug)
+
+// ── Slugs trajets SEO (/trajet/[slug] + /trajet/[slug]/[variante]) ─────────────
+const TRAJET_SEO_URLS: string[] = [
+  '/trajet',
+  ...TRAJETS_SEO.map(t => `/trajet/${t.slug}`),
+  ...TRAJETS_SEO.flatMap(t =>
+    variantesForTrajet(t).map(v => `/trajet/${t.slug}/${v}`)
+  ),
+]
 
 // ── Combos TCO /tco/[pays]/[segment] ──────────────────────────────────────────
 const TCO_PAYS    = ['fr', 'be', 'ch', 'ca']
@@ -95,7 +105,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: p.priority,
   }))
 
-  // 2. Pages trajets vacances (25 routes)
+  // 2. Pages trajets vacances (25 routes) — comparateur libre
   const trajetEntries: MetadataRoute.Sitemap = TRAJET_SLUGS.map(slug => ({
     url: `${BASE}/comparer-trajet/${slug}`,
     lastModified: now,
@@ -103,7 +113,15 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.75,
   }))
 
-  // 3. Pages TCO par pays × segment (4 × 9 = 36 pages)
+  // 2bis. Pages trajets SEO (/trajet/[slug] + variantes) — 15 routes × ~5 variantes
+  const trajetSeoEntries: MetadataRoute.Sitemap = TRAJET_SEO_URLS.map(url => ({
+    url: `${BASE}${url}`,
+    lastModified: now,
+    changeFrequency: 'monthly' as const,
+    priority: url === '/trajet' ? 0.85 : url.split('/').length === 3 ? 0.82 : 0.78,
+  }))
+
+  // 3. Pages TCO par pays / segment (4 x 9 = 36 pages)
   const tcoEntries: MetadataRoute.Sitemap = TCO_PAYS.flatMap(pays =>
     TCO_SEGMENTS.map(segment => ({
       url: `${BASE}/tco/${pays}/${segment}`,
@@ -113,7 +131,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     }))
   )
 
-  // 4. Articles publiés depuis Supabase
+  // 4. Articles publies depuis Supabase
   const articles = await fetchArticlesSlugs()
   const articleEntries: MetadataRoute.Sitemap = articles.map(a => ({
     url: `${BASE}/article/${a.slug}`,
@@ -125,6 +143,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   return [
     ...staticEntries,
     ...trajetEntries,
+    ...trajetSeoEntries,
     ...tcoEntries,
     ...articleEntries,
   ]

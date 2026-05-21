@@ -125,6 +125,42 @@ export default function PageComparateurTrajet() {
         </div>
       </section>
 
+      {/* ── Trajets vacances décryptés (SEO landing pages) ── */}
+      <section style={{ marginTop: 56, borderTop: '1px solid var(--color-border)', paddingTop: 32 }}>
+        <h2 style={{ marginBottom: 8, fontSize: '1.2rem' }}>
+          Grands trajets vacances décryptés
+        </h2>
+        <p style={{ color: 'var(--color-text-muted)', fontSize: '0.9rem', marginBottom: 18, lineHeight: 1.5 }}>
+          Coût par motorisation, vignettes, ZFE, recharge et checklist pour les itinéraires européens les plus populaires.
+        </p>
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
+          {[
+            { slug: 'belgique-cote-azur',    label: "🇧🇪 → 🇫🇷 Côte d'Azur" },
+            { slug: 'belgique-toscane',      label: '🇧🇪 → 🇮🇹 Toscane' },
+            { slug: 'pays-bas-lac-garde',    label: '🇳🇱 → 🇮🇹 Lac de Garde' },
+            { slug: 'france-costa-brava',    label: '🇫🇷 → 🇪🇸 Costa Brava' },
+            { slug: 'allemagne-algarve',     label: '🇩🇪 → 🇵🇹 Algarve' },
+            { slug: 'pays-bas-dalmatie',     label: '🇳🇱 → 🇭🇷 Dalmatie' },
+            { slug: 'danemark-norvege',      label: '🇩🇰 → 🇳🇴 Fjords' },
+          ].map(t => (
+            <a key={t.slug} href={`/trajet/${t.slug}`} style={{
+              padding: '8px 14px', borderRadius: 20, fontSize: '0.85rem',
+              background: 'rgba(122,240,194,0.06)', border: '1px solid rgba(122,240,194,0.2)',
+              color: 'var(--color-primary)', textDecoration: 'none',
+            }}>
+              {t.label}
+            </a>
+          ))}
+          <a href="/trajet" style={{
+            padding: '8px 14px', borderRadius: 20, fontSize: '0.85rem',
+            background: 'transparent', border: '1px solid var(--color-border)',
+            color: 'var(--color-text)', textDecoration: 'none',
+          }}>
+            Voir les 15 trajets →
+          </a>
+        </div>
+      </section>
+
       {/* ── CTA outils complémentaires ── */}
       <section style={{ marginTop: 48, textAlign: 'center' }}>
         <p style={{ color: 'var(--color-text-muted)', marginBottom: 16 }}>
