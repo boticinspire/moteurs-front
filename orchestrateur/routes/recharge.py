@@ -147,3 +147,105 @@ def lister_sources():
             for c in CARTES
         ],
     }
+
+
+# ── Tarifs par pays (table tarifs_carte_pays) ─────────────────────────────────
+
+@router.get("/tarifs")
+def lister_tarifs(
+    carte_id: str | None = Query(None, description="Filtre par carte_id (ex: 'ionity-passport')"),
+    pays:     str | None = Query(None, description="Filtre ISO pays (ex: 'FR', 'DE')"),
+    devise:   str | None = Query(None, description="Filtre devise (ex: 'EUR')"),
+    limit:    int = Query(500, le=2000),
+):
+    """
+    Liste les tarifs par carte et par pays depuis tarifs_carte_pays.
+    Tous filtres optionnels. Utilise la vue v_tarifs_complet qui joint le nom carte.
+    """
+    supabase = get_supabase()
+    q = supabase.table("v_tarifs_complet").select("*").limit(limit)
+    if carte_id:
+        q = q.eq("carte_id", carte_id)
+    if pays:
+        q = q.eq("pays_iso", pays.upper())
+    if devise:
+        q = q.eq("devise", devise.upper())
+    r = q.execute()
+    return {"nb": len(r.data), "tarifs": r.data}
+
+
+@router.get("/cartes/{carte_id}/tarifs")
+def tarifs_carte(carte_id: str):
+    """Retourne tous les tarifs pays pour une carte donnée."""
+    if carte_id not in CARTES_BY_ID:
+        # On laisse passer car la carte peut exister en base sans être dans sources.py
+        pass
+    supabase = get_supabase()
+    r = (
+        supabase.table("tarifs_carte_pays")
+        .select("*")
+        .eq("carte_id", carte_id)
+        .eq("actif", True)
+        .order("pays_iso")
+        .execute()
+    )
+    return {"carte_id": carte_id, "nb": len(r.data), "tarifs": r.data}
+
+
+@router.get("/cartes/{carte_id}/tarifs/{pays_iso}")
+def tarif_carte_pays(carte_id: str, pays_iso: str):
+    """Retourne le tarif spécifique d'une carte pour un pays donné."""
+    supabase = get_supabase()
+    try:
+        r = (
+            supabase.table("tarifs_carte_pays")
+            .select("*")
+            .eq("carte_id", carte_id)
+            .eq("pays_iso", pays_iso.upper())
+            .eq("actif", True)
+            .single()
+            .execute()
+        )
+        return r.data
+    except Exception:
+        raise HTTPException(
+            status_code=404,
+            detail=f"Aucun tarif pour {carte_id} en {pays_iso.upper()}"
+        )
+
+
+@router.get("/tarifs/comparer/{pays_iso}")
+def comparer_tarifs_pays(pays_iso: str, type_borne: str = Query("dc_ultra")):
+    """
+    Classement des cartes les moins chères pour un pays donné, sur un type de borne.
+    type_borne ∈ {plan_principal_kwh, plan_premium_kwh, plan_sans_abo_app, ac_slow_kwh, dc_rapide_kwh, dc_ultra_kwh}
+    """
+    champs_valides = {
+        "plan_principal", "plan_premium", "plan_sans_abo_app", "plan_sans_abo_direct",
+        "ac_slow", "dc_rapide", "dc_ultra"
+    }
+    if type_borne not in champs_valides:
+        raise HTTPException(status_code=400, detail=f"type_borne invalide. Valides: {sorted(champs_valides)}")
+    col = type_borne + "_kwh"
+    supabase = get_supabase()
+    r = (
+        supabase.table("v_tarifs_complet")
+        .select("*")
+        .eq("pays_iso", pays_iso.upper())
+        .not_.is_(col, "null")
+        .order(col)
+        .execute()
+    )
+    classement = [
+        {
+            "rang": i + 1,
+            "carte_id": row["carte_id"],
+            "nom": row["carte_nom"],
+            "operateur": row["operateur"],
+            "devise": row["devise"],
+            "prix_kwh": row.get(col),
+            "abo_mensuel": row.get("abo_mensuel"),
+        }
+        for i, row in enumerate(r.data)
+    ]
+    return {"pays": pays_iso.upper(), "type_borne": type_borne, "nb": len(classement), "classement": classement}
