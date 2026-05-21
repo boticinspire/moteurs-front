@@ -9,8 +9,8 @@
   --color-bg-alt: #f4f7fb;
   --color-bg-card: #ffffff;
   --color-bg-dark: #0b1e38;
-  --color-primary: #1a5fc4;
-  --color-primary-dark: #0e449a;
+  --color-primary: #ef6c1a;  /* harmonisé sun (ex-bleu #1a5fc4) */
+  --color-primary-dark: #c95211;  /* harmonisé sun-dark (ex-bleu #0e449a) */
   --color-accent: #00b887;
   --color-accent-dark: #009970;
   --color-warning: #d97706;
