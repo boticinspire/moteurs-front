@@ -2132,3 +2132,82 @@ body :not(.home-v2) section.newsletter{
   }
 }
 
+
+
+/* =====================================================================
+   BANDEAU FONCÉ HUBS — Pages hub avec <header> inline (mai 2026)
+   Cible /recharge-electrique /vacances-voiture /cout-voiture /depannage /documents-auto
+   Structure : <main class="container"> > <nav>breadcrumb</nav> > <header>...</header>
+   Applique le même look que .page-hero mais à un <header> dans un container
+   ===================================================================== */
+
+body :not(.home-v2) main.container > header:first-of-type,
+body :not(.home-v2) main.container > nav + header{
+  position: relative;
+  background:
+    radial-gradient(ellipse at 75% 20%, rgba(0,184,135,.10) 0%, transparent 55%),
+    linear-gradient(160deg, #060f1e 0%, #0b1e38 60%, #0f2f5a 100%);
+  color: #fff;
+  padding: 48px 36px !important;
+  border-radius: 16px;
+  margin: 0 -16px 32px !important;
+  overflow: hidden;
+}
+
+/* Grille subtile en arrière-plan */
+body :not(.home-v2) main.container > header:first-of-type::before,
+body :not(.home-v2) main.container > nav + header::before{
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(255,255,255,.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,.025) 1px, transparent 1px);
+  background-size: 48px 48px;
+  pointer-events: none;
+}
+
+/* Ligne séparatrice sun en bas du bandeau */
+body :not(.home-v2) main.container > header:first-of-type::after,
+body :not(.home-v2) main.container > nav + header::after{
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(245,165,36,.5), rgba(239,108,26,.5), transparent);
+}
+
+/* Forçage couleur enfants H1 + lead pour visibilité sur fond foncé */
+body :not(.home-v2) main.container > header:first-of-type > *,
+body :not(.home-v2) main.container > nav + header > *{
+  position: relative;
+  z-index: 1;
+}
+body :not(.home-v2) main.container > header:first-of-type h1,
+body :not(.home-v2) main.container > nav + header h1{
+  color: #fff !important;
+}
+body :not(.home-v2) main.container > header:first-of-type p,
+body :not(.home-v2) main.container > nav + header p{
+  color: rgba(255,255,255,.7) !important;
+}
+/* Eyebrow uppercase reste en orange sun pour effet de contraste */
+body :not(.home-v2) main.container > header:first-of-type > div:first-child,
+body :not(.home-v2) main.container > nav + header > div:first-child{
+  color: var(--color-primary) !important;
+}
+/* Span en couleur primary dans le H1 (genre "tarif" colorisé) reste sun */
+body :not(.home-v2) main.container > header:first-of-type h1 span,
+body :not(.home-v2) main.container > nav + header h1 span{
+  color: var(--color-primary) !important;
+}
+
+/* Mobile : adapter padding et margin */
+@media (max-width:768px){
+  body :not(.home-v2) main.container > header:first-of-type,
+  body :not(.home-v2) main.container > nav + header{
+    padding: 32px 20px !important;
+    margin: 0 -8px 24px !important;
+    border-radius: 12px;
+  }
+}
