@@ -119,12 +119,13 @@ const BORDER  = 'var(--color-border)'
 const BG_CARD = 'var(--color-bg-card)'
 const MUTED   = 'var(--color-text-muted)'
 
-function Badge({ children, color = PRIMARY }: { children: React.ReactNode; color?: string }) {
+function Badge({ children, color = PRIMARY, title }: { children: React.ReactNode; color?: string; title?: string }) {
   return (
-    <span style={{
+    <span title={title} style={{
       fontSize: '0.72rem', fontWeight: 600, padding: '2px 8px', borderRadius: 4,
       background: `color-mix(in srgb, ${color} 12%, transparent)`,
       color, border: `1px solid color-mix(in srgb, ${color} 30%, transparent)`,
+      cursor: title ? 'help' : 'default',
     }}>
       {children}
     </span>
@@ -326,7 +327,11 @@ export default function ComparateurCartes() {
                       {r.carte.ideal_voyage && <Badge>✈️ Voyage EU</Badge>}
                       {r.carte.flotte_pro && <Badge color="#8b5cf6">🏢 Flotte</Badge>}
                       {(r.carte.donnees?.abonnement?.mensuel_eur || 0) === 0 && <Badge color="#f59e0b">Sans abo</Badge>}
-                      {roaming?.disponible && <Badge color="#06b6d4">Roaming {roaming.pays_couverts?.length || 0} pays</Badge>}
+                      {roaming?.disponible && (roaming.pays_couverts?.length || 0) >= 5 && (
+                        <Badge color="#06b6d4" title="Nombre de pays couverts par notre comparatif tarifaire — pas forcément la couverture maximale du réseau partenaire.">
+                          Couverture {roaming.pays_couverts?.length || 0} pays
+                        </Badge>
+                      )}
                     </div>
                     {r.carte.points_forts?.length > 0 && (
                       <div style={{ fontSize: '0.8rem', color: MUTED, marginTop: 6 }}>

@@ -227,34 +227,11 @@ CARTES: list[dict] = [
         },
     },
 
-    {
-        "id": "edf-mobilite",
-        "nom": "EDF Mobilité Électrique",
-        "operateur": "EDF",
-        "pays_origine": ["FR"],
-        "url_officielle": "https://www.edf.fr/mobilite-electrique",
-        "url_tarifs": "https://www.edf.fr/mobilite-electrique/carte-de-recharge",
-        "methode": "httpx",
-        "ideal_voyage": False,
-        "ideal_quotidien": True,
-        "flotte_pro": True,
-        "points_forts": ["Intégration avec abonnement EDF domicile", "Tarif AC compétitif"],
-        "points_faibles": ["Roaming limité", "Moins de bornes ultra-rapide"],
-        "donnees_init": {
-            "abonnement": {"mensuel_eur": 0, "annuel_eur": 0, "engagement_mois": 0},
-            "tarifs_fr": {
-                "ac_slow":    {"modele": "kwh", "prix": 0.36, "frais_session": 0.0},
-                "dc_rapide":  {"modele": "kwh", "prix": 0.51, "frais_session": 0.0},
-                "dc_ultra":   {"modele": "kwh", "prix": 0.70, "frais_session": 0.0},
-            },
-            "roaming": {
-                "disponible": False,
-                "pays_couverts": ["FR"],
-                "tarif_dc_rapide": None,
-                "tarif_dc_ultra":  None,
-            },
-        },
-    },
+    # ⚠ Suppression de la carte "EDF Mobilité Électrique" — branding inexact.
+    # EDF ne commercialise pas de carte MSP grand public sous ce nom. Le pendant
+    # grand public d'EDF est le Pass IZIVIA (filiale EDF) — voir ci-dessous —
+    # donc l'entrée précédente était un doublon trompeur. "IZI by EDF" couvre la
+    # borne résidentielle (B2C installation domicile), pas le MSP roaming.
 
     # ⚠ Suppression de l'ancienne carte "Recharge&Drive (Enedis)" — erreur factuelle.
     # Enedis est le gestionnaire du réseau de distribution d'électricité en France et
@@ -300,23 +277,30 @@ CARTES: list[dict] = [
     },
 
     {
-        # Carte affichée par défaut = IONITY Passport (abonnement mensuel).
-        # Le tarif "Direct" (sans abonnement, ~0,79 €/kWh) n'est pas représenté
-        # par une fiche séparée car il n'a pas d'abonnement à comparer ; mentionné
-        # dans les points_forts comme alternative.
+        # Carte affichée par défaut = IONITY Motion (abonnement mensuel).
+        # IONITY commercialise 4 plans en 2026 :
+        #   • Motion     :  5,99 €/mois — tarif kWh réduit
+        #   • Power      : 11,99 €/mois — tarif kWh plus fortement réduit (gros rouleurs)
+        #   • Motion 365 : 59,99 €/an   → 0,49 €/kWh
+        #   • Power 365  : 119,99 €/an  → 0,39 €/kWh
+        # Le nom "Passport" n'est plus utilisé depuis le rebranding 2025. L'ancien
+        # "IONITY Charge League" (vu en base Supabase) n'est pas un produit conso
+        # mais une alliance d'opérateurs (Fastned, Electra, Atlante, IONITY).
+        # On garde id="ionity-passport" pour préserver l'historique en base.
         "id": "ionity-passport",
-        "nom": "IONITY Passport",
+        "nom": "IONITY Motion",
         "operateur": "IONITY",
         "pays_origine": ["FR", "BE", "DE", "AT", "CH", "NL", "NO", "SE", "GB", "ES", "IT", "DK", "LU"],
-        "url_officielle": "https://ionity.eu/fr/tarification",
-        "url_tarifs": "https://ionity.eu/fr/tarification",
+        "url_officielle": "https://www.ionity.eu/subscriptions",
+        "url_tarifs": "https://www.ionity.eu/subscriptions",
         "methode": "httpx",
         "ideal_voyage": True,
         "ideal_quotidien": False,
         "flotte_pro": False,
         "points_forts": [
-            "Réseau ultra-rapide propriétaire ≥350 kW sur toutes les autoroutes EU",
-            "Abonnement Passport ~5,99 €/mois → tarif kWh fortement réduit",
+            "Réseau ultra-rapide propriétaire ≥350 kW sur toutes les autoroutes EU (~24 pays)",
+            "Motion : 5,99 €/mois → tarif kWh réduit. Variante Power à 11,99 €/mois pour gros rouleurs (kWh encore plus réduit).",
+            "Plans annuels Motion 365 (59,99 €/an → 0,49 €/kWh) et Power 365 (119,99 €/an → 0,39 €/kWh)",
             "Alternative sans abo (Direct) disponible mais à tarif spot élevé (~0,79 €/kWh)",
         ],
         "points_faibles": [
@@ -325,9 +309,12 @@ CARTES: list[dict] = [
             "Tarif vraiment intéressant seulement si vous roulez beaucoup sur autoroute",
         ],
         "donnees_init": {
-            # IONITY Passport — abonnement mensuel ~5,99 € qui débloque un tarif kWh réduit.
-            # Source : ionity.eu/fr/tarification — à re-vérifier régulièrement (variabilité produits).
+            # IONITY Motion — abonnement mensuel 5,99 € qui débloque un tarif kWh réduit.
+            # Source : ionity.eu/subscriptions — vérifié mai 2026.
             "abonnement": {"mensuel_eur": 5.99, "annuel_eur": 71.88, "engagement_mois": 1},
+            "_variante_power": {"mensuel_eur": 11.99, "annuel_eur": 143.88, "engagement_mois": 1},
+            "_plan_annuel_motion_365": {"prix_an_eur": 59.99, "kwh_eur": 0.49},
+            "_plan_annuel_power_365": {"prix_an_eur": 119.99, "kwh_eur": 0.39},
             "tarifs_fr": {
                 "ac_slow":    {"modele": "kwh", "prix": None,  "frais_session": 0.0},
                 "dc_rapide":  {"modele": "kwh", "prix": None,  "frais_session": 0.0},
@@ -363,24 +350,35 @@ CARTES: list[dict] = [
     },
 
     {
+        # Ce n'est pas une carte MSP roaming : c'est de l'infra plug & charge
+        # accessible depuis l'application Lidl Plus. Pas de badge, pas
+        # d'abonnement, pas de couverture hors bornes Lidl (~5 400 points FR).
+        # Source : lidl.fr/c/e-mobilite — vérifié mai 2026.
         "id": "lidl-plus",
-        "nom": "Lidl Plus Charge",
+        "nom": "Bornes Lidl (E-Mobilité Lidl Plus)",
         "operateur": "Lidl",
-        "pays_origine": ["FR", "BE", "DE", "NL", "AT", "CH", "ES", "IT", "PL"],
-        "url_officielle": "https://www.lidl.fr/c/lidl-plus/s10016282",
-        "url_tarifs": None,
+        "pays_origine": ["FR"],
+        "url_officielle": "https://www.lidl.fr/c/e-mobilite/s10037236",
+        "url_tarifs": "https://www.lidl.fr/c/tarifs-bornes/s10027299",
         "methode": "manuel",
         "ideal_voyage": False,
         "ideal_quotidien": True,
         "flotte_pro": False,
-        "points_forts": ["Tarif AC très compétitif", "Sans abonnement", "App Lidl largement installée"],
-        "points_faibles": ["Uniquement bornes Lidl AC 22 kW", "Pas de DC", "Pas de roaming"],
+        "points_forts": [
+            "Tarif AC parmi les plus bas du marché (0,29 €/kWh) — DC à 0,39 €/kWh",
+            "Sans abonnement, sans badge — paiement via app Lidl Plus + Lidl Pay",
+            "~5 400 points de charge dans plus de 1 000 supermarchés Lidl en France",
+        ],
+        "points_faibles": [
+            "Strictement limité aux bornes Lidl — pas de roaming, pas de couverture EU",
+            "Pas comparable à une carte MSP : c'est de l'infra plug & charge propriétaire",
+        ],
         "donnees_init": {
             "abonnement": {"mensuel_eur": 0, "annuel_eur": 0, "engagement_mois": 0},
             "tarifs_fr": {
                 "ac_slow":    {"modele": "kwh", "prix": 0.29, "frais_session": 0.0},
-                "dc_rapide":  {"modele": "kwh", "prix": None,  "frais_session": 0.0},
-                "dc_ultra":   {"modele": "kwh", "prix": None,  "frais_session": 0.0},
+                "dc_rapide":  {"modele": "kwh", "prix": 0.39, "frais_session": 0.0},
+                "dc_ultra":   {"modele": "kwh", "prix": 0.39, "frais_session": 0.0},
             },
             "roaming": {
                 "disponible": False,
@@ -388,6 +386,7 @@ CARTES: list[dict] = [
                 "tarif_dc_rapide": None,
                 "tarif_dc_ultra":  None,
             },
+            "_note": "Infra Lidl uniquement, paiement intégré à l'app Lidl Plus.",
         },
     },
 
@@ -551,7 +550,7 @@ CARTES: list[dict] = [
         "ideal_quotidien": True,
         "flotte_pro": True,
         "points_forts": [
-            "Leader belge — ancrage fort B2B et flottes",
+            "Acteur belge majeur — forte présence Benelux, ancrage B2B et flottes",
             "Roaming EU large via accords (>20 pays via partenaires européens)",
             "Offre flotte complète avec facturation TVA BE simple",
         ],
