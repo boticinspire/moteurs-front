@@ -7,12 +7,12 @@ import { usePathname } from 'next/navigation'
 const navLinks = [
   { href: '/',                     label: 'Accueil' },
   { href: '/articles',             label: 'Décryptages' },
-  { href: '/recharge-electrique',  label: '🔌 Recharge VE' },
-  { href: '/vacances-voiture',     label: '🏖️ Vacances' },
-  { href: '/cout-voiture',         label: '💰 TCO' },
-  { href: '/depannage',            label: '🔧 Dépannage' },
-  { href: '/documents-auto',       label: '📄 Documents' },
-  { href: '/outils',               label: '⚡ Calculateurs' },
+  { href: '/recharge-electrique',  label: 'Recharge' },
+  { href: '/vacances-voiture',     label: 'Vacances' },
+  { href: '/cout-voiture',         label: 'TCO' },
+  { href: '/depannage',            label: 'Dépannage' },
+  { href: '/documents-auto',       label: 'Documents' },
+  { href: '/outils',               label: 'Outils' },
 ]
 
 export default function Header() {
@@ -94,7 +94,7 @@ export default function Header() {
           {/* CTAs desktop */}
           <div className="header-cta">
             <Link href="/espace-membres" className="btn btn-secondary btn-sm" style={{ fontWeight: 600 }}>
-              👤 Mon espace
+              Mon espace
             </Link>
             <Link href="/simulateur" className="btn btn-primary btn-sm">
               Simulateur
@@ -108,7 +108,11 @@ export default function Header() {
             aria-label={open ? 'Fermer le menu' : 'Ouvrir le menu'}
             aria-expanded={open}
           >
-            {open ? '✕' : '☰'}
+            {open ? (
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
+            ) : (
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="4" x2="20" y1="6" y2="6"/><line x1="4" x2="20" y1="12" y2="12"/><line x1="4" x2="20" y1="18" y2="18"/></svg>
+            )}
           </button>
         </div>
       </header>
@@ -127,7 +131,7 @@ export default function Header() {
               style={{ background: 'none', border: 'none', color: 'white', fontSize: '1.4rem', cursor: 'pointer', padding: 8 }}
               aria-label="Fermer"
             >
-              ✕
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
             </button>
           </div>
 
@@ -147,7 +151,7 @@ export default function Header() {
           {/* CTAs mobile */}
           <div className="mobile-nav-cta">
             <Link href="/espace-membres" className="btn btn-secondary" style={{ textAlign: 'center' }}>
-              👤 Mon espace
+              Mon espace
             </Link>
             <Link href="/simulateur" className="btn btn-primary" style={{ textAlign: 'center' }}>
               Simulateur TCO
