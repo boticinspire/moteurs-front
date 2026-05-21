@@ -40,6 +40,7 @@ const PAGES_STATIQUES: { url: string; priority: number; changeFreq: MetadataRout
   { url: '/vacances-voiture',    priority: 0.9, changeFreq: 'weekly' },
   { url: '/cout-voiture',        priority: 0.9, changeFreq: 'weekly' },
   { url: '/depannage',           priority: 0.9, changeFreq: 'weekly' },
+  { url: '/documents-auto',      priority: 0.85, changeFreq: 'monthly' },
 
   // Assistances
   { url: '/assistant-vacances',      priority: 0.8, changeFreq: 'monthly' },
