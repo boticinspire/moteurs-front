@@ -305,37 +305,37 @@ const FAQ_VACANCES = [
   {
     question: "Quel est le meilleur jour pour partir en vacances en voiture en 2026 ?",
     answer:
-      "Pour éviter les bouchons en France, partez un dimanche matin tôt (avant 5 h) ou un mardi en milieu d&apos;après-midi. Évitez à tout prix les samedis classés rouge ou noir par Bison Futé (1ᵉʳ et 8 août notamment). Les départs en soirée (après 20 h) fonctionnent aussi bien si vos enfants peuvent dormir en voiture.",
+      "Pour éviter les bouchons en France, partez un dimanche matin tôt (avant 5 h) ou un mardi en milieu d'après-midi. Évitez à tout prix les samedis classés rouge ou noir par Bison Futé (1ᵉʳ et 8 août notamment). Les départs en soirée (après 20 h) fonctionnent aussi bien si vos enfants peuvent dormir en voiture.",
   },
   {
-    question: "Quel est le coût moyen d&apos;un trajet vacances en voiture ?",
+    question: "Quel est le coût moyen d'un trajet vacances en voiture ?",
     answer:
       "Pour un trajet de 1 200 km (moyenne nationale), comptez 130 à 180 € de carburant en diesel/essence, plus 60 à 120 € de péages selon la route, soit 200 à 300 € aller-retour. En électrique, le carburant chute à 50-80 € en recharge mixte domicile/autoroute, soit 110 à 180 € aller-retour péages compris. Notre comparateur de trajet calcule le coût exact selon votre véhicule.",
   },
   {
-    question: "Quelles vignettes acheter pour traverser l&apos;Europe en voiture ?",
+    question: "Quelles vignettes acheter pour traverser l'Europe en voiture ?",
     answer:
-      "Quatre pays imposent une vignette autoroutière : Suisse (40 CHF annuelle), Autriche (12,40 € pour 10 jours), Slovénie (16 € pour 7 jours), République tchèque. La Croatie et la Hongrie utilisent des péages classiques. Achetez les vignettes en ligne avant le départ — le risque d&apos;amende sans vignette est de 200 à 800 € selon le pays.",
+      "Quatre pays imposent une vignette autoroutière : Suisse (40 CHF annuelle), Autriche (12,40 € pour 10 jours), Slovénie (16 € pour 7 jours), République tchèque. La Croatie et la Hongrie utilisent des péages classiques. Achetez les vignettes en ligne avant le départ — le risque d'amende sans vignette est de 200 à 800 € selon le pays.",
   },
   {
     question: "Peut-on faire un long trajet vacances en voiture électrique sans souci ?",
     answer:
-      "Oui sans difficulté en 2026 sur les grands axes européens. Une voiture électrique moderne (Tesla, Kia EV6, Hyundai Ioniq 5, VW ID.4) avec 60-80 kWh de batterie permet de rouler 250-280 km à 130 km/h, puis 25-30 minutes de recharge rapide DC. Sur Paris-Nice (930 km), comptez 2 à 3 arrêts soit 1 h 30 de pauses recharge — souvent du même ordre que ce qu&apos;une famille ferait de toute façon.",
+      "Oui sans difficulté en 2026 sur les grands axes européens. Une voiture électrique moderne (Tesla, Kia EV6, Hyundai Ioniq 5, VW ID.4) avec 60-80 kWh de batterie permet de rouler 250-280 km à 130 km/h, puis 25-30 minutes de recharge rapide DC. Sur Paris-Nice (930 km), comptez 2 à 3 arrêts soit 1 h 30 de pauses recharge — souvent du même ordre que ce qu'une famille ferait de toute façon.",
   },
   {
     question: "Comment éviter les péages en France pour les vacances ?",
     answer:
-      "Activez l&apos;option « éviter péages » dans Waze ou Google Maps. Économie : 60 à 150 € sur un long trajet. Coût : 1 à 2 h supplémentaires et un confort moindre (nationales, traversées de villes, ronds-points). Stratégie mixte intelligente : autoroute le matin pour les longues étapes, nationales l&apos;après-midi pour les paysages et pauses.",
+      "Activez l'option « éviter péages » dans Waze ou Google Maps. Économie : 60 à 150 € sur un long trajet. Coût : 1 à 2 h supplémentaires et un confort moindre (nationales, traversées de villes, ronds-points). Stratégie mixte intelligente : autoroute le matin pour les longues étapes, nationales l'après-midi pour les paysages et pauses.",
   },
   {
     question: "Faut-il un constat amiable européen spécifique ?",
     answer:
-      "Le constat amiable européen est multilingue et valide dans tous les pays de l&apos;UE. Vous pouvez le télécharger gratuitement, le remplir à l&apos;avance avec vos coordonnées, et le glisser dans la boîte à gants. Notre outil constat propose un wizard guidé en 8 étapes, avec export PDF et envoi par email — vous gagnez 20 minutes en cas d&apos;accident.",
+      "Le constat amiable européen est multilingue et valide dans tous les pays de l'UE. Vous pouvez le télécharger gratuitement, le remplir à l'avance avec vos coordonnées, et le glisser dans la boîte à gants. Notre outil constat propose un wizard guidé en 8 étapes, avec export PDF et envoi par email — vous gagnez 20 minutes en cas d'accident.",
   },
   {
-    question: "Quel équipement obligatoire dans la voiture pour traverser l&apos;Europe ?",
+    question: "Quel équipement obligatoire dans la voiture pour traverser l'Europe ?",
     answer:
-      "Le minimum partout : triangle de signalisation, gilet fluorescent (1 par personne en France, sinon 1 minimum), trousse de premiers secours (obligatoire en Allemagne et Autriche), permis de conduire, certificat d&apos;immatriculation, attestation d&apos;assurance. En montagne (loi Montagne France, Italie, Autriche) : chaînes neige ou pneus hiver sont obligatoires d&apos;octobre/novembre à avril selon les pays.",
+      "Le minimum partout : triangle de signalisation, gilet fluorescent (1 par personne en France, sinon 1 minimum), trousse de premiers secours (obligatoire en Allemagne et Autriche), permis de conduire, certificat d'immatriculation, attestation d'assurance. En montagne (loi Montagne France, Italie, Autriche) : chaînes neige ou pneus hiver sont obligatoires d'octobre/novembre à avril selon les pays.",
   },
 ]
 

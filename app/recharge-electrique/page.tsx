@@ -277,37 +277,37 @@ const FAQ_RECHARGE = [
   {
     question: "Combien coûte une recharge complète à domicile en 2026 ?",
     answer:
-      "Pour une batterie de 60 kWh (autonomie WLTP ~350 km), comptez environ 11 € en France au tarif réglementé heures pleines (0,21 €/kWh), 7,80 € si vous bénéficiez du tarif heures creuses (0,13 €/kWh). En Belgique : ~18 €. En Suisse : ~16 €. Une recharge complète à domicile reste 2 à 3 fois moins chère qu&apos;une recharge rapide publique.",
+      "Pour une batterie de 60 kWh (autonomie WLTP ~350 km), comptez environ 11 € en France au tarif réglementé heures pleines (0,21 €/kWh), 7,80 € si vous bénéficiez du tarif heures creuses (0,13 €/kWh). En Belgique : ~18 €. En Suisse : ~16 €. Une recharge complète à domicile reste 2 à 3 fois moins chère qu'une recharge rapide publique.",
   },
   {
     question: "Quelle puissance de borne installer chez moi ?",
     answer:
-      "Pour un usage quotidien (50-80 km/jour), une borne 7,4 kW (monophasée) suffit largement et recharge environ 40 km par heure. Si vous roulez beaucoup ou disposez d&apos;un raccordement triphasé, optez pour une borne 11 kW (60 km/h). La 22 kW est rarement utile pour un particulier — la plupart des voitures sont limitées à 11 kW en AC.",
+      "Pour un usage quotidien (50-80 km/jour), une borne 7,4 kW (monophasée) suffit largement et recharge environ 40 km par heure. Si vous roulez beaucoup ou disposez d'un raccordement triphasé, optez pour une borne 11 kW (60 km/h). La 22 kW est rarement utile pour un particulier — la plupart des voitures sont limitées à 11 kW en AC.",
   },
   {
-    question: "Faut-il s&apos;abonner à un opérateur de recharge ?",
+    question: "Faut-il s'abonner à un opérateur de recharge ?",
     answer:
       "Si vous rechargez surtout à domicile (≥ 80 % du temps) et faites quelques longs trajets par an : une carte sans abonnement type Chargemap Pass ou Shell Recharge suffit. Si vous parcourez +20 000 km/an avec usage régulier de bornes rapides : un abonnement (IONITY Motion, Fastned Gold, Electra) peut réduire le coût/kWh de 30-50 %. Notre comparateur affiche le seuil de rentabilité.",
   },
   {
-    question: "L&apos;autonomie réelle est-elle proche du WLTP ?",
+    question: "L'autonomie réelle est-elle proche du WLTP ?",
     answer:
       "Non. En cycle mixte réel, comptez 80-85 % du WLTP (350 km annoncés = 280-300 km en pratique). Sur autoroute à 130 km/h : 60-70 % du WLTP (350 km = 210-245 km). En hiver à -5 °C : 70-75 % du WLTP. Les voitures les plus efficientes en autoroute en 2026 : Tesla Model 3, Hyundai Ioniq 6, Mercedes EQE.",
   },
   {
-    question: "Peut-on installer une borne en copropriété sans accord de l&apos;AG ?",
+    question: "Peut-on installer une borne en copropriété sans accord de l'AG ?",
     answer:
-      "En France, le « droit à la prise » (loi LOM 2019) autorise tout copropriétaire à faire installer une borne sur sa place, à ses frais, sans accord de l&apos;assemblée générale. Le syndic doit être informé. La prime Advenir couvre jusqu&apos;à 960 € de l&apos;installation. En Belgique et en Suisse, des dispositifs similaires existent. Voir notre guide détaillé recharge en copropriété.",
+      "En France, le « droit à la prise » (loi LOM 2019) autorise tout copropriétaire à faire installer une borne sur sa place, à ses frais, sans accord de l'assemblée générale. Le syndic doit être informé. La prime Advenir couvre jusqu'à 960 € de l'installation. En Belgique et en Suisse, des dispositifs similaires existent. Voir notre guide détaillé recharge en copropriété.",
   },
   {
-    question: "Recharger sur autoroute pendant les vacances : combien d&apos;arrêts ?",
+    question: "Recharger sur autoroute pendant les vacances : combien d'arrêts ?",
     answer:
-      "Pour une voiture avec batterie ~60 kWh (Tesla Model Y, Kia EV6, VW ID.4) et 270 km d&apos;autonomie réelle autoroute, comptez 1 arrêt tous les ~200 km de conduite continue (recharge 20 → 80 % en 25-30 min sur borne 150 kW). Sur un Paris-Nice (930 km) : 2-3 arrêts. Notre comparateur trajet calcule le détail pour chaque grand axe européen.",
+      "Pour une voiture avec batterie ~60 kWh (Tesla Model Y, Kia EV6, VW ID.4) et 270 km d'autonomie réelle autoroute, comptez 1 arrêt tous les ~200 km de conduite continue (recharge 20 → 80 % en 25-30 min sur borne 150 kW). Sur un Paris-Nice (930 km) : 2-3 arrêts. Notre comparateur trajet calcule le détail pour chaque grand axe européen.",
   },
   {
     question: "Quelle aide fiscale pour la borne en France en 2026 ?",
     answer:
-      "Pour les particuliers : crédit d&apos;impôt forfaitaire de 500 € par borne installée par un pro IRVE. Pour les entreprises : suramortissement de 40 % (déduction fiscale supplémentaire) sur le prix de la borne, jusqu&apos;à fin 2026. Pour les bornes accessibles au public (parkings d&apos;entreprises, commerces) : prime Advenir B2B de 1 000 à 2 100 € selon puissance.",
+      "Pour les particuliers : crédit d'impôt forfaitaire de 500 € par borne installée par un pro IRVE. Pour les entreprises : suramortissement de 40 % (déduction fiscale supplémentaire) sur le prix de la borne, jusqu'à fin 2026. Pour les bornes accessibles au public (parkings d'entreprises, commerces) : prime Advenir B2B de 1 000 à 2 100 € selon puissance.",
   },
 ]
 

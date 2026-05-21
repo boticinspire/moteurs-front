@@ -346,7 +346,7 @@ const FAQ_COUT = [
   {
     question: "C'est quoi le TCO d'une voiture ?",
     answer:
-      "Le TCO (Total Cost of Ownership) est le coût total de possession d&apos;un véhicule sur sa durée de détention. Il additionne le prix d&apos;achat (ou loyer LLD), le carburant ou l&apos;électricité, l&apos;entretien, l&apos;assurance, la décote, les péages et la fiscalité. C&apos;est l&apos;indicateur le plus honnête pour comparer deux motorisations différentes : un VE plus cher à l&apos;achat est souvent moins cher en TCO grâce à l&apos;énergie et l&apos;entretien réduit.",
+      "Le TCO (Total Cost of Ownership) est le coût total de possession d'un véhicule sur sa durée de détention. Il additionne le prix d'achat (ou loyer LLD), le carburant ou l'électricité, l'entretien, l'assurance, la décote, les péages et la fiscalité. C'est l'indicateur le plus honnête pour comparer deux motorisations différentes : un VE plus cher à l'achat est souvent moins cher en TCO grâce à l'énergie et l'entretien réduit.",
   },
   {
     question: "Quelle motorisation est la moins chère sur 5 ans en France ?",
@@ -356,17 +356,17 @@ const FAQ_COUT = [
   {
     question: "Une voiture électrique est-elle vraiment plus chère à l'achat ?",
     answer:
-      "Oui à neuf : compter +5 000 à +10 000 € vs un équivalent thermique de même gamme. Mais après bonus écologique (4 000 € en {ANNEE}), prime à la conversion et TVS exonérée pour B2B, l&apos;écart à l&apos;achat se réduit à 1 000-3 000 €. Sur 5 ans avec recharge domicile, ce surcoût est récupéré en énergie + entretien. En occasion, les VE de 2-3 ans sont souvent les meilleurs deals du marché.",
+      "Oui à neuf : compter +5 000 à +10 000 € vs un équivalent thermique de même gamme. Mais après bonus écologique (4 000 € en {ANNEE}), prime à la conversion et TVS exonérée pour B2B, l'écart à l'achat se réduit à 1 000-3 000 €. Sur 5 ans avec recharge domicile, ce surcoût est récupéré en énergie + entretien. En occasion, les VE de 2-3 ans sont souvent les meilleurs deals du marché.",
   },
   {
     question: "Combien coûte l'entretien d'une voiture électrique vs diesel ?",
     answer:
-      "Un VE coûte environ moitié moins en entretien : 400-600 €/an vs 900-1 200 €/an pour un diesel. Raisons : pas de vidange, pas de filtre à huile, pas de courroie de distribution, freins moins usés (régénération). Reste : pneus (plus chers car gomme spéciale), liquide de refroidissement batterie tous les 4 ans, contrôle freins/suspension. Sur 5 ans, l&apos;économie sur l&apos;entretien dépasse 2 500 €.",
+      "Un VE coûte environ moitié moins en entretien : 400-600 €/an vs 900-1 200 €/an pour un diesel. Raisons : pas de vidange, pas de filtre à huile, pas de courroie de distribution, freins moins usés (régénération). Reste : pneus (plus chers car gomme spéciale), liquide de refroidissement batterie tous les 4 ans, contrôle freins/suspension. Sur 5 ans, l'économie sur l'entretien dépasse 2 500 €.",
   },
   {
     question: "La décote tue-t-elle l'avantage électrique ?",
     answer:
-      "Plus en {ANNEE}. Jusqu&apos;en 2023, les VE décotaient effectivement 5-10 points de plus que les thermiques (autonomie obsolète, peur batterie). Depuis 2024, le marché de l&apos;occasion VE est mature : les modèles 2022-2024 décotent à un rythme normal (40-50 % en 4 ans, comme un diesel équivalent). Les Tesla Model 3/Y, Kia EV6, Hyundai Ioniq 5 ont les meilleures cotes.",
+      "Plus en {ANNEE}. Jusqu'en 2023, les VE décotaient effectivement 5-10 points de plus que les thermiques (autonomie obsolète, peur batterie). Depuis 2024, le marché de l'occasion VE est mature : les modèles 2022-2024 décotent à un rythme normal (40-50 % en 4 ans, comme un diesel équivalent). Les Tesla Model 3/Y, Kia EV6, Hyundai Ioniq 5 ont les meilleures cotes.",
   },
   {
     question: "Comment réduire le coût total de ma voiture ?",
@@ -376,7 +376,7 @@ const FAQ_COUT = [
   {
     question: "Le suramortissement de 40 % en France, c'est quoi exactement ?",
     answer:
-      "C&apos;est une déduction fiscale supplémentaire pour les entreprises qui achètent un véhicule utilitaire électrique, hydrogène ou GNV. Elle s&apos;ajoute à l&apos;amortissement classique : 40 % du prix HT du véhicule (plafonné à 60 000 € selon segment) est déduit du résultat imposable. Concrètement, pour un VUL électrique à 32 000 € HT : économie d&apos;impôt de 3 200 € (à 25 % d&apos;IS). Mécanisme prolongé jusqu&apos;à fin {ANNEE}.",
+      "C'est une déduction fiscale supplémentaire pour les entreprises qui achètent un véhicule utilitaire électrique, hydrogène ou GNV. Elle s'ajoute à l'amortissement classique : 40 % du prix HT du véhicule (plafonné à 60 000 € selon segment) est déduit du résultat imposable. Concrètement, pour un VUL électrique à 32 000 € HT : économie d'impôt de 3 200 € (à 25 % d'IS). Mécanisme prolongé jusqu'à fin {ANNEE}.",
   },
 ]
 

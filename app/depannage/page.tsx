@@ -326,32 +326,32 @@ const FAQ_DEPANNAGE = [
   {
     question: "Que faire si je tombe en panne sur autoroute ?",
     answer:
-      "1) Mettez les feux de détresse et tentez de gagner la bande d&apos;arrêt d&apos;urgence (BAU). 2) Sortez du véhicule côté opposé à la circulation, enfilez votre gilet fluorescent AVANT de sortir. 3) Placez le triangle 150 m en arrière, idéalement après un virage. 4) Passez derrière la glissière de sécurité. 5) Appelez le dépannage via la borne orange tous les 2 km — c&apos;est le moyen le plus rapide. Ne restez JAMAIS dans le véhicule sur la BAU.",
+      "1) Mettez les feux de détresse et tentez de gagner la bande d'arrêt d'urgence (BAU). 2) Sortez du véhicule côté opposé à la circulation, enfilez votre gilet fluorescent AVANT de sortir. 3) Placez le triangle 150 m en arrière, idéalement après un virage. 4) Passez derrière la glissière de sécurité. 5) Appelez le dépannage via la borne orange tous les 2 km — c'est le moyen le plus rapide. Ne restez JAMAIS dans le véhicule sur la BAU.",
   },
   {
     question: "Mon voyant moteur s'allume : puis-je rouler ?",
     answer:
-      "Cela dépend de la couleur et du clignotement. <strong>Voyant orange fixe</strong> : roulez prudemment jusqu&apos;à votre garage habituel, faites diagnostiquer rapidement (souvent un capteur). <strong>Voyant orange clignotant</strong> : ralentissez immédiatement, défaut potentiellement grave (allumage, injection). <strong>Voyant rouge</strong> : ARRÊTEZ-VOUS dès que possible en sécurité, le moteur risque la casse. Notre <a href='/assistant-depannage'>scan voyant par photo</a> diagnostique précisément en 30 secondes.",
+      "Cela dépend de la couleur et du clignotement. <strong>Voyant orange fixe</strong> : roulez prudemment jusqu'à votre garage habituel, faites diagnostiquer rapidement (souvent un capteur). <strong>Voyant orange clignotant</strong> : ralentissez immédiatement, défaut potentiellement grave (allumage, injection). <strong>Voyant rouge</strong> : ARRÊTEZ-VOUS dès que possible en sécurité, le moteur risque la casse. Notre <a href='/assistant-depannage'>scan voyant par photo</a> diagnostique précisément en 30 secondes.",
   },
   {
     question: "Combien coûte un dépannage classique en 2026 ?",
     answer:
-      "Sur route ouverte (hors autoroute) : 80 à 200 € pour un dépannage simple sur place (batterie, crevaison). Si remorquage nécessaire jusqu&apos;à un garage : 150 à 350 €. Sur autoroute, les tarifs sont réglementés en France : environ 150 € en jour ouvré, 215 € la nuit ou le dimanche, par tranche de 10 km de remorquage. Votre assurance assistance prend généralement en charge tout ou partie.",
+      "Sur route ouverte (hors autoroute) : 80 à 200 € pour un dépannage simple sur place (batterie, crevaison). Si remorquage nécessaire jusqu'à un garage : 150 à 350 €. Sur autoroute, les tarifs sont réglementés en France : environ 150 € en jour ouvré, 215 € la nuit ou le dimanche, par tranche de 10 km de remorquage. Votre assurance assistance prend généralement en charge tout ou partie.",
   },
   {
     question: "Le 112 fonctionne-t-il à l'étranger ?",
     answer:
-      "Oui — le 112 est le numéro d&apos;urgence unique européen, valide dans les 27 pays de l&apos;UE plus l&apos;Islande, la Norvège, la Suisse, le Royaume-Uni. Il fonctionne gratuitement, sans crédit, et même sans carte SIM dans certains cas. Les opérateurs parlent au minimum l&apos;anglais. Pour un dépannage mécanique seul (pas de blessé), préférez les numéros nationaux : 112 en CH/IT/ES/BE, ou le numéro de votre assurance.",
+      "Oui — le 112 est le numéro d'urgence unique européen, valide dans les 27 pays de l'UE plus l'Islande, la Norvège, la Suisse, le Royaume-Uni. Il fonctionne gratuitement, sans crédit, et même sans carte SIM dans certains cas. Les opérateurs parlent au minimum l'anglais. Pour un dépannage mécanique seul (pas de blessé), préférez les numéros nationaux : 112 en CH/IT/ES/BE, ou le numéro de votre assurance.",
   },
   {
     question: "Comment remplir un constat amiable à l'étranger ?",
     answer:
-      "Le constat amiable européen est multilingue et standardisé : remplissez-le dans votre langue, l&apos;autre conducteur dans la sienne, les cases correspondent exactement. Notre <a href='/constat'>outil constat amiable</a> propose un wizard 8 étapes guidé qui couvre les 17 cas standardisés et les 10 points de choc européens. Export PDF prêt à imprimer + envoi par email aux deux parties.",
+      "Le constat amiable européen est multilingue et standardisé : remplissez-le dans votre langue, l'autre conducteur dans la sienne, les cases correspondent exactement. Notre <a href='/constat'>outil constat amiable</a> propose un wizard 8 étapes guidé qui couvre les 17 cas standardisés et les 10 points de choc européens. Export PDF prêt à imprimer + envoi par email aux deux parties.",
   },
   {
     question: "Mon assurance refuse de prendre en charge la panne — que faire ?",
     answer:
-      "Vérifiez d&apos;abord le kilométrage couvert (« panne 0 km » vs « +50 km du domicile »), la franchise éventuelle, et les exclusions (panne d&apos;essence, négligence d&apos;entretien). En cas de refus injustifié, demandez le motif par écrit, contestez auprès du service client, puis du médiateur de l&apos;assurance (gratuit). En dernier recours : l&apos;ACPR ou un avocat (couvert par votre protection juridique si vous en avez une).",
+      "Vérifiez d'abord le kilométrage couvert (« panne 0 km » vs « +50 km du domicile »), la franchise éventuelle, et les exclusions (panne d'essence, négligence d'entretien). En cas de refus injustifié, demandez le motif par écrit, contestez auprès du service client, puis du médiateur de l'assurance (gratuit). En dernier recours : l'ACPR ou un avocat (couvert par votre protection juridique si vous en avez une).",
   },
   {
     question: "Comment éviter les pannes lors des longs trajets ?",

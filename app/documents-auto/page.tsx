@@ -334,37 +334,37 @@ const FAQ_DOCS = [
   {
     question: "Combien coûte une carte grise en France en 2026 ?",
     answer:
-      "Le coût d&apos;une carte grise française dépend de la puissance fiscale du véhicule (en chevaux fiscaux ou CV) et de la région d&apos;immatriculation. La taxe régionale varie de 27 € (Corse) à 60 € (PACA) par CV. Pour un véhicule de 7 CV en Île-de-France : ~340 €. Ajoutez la taxe sur les véhicules polluants (malus écologique) qui peut atteindre 60 000 € pour les véhicules les plus émetteurs. Les véhicules électriques sont exonérés de la taxe régionale dans 12 régions.",
+      "Le coût d'une carte grise française dépend de la puissance fiscale du véhicule (en chevaux fiscaux ou CV) et de la région d'immatriculation. La taxe régionale varie de 27 € (Corse) à 60 € (PACA) par CV. Pour un véhicule de 7 CV en Île-de-France : ~340 €. Ajoutez la taxe sur les véhicules polluants (malus écologique) qui peut atteindre 60 000 € pour les véhicules les plus émetteurs. Les véhicules électriques sont exonérés de la taxe régionale dans 12 régions.",
   },
   {
     question: "Quels sont les délais pour recevoir sa carte grise ?",
     answer:
-      "En théorie, la carte grise arrive sous 7 jours ouvrés par courrier suivi. En pratique, comptez 2 à 4 semaines selon la charge de l&apos;ANTS. Vous recevez immédiatement un certificat provisoire d&apos;immatriculation (CPI) valable 1 mois, qui permet de circuler. Si délai dépassé, contactez le service ANTS directement (numéro sur votre suivi).",
+      "En théorie, la carte grise arrive sous 7 jours ouvrés par courrier suivi. En pratique, comptez 2 à 4 semaines selon la charge de l'ANTS. Vous recevez immédiatement un certificat provisoire d'immatriculation (CPI) valable 1 mois, qui permet de circuler. Si délai dépassé, contactez le service ANTS directement (numéro sur votre suivi).",
   },
   {
     question: "Mon permis français est-il valable au Canada ?",
     answer:
-      "Oui, pour une durée limitée. Tourisme : votre permis français suffit pendant 3-6 mois selon la province (3 mois au Québec, 60 jours en Colombie-Britannique). Au-delà, il faut un permis international ou échanger pour le permis canadien. La France a des accords d&apos;échange direct avec le Québec, l&apos;Ontario, le Manitoba, la Nouvelle-Écosse — pas besoin de repasser l&apos;examen.",
+      "Oui, pour une durée limitée. Tourisme : votre permis français suffit pendant 3-6 mois selon la province (3 mois au Québec, 60 jours en Colombie-Britannique). Au-delà, il faut un permis international ou échanger pour le permis canadien. La France a des accords d'échange direct avec le Québec, l'Ontario, le Manitoba, la Nouvelle-Écosse — pas besoin de repasser l'examen.",
   },
   {
     question: "Comment savoir si une plaque française est récente ou ancienne (FNI vs SIV) ?",
     answer:
-      "Le SIV (depuis 2009) suit le format AA-123-AA (2 lettres, 3 chiffres, 2 lettres) avec drapeau européen et code département à droite. L&apos;ancien FNI suivait le format 123 AB 99 (avec le numéro de département en fin). Notre <a href='/outils/convertisseur'>convertisseur de plaques</a> vous indique l&apos;ancien numéro département à partir du SIV, et inversement.",
+      "Le SIV (depuis 2009) suit le format AA-123-AA (2 lettres, 3 chiffres, 2 lettres) avec drapeau européen et code département à droite. L'ancien FNI suivait le format 123 AB 99 (avec le numéro de département en fin). Notre <a href='/outils/convertisseur'>convertisseur de plaques</a> vous indique l'ancien numéro département à partir du SIV, et inversement.",
   },
   {
     question: "Ai-je besoin de la carte verte pour traverser l'Europe en 2026 ?",
     answer:
-      "Non, pas obligatoirement. Depuis le 2 août 2020, la carte verte papier n&apos;est plus exigée à la frontière entre pays de l&apos;Espace Économique Européen + Suisse, UK, Andorre, Bosnie, Maroc, Tunisie, Turquie. La plaque européenne suffit comme preuve d&apos;immatriculation et donc d&apos;assurance présumée. Cependant, en cas de contrôle ou d&apos;accident, la carte verte (gratuite, fournie par votre assureur) reste très utile.",
+      "Non, pas obligatoirement. Depuis le 2 août 2020, la carte verte papier n'est plus exigée à la frontière entre pays de l'Espace Économique Européen + Suisse, UK, Andorre, Bosnie, Maroc, Tunisie, Turquie. La plaque européenne suffit comme preuve d'immatriculation et donc d'assurance présumée. Cependant, en cas de contrôle ou d'accident, la carte verte (gratuite, fournie par votre assureur) reste très utile.",
   },
   {
     question: "Que se passe-t-il si mon contrôle technique est dépassé ?",
     answer:
-      "En France, le contrôle technique doit être réalisé tous les 2 ans (à partir des 4 ans du véhicule). Si dépassé : l&apos;amende est de 135 € (forfaitaire) + immobilisation possible du véhicule. Et surtout, en cas d&apos;accident, votre assureur peut réduire ou refuser la prise en charge si le CT est expiré depuis plus de 2 mois. Conseil : prenez RDV 1 mois avant la date limite, certains centres affichent 3 semaines d&apos;attente.",
+      "En France, le contrôle technique doit être réalisé tous les 2 ans (à partir des 4 ans du véhicule). Si dépassé : l'amende est de 135 € (forfaitaire) + immobilisation possible du véhicule. Et surtout, en cas d'accident, votre assureur peut réduire ou refuser la prise en charge si le CT est expiré depuis plus de 2 mois. Conseil : prenez RDV 1 mois avant la date limite, certains centres affichent 3 semaines d'attente.",
   },
   {
     question: "Permis international : où l'obtenir et combien ça coûte ?",
     answer:
-      "En France : gratuit, demande sur le site de l&apos;ANTS (Agence nationale des titres sécurisés). Joindre une copie du permis, une pièce d&apos;identité et un justificatif de domicile. Délai annoncé : 11 semaines, en pratique 3-4 mois. Valide 3 ans, à toujours accompagner de votre permis original. Indispensable hors UE/EEE (USA, Maroc, Thaïlande, Australie, Japon...). En UE, votre permis national suffit.",
+      "En France : gratuit, demande sur le site de l'ANTS (Agence nationale des titres sécurisés). Joindre une copie du permis, une pièce d'identité et un justificatif de domicile. Délai annoncé : 11 semaines, en pratique 3-4 mois. Valide 3 ans, à toujours accompagner de votre permis original. Indispensable hors UE/EEE (USA, Maroc, Thaïlande, Australie, Japon...). En UE, votre permis national suffit.",
   },
 ]
 
