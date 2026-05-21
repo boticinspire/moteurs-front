@@ -60,6 +60,8 @@ export default function HomePage() {
           <symbol id="i-briefcase" viewBox="0 0 24 24"><rect width="20" height="14" x="2" y="7" rx="2" /><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16" /></symbol>
           <symbol id="i-camera" viewBox="0 0 24 24"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z" /><circle cx="12" cy="13" r="3" /></symbol>
           <symbol id="i-file-text" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" /><polyline points="14 2 14 8 20 8" /><line x1="16" x2="8" y1="13" y2="13" /><line x1="16" x2="8" y1="17" y2="17" /></symbol>
+          <symbol id="i-wrench" viewBox="0 0 24 24"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z" /></symbol>
+          <symbol id="i-life-buoy" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" /><circle cx="12" cy="12" r="4" /><line x1="4.93" x2="9.17" y1="4.93" y2="9.17" /><line x1="14.83" x2="19.07" y1="14.83" y2="19.07" /><line x1="14.83" x2="19.07" y1="9.17" y2="4.93" /><line x1="14.83" x2="18.36" y1="9.17" y2="5.64" /><line x1="4.93" x2="9.17" y1="19.07" y2="14.83" /></symbol>
         </defs>
       </svg>
 
@@ -287,7 +289,7 @@ export default function HomePage() {
           <div className="v2-section-head">
             <div className="left">
               <div className="v2-eyebrow">Tous les outils</div>
-              <h2>Six calculateurs pour décider <span className="grad">sans se tromper.</span></h2>
+              <h2>Huit outils pour décider <span className="grad">sans se tromper.</span></h2>
             </div>
             <Link className="v2-btn v2-btn-ghost" href="/outils">
               Voir tous les outils <svg className="v2-ic"><use href="#i-arrow-right" /></svg>
@@ -329,6 +331,18 @@ export default function HomePage() {
               <h3>Constat amiable intelligent</h3>
               <p>Wizard 8 étapes, export PDF, envoi email — 4 pays couverts.</p>
               <span className="open">Remplir <svg className="v2-ic"><use href="#i-arrow-right" /></svg></span>
+            </Link>
+            <Link className="v2-tcard c-blue" href="/depannage">
+              <div className="icbox"><svg className="v2-ic"><use href="#i-wrench" /></svg></div>
+              <h3>Hub Dépannage</h3>
+              <p>Numéros d&apos;urgence par pays, top pannes, voyants tableau de bord, conseils.</p>
+              <span className="open">Consulter <svg className="v2-ic"><use href="#i-arrow-right" /></svg></span>
+            </Link>
+            <Link className="v2-tcard c-green" href="/assistance">
+              <div className="icbox"><svg className="v2-ic"><use href="#i-life-buoy" /></svg></div>
+              <h3>Hub Assistance voyage</h3>
+              <p>Santé, location, météo, surprises en route — guides complets pour partir serein.</p>
+              <span className="open">Découvrir <svg className="v2-ic"><use href="#i-arrow-right" /></svg></span>
             </Link>
           </div>
         </div>
