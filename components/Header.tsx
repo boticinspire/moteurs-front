@@ -5,13 +5,13 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 
 const navLinks = [
-  { href: '/',                label: 'Accueil' },
-  { href: '/articles',        label: 'Décryptages' },
-  { href: '/b2b',             label: 'PME & Artisans' },
-  { href: '/particulier',     label: 'Particuliers' },
-  { href: '/assistance',           label: '🤖 Assistance' },
-  { href: '/assistant-depannage',  label: '🔧 Dépannage' },
-  { href: '/comparer-trajet',      label: '📊 Trajet' },
+  { href: '/',                     label: 'Accueil' },
+  { href: '/articles',             label: 'Décryptages' },
+  { href: '/recharge-electrique',  label: '🔌 Recharge VE' },
+  { href: '/vacances-voiture',     label: '🏖️ Vacances' },
+  { href: '/cout-voiture',         label: '💰 TCO' },
+  { href: '/depannage',            label: '🔧 Dépannage' },
+  { href: '/documents-auto',       label: '📄 Documents' },
   { href: '/outils',               label: '⚡ Calculateurs' },
 ]
 
