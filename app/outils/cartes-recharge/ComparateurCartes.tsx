@@ -353,6 +353,10 @@ export default function ComparateurCartes() {
                         Voir l&apos;offre →
                       </a>
                     )}
+                    <a href={`/outils/cartes-recharge/${r.carte.id}`}
+                      style={{ fontSize: '0.78rem', color: MUTED, fontWeight: 500, textDecoration: 'none', display: 'block', marginTop: 2 }}>
+                      📊 Tarifs par pays
+                    </a>
                   </div>
                 </div>
               )
@@ -420,17 +424,4 @@ export default function ComparateurCartes() {
                           {c.flotte_pro && <Badge color="#8b5cf6">🏢 Flotte</Badge>}
                         </div>
                       </td>
-                    </tr>
-                  )
-                })}
-              </tbody>
-            </table>
-          </div>
-          <p style={{ fontSize: '0.78rem', color: MUTED, marginTop: 16 }}>
-            Tarifs indicatifs 2026 — vérifiez les conditions sur le site de chaque opérateur avant de souscrire.
-          </p>
-        </div>
-      )}
-    </div>
-  )
-}
+                  
