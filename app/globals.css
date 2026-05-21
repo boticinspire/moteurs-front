@@ -2142,7 +2142,10 @@ body :not(.home-v2) section.newsletter{
    ===================================================================== */
 
 body :not(.home-v2) main.container > header:first-of-type,
-body :not(.home-v2) main.container > nav + header{
+body :not(.home-v2) main.container > nav + header,
+body :not(.home-v2) main > header:first-of-type,
+body :not(.home-v2) main > nav + header,
+body :not(.home-v2) main > script + nav + header{
   position: relative;
   background:
     radial-gradient(ellipse at 75% 20%, rgba(0,184,135,.10) 0%, transparent 55%),
@@ -2156,7 +2159,10 @@ body :not(.home-v2) main.container > nav + header{
 
 /* Grille subtile en arrière-plan */
 body :not(.home-v2) main.container > header:first-of-type::before,
-body :not(.home-v2) main.container > nav + header::before{
+body :not(.home-v2) main.container > nav + header::before,
+body :not(.home-v2) main > header:first-of-type::before,
+body :not(.home-v2) main > nav + header::before,
+body :not(.home-v2) main > script + nav + header::before{
   content: '';
   position: absolute;
   inset: 0;
@@ -2169,7 +2175,10 @@ body :not(.home-v2) main.container > nav + header::before{
 
 /* Ligne séparatrice sun en bas du bandeau */
 body :not(.home-v2) main.container > header:first-of-type::after,
-body :not(.home-v2) main.container > nav + header::after{
+body :not(.home-v2) main.container > nav + header::after,
+body :not(.home-v2) main > header:first-of-type::after,
+body :not(.home-v2) main > nav + header::after,
+body :not(.home-v2) main > script + nav + header::after{
   content: '';
   position: absolute;
   bottom: 0; left: 0; right: 0;
@@ -2179,33 +2188,45 @@ body :not(.home-v2) main.container > nav + header::after{
 
 /* Forçage couleur enfants H1 + lead pour visibilité sur fond foncé */
 body :not(.home-v2) main.container > header:first-of-type > *,
-body :not(.home-v2) main.container > nav + header > *{
+body :not(.home-v2) main.container > nav + header > *,
+body :not(.home-v2) main > header:first-of-type > *,
+body :not(.home-v2) main > nav + header > *{
   position: relative;
   z-index: 1;
 }
 body :not(.home-v2) main.container > header:first-of-type h1,
-body :not(.home-v2) main.container > nav + header h1{
+body :not(.home-v2) main.container > nav + header h1,
+body :not(.home-v2) main > header:first-of-type h1,
+body :not(.home-v2) main > nav + header h1{
   color: #fff !important;
 }
 body :not(.home-v2) main.container > header:first-of-type p,
-body :not(.home-v2) main.container > nav + header p{
+body :not(.home-v2) main.container > nav + header p,
+body :not(.home-v2) main > header:first-of-type p,
+body :not(.home-v2) main > nav + header p{
   color: rgba(255,255,255,.7) !important;
 }
 /* Eyebrow uppercase reste en orange sun pour effet de contraste */
 body :not(.home-v2) main.container > header:first-of-type > div:first-child,
-body :not(.home-v2) main.container > nav + header > div:first-child{
+body :not(.home-v2) main.container > nav + header > div:first-child,
+body :not(.home-v2) main > header:first-of-type > div:first-child,
+body :not(.home-v2) main > nav + header > div:first-child{
   color: var(--color-primary) !important;
 }
 /* Span en couleur primary dans le H1 (genre "tarif" colorisé) reste sun */
 body :not(.home-v2) main.container > header:first-of-type h1 span,
-body :not(.home-v2) main.container > nav + header h1 span{
+body :not(.home-v2) main.container > nav + header h1 span,
+body :not(.home-v2) main > header:first-of-type h1 span,
+body :not(.home-v2) main > nav + header h1 span{
   color: var(--color-primary) !important;
 }
 
 /* Mobile : adapter padding et margin */
 @media (max-width:768px){
   body :not(.home-v2) main.container > header:first-of-type,
-  body :not(.home-v2) main.container > nav + header{
+  body :not(.home-v2) main.container > nav + header,
+  body :not(.home-v2) main > header:first-of-type,
+  body :not(.home-v2) main > nav + header{
     padding: 32px 20px !important;
     margin: 0 -8px 24px !important;
     border-radius: 12px;
