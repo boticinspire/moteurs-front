@@ -4,7 +4,8 @@
  * vitesses, ZFE majeures, particularités, numéros d'urgence.
  */
 
-import { PAYS_LEGAL, type InfoPays, type PaysCode } from '@/lib/legal-pays'
+import { PAYS_LEGAL, type InfoPays } from '@/lib/legal-pays'
+import type { PaysCode } from '@/lib/trajets-seo'
 
 interface Props {
   paysTraverses: PaysCode[]
