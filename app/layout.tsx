@@ -1,4 +1,4 @@
-import type { Metadata } from 'next'
+import type { Metadata, Viewport } from 'next'
 import type { ReactNode } from 'react'
 import { Inter } from 'next/font/google'
 import './globals.css'
@@ -21,6 +21,16 @@ export const metadata: Metadata = {
   description:
     'Comparez le coût total (TCO) et le coût de trajet selon votre motorisation : diesel, essence, électrique, hybride. Péages inclus, aides 2026, ZFE — pour particuliers, PME et flottes en France, Belgique, Suisse et Canada.',
   metadataBase: new URL('https://moteurs.com'),
+}
+
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 5,
+  themeColor: [
+    { media: '(prefers-color-scheme: light)', color: '#ffffff' },
+    { media: '(prefers-color-scheme: dark)',  color: '#0a0e1a' },
+  ],
 }
 
 const orgJsonLd = {

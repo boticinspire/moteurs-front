@@ -239,7 +239,53 @@ export default function PageDocumentsAuto() {
       </section>
 
       {/* CTA finale */}
-      <section style={{ marginTop: 40, padding: 22, borderRadius: 14, background: 'var(--color-bg-card)', border: '1px solid var(--color-border)' }}>
+      {/* Voir aussi : maillage inter-hubs */}
+      <section style={{ marginTop: 48, paddingTop: 32, borderTop: '1px solid var(--color-border)' }}>
+        <h2 style={{ fontSize: '1.15rem', marginBottom: 14 }}>Voir aussi dans nos guides</h2>
+        <p style={{ color: 'var(--color-text-muted)', fontSize: '0.9rem', marginBottom: 18, lineHeight: 1.5 }}>
+          Quatre autres dossiers complets pour aller plus loin sur la voiture en 2026.
+        </p>
+        <div style={{ display: 'grid', gap: 14, gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))' }}>
+          <a href="/recharge-electrique" style={{
+            display: 'block', padding: 16, borderRadius: 12,
+            background: 'var(--color-bg)', border: '1px solid var(--color-border)',
+            textDecoration: 'none', color: 'var(--color-text)',
+          }}>
+            <div style={{ fontSize: '1.4rem', marginBottom: 6 }}>🔌</div>
+            <div style={{ fontWeight: 700, fontSize: '0.95rem', marginBottom: 4 }}>Recharge électrique</div>
+            <div style={{ fontSize: '0.82rem', color: 'var(--color-text-muted)', lineHeight: 1.5 }}>Tarifs par pays, cartes, bornes, installation à domicile, aides.</div>
+          </a>
+          <a href="/vacances-voiture" style={{
+            display: 'block', padding: 16, borderRadius: 12,
+            background: 'var(--color-bg)', border: '1px solid var(--color-border)',
+            textDecoration: 'none', color: 'var(--color-text)',
+          }}>
+            <div style={{ fontSize: '1.4rem', marginBottom: 6 }}>🏖️</div>
+            <div style={{ fontWeight: 700, fontSize: '0.95rem', marginBottom: 4 }}>Vacances en voiture</div>
+            <div style={{ fontSize: '0.82rem', color: 'var(--color-text-muted)', lineHeight: 1.5 }}>15 grands trajets Europe, vignettes, péages, checklist départ.</div>
+          </a>
+          <a href="/cout-voiture" style={{
+            display: 'block', padding: 16, borderRadius: 12,
+            background: 'var(--color-bg)', border: '1px solid var(--color-border)',
+            textDecoration: 'none', color: 'var(--color-text)',
+          }}>
+            <div style={{ fontSize: '1.4rem', marginBottom: 6 }}>💰</div>
+            <div style={{ fontWeight: 700, fontSize: '0.95rem', marginBottom: 4 }}>Coût voiture (TCO)</div>
+            <div style={{ fontSize: '0.82rem', color: 'var(--color-text-muted)', lineHeight: 1.5 }}>TCO 5 ans par motorisation et par pays, méthode complète.</div>
+          </a>
+          <a href="/depannage" style={{
+            display: 'block', padding: 16, borderRadius: 12,
+            background: 'var(--color-bg)', border: '1px solid var(--color-border)',
+            textDecoration: 'none', color: 'var(--color-text)',
+          }}>
+            <div style={{ fontSize: '1.4rem', marginBottom: 6 }}>🔧</div>
+            <div style={{ fontWeight: 700, fontSize: '0.95rem', marginBottom: 4 }}>Dépannage</div>
+            <div style={{ fontSize: '0.82rem', color: 'var(--color-text-muted)', lineHeight: 1.5 }}>Numéros urgence par pays, scan voyant, constat européen.</div>
+          </a>
+        </div>
+      </section>
+
+            <section style={{ marginTop: 40, padding: 22, borderRadius: 14, background: 'var(--color-bg-card)', border: '1px solid var(--color-border)' }}>
         <h2 style={{ fontSize: '1.05rem', marginBottom: 12 }}>Outils &amp; ressources</h2>
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10 }}>
           <Link href="/outils/immatriculation-france" style={btnSecondaire}>Immatriculation FR →</Link>
