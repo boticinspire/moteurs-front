@@ -1827,11 +1827,14 @@ tr:hover td {
   padding:8px 4px;
   font-size:.9rem;
   font-weight:500;
-  color:var(--color-text-soft);
+  color:var(--color-bg-dark);
   background:transparent !important;
   border-radius:0;
   position:relative;
+  opacity:.78;
+  transition:opacity .2s, color .2s;
 }
+.main-nav a:hover, .main-nav a.active{ opacity:1 }
 .main-nav a::after{
   content:"";position:absolute;left:4px;right:4px;bottom:2px;
   height:1.5px;background:#ef6c1a;
