@@ -424,4 +424,14 @@ export default function ComparateurCartes() {
                           {c.flotte_pro && <Badge color="#8b5cf6">🏢 Flotte</Badge>}
                         </div>
                       </td>
-                  
+                    </tr>
+                  )
+                })}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )}
+    </div>
+  )
+}
