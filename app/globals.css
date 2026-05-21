@@ -1905,3 +1905,185 @@ body:has(.home-v2[data-theme="dark"]) .header-cta .btn-secondary{
 body:has(.home-v2[data-theme="dark"]) .header-cta .btn-secondary:hover{
   border-color:rgba(255,255,255,.3);background:rgba(255,255,255,.05)
 }
+
+
+/* =====================================================================
+   DESIGN POLISH v2 — Quick wins globaux (21/05/2026)
+   Aligne toutes les pages sur le langage premium de la home v2
+   Overrides ciblés, scopés en :not(.home-v2) pour éviter conflits
+   ===================================================================== */
+
+/* === Variables tokens premium (utilisables partout) === */
+:root{
+  --v2g-sun:#f5a524;
+  --v2g-sunset:#ef6c1a;
+  --v2g-sun-soft:#fff1d6;
+  --v2g-green:#0fa472;
+  --v2g-green-soft:#d8f5e6;
+  --v2g-ink-deep:#0c1422;
+  --v2g-radius:12px;
+  --v2g-radius-lg:18px;
+  --v2g-shadow-md:0 14px 36px -18px rgba(11,30,56,.22);
+  --v2g-shadow-lg:0 24px 60px -24px rgba(11,30,56,.28);
+}
+
+/* === Boutons globaux modernisés (hors home-v2) === */
+body :not(.home-v2) .btn{
+  border-radius:var(--v2g-radius);
+  font-weight:600;
+  letter-spacing:-.005em;
+  transition:transform .25s cubic-bezier(.2,.8,.2,1), box-shadow .25s, background .2s, color .2s, border-color .2s;
+  border-width:1.5px;
+}
+body :not(.home-v2) .btn:hover{
+  transform:translateY(-1px);
+}
+body :not(.home-v2) .btn-primary{
+  background:linear-gradient(135deg,var(--v2g-sun),var(--v2g-sunset));
+  color:#1a0f02;
+  border:none;
+  box-shadow:0 10px 26px -8px rgba(239,108,26,.45), inset 0 1px 0 rgba(255,255,255,.4);
+}
+body :not(.home-v2) .btn-primary:hover{
+  box-shadow:0 16px 38px -8px rgba(239,108,26,.65), inset 0 1px 0 rgba(255,255,255,.4);
+  background:linear-gradient(135deg,var(--v2g-sun),var(--v2g-sunset));
+  color:#1a0f02;
+}
+body :not(.home-v2) .btn-secondary{
+  background:transparent;
+  color:var(--v2g-ink-deep);
+  border-color:rgba(12,20,34,.18);
+}
+body :not(.home-v2) .btn-secondary:hover{
+  background:var(--v2g-ink-deep);
+  color:#fff;
+  border-color:var(--v2g-ink-deep);
+}
+body :not(.home-v2) .btn-accent{
+  background:linear-gradient(180deg,#3fffac,var(--v2g-green));
+  color:#03261a;
+  border:none;
+  box-shadow:0 10px 26px -8px rgba(15,164,114,.45), inset 0 1px 0 rgba(255,255,255,.3);
+}
+body :not(.home-v2) .btn-accent:hover{
+  box-shadow:0 16px 38px -8px rgba(15,164,114,.65), inset 0 1px 0 rgba(255,255,255,.3);
+  color:#03261a;
+}
+
+/* === Titres globaux : letter-spacing tight pour ton premium === */
+body :not(.home-v2) h1,
+body :not(.home-v2) h2,
+body :not(.home-v2) h3{
+  letter-spacing:-.025em;
+  font-feature-settings:"ss01";
+}
+body :not(.home-v2) .section-title{
+  font-weight:800;
+  letter-spacing:-.03em;
+}
+
+/* === Cards modernisées : ombre profonde, hover lift, radius arrondi === */
+body :not(.home-v2) .card{
+  border-radius:var(--v2g-radius-lg);
+  border:1px solid rgba(11,30,56,.07);
+  background:#fff;
+  transition:transform .3s cubic-bezier(.2,.8,.2,1), box-shadow .3s, border-color .3s;
+  box-shadow:0 1px 0 rgba(11,30,56,.04);
+}
+body :not(.home-v2) .card:hover{
+  transform:translateY(-4px);
+  box-shadow:var(--v2g-shadow-md);
+  border-color:rgba(239,108,26,.25);
+}
+
+/* === Inputs / Select / Textarea : focus orange sun === */
+body :not(.home-v2) input:not([type="checkbox"]):not([type="radio"]),
+body :not(.home-v2) select,
+body :not(.home-v2) textarea{
+  border-radius:10px;
+  border:1.5px solid rgba(11,30,56,.12);
+  transition:border-color .2s, box-shadow .2s;
+}
+body :not(.home-v2) input:not([type="checkbox"]):not([type="radio"]):focus,
+body :not(.home-v2) select:focus,
+body :not(.home-v2) textarea:focus{
+  outline:none;
+  border-color:var(--v2g-sun);
+  box-shadow:0 0 0 3px rgba(245,165,36,.18);
+}
+
+/* === Hero des pages : fond cream subtil + gradient soft === */
+body :not(.home-v2) .hero,
+body :not(.home-v2) section.hero{
+  position:relative;
+  overflow:hidden;
+}
+body :not(.home-v2) .hero::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:
+    radial-gradient(700px 400px at 100% 0%, rgba(245,165,36,.08), transparent 60%),
+    radial-gradient(600px 400px at 0% 100%, rgba(91,141,239,.06), transparent 60%);
+  pointer-events:none;
+  z-index:0;
+}
+body :not(.home-v2) .hero > *{position:relative;z-index:1}
+
+/* === Tags & badges : radius arrondis === */
+body :not(.home-v2) .tag,
+body :not(.home-v2) .pill,
+body :not(.home-v2) .chip{
+  border-radius:99px;
+  font-weight:600;
+  letter-spacing:.02em;
+}
+
+/* === Newsletter form : alignée sur style premium === */
+body :not(.home-v2) .newsletter-form input{
+  background:rgba(255,255,255,.08);
+  border:1px solid rgba(255,255,255,.2);
+}
+body :not(.home-v2) .newsletter-form input:focus{
+  border-color:var(--v2g-sun);
+  box-shadow:0 0 0 3px rgba(245,165,36,.25);
+  background:rgba(255,255,255,.12);
+}
+body :not(.home-v2) .newsletter-form button{
+  background:linear-gradient(135deg,var(--v2g-sun),var(--v2g-sunset)) !important;
+  color:#1a0f02 !important;
+  border:none !important;
+  border-radius:10px !important;
+  font-weight:700;
+}
+
+/* === Sections : un peu plus d'air en haut/bas pour ton premium === */
+body :not(.home-v2) .section-alt,
+body :not(.home-v2) .section-light{
+  background:linear-gradient(180deg, #fbf7f0 0%, #f5ecdc 100%);
+}
+
+/* === Liens de retour / breadcrumb plus discrets === */
+body :not(.home-v2) .breadcrumb a,
+body :not(.home-v2) nav.breadcrumb a{
+  color:var(--v2g-ink-deep);
+  opacity:.65;
+}
+body :not(.home-v2) .breadcrumb a:hover{
+  opacity:1;
+  color:var(--v2g-sunset);
+}
+
+/* === Animation reveal optionnelle pour les pages qui ont .v2g-reveal === */
+body .v2g-reveal{
+  opacity:0;
+  transform:translateY(20px);
+  transition:opacity .8s ease, transform .8s cubic-bezier(.2,.8,.2,1);
+}
+body .v2g-reveal.in{opacity:1;transform:none}
+
+@media (prefers-reduced-motion:reduce){
+  body :not(.home-v2) .btn:hover,
+  body :not(.home-v2) .card:hover{transform:none}
+  body .v2g-reveal{opacity:1;transform:none;transition:none}
+}
