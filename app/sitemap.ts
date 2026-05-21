@@ -35,6 +35,9 @@ const PAGES_STATIQUES: { url: string; priority: number; changeFreq: MetadataRout
   { url: '/comparer-trajet', priority: 0.8, changeFreq: 'monthly' },
   { url: '/tco',           priority: 0.8,  changeFreq: 'monthly' },
 
+  // Hubs SEO thématiques
+  { url: '/recharge-electrique', priority: 0.9, changeFreq: 'weekly' },
+
   // Assistances
   { url: '/assistant-vacances',      priority: 0.8, changeFreq: 'monthly' },
   { url: '/checklist-depart',        priority: 0.8, changeFreq: 'monthly' },
