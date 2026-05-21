@@ -26,6 +26,7 @@ export default function Footer() {
               <li><Link href="/trajet">Trajets vacances</Link></li>
               <li><Link href="/vacances-voiture">Vacances en voiture</Link></li>
               <li><Link href="/cout-voiture">Cout voiture (TCO)</Link></li>
+              <li><Link href="/depannage">Depannage</Link></li>
               <li><Link href="/outils">Tous les calculateurs</Link></li>
             </ul>
           </div>
