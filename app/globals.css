@@ -2232,3 +2232,64 @@ body :not(.home-v2) main > nav + header h1 span{
     border-radius: 12px;
   }
 }
+
+
+/* =====================================================================
+   .hub-hero-dark — Classe explicite ajoutée aux <header> des 5 pages hub
+   Solution radicale (mai 2026) — bypass tout problème de sélecteur
+   ===================================================================== */
+
+.hub-hero-dark{
+  position: relative !important;
+  background:
+    radial-gradient(ellipse at 75% 20%, rgba(0,184,135,.10) 0%, transparent 55%),
+    linear-gradient(160deg, #060f1e 0%, #0b1e38 60%, #0f2f5a 100%) !important;
+  color: #fff !important;
+  padding: 48px 36px !important;
+  border-radius: 16px !important;
+  margin: 0 -16px 32px !important;
+  overflow: hidden !important;
+}
+.hub-hero-dark::before{
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(255,255,255,.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,.025) 1px, transparent 1px);
+  background-size: 48px 48px;
+  pointer-events: none;
+}
+.hub-hero-dark::after{
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(245,165,36,.5), rgba(239,108,26,.5), transparent);
+}
+.hub-hero-dark > *{
+  position: relative;
+  z-index: 1;
+}
+.hub-hero-dark h1{
+  color: #fff !important;
+}
+.hub-hero-dark p{
+  color: rgba(255,255,255,.7) !important;
+}
+/* Eyebrow (premier <div> direct enfant) — couleur sun */
+.hub-hero-dark > div:first-child{
+  color: #f5a524 !important;
+}
+/* Span couleur primary dans le H1 reste en sun */
+.hub-hero-dark h1 span{
+  color: #f5a524 !important;
+}
+
+@media (max-width:768px){
+  .hub-hero-dark{
+    padding: 32px 20px !important;
+    margin: 0 -8px 24px !important;
+    border-radius: 12px !important;
+  }
+}

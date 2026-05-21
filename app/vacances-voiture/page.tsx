@@ -51,7 +51,7 @@ export default function PageVacancesVoiture() {
       </nav>
 
       {/* Hero */}
-      <header style={{ marginBottom: 32 }}>
+      <header className="hub-hero-dark" style={{ marginBottom: 32 }}>
         <div style={{ fontSize: '0.82rem', color: 'var(--color-primary)', fontWeight: 600, marginBottom: 8, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
           Guide complet · Été {ANNEE}
         </div>

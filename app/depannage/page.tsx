@@ -46,7 +46,7 @@ export default function PageDepannage() {
       </nav>
 
       {/* Hero */}
-      <header style={{ marginBottom: 28 }}>
+      <header className="hub-hero-dark" style={{ marginBottom: 28 }}>
         <div style={{ fontSize: '0.82rem', color: 'var(--color-primary)', fontWeight: 600, marginBottom: 8, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
           Guide dépannage · {ANNEE}
         </div>
