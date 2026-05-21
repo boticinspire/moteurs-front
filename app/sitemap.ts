@@ -38,6 +38,7 @@ const PAGES_STATIQUES: { url: string; priority: number; changeFreq: MetadataRout
   // Hubs SEO thématiques
   { url: '/recharge-electrique', priority: 0.9, changeFreq: 'weekly' },
   { url: '/vacances-voiture',    priority: 0.9, changeFreq: 'weekly' },
+  { url: '/cout-voiture',        priority: 0.9, changeFreq: 'weekly' },
 
   // Assistances
   { url: '/assistant-vacances',      priority: 0.8, changeFreq: 'monthly' },
