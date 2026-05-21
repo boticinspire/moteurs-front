@@ -2087,3 +2087,47 @@ body .v2g-reveal.in{opacity:1;transform:none}
   body :not(.home-v2) .card:hover{transform:none}
   body .v2g-reveal{opacity:1;transform:none;transition:none}
 }
+
+
+/* =====================================================================
+   FIX SPACING — Réduire padding sections sur pages hub (mai 2026)
+   Le globals avait `section { padding: 72px 0 }` -> trop dense en empilant des sub-sections
+   ===================================================================== */
+
+/* Top-level sections directes filles de <main> ou <body> gardent leur respiration */
+/* Mais sub-sections imbriquées ou avec marginBottom inline -> padding réduit */
+body :not(.home-v2) section{
+  padding-top:32px;
+  padding-bottom:32px;
+}
+
+/* Hero garde son air généreux */
+body :not(.home-v2) section.hero,
+body :not(.home-v2) .hero{
+  padding-top:64px;
+  padding-bottom:64px;
+}
+
+/* Première section après le hero garde aussi un peu d'air */
+body :not(.home-v2) section.hero + section{
+  padding-top:48px;
+}
+
+/* Newsletter en fin de page : garder le souffle */
+body :not(.home-v2) section.newsletter{
+  padding-top:60px;
+  padding-bottom:60px;
+}
+
+/* Mobile : encore plus compact */
+@media (max-width:768px){
+  body :not(.home-v2) section{
+    padding-top:24px;
+    padding-bottom:24px;
+  }
+  body :not(.home-v2) section.hero,
+  body :not(.home-v2) .hero{
+    padding-top:48px;
+    padding-bottom:48px;
+  }
+}
