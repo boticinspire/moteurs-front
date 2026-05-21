@@ -7,6 +7,7 @@
  */
 
 import type { PaysCode } from '@/lib/trajets-seo'
+export type { PaysCode }
 
 export interface Vitesses {
   ville: number
