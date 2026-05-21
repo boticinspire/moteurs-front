@@ -250,6 +250,44 @@ export default async function HomePage() {
         </div>
       </section>
 
+      {/* ===== NOS GUIDES (5 HUBS SEO) ===== */}
+      <section className="section-alt" style={{ padding: '52px 0 44px' }}>
+        <div className="container">
+          <h2 className="section-title">Nos guides</h2>
+          <p className="section-subtitle">
+            Cinq dossiers complets pour décrypter la voiture en 2026 : recharge, vacances, coût total, dépannage, papiers.
+          </p>
+
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))', gap: 16, marginTop: 16 }}>
+            {[
+              { href: '/recharge-electrique', icone: '🔌', titre: 'Recharge électrique', desc: 'Tarifs par pays, bornes AC/DC, cartes de recharge, installation à domicile, aides.' },
+              { href: '/vacances-voiture',    icone: '🏖️', titre: 'Vacances en voiture', desc: '15 grands trajets décryptés, vignettes par pays, péages, checklist départ.' },
+              { href: '/cout-voiture',        icone: '💰', titre: 'Coût voiture (TCO)', desc: 'Combien coûte vraiment une voiture sur 5 ans, par motorisation et par pays.' },
+              { href: '/depannage',           icone: '🔧', titre: 'Dépannage',           desc: 'Numéros d&apos;urgence par pays, scan voyant, constat européen, top pannes.' },
+              { href: '/documents-auto',      icone: '📄', titre: 'Documents auto',      desc: 'Carte grise, permis, assurance, contrôle technique — par pays.' },
+            ].map(g => (
+              <Link key={g.href} href={g.href} style={{ textDecoration: 'none' }}>
+                <div style={{
+                  background: 'white', border: '1.5px solid var(--color-border)',
+                  borderRadius: 14, padding: '20px 18px',
+                  display: 'flex', flexDirection: 'column', gap: 10, height: '100%',
+                  cursor: 'pointer', transition: 'all .15s',
+                }}>
+                  <span style={{ fontSize: '1.8rem' }}>{g.icone}</span>
+                  <div>
+                    <h3 style={{ fontSize: '0.98rem', fontWeight: 700, marginBottom: 5 }}>{g.titre}</h3>
+                    <p style={{ fontSize: '0.82rem', color: 'var(--color-text-muted)', lineHeight: 1.5, margin: 0 }} dangerouslySetInnerHTML={{ __html: g.desc }} />
+                  </div>
+                  <span style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--color-primary)', marginTop: 'auto' }}>
+                    Lire le guide →
+                  </span>
+                </div>
+              </Link>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* ===== AUTRES CALCULATEURS ===== */}
       <section style={{ padding: '52px 0 44px' }}>
         <div className="container">
