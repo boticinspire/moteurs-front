@@ -24,6 +24,7 @@ export default function Footer() {
               <li><Link href="/comparer-trajet">Comparateur trajet</Link></li>
               <li><Link href="/recharge-electrique">Recharge electrique</Link></li>
               <li><Link href="/trajet">Trajets vacances</Link></li>
+              <li><Link href="/vacances-voiture">Vacances en voiture</Link></li>
               <li><Link href="/outils">Tous les calculateurs</Link></li>
             </ul>
           </div>
