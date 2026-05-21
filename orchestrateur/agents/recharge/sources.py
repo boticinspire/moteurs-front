@@ -291,17 +291,18 @@ CARTES: list[dict] = [
         "nom": "IONITY Motion",
         "operateur": "IONITY",
         "pays_origine": ["FR", "BE", "DE", "AT", "CH", "NL", "NO", "SE", "GB", "ES", "IT", "DK", "LU"],
-        "url_officielle": "https://www.ionity.eu/subscriptions",
-        "url_tarifs": "https://www.ionity.eu/subscriptions",
+        "url_officielle": "https://www.ionity.eu/fr/abonnements",
+        "url_tarifs": "https://www.ionity.eu/fr/abonnements",
         "methode": "httpx",
         "ideal_voyage": True,
         "ideal_quotidien": False,
         "flotte_pro": False,
         "points_forts": [
-            "Réseau ultra-rapide propriétaire ≥350 kW sur toutes les autoroutes EU (~24 pays)",
-            "Motion : 5,99 €/mois → tarif kWh réduit. Variante Power à 11,99 €/mois pour gros rouleurs (kWh encore plus réduit).",
-            "Plans annuels Motion 365 (59,99 €/an → 0,49 €/kWh) et Power 365 (119,99 €/an → 0,39 €/kWh)",
-            "Alternative sans abo (Direct) disponible mais à tarif spot élevé (~0,79 €/kWh)",
+            "Réseau ultra-rapide propriétaire ≥350 kW couvrant 23 marchés européens (jusqu'à 600 kW)",
+            "Motion : 5,99 €/mois → tarif kWh réduit (0,41 €/kWh en France). Variante Power à 11,99 €/mois pour gros rouleurs (0,33 €/kWh en France)",
+            "Plans annuels Motion 365 (59,99 €/an, 49,99 € en réduit) et Power 365 (119,99 €/an, 99,99 € en réduit)",
+            "Sans abo : tarif App (0,51 €/kWh France) ou Direct via QR code (0,54 €/kWh France)",
+            "Membre fondateur de ChargeLeague (alliance avec Fastned, Electra, Atlante) — interopérabilité tarifaire entre réseaux",
         ],
         "points_faibles": [
             "Uniquement DC ultra-rapide (≥150 kW), pas d'AC ni de DC lent",
@@ -309,17 +310,20 @@ CARTES: list[dict] = [
             "Tarif vraiment intéressant seulement si vous roulez beaucoup sur autoroute",
         ],
         "donnees_init": {
-            # IONITY Motion — abonnement mensuel 5,99 € qui débloque un tarif kWh réduit.
-            # Source : ionity.eu/subscriptions — vérifié mai 2026.
+            # IONITY Motion — abonnement mensuel 5,99 €, tarif kWh réduit selon pays.
+            # Source officielle : ionity.eu/fr/abonnements — vérifié mai 2026.
+            # Tarifs France retenus comme valeurs par défaut.
             "abonnement": {"mensuel_eur": 5.99, "annuel_eur": 71.88, "engagement_mois": 1},
             "_variante_power": {"mensuel_eur": 11.99, "annuel_eur": 143.88, "engagement_mois": 1},
-            "_plan_annuel_motion_365": {"prix_an_eur": 59.99, "kwh_eur": 0.49},
-            "_plan_annuel_power_365": {"prix_an_eur": 119.99, "kwh_eur": 0.39},
+            "_plan_annuel_motion_365": {"prix_an_eur": 59.99, "prix_an_reduit_eur": 49.99, "kwh_eur": 0.41},
+            "_plan_annuel_power_365": {"prix_an_eur": 119.99, "prix_an_reduit_eur": 99.99, "kwh_eur": 0.33},
             "tarifs_fr": {
                 "ac_slow":    {"modele": "kwh", "prix": None,  "frais_session": 0.0},
                 "dc_rapide":  {"modele": "kwh", "prix": None,  "frais_session": 0.0},
-                "dc_ultra":   {"modele": "kwh", "prix": 0.49,  "frais_session": 0.0},
-                "_tarif_direct_sans_abo": 0.79,
+                "dc_ultra":   {"modele": "kwh", "prix": 0.41,  "frais_session": 0.0},
+                "_tarif_power_kwh": 0.33,
+                "_tarif_app_sans_abo": 0.51,
+                "_tarif_direct_sans_abo": 0.54,
             },
             "tarifs_be": {
                 "ac_slow":    {"modele": "kwh", "prix": None,  "frais_session": 0.0},
@@ -340,11 +344,13 @@ CARTES: list[dict] = [
                 ],
                 "tarif_dc_ultra": {"modele": "kwh", "prix": 0.49},
             },
-            "_source": "ionity.eu/fr/tarification — à re-vérifier (produits IONITY mis à jour fréquemment).",
+            "_source": "ionity.eu/fr/abonnements — vérifié mai 2026 (produits IONITY mis à jour fréquemment).",
             "_note": (
-                "Le Passport implique un abonnement mensuel fixe (~5,99 €) qui débloque un tarif "
-                "kWh réduit sur tout le réseau IONITY. Sans abonnement, le tarif Direct est "
-                "beaucoup plus élevé (~0,79 €/kWh)."
+                "Le plan Motion (5,99 €/mois) débloque un tarif kWh réduit sur tout le réseau IONITY "
+                "(0,41 €/kWh en France). Le plan Power (11,99 €/mois) offre un tarif encore plus bas "
+                "pour les gros rouleurs (0,33 €/kWh en France). Versions annuelles (Motion 365 / Power 365) "
+                "disponibles avec paiement unique. Sans abonnement : tarif App (0,51 €/kWh France) ou "
+                "Direct via QR code en sans-contact (0,54 €/kWh France)."
             ),
         },
     },
