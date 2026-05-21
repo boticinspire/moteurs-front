@@ -1792,3 +1792,113 @@ tr:hover td {
   .home-v2 .v2-mesh .v2-orb{animation:none}
   .home-v2 .v2-tcard:hover,.home-v2 .v2-iti:hover{transform:none}
 }
+
+
+/* =====================================================================
+   HEADER V2 — Modernisation visuelle (mai 2026)
+   S'applique globalement (toutes les pages) — non-cassant
+   ===================================================================== */
+
+/* Override subtil du site-header pour un fond plus net + ombre raffinée */
+.site-header{
+  background:rgba(255,255,255,.78);
+  backdrop-filter:saturate(180%) blur(18px);
+  -webkit-backdrop-filter:saturate(180%) blur(18px);
+  border-bottom:1px solid rgba(11,30,56,.06);
+  box-shadow:0 1px 0 rgba(11,30,56,.04), 0 8px 30px -20px rgba(11,30,56,.12);
+}
+
+/* Logo mark : carré gradient sun avec monogramme M */
+.logo-mark{
+  width:30px;height:30px;border-radius:9px;
+  background:linear-gradient(135deg,#f5a524 0%,#ef6c1a 100%);
+  display:inline-flex;align-items:center;justify-content:center;
+  color:#fff;
+  box-shadow:0 8px 20px -6px rgba(239,108,26,.5), inset 0 1px 0 rgba(255,255,255,.35);
+  flex-shrink:0;
+}
+.logo-mark svg{width:16px;height:16px;stroke-width:2.2}
+.logo{font-size:1.1rem;font-weight:700;letter-spacing:-.025em;gap:10px}
+.logo span.logo-text{color:var(--color-bg-dark)}
+.logo span.logo-text-dim{color:var(--color-text-soft);font-weight:500}
+
+/* Nav : hover underline élégant au lieu du pill background */
+.main-nav a{
+  padding:8px 4px;
+  font-size:.9rem;
+  font-weight:500;
+  color:var(--color-text-soft);
+  background:transparent !important;
+  border-radius:0;
+  position:relative;
+}
+.main-nav a::after{
+  content:"";position:absolute;left:4px;right:4px;bottom:2px;
+  height:1.5px;background:#ef6c1a;
+  transform:scaleX(0);transform-origin:left;
+  transition:transform .25s cubic-bezier(.2,.8,.2,1);
+}
+.main-nav a:hover,.main-nav a.active{
+  color:var(--color-bg-dark);
+  background:transparent !important;
+}
+.main-nav a:hover::after,.main-nav a.active::after{
+  transform:scaleX(1);
+}
+.main-nav a.active{font-weight:600}
+.main-nav{gap:24px}
+
+/* CTAs header : plus arrondis et hover plus marqué */
+.header-cta .btn{
+  border-radius:10px;
+  padding:9px 16px;
+  font-size:.88rem;
+  font-weight:600;
+  transition:all .25s cubic-bezier(.2,.8,.2,1);
+}
+.header-cta .btn-primary{
+  background:var(--color-bg-dark);
+  color:#fff;
+  border:none;
+  box-shadow:0 6px 18px -6px rgba(11,30,56,.4);
+}
+.header-cta .btn-primary:hover{
+  transform:translateY(-1px);
+  box-shadow:0 12px 28px -8px rgba(11,30,56,.55);
+  background:#000;
+}
+.header-cta .btn-secondary{
+  background:transparent;
+  color:var(--color-bg-dark);
+  border:1.5px solid var(--color-border);
+}
+.header-cta .btn-secondary:hover{
+  border-color:var(--color-bg-dark);
+  background:rgba(11,30,56,.04);
+}
+
+/* En mode home-v2 dark, on adapte le header pour qu'il reste lisible */
+.home-v2[data-theme="dark"] ~ * .site-header,
+body:has(.home-v2[data-theme="dark"]) .site-header{
+  background:rgba(8,10,20,.7);
+  border-bottom-color:rgba(255,255,255,.07);
+  box-shadow:0 1px 0 rgba(255,255,255,.04)
+}
+body:has(.home-v2[data-theme="dark"]) .logo span.logo-text{color:#fff}
+body:has(.home-v2[data-theme="dark"]) .logo span.logo-text-dim{color:#9aa3b8}
+body:has(.home-v2[data-theme="dark"]) .main-nav a{color:#cdd5e4}
+body:has(.home-v2[data-theme="dark"]) .main-nav a:hover,
+body:has(.home-v2[data-theme="dark"]) .main-nav a.active{color:#fff}
+body:has(.home-v2[data-theme="dark"]) .header-cta .btn-primary{
+  background:#fff;color:#0c1422;
+  box-shadow:0 6px 18px -6px rgba(255,255,255,.3)
+}
+body:has(.home-v2[data-theme="dark"]) .header-cta .btn-primary:hover{
+  box-shadow:0 12px 28px -8px rgba(255,255,255,.5);background:#fff
+}
+body:has(.home-v2[data-theme="dark"]) .header-cta .btn-secondary{
+  color:#fff;border-color:rgba(255,255,255,.15)
+}
+body:has(.home-v2[data-theme="dark"]) .header-cta .btn-secondary:hover{
+  border-color:rgba(255,255,255,.3);background:rgba(255,255,255,.05)
+}

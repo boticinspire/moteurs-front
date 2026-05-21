@@ -77,9 +77,11 @@ export default function Header() {
       {/* ── Header ── */}
       <header className="site-header">
         <div className="container">
-          <Link href="/" className="logo">
-            <span className="logo-dot" />
-            <span>Moteurs<span style={{ color: 'var(--color-primary)' }}>.com</span></span>
+          <Link href="/" className="logo" aria-label="Moteurs.com — Accueil">
+            <span className="logo-mark" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 3v18M3 12h18"/></svg>
+            </span>
+            <span><span className="logo-text">Moteurs</span><span className="logo-text-dim">.com</span></span>
           </Link>
 
           {/* Nav desktop */}
@@ -122,9 +124,11 @@ export default function Header() {
         <div className="mobile-overlay" role="dialog" aria-modal="true">
           {/* Haut : logo + fermer */}
           <div className="mobile-overlay-header">
-            <Link href="/" className="logo" style={{ color: 'white' }}>
-              <span className="logo-dot" />
-              <span>Moteurs<span style={{ color: 'var(--color-primary)' }}>.com</span></span>
+            <Link href="/" className="logo" style={{ color: 'white' }} aria-label="Moteurs.com — Accueil">
+              <span className="logo-mark" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 3v18M3 12h18"/></svg>
+              </span>
+              <span><span className="logo-text" style={{ color: '#fff' }}>Moteurs</span><span className="logo-text-dim" style={{ color: 'rgba(255,255,255,.55)' }}>.com</span></span>
             </Link>
             <button
               onClick={() => setOpen(false)}
