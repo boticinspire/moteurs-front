@@ -328,21 +328,69 @@ CARTES: list[dict] = [
             "tarifs_be": {
                 "ac_slow":    {"modele": "kwh", "prix": None,  "frais_session": 0.0},
                 "dc_rapide":  {"modele": "kwh", "prix": None,  "frais_session": 0.0},
-                "dc_ultra":   {"modele": "kwh", "prix": 0.55,  "frais_session": 0.0},
-                "_tarif_direct_sans_abo": 0.85,
+                "dc_ultra":   {"modele": "kwh", "prix": 0.53,  "frais_session": 0.0},
+                "_tarif_power_kwh": 0.43,
+                "_tarif_app_sans_abo": 0.71,
+                "_tarif_direct_sans_abo": 0.75,
             },
             "tarifs_ch": {
                 "devise": "CHF",
-                "dc_ultra":   {"modele": "kwh", "prix": 0.59,  "frais_session": 0.0},
-                "_tarif_direct_sans_abo": 0.79,
+                "dc_ultra":   {"modele": "kwh", "prix": 0.57,  "frais_session": 0.0},
+                "_tarif_power_kwh": 0.46,
+                "_tarif_app_sans_abo": 0.76,
+                "_tarif_direct_sans_abo": 0.80,
             },
+
+            # ───────────────────────────────────────────────────────────────────
+            # Grille tarifaire complète par pays (23 marchés IONITY)
+            # Source : ionity.eu/fr/abonnements — scrap 21/05/2026
+            #
+            # Champs :
+            #   devise       Code ISO 4217 (EUR par défaut)
+            #   motion_kwh   Tarif Motion (abo 5,99 €/mois) en €/kWh local
+            #   power_kwh    Tarif Power (abo 11,99 €/mois) en €/kWh local
+            #   app_kwh      Tarif sans abo via app IONITY
+            #   direct_kwh   Tarif sans abo via QR code (sans inscription)
+            #
+            # Pattern à généraliser pour les autres cartes EU (Chargemap,
+            # Plugsurfing, Fastned, Allego, etc.) lors de la prochaine itération.
+            # ───────────────────────────────────────────────────────────────────
+            "tarifs_par_pays": {
+                "FR": {"devise": "EUR", "motion_kwh": 0.41, "power_kwh": 0.33, "app_kwh": 0.51, "direct_kwh": 0.54},
+                "DE": {"devise": "EUR", "motion_kwh": 0.49, "power_kwh": 0.39, "app_kwh": 0.66, "direct_kwh": 0.69},
+                "AT": {"devise": "EUR", "motion_kwh": 0.49, "power_kwh": 0.39, "app_kwh": 0.66, "direct_kwh": 0.69},
+                "BE": {"devise": "EUR", "motion_kwh": 0.53, "power_kwh": 0.43, "app_kwh": 0.71, "direct_kwh": 0.75},
+                "NL": {"devise": "EUR", "motion_kwh": 0.54, "power_kwh": 0.43, "app_kwh": 0.72, "direct_kwh": 0.76},
+                "ES": {"devise": "EUR", "motion_kwh": 0.46, "power_kwh": 0.37, "app_kwh": 0.62, "direct_kwh": 0.65},
+                "IT": {"devise": "EUR", "motion_kwh": 0.59, "power_kwh": 0.47, "app_kwh": 0.79, "direct_kwh": 0.83},
+                "IE": {"devise": "EUR", "motion_kwh": 0.58, "power_kwh": 0.46, "app_kwh": 0.77, "direct_kwh": 0.81},
+                "HR": {"devise": "EUR", "motion_kwh": 0.53, "power_kwh": 0.42, "app_kwh": 0.70, "direct_kwh": 0.74},
+                "EE": {"devise": "EUR", "motion_kwh": 0.41, "power_kwh": 0.33, "app_kwh": 0.55, "direct_kwh": 0.58},
+                "FI": {"devise": "EUR", "motion_kwh": 0.30, "power_kwh": 0.24, "app_kwh": 0.40, "direct_kwh": 0.42},
+                "LV": {"devise": "EUR", "motion_kwh": 0.53, "power_kwh": 0.42, "app_kwh": 0.71, "direct_kwh": 0.74},
+                "LT": {"devise": "EUR", "motion_kwh": 0.37, "power_kwh": 0.30, "app_kwh": 0.50, "direct_kwh": 0.52},
+                "SK": {"devise": "EUR", "motion_kwh": 0.48, "power_kwh": 0.39, "app_kwh": 0.65, "direct_kwh": 0.68},
+                "SI": {"devise": "EUR", "motion_kwh": 0.52, "power_kwh": 0.41, "app_kwh": 0.69, "direct_kwh": 0.73},
+                "CH": {"devise": "CHF", "motion_kwh": 0.57, "power_kwh": 0.46, "app_kwh": 0.76, "direct_kwh": 0.80},
+                "GB": {"devise": "GBP", "motion_kwh": 0.58, "power_kwh": 0.46, "app_kwh": 0.77, "direct_kwh": 0.81},
+                "NO": {"devise": "NOK", "motion_kwh": 3.75, "power_kwh": 3.00, "app_kwh": 5.00, "direct_kwh": 5.27},
+                "SE": {"devise": "SEK", "motion_kwh": 4.28, "power_kwh": 3.42, "app_kwh": 5.70, "direct_kwh": 6.00},
+                "DK": {"devise": "DKK", "motion_kwh": 2.75, "power_kwh": 2.20, "app_kwh": 3.67, "direct_kwh": 3.86},
+                "CZ": {"devise": "CZK", "motion_kwh": 15.00, "power_kwh": 12.00, "app_kwh": 19.95, "direct_kwh": 21.00},
+                "HU": {"devise": "HUF", "motion_kwh": 199.00, "power_kwh": 159.00, "app_kwh": 265.00, "direct_kwh": 279.00},
+                "PL": {"devise": "PLN", "motion_kwh": 2.33, "power_kwh": 1.86, "app_kwh": 3.10, "direct_kwh": 3.26},
+                "LU": {"devise": "EUR", "motion_kwh": 0.49, "power_kwh": 0.39, "app_kwh": 0.66, "direct_kwh": 0.69, "_note": "Tarif par défaut aligné sur DE/AT — à confirmer sur ionity.eu/fr/abonnements"},
+            },
+
             "roaming": {
                 "disponible": True,
                 "pays_couverts": [
                     "FR","BE","DE","AT","CH","NL","NO","SE","GB",
                     "ES","IT","DK","LU","FI","CZ","HU","PL","SK",
+                    "SI","HR","EE","LV","LT","IE",
                 ],
                 "tarif_dc_ultra": {"modele": "kwh", "prix": 0.49},
+                "_note": "IONITY est un réseau propriétaire — pas de roaming externe. La 'couverture' désigne ici les pays où IONITY exploite des stations.",
             },
             "_source": "ionity.eu/fr/abonnements — vérifié mai 2026 (produits IONITY mis à jour fréquemment).",
             "_note": (
@@ -588,20 +636,20 @@ CARTES: list[dict] = [
         "ideal_voyage": False,
         "ideal_quotidien": True,
         "flotte_pro": True,
-        "points_forts": ["Réseau belge dense", "Gestion flotte avancée", "Facturation TVA BE simple"],
-        "points_faibles": ["Quasi uniquement en Belgique"],
+        "points_forts": ["Pure-player belge", "Offres flotte dédiées"],
+        "points_faibles": ["Réseau hors BE/NL limité"],
         "donnees_init": {
             "abonnement": {"mensuel_eur": 0, "annuel_eur": 0, "engagement_mois": 0},
             "tarifs_be": {
-                "ac_slow":    {"modele": "kwh", "prix": 0.37, "frais_session": 0.0},
-                "dc_rapide":  {"modele": "kwh", "prix": 0.51, "frais_session": 0.0},
-                "dc_ultra":   {"modele": "kwh", "prix": 0.65, "frais_session": 0.0},
+                "ac_slow":    {"modele": "kwh", "prix": 0.39, "frais_session": 0.0},
+                "dc_rapide":  {"modele": "kwh", "prix": 0.53, "frais_session": 0.0},
+                "dc_ultra":   {"modele": "kwh", "prix": 0.69, "frais_session": 0.0},
             },
             "roaming": {
-                "disponible": False,
-                "pays_couverts": ["BE"],
-                "tarif_dc_rapide": None,
-                "tarif_dc_ultra":  None,
+                "disponible": True,
+                "pays_couverts": ["BE","NL","DE","FR","LU"],
+                "tarif_dc_rapide": {"modele": "kwh", "prix": 0.60},
+                "tarif_dc_ultra":  {"modele": "kwh", "prix": 0.78},
             },
         },
     },
