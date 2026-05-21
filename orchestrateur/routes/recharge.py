@@ -249,3 +249,17 @@ def comparer_tarifs_pays(pays_iso: str, type_borne: str = Query("dc_ultra")):
         for i, row in enumerate(r.data)
     ]
     return {"pays": pays_iso.upper(), "type_borne": type_borne, "nb": len(classement), "classement": classement}
+
+
+# ── Migration one-shot : peuple tarifs_carte_pays depuis sources.py ──────────
+
+@router.post("/tarifs/migrate")
+def migrer_tarifs():
+    """
+    Lance la migration des tarifs depuis sources.py vers la table
+    tarifs_carte_pays. Idempotent (UPSERT sur carte_id + pays_iso).
+    À utiliser une fois après création de la table, puis à chaque ajout/maj
+    de tarifs_par_pays dans sources.py.
+    """
+    from scripts.migrate_tarifs_pays import migrer_tous_tarifs
+    return migrer_tous_tarifs()
