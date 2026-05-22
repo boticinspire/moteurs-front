@@ -73,9 +73,9 @@ export default async function ArticlesByCountry({
   const supabase = getSupabase();
   const { data: articles, error } = await supabase
     .from('articles')
-    .select('id, titre:titre_provisoire, slug, resume:resume_50mots, created_at, pays, segment, image_url')
+    .select('id, titre:titre_provisoire, slug, resume:resume_50mots, created_at, pays:pays_cible, segment, image_url')
     .eq('statut', 'PUBLIE')
-    .eq('pays', pays.toUpperCase())
+    .eq('pays_cible', pays.toUpperCase())
     .order('created_at', { ascending: false });
 
   if (error) {
