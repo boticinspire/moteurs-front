@@ -1,28 +1,29 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import Link from 'next/link'
-import { usePathname } from 'next/navigation'
+import { Link, usePathname } from '@/i18n/navigation'
+import { useTranslations } from 'next-intl'
+import LanguageSwitcher from './LanguageSwitcher'
 
-const navLinks = [
-  { href: '/',                     label: 'Accueil' },
-  { href: '/articles',             label: 'Décryptages' },
-  { href: '/recharge-electrique',  label: 'Recharge' },
-  { href: '/vacances-voiture',     label: 'Vacances' },
-  { href: '/cout-voiture',         label: 'TCO' },
-  { href: '/depannage',            label: 'Dépannage' },
-  { href: '/documents-auto',       label: 'Documents' },
-  { href: '/outils',               label: 'Outils' },
-]
+type NavHref = '/' | '/articles' | '/recharge-electrique' | '/vacances-voiture' | '/cout-voiture' | '/depannage' | '/documents-auto' | '/outils'
 
 export default function Header() {
+  const t = useTranslations('Header')
   const path = usePathname()
   const [open, setOpen] = useState(false)
 
-  // Ferme le menu si la route change
-  useEffect(() => { setOpen(false) }, [path])
+  const navLinks: { href: NavHref; label: string }[] = [
+    { href: '/',                     label: t('nav_home') },
+    { href: '/articles',             label: t('nav_articles') },
+    { href: '/recharge-electrique',  label: t('nav_recharge') },
+    { href: '/vacances-voiture',     label: t('nav_vacances') },
+    { href: '/cout-voiture',         label: t('nav_tco') },
+    { href: '/depannage',            label: t('nav_depannage') },
+    { href: '/documents-auto',       label: t('nav_documents') },
+    { href: '/outils',               label: t('nav_outils') },
+  ]
 
-  // Empêche le scroll du body quand le menu est ouvert
+  useEffect(() => { setOpen(false) }, [path])
   useEffect(() => {
     document.body.style.overflow = open ? 'hidden' : ''
     return () => { document.body.style.overflow = '' }
@@ -30,7 +31,6 @@ export default function Header() {
 
   return (
     <>
-      {/* ── Styles responsives header ── */}
       <style>{`
         .burger-btn { display: none !important; }
         @media (max-width: 900px) {
@@ -74,17 +74,15 @@ export default function Header() {
         .mobile-nav-cta { padding: 16px 12px; border-top: 1px solid rgba(255,255,255,0.08); margin-top: 8px; display: flex; flex-direction: column; gap: 10px; }
       `}</style>
 
-      {/* ── Header ── */}
       <header className="site-header">
         <div className="container">
-          <Link href="/" className="logo" aria-label="Moteurs.com — Accueil">
+          <Link href="/" className="logo" aria-label={t('aria_logo')}>
             <span className="logo-mark" aria-hidden="true">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 3v18M3 12h18"/></svg>
             </span>
             <span><span className="logo-text">Moteurs</span><span className="logo-text-dim">.com</span></span>
           </Link>
 
-          {/* Nav desktop */}
           <nav className="main-nav">
             {navLinks.map(({ href, label }) => (
               <Link key={href} href={href} className={path === href ? 'active' : ''}>
@@ -93,21 +91,20 @@ export default function Header() {
             ))}
           </nav>
 
-          {/* CTAs desktop */}
-          <div className="header-cta">
+          <div className="header-cta" style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+            <LanguageSwitcher variant="desktop" />
             <Link href="/espace-membres" className="btn btn-secondary btn-sm" style={{ fontWeight: 600 }}>
-              Mon espace
+              {t('cta_my_space')}
             </Link>
             <Link href="/simulateur" className="btn btn-primary btn-sm">
-              Simulateur
+              {t('cta_simulator')}
             </Link>
           </div>
 
-          {/* Burger mobile */}
           <button
             className="burger-btn"
             onClick={() => setOpen((v) => !v)}
-            aria-label={open ? 'Fermer le menu' : 'Ouvrir le menu'}
+            aria-label={open ? t('aria_close_menu') : t('aria_open_menu')}
             aria-expanded={open}
           >
             {open ? (
@@ -119,12 +116,10 @@ export default function Header() {
         </div>
       </header>
 
-      {/* ── Menu mobile overlay ── */}
       {open && (
         <div className="mobile-overlay" role="dialog" aria-modal="true">
-          {/* Haut : logo + fermer */}
           <div className="mobile-overlay-header">
-            <Link href="/" className="logo" style={{ color: 'white' }} aria-label="Moteurs.com — Accueil">
+            <Link href="/" className="logo" style={{ color: 'white' }} aria-label={t('aria_logo')}>
               <span className="logo-mark" aria-hidden="true">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 3v18M3 12h18"/></svg>
               </span>
@@ -133,13 +128,12 @@ export default function Header() {
             <button
               onClick={() => setOpen(false)}
               style={{ background: 'none', border: 'none', color: 'white', fontSize: '1.4rem', cursor: 'pointer', padding: 8 }}
-              aria-label="Fermer"
+              aria-label={t('aria_close')}
             >
               <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
             </button>
           </div>
 
-          {/* Liens */}
           <nav className="mobile-nav-links">
             {navLinks.map(({ href, label }) => (
               <Link
@@ -152,13 +146,14 @@ export default function Header() {
             ))}
           </nav>
 
-          {/* CTAs mobile */}
+          <LanguageSwitcher variant="mobile" />
+
           <div className="mobile-nav-cta">
             <Link href="/espace-membres" className="btn btn-secondary" style={{ textAlign: 'center' }}>
-              Mon espace
+              {t('cta_my_space')}
             </Link>
             <Link href="/simulateur" className="btn btn-primary" style={{ textAlign: 'center' }}>
-              Simulateur TCO
+              {t('cta_simulator_tco')}
             </Link>
           </div>
         </div>
