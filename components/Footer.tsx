@@ -1,6 +1,10 @@
-import Link from 'next/link'
+import { useTranslations } from 'next-intl'
+import { Link } from '@/i18n/navigation'
 
 export default function Footer() {
+  const t = useTranslations('Footer')
+  const tc = useTranslations('Common')
+
   return (
     <footer className="site-footer">
       <div className="container">
@@ -10,47 +14,47 @@ export default function Footer() {
               <span className="logo-dot" /><span>Moteurs<span style={{ color: '#7af0c2' }}>.com</span></span>
             </div>
             <p style={{ color: '#b8c5d6', fontSize: '0.88rem' }}>
-              Le media editorial de la transition energetique des transports routiers.
+              {t('tagline')}
             </p>
           </div>
           <div>
-            <h4>Espaces</h4>
+            <h4>{t('section_spaces')}</h4>
             <ul>
-              <li><Link href="/b2b">PME &amp; Artisans</Link></li>
-              <li><Link href="/particulier">Particuliers</Link></li>
-              <li><Link href="/articles">Decryptages</Link></li>
-              <li><Link href="/assistance">Hub Assistance</Link></li>
-              <li><Link href="/assistant-vacances">Assistant vacances</Link></li>
-              <li><Link href="/comparer-trajet">Comparateur trajet</Link></li>
-              <li><Link href="/recharge-electrique">Recharge electrique</Link></li>
-              <li><Link href="/trajet">Trajets vacances</Link></li>
-              <li><Link href="/vacances-voiture">Vacances en voiture</Link></li>
-              <li><Link href="/cout-voiture">Cout voiture (TCO)</Link></li>
-              <li><Link href="/depannage">Depannage</Link></li>
-              <li><Link href="/documents-auto">Documents auto</Link></li>
-              <li><Link href="/outils">Tous les calculateurs</Link></li>
+              <li><Link href="/b2b">{t('link_b2b')}</Link></li>
+              <li><Link href="/particulier">{t('link_particulier')}</Link></li>
+              <li><Link href="/articles">{t('link_articles')}</Link></li>
+              <li><Link href="/assistance">{t('link_assistance')}</Link></li>
+              <li><Link href="/assistant-vacances">{t('link_assistant_vacances')}</Link></li>
+              <li><Link href="/comparer-trajet">{t('link_comparer_trajet')}</Link></li>
+              <li><Link href="/recharge-electrique">{t('link_recharge')}</Link></li>
+              <li><Link href="/trajet">{t('link_trajet')}</Link></li>
+              <li><Link href="/vacances-voiture">{t('link_vacances')}</Link></li>
+              <li><Link href="/cout-voiture">{t('link_cout_voiture')}</Link></li>
+              <li><Link href="/depannage">{t('link_depannage')}</Link></li>
+              <li><Link href="/documents-auto">{t('link_documents')}</Link></li>
+              <li><Link href="/outils">{t('link_outils')}</Link></li>
             </ul>
           </div>
           <div>
-            <h4>Pays</h4>
+            <h4>{t('section_countries')}</h4>
             <ul>
-              <li><Link href="/articles?pays=FR">France</Link></li>
-              <li><Link href="/articles?pays=BE">Belgique</Link></li>
-              <li><Link href="/articles?pays=CH">Suisse</Link></li>
-              <li><Link href="/articles?pays=CA">Canada</Link></li>
-              <li><Link href="/articles?pays=LU">Luxembourg</Link></li>
+              <li><Link href={{ pathname: '/articles', query: { pays: 'FR' } }}>{tc('country_fr')}</Link></li>
+              <li><Link href={{ pathname: '/articles', query: { pays: 'BE' } }}>{tc('country_be')}</Link></li>
+              <li><Link href={{ pathname: '/articles', query: { pays: 'CH' } }}>{tc('country_ch')}</Link></li>
+              <li><Link href={{ pathname: '/articles', query: { pays: 'CA' } }}>{tc('country_ca')}</Link></li>
+              <li><Link href={{ pathname: '/articles', query: { pays: 'LU' } }}>{tc('country_lu')}</Link></li>
             </ul>
           </div>
           <div>
-            <h4>Mentions</h4>
+            <h4>{t('section_legal')}</h4>
             <ul>
-              <li><Link href="/mentions-legales">Mentions legales</Link></li>
-              <li><Link href="/a-propos">A propos</Link></li>
+              <li><Link href="/mentions-legales">{t('link_mentions')}</Link></li>
+              <li><Link href="/a-propos">{t('link_about')}</Link></li>
             </ul>
           </div>
         </div>
         <div className="footer-bottom">
-          <p>(c) 2026 Moteurs.com - Media independant de la transition energetique des transports routiers</p>
+          <p>{t('copyright')}</p>
         </div>
       </div>
     </footer>

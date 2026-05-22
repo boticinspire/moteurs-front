@@ -4,7 +4,6 @@
  * Ne pas ajouter de contenu ici pour éviter la duplication.
  */
 import { redirect } from 'next/navigation'
-
 export async function GET() {
   return redirect('/sitemap.xml')
 }
