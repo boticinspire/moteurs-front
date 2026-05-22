@@ -73,7 +73,7 @@ export default async function ArticlesByCountry({
   const supabase = getSupabase();
   const { data: articles, error } = await supabase
     .from('articles')
-    .select('id, titre:titre_provisoire, slug, resume:resume_50mots, created_at, pays:pays_cible, segment, image_url')
+    .select('id, titre:titre_provisoire, slug, resume:resume_50mots, created_at, pays:pays_cible, image_url')
     .eq('statut', 'PUBLIE')
     .eq('pays_cible', pays.toUpperCase())
     .order('created_at', { ascending: false });
@@ -128,12 +128,7 @@ export default async function ArticlesByCountry({
                 />
               )}
               <div className="p-4">
-                {article.segment && (
-                  <span className="mb-2 inline-block rounded-full bg-blue-100 px-3 py-1 text-xs font-semibold text-blue-800">
-                    {article.segment}
-                  </span>
-                )}
-                <h2 className="mb-3 text-xl font-bold">
+<h2 className="mb-3 text-xl font-bold">
                   <Link
                     href={`/article/${article.slug}`}
                     className="text-gray-900 hover:text-blue-600"

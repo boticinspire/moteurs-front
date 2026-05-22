@@ -18,7 +18,7 @@ export async function GET() {
 
     const { data: articles, error } = await supabase
       .from('articles')
-      .select('titre:titre_provisoire, slug, created_at, pays:pays_cible, segment')
+      .select('titre:titre_provisoire, slug, created_at, pays:pays_cible')
       .eq('statut', 'PUBLIE')
       .gte('created_at', twoDaysAgo)
       .order('created_at', { ascending: false });
