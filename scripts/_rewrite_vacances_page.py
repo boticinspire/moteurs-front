@@ -1,4 +1,38 @@
-/**
+"""
+Réécrit app/[locale]/vacances-voiture/page.tsx avec useTranslations.
+Server component pour metadata + JSON-LD, sous-composant client pour le contenu.
+
+Architecture identique au hub /recharge-electrique :
+- generateMetadata({locale}) avec OG + canonical localisé
+- JSON-LD WebPage + BreadcrumbList + ItemList
+- VacancesContent() avec t = useTranslations('HubVacances') + ts = useTranslations('HubsShared')
+- 4 sections numérotées + FAQ + Voir aussi + Outils
+
+Écriture atomique.
+"""
+import os
+import tempfile
+
+
+def atomic_write(target, content):
+    target_dir = os.path.dirname(target) or "."
+    fd, tmp = tempfile.mkstemp(prefix=".atomic_", dir=target_dir)
+    try:
+        with os.fdopen(fd, "w", encoding="utf-8", newline="\n") as f:
+            f.write(content)
+            f.flush()
+            os.fsync(f.fileno())
+        os.replace(tmp, target)
+    except Exception:
+        try:
+            os.unlink(tmp)
+        except FileNotFoundError:
+            pass
+        raise
+    return "size=" + str(os.path.getsize(target))
+
+
+PAGE_TSX = r"""/**
  * Hub SEO /vacances-voiture — version multilingue (next-intl).
  * SSG — pillar page qui agrège tout l'écosystème "vacances en voiture".
  */
@@ -317,3 +351,6 @@ const btnSecondaire: React.CSSProperties = {
   background: 'transparent', border: '1px solid var(--color-border)',
   color: 'var(--color-text)', textDecoration: 'none',
 }
+"""
+
+print(atomic_write("app/[locale]/vacances-voiture/page.tsx", PAGE_TSX))
