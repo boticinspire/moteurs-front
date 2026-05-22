@@ -1747,6 +1747,15 @@ tr:hover td {
 .home-v2[data-theme="dark"] .v2-tcard.c-pink{--v2-accent-color:var(--v2-pink)}
 .home-v2[data-theme="dark"] .v2-tcard.c-violet{--v2-accent-color:var(--v2-violet)}
 .home-v2[data-theme="dark"] .v2-tcard.c-amber{--v2-accent-color:#fbbf24}
+.home-v2 .v2-tools-grid-3{grid-template-columns:repeat(3,1fr)}
+@media (max-width:880px){.home-v2 .v2-tools-grid-3{grid-template-columns:1fr 1fr}}
+@media (max-width:600px){.home-v2 .v2-tools-grid-3{grid-template-columns:1fr}}
+.home-v2 .v2-tcard.v2-tcard-urgent{border-color:#fca5a5}
+.home-v2[data-theme="dark"] .v2-tcard.v2-tcard-urgent{border-color:rgba(248,113,113,.55);box-shadow:0 0 0 1px rgba(248,113,113,.20) inset}
+.home-v2 .v2-tcard.v2-tcard-urgent .icbox{color:#dc2626;background:#fee2e2;border-color:#fecaca}
+.home-v2[data-theme="dark"] .v2-tcard.v2-tcard-urgent .icbox{color:#f87171;background:rgba(248,113,113,.10);border-color:rgba(248,113,113,.35)}
+.home-v2 .v2-tcard.v2-tcard-urgent .open{color:#dc2626}
+.home-v2[data-theme="dark"] .v2-tcard.v2-tcard-urgent .open{color:#fca5a5}
 
 /* ===== Itinéraires été (light only) ===== */
 .home-v2 .v2-iti-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
@@ -2256,84 +2265,4 @@ body :not(.home-v2) main > nav + header h1 span{
   inset: 0;
   background-image:
     linear-gradient(rgba(255,255,255,.025) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255,255,255,.025) 1px, transparent 1px);
-  background-size: 48px 48px;
-  pointer-events: none;
-}
-.hub-hero-dark::after{
-  content: '';
-  position: absolute;
-  bottom: 0; left: 0; right: 0;
-  height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(245,165,36,.5), rgba(239,108,26,.5), transparent);
-}
-.hub-hero-dark > *{
-  position: relative;
-  z-index: 1;
-}
-.hub-hero-dark h1{
-  color: #fff !important;
-}
-.hub-hero-dark p{
-  color: rgba(255,255,255,.7) !important;
-}
-/* Eyebrow (premier <div> direct enfant) — couleur sun */
-.hub-hero-dark > div:first-child{
-  color: #f5a524 !important;
-}
-/* Span couleur primary dans le H1 reste en sun */
-.hub-hero-dark h1 span{
-  color: #f5a524 !important;
-}
-
-@media (max-width:768px){
-  .hub-hero-dark{
-    padding: 32px 20px !important;
-    margin: 0 -8px 24px !important;
-    border-radius: 12px !important;
-  }
-}
-
-
-/* =====================================================================
-   .hub-breadcrumb-dark — Breadcrumb integre VISUELLEMENT dans le bandeau
-   ===================================================================== */
-
-.hub-breadcrumb-dark{
-  background:
-    radial-gradient(ellipse at 75% 80%, rgba(0,184,135,.10) 0%, transparent 55%),
-    linear-gradient(160deg, #060f1e 0%, #0b1e38 100%) !important;
-  color: rgba(255,255,255,.55) !important;
-  padding: 22px 36px 18px !important;
-  margin: 0 -16px 0 !important;
-  border-radius: 16px 16px 0 0 !important;
-  font-size: 0.82rem !important;
-  border-bottom: 1px solid rgba(255,255,255,.05);
-}
-.hub-breadcrumb-dark a{
-  color: rgba(255,255,255,.7) !important;
-  text-decoration: none;
-}
-.hub-breadcrumb-dark a:hover{
-  color: #f5a524 !important;
-}
-.hub-breadcrumb-dark span{
-  color: rgba(255,255,255,.55) !important;
-}
-
-/* Quand le breadcrumb est juste avant le bandeau, on enlève le radius-top du bandeau pour qu'ils fusionnent */
-.hub-breadcrumb-dark + .hub-hero-dark{
-  border-radius: 0 0 16px 16px !important;
-  margin-top: 0 !important;
-}
-
-@media (max-width:768px){
-  .hub-breadcrumb-dark{
-    padding: 18px 20px 14px !important;
-    margin: 0 -8px 0 !important;
-    border-radius: 12px 12px 0 0 !important;
-  }
-  .hub-breadcrumb-dark + .hub-hero-dark{
-    border-radius: 0 0 12px 12px !important;
-  }
-}
+    linear-g

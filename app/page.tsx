@@ -269,21 +269,40 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ===== Logos sources ===== */}
-      <div className="v2-logos">
+      {/* ===== 3 outils pour gérer une panne ===== */}
+      <section className="v2-section">
         <div className="v2-container">
-          <span className="lab"><svg className="v2-ic"><use href="#i-shield-check" /></svg>Sources officielles utilisées</span>
-          <div className="row">
-            <span>DGEC</span><span className="dot" />
-            <span>Commission Européenne</span><span className="dot" />
-            <span>ACEA</span><span className="dot" />
-            <span>OpenChargeMap</span><span className="dot" />
-            <span>ADEME</span><span className="dot" />
-            <span>SPF Finances BE</span><span className="dot" />
-            <span>OFEN CH</span>
+          <div className="v2-section-head">
+            <div className="left">
+              <div className="v2-eyebrow">En cas de pépin sur la route</div>
+              <h2>3 outils pour <span className="grad">gérer une panne.</span></h2>
+            </div>
+            <Link className="v2-btn v2-btn-ghost" href="/depannage">
+              Voir le hub dépannage <svg className="v2-ic"><use href="#i-arrow-right" /></svg>
+            </Link>
+          </div>
+          <div className="v2-tools-grid v2-tools-grid-3">
+            <Link className="v2-tcard c-orange v2-tcard-urgent" href="/assistant-depannage">
+              <div className="icbox"><svg className="v2-ic"><use href="#i-camera" /></svg></div>
+              <h3>Scan voyant par photo</h3>
+              <p>Prenez une photo du voyant ou symptôme — l&apos;IA vous dit si vous pouvez rouler, attendre ou stopper, et donne la cause probable.</p>
+              <span className="open">Scanner un voyant <svg className="v2-ic"><use href="#i-arrow-right" /></svg></span>
+            </Link>
+            <Link className="v2-tcard c-amber" href="/constat">
+              <div className="icbox"><svg className="v2-ic"><use href="#i-file-text" /></svg></div>
+              <h3>Constat amiable européen</h3>
+              <p>Wizard 8 étapes guidé, 17 cas standardisés, 10 points de choc, export PDF + email. Valable dans toute l&apos;UE.</p>
+              <span className="open">Préparer mon constat <svg className="v2-ic"><use href="#i-arrow-right" /></svg></span>
+            </Link>
+            <Link className="v2-tcard c-blue" href="/assistance/panne">
+              <div className="icbox"><svg className="v2-ic"><use href="#i-life-buoy" /></svg></div>
+              <h3>Assistance panne complète</h3>
+              <p>Démarches assurance, coordonnées dépanneur, gestion du sinistre, simulation coût. Tout pour ne rien oublier.</p>
+              <span className="open">Voir l&apos;assistance <svg className="v2-ic"><use href="#i-arrow-right" /></svg></span>
+            </Link>
           </div>
         </div>
-      </div>
+      </section>
 
       {/* ===== Metrics ===== */}
       <section className="v2-metrics">
@@ -440,6 +459,22 @@ export default function HomePage() {
           </div>
         </div>
       </section>
+
+      {/* ===== Logos sources (relocalisé) ===== */}
+      <div className="v2-logos">
+        <div className="v2-container">
+          <span className="lab"><svg className="v2-ic"><use href="#i-shield-check" /></svg>Sources officielles utilisées</span>
+          <div className="row">
+            <span>DGEC</span><span className="dot" />
+            <span>Commission Européenne</span><span className="dot" />
+            <span>ACEA</span><span className="dot" />
+            <span>OpenChargeMap</span><span className="dot" />
+            <span>ADEME</span><span className="dot" />
+            <span>SPF Finances BE</span><span className="dot" />
+            <span>OFEN CH</span>
+          </div>
+        </div>
+      </div>
 
       {/* ===== Newsletter CTA ===== */}
       <section className="v2-section">
