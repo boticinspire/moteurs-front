@@ -413,4 +413,16 @@ const infoCard: React.CSSProperties = {
   borderRadius: 12, padding: 18,
 }
 const infoH3: React.CSSProperties = { fontSize: '1rem', margin: 0, marginBottom: 10 }
-const infoP:
+const infoP: React.CSSProperties = { fontSize: '0.95rem', lineHeight: 1.65, margin: 0, color: 'var(--color-text)' }
+const infoList: React.CSSProperties = { fontSize: '0.95rem', lineHeight: 1.65, margin: 0, paddingLeft: 22 }
+const btnSecondaire: React.CSSProperties = {
+  display: 'inline-block',
+  padding: '10px 16px',
+  background: 'var(--color-bg-card)',
+  border: '1px solid var(--color-border)',
+  borderRadius: 8,
+  color: 'var(--color-primary)',
+  textDecoration: 'none',
+  fontWeight: 600,
+  fontSize: '0.92rem',
+}

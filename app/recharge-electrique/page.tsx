@@ -374,12 +374,24 @@ const carteLink: React.CSSProperties = {
   textDecoration: 'none', color: 'var(--color-text)',
 }
 const btnPrimaire: React.CSSProperties = {
-  padding: '10px 20px', borderRadius: 10, fontSize: '0.92rem', fontWeight: 600,
-  background: 'var(--color-primary)', color: 'var(--color-bg)',
+  display: 'inline-block',
+  padding: '10px 20px',
+  borderRadius: 8,
+  background: 'var(--color-primary)',
+  color: '#fff',
   textDecoration: 'none',
+  fontWeight: 700,
+  fontSize: '0.95rem',
+  border: '1px solid var(--color-primary)',
 }
 const btnSecondaire: React.CSSProperties = {
-  padding: '8px 14px', borderRadius: 10, fontSize: '0.88rem',
-  background: 'transparent', border: '1px solid var(--color-border)',
-  color: 'var(--color-text)', textDecoration: 'none',
+  display: 'inline-block',
+  padding: '10px 16px',
+  background: 'var(--color-bg-card)',
+  border: '1px solid var(--color-border)',
+  borderRadius: 8,
+  color: 'var(--color-primary)',
+  textDecoration: 'none',
+  fontWeight: 600,
+  fontSize: '0.92rem',
 }

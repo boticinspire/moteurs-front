@@ -2265,4 +2265,9 @@ body :not(.home-v2) main > nav + header h1 span{
   inset: 0;
   background-image:
     linear-gradient(rgba(255,255,255,.025) 1px, transparent 1px),
-    linear-g
+    linear-gradient(90deg, rgba(255,255,255,.025) 1px, transparent 1px);
+  background-size: 32px 32px;
+  pointer-events: none;
+  opacity: .5;
+}
+.hub-hero-dark > *{position: relative; z-index: 1;}
