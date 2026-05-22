@@ -19,6 +19,7 @@ const TRANSLATED_ROUTES = new Set<string>([
   '/comparer',
   '/comparer-trajet',
   '/simulateur',
+  '/recharge-electrique',
 ])
 
 /**

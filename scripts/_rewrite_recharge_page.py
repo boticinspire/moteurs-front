@@ -1,4 +1,34 @@
-/**
+"""
+Réécrit app/[locale]/recharge-electrique/page.tsx avec useTranslations.
+Server component qui passe par getTranslations pour les metadata + JSON-LD,
+puis sous-composant client qui utilise useTranslations pour le contenu.
+
+Écriture atomique tempfile + os.replace.
+"""
+import os
+import tempfile
+
+
+def atomic_write(target: str, content: str) -> str:
+    target_dir = os.path.dirname(target) or "."
+    fd, tmp = tempfile.mkstemp(prefix=".atomic_", dir=target_dir)
+    try:
+        with os.fdopen(fd, "w", encoding="utf-8") as f:
+            f.write(content)
+            f.flush()
+            os.fsync(f.fileno())
+        os.replace(tmp, target)
+    except Exception:
+        try:
+            os.unlink(tmp)
+        except FileNotFoundError:
+            pass
+        raise
+    data = open(target, "rb").read()
+    return "size=" + str(len(data)) + " nulls=" + str(b"\x00" in data) + " nl=" + str(data.count(b"\n"))
+
+
+PAGE_TSX = r"""/**
  * Hub SEO /recharge-electrique — version multilingue (next-intl).
  * SSG — server component pour metadata + JSON-LD, sous-composant
  * client pour le contenu (useTranslations).
@@ -85,7 +115,6 @@ export default async function PageRechargeElectrique({
 function RechargeContent() {
   const t = useTranslations('HubRecharge')
   const ts = useTranslations('HubsShared')
-  const tc = useTranslations('Common')
 
   const tarifs = [
     { pays_key: 'country_fr', code: 'FR', drapeau: '🇫🇷', prix: ENERGY_PRICES_FALLBACK.FR.elec ?? 0.21 },
@@ -112,7 +141,7 @@ function RechargeContent() {
         <h1 style={{ fontSize: 'clamp(1.7rem, 4vw, 2.5rem)', marginBottom: 14, lineHeight: 1.2 }}>
           {t('hero_h1_a')} <span style={{ color: 'var(--color-primary)' }}>{t('hero_h1_b')}</span>
         </h1>
-        <p style={{ fontSize: '1rem', lineHeight: 1.65, maxWidth: 720, color: 'rgba(255,255,255,0.92)' }}>
+        <p style={{ fontSize: '1rem', lineHeight: 1.65, maxWidth: 720, color: 'var(--color-text)' }}>
           {t('hero_lead', { annee: ANNEE })}
         </p>
       </header>
@@ -127,7 +156,7 @@ function RechargeContent() {
               <div key={tarif.code} style={statCard}>
                 <div style={{ fontSize: '1.8rem', marginBottom: 4 }}>{tarif.drapeau}</div>
                 <div style={{ fontSize: '0.78rem', color: 'var(--color-text-muted)' }}>
-                  {tc(('country_' + tarif.code.toLowerCase()) as 'country_fr'|'country_be'|'country_ch'|'country_ca')}
+                  {paysLabel(tarif.code as 'FR'|'BE'|'CH'|'CA')}
                 </div>
                 <div style={{ fontSize: '1.3rem', fontWeight: 700, marginTop: 4 }}>{tarif.prix.toFixed(2)} €/kWh</div>
                 <div style={{ fontSize: '0.74rem', color: 'var(--color-text-muted)', marginTop: 2 }}>
@@ -353,3 +382,6 @@ const btnSecondaire: React.CSSProperties = {
   borderRadius: 8, color: 'var(--color-primary)', textDecoration: 'none',
   fontWeight: 600, fontSize: '0.92rem',
 }
+"""
+
+print(atomic_write("app/[locale]/recharge-electrique/page.tsx", PAGE_TSX))
