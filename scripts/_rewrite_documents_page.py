@@ -1,4 +1,29 @@
-/**
+"""
+Réécrit app/[locale]/documents-auto/page.tsx en version multilingue (next-intl).
+Server component avec generateMetadata + JSON-LD localisé + setRequestLocale.
+Sub-component DocumentsContent avec useTranslations('HubDocuments') + useTranslations('HubsShared').
+Écriture atomique tempfile + os.replace.
+"""
+import os, tempfile
+
+
+def atomic_write(target: str, content: str) -> str:
+    target_dir = os.path.dirname(target) or "."
+    fd, tmp = tempfile.mkstemp(prefix=".atomic_", dir=target_dir)
+    try:
+        with os.fdopen(fd, "w", encoding="utf-8", newline="\n") as f:
+            f.write(content)
+            f.flush()
+            os.fsync(f.fileno())
+        os.replace(tmp, target)
+    except Exception:
+        try: os.unlink(tmp)
+        except FileNotFoundError: pass
+        raise
+    return f"size={os.path.getsize(target)}"
+
+
+CONTENT = r"""/**
  * Hub SEO /documents-auto — version multilingue (next-intl).
  * SSG — pillar page sur les documents administratifs du véhicule
  * (carte grise, permis, assurance, contrôle technique).
@@ -543,3 +568,7 @@ const btnSecondaire: React.CSSProperties = {
   textDecoration: 'none',
   fontWeight: 500,
 }
+"""
+
+OUT = "app/[locale]/documents-auto/page.tsx"
+print(atomic_write(OUT, CONTENT))
