@@ -224,7 +224,13 @@ export default function HomePage() {
             </form>
             <datalist id="v2-villes">
               {villesData.map((v) => (
-                <option key={`${v.nom}-${v.pays_code}`} value={v.nom}>{v.region || v.pays}</option>
+                <option
+                  key={`${v.nom}-${v.pays_code}`}
+                  value={v.nom}
+                  label={v.region ? `${v.nom} · ${v.region}` : `${v.nom} · ${v.pays}`}
+                >
+                  {v.region ? `${v.nom} · ${v.region}` : `${v.nom} · ${v.pays}`}
+                </option>
               ))}
             </datalist>
           </div>
