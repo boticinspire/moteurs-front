@@ -2,7 +2,9 @@
 
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 import NewsletterForm from '@/components/NewsletterForm'
+import villesData from '@/data/villes.json'
 
 type Theme = 'light' | 'dark'
 
@@ -14,8 +16,34 @@ function detectSeasonTheme(): Theme {
 }
 
 export default function HomePage() {
+  const router = useRouter()
   const [theme, setTheme] = useState<Theme>('light')
   const [activeTab, setActiveTab] = useState<'trip' | 'tco' | 'fleet'>('trip')
+  const [depart, setDepart] = useState('Paris')
+  const [destination, setDestination] = useState('Nice')
+  const [allerRetour, setAllerRetour] = useState('Oui')
+  const [personnes, setPersonnes] = useState('2 adultes')
+  const [pays, setPays] = useState('France')
+
+  // Map pays label -> code ISO pour query string et villes
+  const paysMap: Record<string, string> = { France: 'FR', Belgique: 'BE', Suisse: 'CH', Canada: 'CA' }
+
+  function handleSubmit(e: React.FormEvent) {
+    e.preventDefault()
+    if (activeTab === 'tco') { router.push('/comparer'); return }
+    if (activeTab === 'fleet') { router.push('/b2b'); return }
+    // Trip : passe les valeurs via sessionStorage
+    try {
+      sessionStorage.setItem('home-trajet', JSON.stringify({
+        depart: depart.trim(),
+        arrivee: destination.trim(),
+        allerRetour: allerRetour === 'Oui',
+        personnes,
+        pays: paysMap[pays] || 'FR',
+      }))
+    } catch {}
+    router.push('/comparer-trajet')
+  }
 
   // 1) Au mount : lire localStorage, fallback détection saison
   useEffect(() => {
@@ -126,38 +154,79 @@ export default function HomePage() {
           </div>
 
           <div className="v2-tool-shell">
-            <form
-              className="v2-tool"
-              onSubmit={(e) => { e.preventDefault(); window.location.href = '/comparer-trajet' }}
-            >
-              <div className="field">
-                <label><svg className="v2-ic"><use href="#i-map-pin" /></svg>Départ</label>
-                <input type="text" defaultValue="Paris" />
-              </div>
-              <div className="field">
-                <label><svg className="v2-ic"><use href="#i-map-pin" /></svg>{theme === 'light' ? 'Destination' : 'Arrivée'}</label>
-                <input type="text" defaultValue="Nice" />
-              </div>
-              <div className="field">
-                <label><svg className="v2-ic"><use href="#i-calendar" /></svg>Aller-retour</label>
-                <select defaultValue="Oui"><option>Oui</option><option>Non</option></select>
-              </div>
-              <div className="field">
-                <label><svg className="v2-ic"><use href="#i-briefcase" /></svg>Personnes</label>
-                <select defaultValue="2 adultes">
-                  <option>2 adultes</option><option>1</option><option>3</option><option>4</option><option>5+</option>
-                </select>
-              </div>
+            <form className="v2-tool" onSubmit={handleSubmit}>
+              {activeTab === 'trip' && (
+                <>
+                  <div className="field">
+                    <label><svg className="v2-ic"><use href="#i-map-pin" /></svg>Départ</label>
+                    <input
+                      type="text"
+                      list="v2-villes"
+                      value={depart}
+                      onChange={(e) => setDepart(e.target.value)}
+                      placeholder="Paris"
+                      required
+                    />
+                  </div>
+                  <div className="field">
+                    <label><svg className="v2-ic"><use href="#i-map-pin" /></svg>{theme === 'light' ? 'Destination' : 'Arrivée'}</label>
+                    <input
+                      type="text"
+                      list="v2-villes"
+                      value={destination}
+                      onChange={(e) => setDestination(e.target.value)}
+                      placeholder="Nice"
+                      required
+                    />
+                  </div>
+                  <div className="field">
+                    <label><svg className="v2-ic"><use href="#i-calendar" /></svg>Aller-retour</label>
+                    <select value={allerRetour} onChange={(e) => setAllerRetour(e.target.value)}>
+                      <option>Oui</option><option>Non</option>
+                    </select>
+                  </div>
+                  <div className="field">
+                    <label><svg className="v2-ic"><use href="#i-briefcase" /></svg>Personnes</label>
+                    <select value={personnes} onChange={(e) => setPersonnes(e.target.value)}>
+                      <option>2 adultes</option><option>1</option><option>3</option><option>4</option><option>5+</option>
+                    </select>
+                  </div>
+                </>
+              )}
+              {activeTab === 'tco' && (
+                <div className="field" style={{ flex: 4 }}>
+                  <label><svg className="v2-ic"><use href="#i-bar-chart" /></svg>Calcul TCO sur 5 ans</label>
+                  <div style={{ padding: '12px 14px', color: 'var(--color-text-muted)', fontSize: '.9rem' }}>
+                    Comparez le coût total de possession diesel / essence / électrique / hybride sur 5 ans.
+                  </div>
+                </div>
+              )}
+              {activeTab === 'fleet' && (
+                <div className="field" style={{ flex: 4 }}>
+                  <label><svg className="v2-ic"><use href="#i-briefcase" /></svg>Espace flotte B2B</label>
+                  <div style={{ padding: '12px 14px', color: 'var(--color-text-muted)', fontSize: '.9rem' }}>
+                    Devis, conseil PME / artisans, accompagnement transition véhicules pros.
+                  </div>
+                </div>
+              )}
               <div className="field">
                 <label><svg className="v2-ic"><use href="#i-globe" /></svg>Pays</label>
-                <select defaultValue="France">
+                <select value={pays} onChange={(e) => setPays(e.target.value)}>
                   <option>France</option><option>Belgique</option><option>Suisse</option><option>Canada</option>
                 </select>
               </div>
               <div className="go">
-                <button type="submit">Comparer <svg className="v2-ic"><use href="#i-arrow-right" /></svg></button>
+                <button type="submit">
+                  {activeTab === 'tco' ? 'Calculer' : activeTab === 'fleet' ? 'Découvrir' : 'Comparer'}
+                  <svg className="v2-ic"><use href="#i-arrow-right" /></svg>
+                </button>
               </div>
             </form>
+            <datalist id="v2-villes">
+              {villesData.map((v) => (
+                <option key={`${v.nom}-${v.pays_code}`} value={v.nom}>{v.region || v.pays}</option>
+              ))}
+            </datalist>
           </div>
 
           {/* ===== Live result ===== */}

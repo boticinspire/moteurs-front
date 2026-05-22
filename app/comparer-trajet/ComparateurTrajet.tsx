@@ -543,6 +543,21 @@ export default function ComparateurTrajet({ routeInitiale }: { routeInitiale?: R
   // Charge les recherches récentes au montage
   useEffect(() => { setRecents(loadRecents()) }, [])
 
+  // Pré-remplissage depuis la home v2 via sessionStorage (priorité sur le contexte)
+  const prefilledFromHomeRef = useRef(false)
+  useEffect(() => {
+    if (prefilledFromHomeRef.current || routeInitiale) return
+    try {
+      const raw = sessionStorage.getItem('home-trajet')
+      if (!raw) return
+      const t = JSON.parse(raw) as { depart?: string; arrivee?: string }
+      if (t.depart) setDepart(t.depart)
+      if (t.arrivee) setArrivee(t.arrivee)
+      sessionStorage.removeItem('home-trajet')
+      prefilledFromHomeRef.current = true
+    } catch {}
+  }, [routeInitiale])
+
   // ── Pré-remplissage depuis le contexte (une seule fois, quand un trajet est dispo) ──
   // ⚠ Ne pas verrouiller prefilledRef tant que le contexte trajet n'est pas chargé.
   // `isReady` passe à true dès le local storage, mais le contexte remote Supabase
