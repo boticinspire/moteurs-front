@@ -73,7 +73,7 @@ export default async function ArticlesByCountry({
   const supabase = getSupabase();
   const { data: articles, error } = await supabase
     .from('articles')
-    .select('id, titre:titre_provisoire, slug, resume:resume_50mots, created_at, pays:pays_cible, image_url')
+    .select('id, titre:titre_provisoire, slug, resume:resume_50mots, created_at, pays:pays_cible')
     .eq('statut', 'PUBLIE')
     .eq('pays_cible', pays.toUpperCase())
     .order('created_at', { ascending: false });
@@ -120,14 +120,7 @@ export default async function ArticlesByCountry({
               key={article.id}
               className="overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm hover:shadow-md transition-shadow"
             >
-              {article.image_url && (
-                <img
-                  src={article.image_url}
-                  alt={article.titre}
-                  className="h-48 w-full object-cover"
-                />
-              )}
-              <div className="p-4">
+<div className="p-4">
 <h2 className="mb-3 text-xl font-bold">
                   <Link
                     href={`/article/${article.slug}`}
