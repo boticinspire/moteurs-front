@@ -543,20 +543,24 @@ export default function ComparateurTrajet({ routeInitiale }: { routeInitiale?: R
   // Charge les recherches récentes au montage
   useEffect(() => { setRecents(loadRecents()) }, [])
 
-  // Pré-remplissage depuis la home v2 via sessionStorage (priorité sur le contexte)
+  // Pré-remplissage depuis la home v2 via sessionStorage (priorité sur le contexte utilisateur)
   const prefilledFromHomeRef = useRef(false)
   const [shouldAutoCalc, setShouldAutoCalc] = useState(false)
+  const [homePrefillData, setHomePrefillData] = useState<{ depart: string; arrivee: string } | null>(null)
   useEffect(() => {
     if (prefilledFromHomeRef.current || routeInitiale) return
     try {
       const raw = sessionStorage.getItem('home-trajet')
       if (!raw) return
       const t = JSON.parse(raw) as { depart?: string; arrivee?: string }
-      if (t.depart) setDepart(t.depart)
-      if (t.arrivee) setArrivee(t.arrivee)
+      if (!t.depart || !t.arrivee) return
+      setDepart(t.depart)
+      setArrivee(t.arrivee)
+      // Mémorise pour bloquer la pré-fill via context.trajet plus bas (qui sinon écrase)
+      setHomePrefillData({ depart: t.depart, arrivee: t.arrivee })
       sessionStorage.removeItem('home-trajet')
       prefilledFromHomeRef.current = true
-      if (t.depart && t.arrivee) setShouldAutoCalc(true)
+      setShouldAutoCalc(true)
     } catch {}
   }, [routeInitiale])
 
@@ -583,13 +587,15 @@ export default function ComparateurTrajet({ routeInitiale }: { routeInitiale?: R
   const prefilledRef = useRef(false)
   useEffect(() => {
     if (!isReady || prefilledRef.current || routeInitiale) return
+    // Si la home vient de pré-remplir via sessionStorage, on ne touche pas
+    if (homePrefillData) { prefilledRef.current = true; return }
     const t = context.trajet
     if (!t || (!t.depart && !t.arrivee && !t.date_depart)) return  // attend le remote
     prefilledRef.current = true
     if (t.depart)      setDepart(t.depart)
     if (t.arrivee)     setArrivee(t.arrivee)
     if (t.date_depart) setDateDepart(t.date_depart)
-  }, [isReady, context.trajet, routeInitiale])
+  }, [isReady, context.trajet, routeInitiale, homePrefillData])
 
   // Cherche un trajet pré-calculé dans routes-vacances.json
   const routeMatch = useMemo(() => findRoute(depart, arrivee), [depart, arrivee])
