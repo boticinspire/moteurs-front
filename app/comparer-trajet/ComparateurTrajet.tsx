@@ -573,7 +573,7 @@ export default function ComparateurTrajet({ routeInitiale }: { routeInitiale?: R
       resoudreViaORS()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [shouldAutoCalc, depart, arrivee, routeMatch])
+  }, [shouldAutoCalc, depart, arrivee])
 
   // ── Pré-remplissage depuis le contexte (une seule fois, quand un trajet est dispo) ──
   // ⚠ Ne pas verrouiller prefilledRef tant que le contexte trajet n'est pas chargé.
