@@ -270,7 +270,7 @@ export default function HomePage() {
       </section>
 
       {/* ===== 3 outils pour gérer une panne ===== */}
-      <section className="v2-section">
+      <section className="v2-section v2-section-tight">
         <div className="v2-container">
           <div className="v2-section-head">
             <div className="left">

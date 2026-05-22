@@ -1707,6 +1707,8 @@ tr:hover td {
 
 /* ===== Section commune ===== */
 .home-v2 .v2-section{padding:90px 0;position:relative}
+.home-v2 .v2-section.v2-section-tight{padding:36px 0 60px}
+@media (max-width:880px){.home-v2 .v2-section.v2-section-tight{padding:28px 0 48px}}
 .home-v2[data-theme="dark"] .v2-section.alt{background:linear-gradient(180deg,var(--v2-bg),var(--v2-surface) 30%,var(--v2-bg));border-top:1px solid var(--v2-line-soft);border-bottom:1px solid var(--v2-line-soft)}
 .home-v2[data-theme="light"] .v2-section.alt{background:var(--v2-bg-2);border-top:1px solid var(--v2-line-soft);border-bottom:1px solid var(--v2-line-soft)}
 .home-v2 .v2-section-head{display:flex;justify-content:space-between;align-items:flex-end;gap:48px;margin-bottom:54px;flex-wrap:wrap}
