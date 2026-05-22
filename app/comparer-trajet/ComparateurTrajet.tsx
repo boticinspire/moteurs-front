@@ -545,6 +545,7 @@ export default function ComparateurTrajet({ routeInitiale }: { routeInitiale?: R
 
   // Pré-remplissage depuis la home v2 via sessionStorage (priorité sur le contexte)
   const prefilledFromHomeRef = useRef(false)
+  const [shouldAutoCalc, setShouldAutoCalc] = useState(false)
   useEffect(() => {
     if (prefilledFromHomeRef.current || routeInitiale) return
     try {
@@ -555,8 +556,24 @@ export default function ComparateurTrajet({ routeInitiale }: { routeInitiale?: R
       if (t.arrivee) setArrivee(t.arrivee)
       sessionStorage.removeItem('home-trajet')
       prefilledFromHomeRef.current = true
+      if (t.depart && t.arrivee) setShouldAutoCalc(true)
     } catch {}
   }, [routeInitiale])
+
+  // Auto-déclenche le calcul après pré-remplissage depuis la home
+  useEffect(() => {
+    if (!shouldAutoCalc) return
+    if (!depart.trim() || !arrivee.trim()) return
+    setShouldAutoCalc(false)
+    if (routeMatch) {
+      setConfirmed(true)
+      saveRecent(depart.trim(), arrivee.trim())
+      setRecents(loadRecents())
+    } else {
+      resoudreViaORS()
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [shouldAutoCalc, depart, arrivee, routeMatch])
 
   // ── Pré-remplissage depuis le contexte (une seule fois, quand un trajet est dispo) ──
   // ⚠ Ne pas verrouiller prefilledRef tant que le contexte trajet n'est pas chargé.
