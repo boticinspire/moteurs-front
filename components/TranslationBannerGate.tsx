@@ -7,11 +7,18 @@ import { routing } from '@/i18n/routing'
 /**
  * Liste des routes dont le contenu est *déjà traduit* dans toutes les locales.
  * Le bandeau "page non traduite" ne s'affiche PAS sur ces routes.
+ *
+ * Pour /simulateur : la page elle-même est traduite (hero/FAQ/disclaimer)
+ * mais le formulaire interactif reste en FR — un mini-bandeau local
+ * s'affiche depuis la page sur les non-FR.
  */
 const TRANSLATED_ROUTES = new Set<string>([
   '/',
   '/a-propos',
   '/mentions-legales',
+  '/comparer',
+  '/comparer-trajet',
+  '/simulateur',
 ])
 
 /**
