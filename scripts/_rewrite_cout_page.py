@@ -1,4 +1,33 @@
-/**
+"""
+Réécrit app/[locale]/cout-voiture/page.tsx en version multilingue (next-intl).
+Server component avec generateMetadata + JSON-LD localisé + setRequestLocale.
+Sub-component CoutContent avec useTranslations('HubCout') + useTranslations('HubsShared').
+Préserve le calcul TCO dynamique (exempleTCO) et les liens Link from @/i18n/navigation.
+Écriture atomique tempfile + os.replace.
+"""
+import os
+import tempfile
+
+
+def atomic_write(target: str, content: str) -> str:
+    target_dir = os.path.dirname(target) or "."
+    fd, tmp = tempfile.mkstemp(prefix=".atomic_", dir=target_dir)
+    try:
+        with os.fdopen(fd, "w", encoding="utf-8", newline="\n") as f:
+            f.write(content)
+            f.flush()
+            os.fsync(f.fileno())
+        os.replace(tmp, target)
+    except Exception:
+        try:
+            os.unlink(tmp)
+        except FileNotFoundError:
+            pass
+        raise
+    return f"size={os.path.getsize(target)}"
+
+
+CONTENT = r"""/**
  * Hub SEO /cout-voiture — version multilingue (next-intl).
  * SSG — pillar page TCO : combien coûte une voiture sur 5 ans, toutes motorisations, tous pays.
  * Agrège /simulateur, /comparer, /tco/[pays]/[segment].
@@ -665,3 +694,7 @@ const btnSecondaire: React.CSSProperties = {
   textDecoration: 'none',
   fontWeight: 500,
 }
+"""
+
+OUT = "app/[locale]/cout-voiture/page.tsx"
+print(atomic_write(OUT, CONTENT))
