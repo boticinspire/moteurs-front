@@ -1,4 +1,30 @@
-/**
+"""
+Réécrit app/[locale]/depannage/page.tsx avec useTranslations.
+Server component pour metadata + JSON-LD, sous-composant client pour le contenu.
+"""
+import os
+import tempfile
+
+
+def atomic_write(target, content):
+    target_dir = os.path.dirname(target) or "."
+    fd, tmp = tempfile.mkstemp(prefix=".atomic_", dir=target_dir)
+    try:
+        with os.fdopen(fd, "w", encoding="utf-8", newline="\n") as f:
+            f.write(content)
+            f.flush()
+            os.fsync(f.fileno())
+        os.replace(tmp, target)
+    except Exception:
+        try:
+            os.unlink(tmp)
+        except FileNotFoundError:
+            pass
+        raise
+    return "size=" + str(os.path.getsize(target))
+
+
+PAGE_TSX = r"""/**
  * Hub SEO /depannage — version multilingue (next-intl).
  * SSG — pillar page panne/assistance/dépannage voiture.
  */
@@ -337,3 +363,6 @@ const btnSecondaire: React.CSSProperties = {
   background: 'transparent', border: '1px solid var(--color-border)',
   color: 'var(--color-text)', textDecoration: 'none',
 }
+"""
+
+print(atomic_write("app/[locale]/depannage/page.tsx", PAGE_TSX))
