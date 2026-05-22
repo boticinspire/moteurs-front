@@ -36,7 +36,7 @@ const FAQ_CARTES = [
   {
     question: "Les cartes de recharge fonctionnent-elles en Belgique et en Suisse ?",
     answer:
-      "Oui pour les cartes avec roaming EU — Chargemap, Freshmile, Plugsurfing, EnBW et IONITY couvrent la Belgique et la Suisse. Eneco eMobility et Blue Corner sont des cartes belges qui fonctionnent principalement en Belgique et aux Pays-Bas. Filtrez par pays dans le tableau comparatif pour voir les cartes disponibles dans votre région.",
+      "Oui pour les cartes avec roaming EU — Chargemap, Freshmile, Plugsurfing, EnBW et IONITY couvrent la Belgique et la Suisse. Eneco eMobility et Blink Charging (ex-Blue Corner, racheté en 2023) sont des cartes belges qui fonctionnent principalement en Belgique et aux Pays-Bas. Filtrez par pays dans le tableau comparatif pour voir les cartes disponibles dans votre région.",
   },
 ]
 

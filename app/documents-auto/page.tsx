@@ -15,7 +15,7 @@ export const metadata: Metadata = {
   description:
     `Tous les papiers obligatoires pour rouler en ${ANNEE} : carte grise (France, Belgique, Suisse, Canada), ` +
     `permis de conduire, assurance et carte verte, contrôle technique. Outils d'immatriculation et ` +
-    `convertisseurs de plaques.`,
+    `convertisseur technique (kW, ch, autonomie batterie, malus CO₂).`,
   openGraph: {
     title: `Documents auto ${ANNEE} — Moteurs.com`,
     description: 'Carte grise, permis, assurance, contrôle technique : tout sur les papiers de votre voiture.',
@@ -99,9 +99,9 @@ export default function PageDocumentsAuto() {
           />
           <CarteOutil
             href="/outils/convertisseur"
-            titre="Convertisseur de plaques"
-            description="Convertir une ancienne plaque française (FNI) vers le nouveau format SIV, et inversement. Localisation département."
-            cta="Convertir une plaque"
+            titre="Convertisseur technique"
+            description="kW ↔ ch (CV), Nm ↔ lb·ft, autonomie batterie selon température, malus CO₂ France 2026."
+            cta="Ouvrir le convertisseur"
           />
         </div>
       </section>
@@ -290,7 +290,7 @@ export default function PageDocumentsAuto() {
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10 }}>
           <Link href="/outils/immatriculation-france" style={btnSecondaire}>Immatriculation FR →</Link>
           <Link href="/outils/immatriculation-belgique" style={btnSecondaire}>Immatriculation BE →</Link>
-          <Link href="/outils/convertisseur" style={btnSecondaire}>Convertisseur plaques →</Link>
+          <Link href="/outils/convertisseur" style={btnSecondaire}>Convertisseur technique →</Link>
           <Link href="/depannage" style={btnSecondaire}>Hub dépannage →</Link>
           <Link href="/cout-voiture" style={btnSecondaire}>Coût voiture (TCO) →</Link>
         </div>
@@ -349,7 +349,7 @@ const FAQ_DOCS = [
   {
     question: "Comment savoir si une plaque française est récente ou ancienne (FNI vs SIV) ?",
     answer:
-      "Le SIV (depuis 2009) suit le format AA-123-AA (2 lettres, 3 chiffres, 2 lettres) avec drapeau européen et code département à droite. L'ancien FNI suivait le format 123 AB 99 (avec le numéro de département en fin). Notre <a href='/outils/convertisseur'>convertisseur de plaques</a> vous indique l'ancien numéro département à partir du SIV, et inversement.",
+      "Le SIV (depuis 2009) suit le format AA-123-AA (2 lettres, 3 chiffres, 2 lettres) avec drapeau européen et code département à droite — ce département est libre, choisi par le propriétaire, sans valeur administrative. L'ancien FNI (avant 2009) suivait le format 123 AB 99 où les deux derniers chiffres correspondaient obligatoirement au département d'immatriculation. Il n'existe pas de conversion algorithmique FNI → SIV : la nouvelle plaque vous est attribuée séquentiellement par l'ANTS lors d'un changement d'adresse ou de propriétaire.",
   },
   {
     question: "Ai-je besoin de la carte verte pour traverser l'Europe en 2026 ?",
@@ -395,7 +395,7 @@ function buildJsonLd() {
         itemListElement: [
           { '@type': 'ListItem', position: 1, url: 'https://moteurs.com/outils/immatriculation-france',   name: 'Outil immatriculation France' },
           { '@type': 'ListItem', position: 2, url: 'https://moteurs.com/outils/immatriculation-belgique', name: 'Outil immatriculation Belgique' },
-          { '@type': 'ListItem', position: 3, url: 'https://moteurs.com/outils/convertisseur',            name: 'Convertisseur de plaques' },
+          { '@type': 'ListItem', position: 3, url: 'https://moteurs.com/outils/convertisseur',            name: 'Convertisseur technique' },
         ],
       },
     ],
@@ -413,10 +413,4 @@ const infoCard: React.CSSProperties = {
   borderRadius: 12, padding: 18,
 }
 const infoH3: React.CSSProperties = { fontSize: '1rem', margin: 0, marginBottom: 10 }
-const infoP: React.CSSProperties = { fontSize: '0.88rem', lineHeight: 1.6, margin: 0 }
-const infoList: React.CSSProperties = { paddingLeft: 18, lineHeight: 1.7, fontSize: '0.88rem', margin: 0 }
-const btnSecondaire: React.CSSProperties = {
-  padding: '8px 14px', borderRadius: 10, fontSize: '0.88rem',
-  background: 'transparent', border: '1px solid var(--color-border)',
-  color: 'var(--color-text)', textDecoration: 'none',
-}
+const infoP:

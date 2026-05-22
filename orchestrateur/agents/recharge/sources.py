@@ -626,17 +626,17 @@ CARTES: list[dict] = [
     },
 
     {
-        "id": "blue-corner",
-        "nom": "Blue Corner",
-        "operateur": "Blue Corner",
+        "id": "blink-charging-be",
+        "nom": "Blink Charging (ex-Blue Corner)",
+        "operateur": "Blink Charging",
         "pays_origine": ["BE"],
-        "url_officielle": "https://www.blue-corner.be/fr",
-        "url_tarifs": "https://www.blue-corner.be/fr/tarifs",
+        "url_officielle": "https://blinkcharging.com/be-fr/",
+        "url_tarifs": "https://blinkcharging.com/be-fr/tarifs/",
         "methode": "httpx",
         "ideal_voyage": False,
         "ideal_quotidien": True,
         "flotte_pro": True,
-        "points_forts": ["Pure-player belge", "Offres flotte dédiées"],
+        "points_forts": ["Acteur belge historique (racheté par Blink Charging US en 2023)", "Offres flotte dédiées"],
         "points_faibles": ["Réseau hors BE/NL limité"],
         "donnees_init": {
             "abonnement": {"mensuel_eur": 0, "annuel_eur": 0, "engagement_mois": 0},

@@ -85,7 +85,7 @@ export const RESEAUX_PUBLICS: Record<Pays, { nom: string; couverture: string; ta
   BE: [
     { nom: 'Tesla Superchargeur', couverture: '⭐⭐⭐⭐ Très bon', tarif: '0.36–0.56 €/kWh' },
     { nom: 'Ionity',              couverture: '⭐⭐⭐⭐ Très bon', tarif: '0.49–0.79 €/kWh' },
-    { nom: 'Blue Corner',         couverture: '⭐⭐⭐⭐ Très bon', tarif: '0.40–0.65 €/kWh' },
+    { nom: 'Blink Charging (ex-Blue Corner)', couverture: '⭐⭐⭐⭐ Très bon', tarif: '0.40–0.65 €/kWh' },
     { nom: 'Eneco',               couverture: '⭐⭐⭐ Bon',        tarif: '0.38–0.62 €/kWh' },
   ],
   CH: [
