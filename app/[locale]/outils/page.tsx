@@ -135,6 +135,14 @@ const OUTILS_COMPLEMENTAIRES = [
     tags: ['Technique', 'Ingénieurs'],
     cta: 'Convertir',
   },
+  {
+    href: '/outils/documents-europe',
+    icon: '🇪🇺',
+    titre: 'Documents & équipements en Europe',
+    desc: 'Quels papiers et équipements emporter dans 22 pays européens : permis, vignettes, gilet, triangle… Tableau imprimable A4 pour la boîte à gants.',
+    tags: ['22 pays', 'Vignettes', 'Imprimable', 'Vacances'],
+    cta: 'Voir le tableau',
+  },
 ]
 
 export default function OutilsPage() {
