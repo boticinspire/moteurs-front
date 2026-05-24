@@ -365,7 +365,6 @@ export default function DocumentsEuropePage() {
                     <th><span className="col-ico"><svg><use href="#dec-ct"/></svg></span><span className="col-title">Contrôle<br/>technique</span></th>
                     <th><span className="col-ico"><svg><use href="#dec-vignette"/></svg></span><span className="col-title">Vignette</span><span className="col-sub">(environnement / centres-villes)</span></th>
                     <th><span className="col-ico"><svg><use href="#dec-equip"/></svg></span><span className="col-title">Équipements<br/>obligatoires</span></th>
-                    <th><span className="col-ico"><svg><use href="#dec-autres"/></svg></span><span className="col-title">Autres doc. /<br/>éléments oblig.</span></th>
                     <th className="speed-group"><span className="col-ico"><svg><use href="#dec-urbain"/></svg></span><span className="col-title">Urbain</span></th>
                     <th className="speed-group"><span className="col-ico"><svg><use href="#dec-route"/></svg></span><span className="col-title">Route</span></th>
                     <th className="speed-group"><span className="col-ico"><svg><use href="#dec-autoroute"/></svg></span><span className="col-title">Autoroute</span></th>
@@ -373,7 +372,7 @@ export default function DocumentsEuropePage() {
                 </thead>
                 <tbody>
                   {selectedCountries.length === 0 ? (
-                    <tr><td colSpan={11} className="empty-table">Aucun pays sélectionné. Ajoutez un pays via le bouton ci-dessus.</td></tr>
+                    <tr><td colSpan={10} className="empty-table">Aucun pays sélectionné. Ajoutez un pays via le bouton ci-dessus.</td></tr>
                   ) : selectedCountries.map(c => (
                     <tr key={c.code} onClick={() => setModalCountry(c)}>
                       <td className="country-cell"><span className="flag">{c.flag}</span><span className="name">{c.name}</span></td>
@@ -383,7 +382,6 @@ export default function DocumentsEuropePage() {
                       <td><span className={c.controleTechnique.style === 'yes' ? 'ct-yes' : 'ct-no'} dangerouslySetInnerHTML={{ __html: c.controleTechnique.short + (c.controleTechnique.note && c.controleTechnique.style !== 'yes' ? `<small>(${c.controleTechnique.note})</small>` : '') }} /></td>
                       <td><span className={c.vignette.required ? 'vignette-yes' : 'vignette-no'} dangerouslySetInnerHTML={{ __html: c.vignette.short }} /></td>
                       <td className="equip-cell">{c.equipements.length ? c.equipements.join(', ') : 'Aucun équipement obligatoire'}</td>
-                      <td>{c.autres}</td>
                       <td><span className="speed-val">{c.speed.urbain}</span></td>
                       <td><span className="speed-val" dangerouslySetInnerHTML={{ __html: c.speed.route + (c.speed.autorouteNote && c.speed.route.includes('/') ? `<small>${c.speed.autorouteNote}</small>` : '') }} /></td>
                       <td><span className="speed-val" dangerouslySetInnerHTML={{ __html: c.speed.autoroute + (c.speed.autorouteNote && !c.speed.route.includes('/') ? `<small>${c.speed.autorouteNote}</small>` : '') }} /></td>
@@ -751,8 +749,12 @@ const PAGE_CSS = `
   border-collapse: separate; /* required so sticky cell background covers row stripes */
   border-spacing: 0;
   font-size: 0.75rem;
-  min-width: 1180px;
+  min-width: 1040px;
 }
+/* Compact cells to fit 10 columns in standard viewports */
+.docs-europe-tool .infographic-table tbody td { padding: 10px 6px !important; }
+.docs-europe-tool .infographic-table .equip-cell { padding-left: 8px !important; padding-right: 8px !important; }
+.docs-europe-tool .infographic-table thead th { padding: 12px 6px; }
 /* Sticky "Pays" column — stays visible while user scrolls horizontally */
 .docs-europe-tool .infographic-table thead th:first-child,
 .docs-europe-tool .infographic-table tbody td:first-child {
