@@ -24,6 +24,8 @@ const TRANSLATED_ROUTES = new Set<string>([
   '/depannage',
   '/cout-voiture',
   '/documents-auto',
+  '/assistant-depannage',
+  '/assistant-depannage/voyants',
 ])
 
 /**

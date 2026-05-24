@@ -114,6 +114,41 @@
           "action": "Vérifiez que le frein à main est désactivé. S'il reste allumé, arrêtez-vous.",
           "causes": "Frein à main encore activé ; manque de liquide de frein ; capteur défectueux.",
           "conseils": "Désactivez complètement le frein à main. Contrôlez le niveau de liquide. Si le voyant persiste, consultez un garagiste."
+        },
+        "en": {
+          "name": "Parking brake",
+          "signification": "The parking brake is engaged or there is a brake system fault.",
+          "action": "Check that the parking brake is released. If it stays on, stop driving.",
+          "causes": "Parking brake still on; low brake fluid; faulty sensor.",
+          "conseils": "Fully release the handbrake. Check brake fluid level. If the light stays on, see a mechanic."
+        },
+        "it": {
+          "name": "Freno a mano",
+          "signification": "Il freno a mano è attivato o c'è un guasto al sistema frenante.",
+          "action": "Verifica che il freno a mano sia disinserito. Se rimane acceso, fermati.",
+          "causes": "Freno a mano ancora attivato; mancanza di liquido freni; sensore difettoso.",
+          "conseils": "Disattiva completamente il freno a mano. Controlla il livello del liquido freni. Se la spia persiste, consulta un meccanico."
+        },
+        "nl": {
+          "name": "Handrem",
+          "signification": "De handrem staat aan of er is een storing in het remsysteem.",
+          "action": "Controleer of de handrem is losgezet. Blijft het lampje branden, stop dan.",
+          "causes": "Handrem nog aangetrokken; te weinig remvloeistof; defecte sensor.",
+          "conseils": "Zet de handrem volledig los. Controleer het remvloeistofniveau. Blijft het lampje branden, ga naar een garage."
+        },
+        "de": {
+          "name": "Handbremse",
+          "signification": "Die Handbremse ist angezogen oder es liegt eine Bremssystemstörung vor.",
+          "action": "Prüfen Sie, ob die Handbremse gelöst ist. Bleibt sie an, halten Sie an.",
+          "causes": "Handbremse noch angezogen; niedriger Bremsflüssigkeitsstand; defekter Sensor.",
+          "conseils": "Handbremse vollständig lösen. Bremsflüssigkeitsstand prüfen. Bleibt die Leuchte an, Werkstatt aufsuchen."
+        },
+        "es": {
+          "name": "Freno de mano",
+          "signification": "El freno de mano está activado o hay un fallo en el sistema de frenos.",
+          "action": "Verifica que el freno de mano esté desactivado. Si sigue encendido, detente.",
+          "causes": "Freno de mano aún activado; nivel bajo de líquido de frenos; sensor defectuoso.",
+          "conseils": "Desactiva completamente el freno de mano. Comprueba el nivel de líquido. Si persiste, acude al mecánico."
         }
       }
     },
@@ -148,6 +183,41 @@
           "action": "Arrêtez immédiatement le moteur pour éviter des dommages graves.",
           "causes": "Niveau d'huile trop bas ; fuite ; pompe à huile ; capteur HS.",
           "conseils": "Vérifiez le niveau à la jauge, complétez si nécessaire. Si voyant maintenu, garage immédiat."
+        },
+        "en": {
+          "name": "Engine oil level / pressure",
+          "signification": "Oil pressure is too low while driving.",
+          "action": "Stop the engine immediately to avoid serious damage.",
+          "causes": "Low oil level; oil leak; faulty oil pump; defective sensor.",
+          "conseils": "Check level with dipstick, top up if needed. If light stays on after refill, go to a mechanic immediately."
+        },
+        "it": {
+          "name": "Livello / pressione olio motore",
+          "signification": "La pressione dell'olio è troppo bassa durante la marcia.",
+          "action": "Ferma immediatamente il motore per evitare gravi danni.",
+          "causes": "Livello olio troppo basso; perdita d'olio; pompa olio guasta; sensore difettoso.",
+          "conseils": "Controlla il livello con l'astina, rabbocca se necessario. Se la spia persiste, vai subito dal meccanico."
+        },
+        "nl": {
+          "name": "Oliepeil / oliedruk",
+          "signification": "De oliedruk is te laag tijdens het rijden.",
+          "action": "Stop de motor onmiddellijk om ernstige schade te voorkomen.",
+          "causes": "Te laag oliepeil; olielekkage; defecte oliepomp; defecte sensor.",
+          "conseils": "Controleer het peil met de peilstok en vul indien nodig bij. Brandt het lampje nog, ga direct naar een garage."
+        },
+        "de": {
+          "name": "Motoröl-Stand / -Druck",
+          "signification": "Der Öldruck ist während der Fahrt zu niedrig.",
+          "action": "Motor sofort abstellen, um schwere Schäden zu vermeiden.",
+          "causes": "Zu niedriger Ölstand; Ölleck; defekte Ölpumpe; defekter Sensor.",
+          "conseils": "Ölstand mit Peilstab prüfen, gegebenenfalls nachfüllen. Bleibt die Leuchte an, sofort zur Werkstatt."
+        },
+        "es": {
+          "name": "Nivel / presión aceite motor",
+          "signification": "La presión de aceite es demasiado baja al circular.",
+          "action": "Detén el motor inmediatamente para evitar daños graves.",
+          "causes": "Nivel de aceite bajo; fuga de aceite; bomba de aceite averiada; sensor defectuoso.",
+          "conseils": "Comprueba el nivel con la varilla y rellena si es necesario. Si persiste, acude al taller."
         }
       }
     },
@@ -182,6 +252,41 @@
           "action": "Limitez la consommation électrique et rejoignez un garage rapidement.",
           "causes": "Alternateur ; courroie ; câblage ; batterie en fin de vie.",
           "conseils": "Coupez les équipements non essentiels. Faites contrôler alternateur et batterie."
+        },
+        "en": {
+          "name": "Battery",
+          "signification": "The battery is no longer being charged.",
+          "action": "Reduce electrical use and head to a garage quickly.",
+          "causes": "Faulty alternator; broken belt; wiring fault; old battery.",
+          "conseils": "Switch off non-essential equipment. Have the alternator and battery checked without delay."
+        },
+        "it": {
+          "name": "Batteria",
+          "signification": "La batteria non viene più alimentata elettricamente.",
+          "action": "Limita i consumi elettrici e raggiungi rapidamente un'officina.",
+          "causes": "Alternatore guasto; cinghia rotta; cablaggio difettoso; batteria a fine vita.",
+          "conseils": "Spegni gli equipaggiamenti non essenziali. Fai controllare alternatore e batteria al più presto."
+        },
+        "nl": {
+          "name": "Accu",
+          "signification": "De accu wordt niet meer opgeladen.",
+          "action": "Beperk het elektriciteitsverbruik en rijd snel naar een garage.",
+          "causes": "Defecte dynamo; gebroken poly-V-riem; defecte bedrading; oude accu.",
+          "conseils": "Schakel niet-essentiële apparatuur uit. Laat dynamo en accu zo snel mogelijk controleren."
+        },
+        "de": {
+          "name": "Batterie",
+          "signification": "Die Batterie wird nicht mehr geladen.",
+          "action": "Stromverbrauch reduzieren und schnellstmöglich Werkstatt aufsuchen.",
+          "causes": "Defekte Lichtmaschine; gerissener Keilriemen; defekte Verkabelung; alte Batterie.",
+          "conseils": "Nicht zwingend benötigte Verbraucher ausschalten. Lichtmaschine und Batterie umgehend prüfen lassen."
+        },
+        "es": {
+          "name": "Batería",
+          "signification": "La batería ya no recibe carga eléctrica.",
+          "action": "Limita el consumo eléctrico y dirígete rápido a un taller.",
+          "causes": "Alternador averiado; correa rota; cableado defectuoso; batería al final de su vida.",
+          "conseils": "Apaga equipamiento no esencial. Haz revisar alternador y batería sin demora."
         }
       }
     },
@@ -220,6 +325,41 @@
           "action": "Arrêtez-vous immédiatement dans un endroit sûr et coupez le moteur.",
           "causes": "Niveau bas ; fuite ; thermostat ; ventilateur ; pompe à eau.",
           "conseils": "Laissez refroidir 30 min avant d'ouvrir le bouchon. Diagnostic indispensable."
+        },
+        "en": {
+          "name": "Coolant",
+          "signification": "Engine overheating detected.",
+          "action": "Pull over safely and turn off the engine immediately.",
+          "causes": "Low coolant; leak; faulty thermostat; defective fan; water pump failure.",
+          "conseils": "Let the engine cool for 30 min before opening the cap. Have the cooling system diagnosed."
+        },
+        "it": {
+          "name": "Liquido di raffreddamento",
+          "signification": "Rilevato surriscaldamento del motore.",
+          "action": "Fermati in un luogo sicuro e spegni subito il motore.",
+          "causes": "Liquido basso; perdita; termostato guasto; ventola difettosa; pompa acqua guasta.",
+          "conseils": "Lascia raffreddare il motore 30 min prima di aprire il tappo. Fai diagnosticare l'impianto."
+        },
+        "nl": {
+          "name": "Koelvloeistof",
+          "signification": "Oververhitting van de motor gedetecteerd.",
+          "action": "Stop op een veilige plek en zet de motor direct uit.",
+          "causes": "Te weinig koelvloeistof; lekkage; defecte thermostaat; defecte ventilator; defecte waterpomp.",
+          "conseils": "Laat de motor 30 min afkoelen voor je de dop opent. Laat het koelsysteem nakijken."
+        },
+        "de": {
+          "name": "Kühlmittel",
+          "signification": "Motorüberhitzung erkannt.",
+          "action": "Sicher anhalten und Motor sofort abstellen.",
+          "causes": "Niedriger Kühlmittelstand; Leck; defekter Thermostat; defekter Lüfter; defekte Wasserpumpe.",
+          "conseils": "Motor 30 min abkühlen lassen, bevor der Deckel geöffnet wird. Kühlsystem diagnostizieren lassen."
+        },
+        "es": {
+          "name": "Líquido refrigerante",
+          "signification": "Sobrecalentamiento del motor detectado.",
+          "action": "Detente en un lugar seguro y apaga el motor inmediatamente.",
+          "causes": "Nivel bajo; fuga; termostato averiado; ventilador defectuoso; bomba de agua averiada.",
+          "conseils": "Deja enfriar el motor 30 min antes de abrir el tapón. Haz diagnosticar el sistema."
         }
       }
     },
@@ -254,6 +394,41 @@
           "action": "Faites contrôler rapidement : risque d'absence de déploiement.",
           "causes": "Capteur ; connecteur sous siège ; calculateur ; débranchement batterie.",
           "conseils": "Vérifiez les connecteurs sous les sièges. Diagnostic à la valise."
+        },
+        "en": {
+          "name": "Airbag",
+          "signification": "Problem detected with the airbag system.",
+          "action": "Have it checked quickly: the airbag may not deploy in a crash.",
+          "causes": "Faulty sensor; disconnected seat connector; failed ECU; recent battery disconnect.",
+          "conseils": "Check connectors under the seats. Diagnostic scan needed at a workshop."
+        },
+        "it": {
+          "name": "Airbag",
+          "signification": "Problema rilevato nel sistema airbag.",
+          "action": "Fai controllare rapidamente: l'airbag potrebbe non aprirsi in caso di urto.",
+          "causes": "Sensore difettoso; connettore sotto il sedile scollegato; centralina guasta; batteria scollegata di recente.",
+          "conseils": "Controlla i connettori sotto i sedili. Necessaria diagnosi strumentale."
+        },
+        "nl": {
+          "name": "Airbag",
+          "signification": "Probleem gedetecteerd in het airbagsysteem.",
+          "action": "Laat snel nakijken: de airbag kan bij een botsing falen.",
+          "causes": "Defecte sensor; losgekoppelde stoelconnector; defecte regelmodule; accu recent losgekoppeld.",
+          "conseils": "Controleer de connectoren onder de stoelen. Diagnose met uitleessysteem nodig."
+        },
+        "de": {
+          "name": "Airbag",
+          "signification": "Problem im Airbag-System erkannt.",
+          "action": "Schnell prüfen lassen: Airbag löst bei Unfall eventuell nicht aus.",
+          "causes": "Defekter Sensor; abgezogener Sitzstecker; defektes Steuergerät; Batterie kürzlich abgeklemmt.",
+          "conseils": "Stecker unter den Sitzen prüfen. Diagnose per Werkstatttester erforderlich."
+        },
+        "es": {
+          "name": "Airbag",
+          "signification": "Problema detectado en el sistema de airbag.",
+          "action": "Acude rápido a revisión: el airbag podría no desplegarse en un choque.",
+          "causes": "Sensor defectuoso; conector bajo el asiento desconectado; centralita averiada; batería desconectada recientemente.",
+          "conseils": "Comprueba los conectores bajo los asientos. Necesario diagnóstico con escáner."
         }
       }
     },
@@ -284,6 +459,41 @@
           "action": "Assurez-vous que tous les occupants ont attaché leur ceinture.",
           "causes": "Ceinture non bouclée ; poids sur siège passager ; capteur boucle.",
           "conseils": "Bouclez toutes les ceintures. Retirez objets lourds des sièges."
+        },
+        "en": {
+          "name": "Seatbelt",
+          "signification": "A passenger has not fastened their seatbelt.",
+          "action": "Make sure all occupants are buckled up.",
+          "causes": "Belt not fastened; heavy object on passenger seat; faulty buckle sensor.",
+          "conseils": "Fasten all belts. Remove heavy items from seats. If the light persists, check the buckle sensor."
+        },
+        "it": {
+          "name": "Cintura di sicurezza",
+          "signification": "Un passeggero non ha allacciato la cintura.",
+          "action": "Assicurati che tutti gli occupanti siano allacciati.",
+          "causes": "Cintura non allacciata; oggetto pesante sul sedile passeggero; sensore della fibbia difettoso.",
+          "conseils": "Allaccia tutte le cinture. Rimuovi oggetti pesanti dai sedili. Se la spia persiste, controlla il sensore."
+        },
+        "nl": {
+          "name": "Veiligheidsgordel",
+          "signification": "Een passagier heeft de gordel niet vastgemaakt.",
+          "action": "Zorg dat alle inzittenden de gordel om hebben.",
+          "causes": "Gordel niet vastgemaakt; zwaar voorwerp op stoel; defecte gespsensor.",
+          "conseils": "Doe alle gordels om. Verwijder zware voorwerpen van stoelen. Blijft het lampje branden, laat de sensor controleren."
+        },
+        "de": {
+          "name": "Sicherheitsgurt",
+          "signification": "Ein Insasse hat den Gurt nicht angelegt.",
+          "action": "Sicherstellen, dass alle angeschnallt sind.",
+          "causes": "Gurt nicht angelegt; schwerer Gegenstand auf Beifahrersitz; defekter Gurtschlosssensor.",
+          "conseils": "Alle Gurte anlegen. Schwere Gegenstände von Sitzen entfernen. Bleibt die Leuchte an, Sensor prüfen lassen."
+        },
+        "es": {
+          "name": "Cinturón de seguridad",
+          "signification": "Un ocupante no ha abrochado el cinturón.",
+          "action": "Asegúrate de que todos lleven el cinturón puesto.",
+          "causes": "Cinturón sin abrochar; objeto pesado en asiento; sensor de hebilla defectuoso.",
+          "conseils": "Abrocha todos los cinturones. Retira objetos pesados de los asientos. Si persiste, revisa el sensor."
         }
       }
     },
@@ -318,6 +528,41 @@
           "action": "Vérifiez et refermez correctement avant de repartir.",
           "causes": "Fermeture incomplète ; contacteur HS ; joint déformé.",
           "conseils": "Réouvrez puis refermez fermement. Contrôle des contacteurs si persistant."
+        },
+        "en": {
+          "name": "Door / hood / trunk open",
+          "signification": "A door, hood or trunk is not fully closed.",
+          "action": "Check and properly close all openings before driving.",
+          "causes": "Incomplete closing; faulty contact switch; deformed seal.",
+          "conseils": "Reopen and firmly close each opening. If the light persists, have the switches checked."
+        },
+        "it": {
+          "name": "Porta / cofano / portellone aperto",
+          "signification": "Una portiera, il cofano o il bagagliaio non sono ben chiusi.",
+          "action": "Verifica e chiudi correttamente tutte le aperture prima di ripartire.",
+          "causes": "Chiusura incompleta; interruttore di porta guasto; guarnizione deformata.",
+          "conseils": "Riapri e richiudi con forza ogni apertura. Se persiste, fai controllare gli interruttori."
+        },
+        "nl": {
+          "name": "Deur / motorkap / kofferbak open",
+          "signification": "Een deur, motorkap of kofferbak is niet goed gesloten.",
+          "action": "Controleer en sluit alle openingen goed voor het vertrek.",
+          "causes": "Onvolledige sluiting; defecte deurschakelaar; vervormde afdichting.",
+          "conseils": "Open en sluit elke opening stevig opnieuw. Blijft het lampje branden, laat de schakelaars controleren."
+        },
+        "de": {
+          "name": "Tür / Haube / Heckklappe offen",
+          "signification": "Eine Tür, Motor- oder Heckklappe ist nicht richtig geschlossen.",
+          "action": "Vor der Fahrt alle Öffnungen prüfen und richtig schließen.",
+          "causes": "Unvollständiges Schließen; defekter Türschalter; verformte Dichtung.",
+          "conseils": "Jede Öffnung erneut fest schließen. Bleibt die Leuchte an, Schalter prüfen lassen."
+        },
+        "es": {
+          "name": "Puerta / capó / maletero abierto",
+          "signification": "Una puerta, el capó o el maletero no están bien cerrados.",
+          "action": "Verifica y cierra correctamente todas las aperturas antes de circular.",
+          "causes": "Cierre incompleto; contacto defectuoso; junta deformada.",
+          "conseils": "Reabre y cierra firmemente cada apertura. Si persiste, revisa los contactos."
         }
       }
     },
@@ -348,6 +593,41 @@
           "action": "Tournez le volant tout en actionnant la clé/bouton.",
           "causes": "Volant bloqué après stationnement roues braquées.",
           "conseils": "Mouvement doux du volant en actionnant le démarreur."
+        },
+        "en": {
+          "name": "Steering lock",
+          "signification": "The steering anti-theft lock is still engaged.",
+          "action": "Turn the steering wheel slightly while operating the key or start button.",
+          "causes": "Wheel locked after parking with wheels turned; faulty anti-theft.",
+          "conseils": "Gently rock the wheel left-right while cranking. If stuck, call roadside assistance."
+        },
+        "it": {
+          "name": "Bloccasterzo",
+          "signification": "Il bloccasterzo antifurto è ancora attivato.",
+          "action": "Ruota leggermente il volante mentre attivi la chiave o il pulsante di avvio.",
+          "causes": "Volante bloccato dopo aver parcheggiato con ruote sterzate; antifurto difettoso.",
+          "conseils": "Movimento delicato sinistra-destra del volante mentre avvii. Se bloccato, chiama assistenza."
+        },
+        "nl": {
+          "name": "Stuurslot",
+          "signification": "Het stuurslot is nog geactiveerd.",
+          "action": "Beweeg het stuur licht heen en weer terwijl je de sleutel of startknop bedient.",
+          "causes": "Stuur geblokkeerd na parkeren met ingedraaide wielen; defect slot.",
+          "conseils": "Beweeg het stuur zachtjes heen en weer bij het starten. Lukt het niet, bel pechhulp."
+        },
+        "de": {
+          "name": "Lenkradsperre",
+          "signification": "Die Lenkradsperre ist noch aktiv.",
+          "action": "Lenkrad leicht bewegen, während Schlüssel/Startknopf betätigt wird.",
+          "causes": "Lenkrad nach Parken mit eingeschlagenen Rädern blockiert; defekte Lenkradsperre.",
+          "conseils": "Lenkrad beim Starten sanft links-rechts bewegen. Bleibt blockiert, Pannenhilfe rufen."
+        },
+        "es": {
+          "name": "Bloqueo de dirección",
+          "signification": "El bloqueo antirrobo de la dirección sigue activado.",
+          "action": "Gira ligeramente el volante mientras accionas la llave o el botón de arranque.",
+          "causes": "Volante bloqueado tras aparcar con ruedas giradas; antirrobo defectuoso.",
+          "conseils": "Mueve el volante suavemente al arrancar. Si sigue bloqueado, llama a asistencia."
         }
       }
     },
@@ -378,6 +658,41 @@
           "action": "Reprenez vos distances de sécurité immédiatement.",
           "causes": "Distance insuffisante ; radar/caméra encrassé.",
           "conseils": "Augmentez les distances. Nettoyez radar/caméra avant."
+        },
+        "en": {
+          "name": "Proximity / collision warning",
+          "signification": "You are driving too close to the vehicle ahead.",
+          "action": "Increase your safe following distance immediately.",
+          "causes": "Insufficient gap; dirty or faulty radar/camera.",
+          "conseils": "Increase your distance. Clean the front radar/camera. If light flashes without reason, have it checked."
+        },
+        "it": {
+          "name": "Avviso di prossimità / collisione",
+          "signification": "Stai viaggiando troppo vicino al veicolo davanti.",
+          "action": "Aumenta subito la distanza di sicurezza.",
+          "causes": "Distanza insufficiente; radar/telecamera sporchi o difettosi.",
+          "conseils": "Aumenta la distanza. Pulisci radar/telecamera anteriori. Se lampeggia senza motivo, fai controllare."
+        },
+        "nl": {
+          "name": "Afstands- / botswaarschuwing",
+          "signification": "U rijdt te dicht op de auto vóór u.",
+          "action": "Vergroot direct uw veiligheidsafstand.",
+          "causes": "Onvoldoende afstand; vuile of defecte radar/camera.",
+          "conseils": "Houd meer afstand. Maak radar/camera vooraan schoon. Knippert het zonder reden, laat nakijken."
+        },
+        "de": {
+          "name": "Abstands- / Kollisionswarnung",
+          "signification": "Sie fahren zu nah am Vordermann.",
+          "action": "Sicherheitsabstand sofort vergrößern.",
+          "causes": "Zu geringer Abstand; verschmutzter oder defekter Radar/Kamera.",
+          "conseils": "Abstand vergrößern. Frontradar/-kamera reinigen. Blinkt grundlos, prüfen lassen."
+        },
+        "es": {
+          "name": "Aviso de proximidad / colisión",
+          "signification": "Circulas demasiado cerca del vehículo delantero.",
+          "action": "Aumenta inmediatamente la distancia de seguridad.",
+          "causes": "Distancia insuficiente; radar/cámara sucios o defectuosos.",
+          "conseils": "Aumenta la distancia. Limpia radar/cámara delanteros. Si parpadea sin motivo, revísalo."
         }
       }
     },
@@ -412,6 +727,41 @@
           "action": "Ne forcez pas le démarrage : diagnostic nécessaire.",
           "causes": "Démarreur ; batterie ; immobiliseur ; clé non reconnue.",
           "conseils": "Vérifiez batterie et clé. Diagnostic chez un garagiste."
+        },
+        "en": {
+          "name": "Starting fault",
+          "signification": "Starting system malfunction.",
+          "action": "Do not force the start: have it diagnosed.",
+          "causes": "Faulty starter; flat battery; immobilizer; unrecognized key.",
+          "conseils": "Check battery and key. Call assistance or a mechanic for diagnosis."
+        },
+        "it": {
+          "name": "Problema all'avviamento",
+          "signification": "Malfunzionamento del sistema di avviamento.",
+          "action": "Non forzare l'accensione: fai diagnosticare.",
+          "causes": "Motorino di avviamento guasto; batteria scarica; immobilizer; chiave non riconosciuta.",
+          "conseils": "Controlla batteria e chiave. Chiama assistenza o un meccanico per la diagnosi."
+        },
+        "nl": {
+          "name": "Startprobleem",
+          "signification": "Storing in het startsysteem.",
+          "action": "Forceer het starten niet: laat diagnose uitvoeren.",
+          "causes": "Defecte startmotor; lege accu; immobilizer; sleutel niet herkend.",
+          "conseils": "Controleer accu en sleutel. Bel pechhulp of garage voor diagnose."
+        },
+        "de": {
+          "name": "Startproblem",
+          "signification": "Fehlfunktion des Startsystems.",
+          "action": "Nicht erzwingen: Diagnose erforderlich.",
+          "causes": "Defekter Anlasser; leere Batterie; Wegfahrsperre; Schlüssel nicht erkannt.",
+          "conseils": "Batterie und Schlüssel prüfen. Pannenhilfe oder Werkstatt zur Diagnose rufen."
+        },
+        "es": {
+          "name": "Problema de arranque",
+          "signification": "Avería en el sistema de arranque.",
+          "action": "No fuerces el arranque: diagnóstico necesario.",
+          "causes": "Motor de arranque averiado; batería descargada; inmovilizador; llave no reconocida.",
+          "conseils": "Comprueba batería y llave. Llama a asistencia o al taller para diagnóstico."
         }
       }
     },
@@ -442,6 +792,41 @@
           "action": "Ne roulez plus : sécurité de freinage compromise.",
           "causes": "Usure plaquettes ; fuite circuit ; bouchon réservoir.",
           "conseils": "Complétez (DOT4/DOT5). Contrôlez durites, étriers, maître-cylindre."
+        },
+        "en": {
+          "name": "Low brake fluid",
+          "signification": "Brake fluid level is too low.",
+          "action": "Stop driving: braking safety is compromised.",
+          "causes": "Normal pad wear; circuit leak; loose reservoir cap.",
+          "conseils": "Top up with the correct fluid (DOT4/DOT5). Have the full circuit checked (hoses, calipers, master cylinder)."
+        },
+        "it": {
+          "name": "Liquido freni basso",
+          "signification": "Il livello del liquido freni è insufficiente.",
+          "action": "Non guidare: la sicurezza di frenata è compromessa.",
+          "causes": "Normale usura pastiglie; perdita nel circuito; tappo serbatoio mal chiuso.",
+          "conseils": "Rabbocca con liquido adatto (DOT4/DOT5). Fai controllare tutto il circuito."
+        },
+        "nl": {
+          "name": "Remvloeistof laag",
+          "signification": "Het remvloeistofpeil is te laag.",
+          "action": "Niet meer rijden: remveiligheid in gevaar.",
+          "causes": "Normale remblokkenslijtage; lekkage in circuit; reservoirdop niet goed dicht.",
+          "conseils": "Vul bij met juiste vloeistof (DOT4/DOT5). Laat circuit volledig controleren."
+        },
+        "de": {
+          "name": "Bremsflüssigkeit niedrig",
+          "signification": "Bremsflüssigkeitsstand zu niedrig.",
+          "action": "Nicht weiterfahren: Bremssicherheit gefährdet.",
+          "causes": "Normaler Belagsverschleiß; Leck im Bremskreis; Verschluss nicht fest.",
+          "conseils": "Mit passender Flüssigkeit nachfüllen (DOT4/DOT5). Gesamten Bremskreis prüfen lassen."
+        },
+        "es": {
+          "name": "Líquido de frenos bajo",
+          "signification": "El nivel de líquido de frenos es insuficiente.",
+          "action": "No circules: la seguridad de frenado está comprometida.",
+          "causes": "Desgaste normal de pastillas; fuga en el circuito; tapón mal cerrado.",
+          "conseils": "Rellena con líquido adecuado (DOT4/DOT5). Haz revisar todo el circuito."
         }
       }
     },
@@ -480,6 +865,41 @@
           "action": "Conduisez prudemment dans les virages et sur sol glissant.",
           "causes": "Capteur de roue ; capteur angle volant ; calculateur ABS/ESP.",
           "conseils": "Évitez manœuvres brusques. Diagnostic électronique."
+        },
+        "en": {
+          "name": "ESP system fault",
+          "signification": "Stability control is no longer working.",
+          "action": "Drive carefully, especially in corners and on slippery roads.",
+          "causes": "Faulty wheel speed sensor; misaligned steering angle sensor; ABS/ESP ECU fault.",
+          "conseils": "Avoid abrupt maneuvers. Electronic diagnostic required at workshop."
+        },
+        "it": {
+          "name": "Sistema ESP guasto",
+          "signification": "Il controllo di stabilità non funziona più.",
+          "action": "Guida con prudenza, soprattutto in curva e su strada scivolosa.",
+          "causes": "Sensore ruota guasto; sensore angolo volante starato; centralina ABS/ESP in errore.",
+          "conseils": "Evita manovre brusche. Diagnosi elettronica necessaria in officina."
+        },
+        "nl": {
+          "name": "ESP-systeem defect",
+          "signification": "De stabiliteitsregeling werkt niet meer.",
+          "action": "Rij voorzichtig, vooral in bochten en op glad wegdek.",
+          "causes": "Defecte wielsnelheidssensor; ontstemde stuurhoeksensor; defecte ABS/ESP-module.",
+          "conseils": "Vermijd plotselinge bewegingen. Elektronische diagnose nodig in garage."
+        },
+        "de": {
+          "name": "ESP-System defekt",
+          "signification": "Die Stabilitätsregelung funktioniert nicht mehr.",
+          "action": "Vorsichtig fahren, besonders in Kurven und auf glatter Straße.",
+          "causes": "Defekter Raddrehzahlsensor; verstellter Lenkwinkelsensor; Fehler ABS/ESP-Steuergerät.",
+          "conseils": "Heftige Manöver vermeiden. Elektronische Diagnose in Werkstatt erforderlich."
+        },
+        "es": {
+          "name": "Sistema ESP averiado",
+          "signification": "El control de estabilidad ya no funciona.",
+          "action": "Conduce con prudencia, sobre todo en curvas y suelo resbaladizo.",
+          "causes": "Sensor de rueda averiado; sensor de ángulo de volante descalibrado; centralita ABS/ESP en fallo.",
+          "conseils": "Evita maniobras bruscas. Diagnóstico electrónico necesario en taller."
         }
       }
     },
@@ -510,6 +930,41 @@
           "action": "Restez vigilant : aucune assistance en cas d'obstacle.",
           "causes": "Caméra/radar avant encrassé ; calculateur HS.",
           "conseils": "Nettoyez pare-brise et capteurs avant. Contrôle spécialiste."
+        },
+        "en": {
+          "name": "AEB (autonomous braking) fault",
+          "signification": "Automatic emergency braking is no longer working correctly.",
+          "action": "Stay alert: no assistance against obstacles.",
+          "causes": "Dirty or faulty front camera/radar; dirty windshield; failed ECU.",
+          "conseils": "Clean the windshield and front sensors. Have the system checked by a specialist."
+        },
+        "it": {
+          "name": "Sistema AEB (frenata automatica) guasto",
+          "signification": "La frenata automatica d'emergenza non funziona più correttamente.",
+          "action": "Resta vigile: nessun aiuto in caso di ostacolo.",
+          "causes": "Telecamera/radar anteriore sporchi o difettosi; parabrezza sporco; centralina guasta.",
+          "conseils": "Pulisci parabrezza e sensori anteriori. Fai controllare il sistema da uno specialista."
+        },
+        "nl": {
+          "name": "AEB (automatisch remmen) defect",
+          "signification": "Automatische noodremassistent werkt niet meer correct.",
+          "action": "Blijf alert: geen hulp bij obstakels.",
+          "causes": "Vuile of defecte camera/radar; vuile voorruit; defecte regelmodule.",
+          "conseils": "Maak voorruit en sensoren schoon. Laat systeem door specialist controleren."
+        },
+        "de": {
+          "name": "AEB (Notbremsassistent) defekt",
+          "signification": "Der Notbremsassistent funktioniert nicht mehr richtig.",
+          "action": "Aufmerksam bleiben: keine Hindernisunterstützung.",
+          "causes": "Verschmutzte Frontkamera/-radar; verschmutzte Windschutzscheibe; defektes Steuergerät.",
+          "conseils": "Windschutzscheibe und Frontsensoren reinigen. Fachwerkstatt aufsuchen."
+        },
+        "es": {
+          "name": "Sistema AEB (frenada automática) averiado",
+          "signification": "La frenada de emergencia automática ya no funciona correctamente.",
+          "action": "Mantente atento: sin asistencia ante obstáculos.",
+          "causes": "Cámara/radar delanteros sucios o defectuosos; parabrisas sucio; centralita averiada.",
+          "conseils": "Limpia parabrisas y sensores delanteros. Haz revisar el sistema en taller especializado."
         }
       }
     },
@@ -540,6 +995,41 @@
           "action": "Désactivez-le avant de partir.",
           "causes": "Frein engagé volontairement.",
           "conseils": "Appuyez sur le bouton EPB. Si refus, manuel/garagiste."
+        },
+        "en": {
+          "name": "Electronic parking brake on",
+          "signification": "The electronic handbrake is engaged.",
+          "action": "Release it before driving.",
+          "causes": "Brake engaged manually; auto-engaged at stop.",
+          "conseils": "Press the EPB button. If brake refuses to release, see manual or mechanic."
+        },
+        "it": {
+          "name": "Freno di stazionamento elettronico attivato",
+          "signification": "Il freno a mano elettronico è inserito.",
+          "action": "Disinseriscilo prima di partire.",
+          "causes": "Freno inserito manualmente; attivazione automatica all'arresto.",
+          "conseils": "Premi il pulsante EPB. Se non si sblocca, consulta il manuale o un meccanico."
+        },
+        "nl": {
+          "name": "Elektronische parkeerrem aan",
+          "signification": "De elektronische handrem is geactiveerd.",
+          "action": "Zet hem los voor het vertrek.",
+          "causes": "Handrem handmatig ingeschakeld; automatisch geactiveerd bij stilstand.",
+          "conseils": "Druk op de EPB-knop. Lukt het niet, raadpleeg de handleiding of garage."
+        },
+        "de": {
+          "name": "Elektronische Feststellbremse aktiv",
+          "signification": "Die elektronische Handbremse ist angezogen.",
+          "action": "Vor der Fahrt lösen.",
+          "causes": "Bremse manuell aktiviert; automatische Aktivierung beim Anhalten.",
+          "conseils": "EPB-Knopf drücken. Löst sie sich nicht, Handbuch oder Werkstatt konsultieren."
+        },
+        "es": {
+          "name": "Freno de estacionamiento electrónico activado",
+          "signification": "El freno de mano electrónico está activado.",
+          "action": "Desactívalo antes de circular.",
+          "causes": "Freno activado manualmente; activación automática al parar.",
+          "conseils": "Pulsa el botón EPB. Si no se libera, consulta el manual o el taller."
         }
       }
     },
@@ -570,6 +1060,41 @@
           "action": "Roulez à faible vitesse jusqu'au garage le plus proche.",
           "causes": "Défaillance moteur, boîte ou électronique critique.",
           "conseils": "Ne sollicitez pas le moteur. Diagnostic immédiat (OBD)."
+        },
+        "en": {
+          "name": "Limp mode",
+          "signification": "The vehicle has gone into limp-home mode to prevent damage.",
+          "action": "Drive slowly to the nearest garage.",
+          "causes": "Critical engine, gearbox or electronic fault detected by ECU.",
+          "conseils": "Do not stress the engine. Have it diagnosed immediately with an OBD scanner."
+        },
+        "it": {
+          "name": "Modalità di emergenza",
+          "signification": "Il veicolo è in modalità ridotta per evitare ulteriori danni.",
+          "action": "Procedi a bassa velocità verso l'officina più vicina.",
+          "causes": "Guasto critico motore, cambio o elettronico rilevato dalla centralina.",
+          "conseils": "Non sollecitare il motore. Diagnosi OBD immediata necessaria."
+        },
+        "nl": {
+          "name": "Noodloopmodus",
+          "signification": "Het voertuig is in noodloopmodus om schade te voorkomen.",
+          "action": "Rijd langzaam naar de dichtstbijzijnde garage.",
+          "causes": "Kritieke motor-, versnellingsbak- of elektronicastoring gedetecteerd.",
+          "conseils": "Belast de motor niet. Onmiddellijke OBD-diagnose noodzakelijk."
+        },
+        "de": {
+          "name": "Notlaufprogramm",
+          "signification": "Das Fahrzeug ist im Notlauf, um Schäden zu vermeiden.",
+          "action": "Langsam zur nächsten Werkstatt fahren.",
+          "causes": "Kritischer Motor-, Getriebe- oder Elektronikfehler vom Steuergerät erkannt.",
+          "conseils": "Motor nicht belasten. Sofortige OBD-Diagnose nötig."
+        },
+        "es": {
+          "name": "Modo de emergencia",
+          "signification": "El vehículo está en modo limitado para evitar daños.",
+          "action": "Conduce despacio hasta el taller más cercano.",
+          "causes": "Fallo crítico de motor, caja o electrónica detectado por la centralita.",
+          "conseils": "No exijas al motor. Diagnóstico OBD inmediato necesario."
         }
       }
     },
@@ -604,6 +1129,41 @@
           "action": "Évitez charges lourdes et fortes accélérations.",
           "causes": "Surchauffe boîte ; huile usée ; capteur régime ; embrayage.",
           "conseils": "Diagnostic transmission. Rejoignez un garage à vitesse modérée."
+        },
+        "en": {
+          "name": "Transmission failure",
+          "signification": "Engine or transmission issue causing power loss.",
+          "action": "Avoid heavy loads and harsh acceleration.",
+          "causes": "Gearbox overheating; old gearbox oil; faulty speed sensor; worn clutch.",
+          "conseils": "Reach a garage at moderate speed. Transmission diagnosis required."
+        },
+        "it": {
+          "name": "Guasto trasmissione",
+          "signification": "Problema motore o trasmissione con perdita di potenza.",
+          "action": "Evita carichi pesanti e forti accelerazioni.",
+          "causes": "Surriscaldamento cambio; olio cambio usurato; sensore di giri guasto; frizione consumata.",
+          "conseils": "Raggiungi l'officina a velocità moderata. Necessaria diagnosi trasmissione."
+        },
+        "nl": {
+          "name": "Transmissiestoring",
+          "signification": "Motor- of transmissieprobleem met vermogensverlies.",
+          "action": "Vermijd zware ladingen en hard accelereren.",
+          "causes": "Oververhitting versnellingsbak; oude bakolie; defecte toerentalsensor; versleten koppeling.",
+          "conseils": "Rijd rustig naar de garage. Diagnose versnellingsbak nodig."
+        },
+        "de": {
+          "name": "Getriebeproblem",
+          "signification": "Motor- oder Getriebeproblem mit Leistungsverlust.",
+          "action": "Schwere Lasten und starke Beschleunigung vermeiden.",
+          "causes": "Getriebeüberhitzung; altes Getriebeöl; defekter Drehzahlsensor; verschlissene Kupplung.",
+          "conseils": "Mit gemäßigter Geschwindigkeit zur Werkstatt. Getriebediagnose erforderlich."
+        },
+        "es": {
+          "name": "Avería de transmisión",
+          "signification": "Problema de motor o transmisión con pérdida de potencia.",
+          "action": "Evita cargas pesadas y aceleraciones bruscas.",
+          "causes": "Sobrecalentamiento de caja; aceite envejecido; sensor de régimen defectuoso; embrague gastado.",
+          "conseils": "Llega a taller a velocidad moderada. Diagnóstico de transmisión necesario."
         }
       }
     },
@@ -634,6 +1194,41 @@
           "action": "Fermez complètement. Contrôle si voyant maintenu.",
           "causes": "Mécanisme grippé ; rails encrassés ; moteur HS.",
           "conseils": "Nettoyez/graissez les rails. Réinitialisation possible."
+        },
+        "en": {
+          "name": "Sunroof issue",
+          "signification": "Sunroof malfunction or sunroof in motion.",
+          "action": "Close the sunroof fully. If light persists, have it checked.",
+          "causes": "Mechanism jammed; dirty rails; failed motor; position sensor.",
+          "conseils": "Clean and lubricate the rails. Reset may be possible per manufacturer. Otherwise, workshop."
+        },
+        "it": {
+          "name": "Problema tetto apribile",
+          "signification": "Malfunzionamento del tetto apribile o tetto in movimento.",
+          "action": "Chiudi completamente il tetto. Se la spia persiste, fai controllare.",
+          "causes": "Meccanismo bloccato; guide sporche; motore guasto; sensore di posizione.",
+          "conseils": "Pulisci e ingrassa le guide. Reset possibile secondo costruttore. Altrimenti, officina."
+        },
+        "nl": {
+          "name": "Schuifdak-storing",
+          "signification": "Schuifdakstoring of schuifdak in beweging.",
+          "action": "Sluit het schuifdak volledig. Blijft het lampje branden, laat nakijken.",
+          "causes": "Mechanisme klemt; vuile rails; defecte motor; positiesensor.",
+          "conseils": "Reinig en smeer de rails. Reset mogelijk volgens fabrikant. Anders garage."
+        },
+        "de": {
+          "name": "Schiebedach-Störung",
+          "signification": "Schiebedach-Fehlfunktion oder in Bewegung.",
+          "action": "Schiebedach komplett schließen. Bleibt die Leuchte an, prüfen lassen.",
+          "causes": "Mechanismus klemmt; verschmutzte Führungen; defekter Motor; Positionssensor.",
+          "conseils": "Führungen reinigen und schmieren. Reset je nach Hersteller möglich. Sonst Werkstatt."
+        },
+        "es": {
+          "name": "Problema techo solar",
+          "signification": "Avería del techo solar o techo en movimiento.",
+          "action": "Cierra completamente el techo. Si persiste, revísalo.",
+          "causes": "Mecanismo agarrotado; guías sucias; motor averiado; sensor de posición.",
+          "conseils": "Limpia y engrasa las guías. Reset según fabricante. Si no, taller."
         }
       }
     },
@@ -660,6 +1255,41 @@
           "action": "Faites vérifier, surtout sur autoroute.",
           "causes": "Moteur aileron HS ; capteur position ; calculateur.",
           "conseils": "Contrôle mécanisme et faisceau (spécifique constructeur)."
+        },
+        "en": {
+          "name": "Spoiler fault",
+          "signification": "Adjustable rear spoiler malfunction.",
+          "action": "Have it checked, especially before highway driving.",
+          "causes": "Faulty spoiler motor; position sensor; ECU fault.",
+          "conseils": "Check the mechanism and wiring loom at a workshop."
+        },
+        "it": {
+          "name": "Spoiler difettoso",
+          "signification": "Malfunzionamento dello spoiler posteriore regolabile.",
+          "action": "Fai controllare, soprattutto prima di andare in autostrada.",
+          "causes": "Motore spoiler guasto; sensore di posizione; centralina in errore.",
+          "conseils": "Controllo del meccanismo e del cablaggio in officina."
+        },
+        "nl": {
+          "name": "Spoiler defect",
+          "signification": "Storing in de verstelbare achterspoiler.",
+          "action": "Laat nakijken, vooral vóór snelwegrit.",
+          "causes": "Defecte spoilermotor; positiesensor; defecte regelmodule.",
+          "conseils": "Controle mechanisme en kabelboom in garage."
+        },
+        "de": {
+          "name": "Spoiler defekt",
+          "signification": "Fehlfunktion des verstellbaren Heckspoilers.",
+          "action": "Vor Autobahnfahrten prüfen lassen.",
+          "causes": "Defekter Spoilermotor; Positionssensor; defektes Steuergerät.",
+          "conseils": "Mechanismus und Kabelbaum in der Werkstatt prüfen."
+        },
+        "es": {
+          "name": "Alerón averiado",
+          "signification": "Avería del alerón trasero regulable.",
+          "action": "Acude a revisión, sobre todo antes de circular por autopista.",
+          "causes": "Motor de alerón averiado; sensor de posición; centralita en fallo.",
+          "conseils": "Revisión del mecanismo y mazo eléctrico en taller."
         }
       }
     },
@@ -686,6 +1316,41 @@
           "action": "Remplacez la pile à court terme.",
           "causes": "Pile usée (2-3 ans typiquement).",
           "conseils": "Remplacez (souvent CR2032/CR2025). Réinitialisez si besoin."
+        },
+        "en": {
+          "name": "Key fob battery low",
+          "signification": "The remote key battery is almost flat.",
+          "action": "Replace the battery soon.",
+          "causes": "Worn battery (typically 2-3 years).",
+          "conseils": "Replace (usually CR2032/CR2025). Reset if needed."
+        },
+        "it": {
+          "name": "Batteria chiave scarica",
+          "signification": "La batteria del telecomando è quasi scarica.",
+          "action": "Sostituisci la batteria al più presto.",
+          "causes": "Batteria usata (durata 2-3 anni).",
+          "conseils": "Sostituisci (generalmente CR2032/CR2025). Reset se necessario."
+        },
+        "nl": {
+          "name": "Sleutelbatterij bijna leeg",
+          "signification": "De batterij van de afstandsbediening is bijna leeg.",
+          "action": "Vervang de batterij op korte termijn.",
+          "causes": "Versleten batterij (typisch 2-3 jaar).",
+          "conseils": "Vervang (meestal CR2032/CR2025). Reset indien nodig."
+        },
+        "de": {
+          "name": "Schlüsselbatterie schwach",
+          "signification": "Die Batterie des Funkschlüssels ist fast leer.",
+          "action": "Batterie zeitnah tauschen.",
+          "causes": "Verbrauchte Batterie (typisch 2-3 Jahre).",
+          "conseils": "Tauschen (meist CR2032/CR2025). Bei Bedarf zurücksetzen."
+        },
+        "es": {
+          "name": "Batería de llave baja",
+          "signification": "La pila del mando a distancia está casi agotada.",
+          "action": "Sustituye la pila a corto plazo.",
+          "causes": "Pila gastada (típicamente 2-3 años).",
+          "conseils": "Sustitúyela (normalmente CR2032/CR2025). Reset si es necesario."
         }
       }
     },
@@ -716,6 +1381,41 @@
           "action": "Aucune si informatif. Contrôle si défaut.",
           "causes": "Caméra sale ; marquages absents ; système désactivé.",
           "conseils": "Nettoyez le pare-brise. Vérifiez paramètres véhicule."
+        },
+        "en": {
+          "name": "Lane assist",
+          "signification": "Lane-keeping system status (green/white = active, fault = check).",
+          "action": "None if informational. If fault, have it checked.",
+          "causes": "Dirty front camera; missing lane markings; system disabled.",
+          "conseils": "Clean the windshield. Check vehicle settings."
+        },
+        "it": {
+          "name": "Lane assist",
+          "signification": "Stato del mantenimento corsia (verde/bianco = attivo, errore = controllare).",
+          "action": "Nessuna se informativo. Se errore, fai controllare.",
+          "causes": "Telecamera anteriore sporca; segnaletica orizzontale assente; sistema disattivato.",
+          "conseils": "Pulisci il parabrezza. Controlla le impostazioni del veicolo."
+        },
+        "nl": {
+          "name": "Lane assist",
+          "signification": "Status van rijstrookhulp (groen/wit = actief, fout = controleren).",
+          "action": "Geen actie als informatief. Bij fout: laat nakijken.",
+          "causes": "Vuile camera vooraan; geen belijning; systeem uitgeschakeld.",
+          "conseils": "Maak voorruit schoon. Controleer voertuiginstellingen."
+        },
+        "de": {
+          "name": "Spurhalteassistent",
+          "signification": "Status Spurhalteassistent (grün/weiß = aktiv, Störung = prüfen).",
+          "action": "Keine, wenn informativ. Bei Störung prüfen lassen.",
+          "causes": "Verschmutzte Frontkamera; fehlende Fahrbahnmarkierungen; System deaktiviert.",
+          "conseils": "Windschutzscheibe reinigen. Fahrzeugeinstellungen prüfen."
+        },
+        "es": {
+          "name": "Asistente de carril",
+          "signification": "Estado del asistente de carril (verde/blanco = activo, fallo = revisar).",
+          "action": "Ninguna si es informativo. Si hay fallo, revísalo.",
+          "causes": "Cámara delantera sucia; marcas viales ausentes; sistema desactivado.",
+          "conseils": "Limpia el parabrisas. Comprueba ajustes del vehículo."
         }
       }
     },
@@ -750,6 +1450,41 @@
           "action": "Remplacez rapidement (obligation légale).",
           "causes": "Ampoule grillée ; fusible ; mauvais contact ; LED.",
           "conseils": "Test visuel pédale appuyée. Remplacement."
+        },
+        "en": {
+          "name": "Brake light fault",
+          "signification": "At least one brake light bulb is out.",
+          "action": "Replace the bulb quickly (legally required).",
+          "causes": "Blown bulb; fuse; bad contact; LED module fault.",
+          "conseils": "Visual check while pressing the pedal. Replace bulb or see workshop."
+        },
+        "it": {
+          "name": "Luce stop guasta",
+          "signification": "Almeno una lampadina dello stop non funziona.",
+          "action": "Sostituisci la lampadina rapidamente (obbligo di legge).",
+          "causes": "Lampadina bruciata; fusibile; contatto difettoso; modulo LED.",
+          "conseils": "Verifica visiva premendo il pedale. Sostituisci o vai in officina."
+        },
+        "nl": {
+          "name": "Remlicht defect",
+          "signification": "Minstens één remlicht doet het niet.",
+          "action": "Vervang het lampje snel (wettelijk verplicht).",
+          "causes": "Doorgebrand lampje; zekering; slecht contact; defect LED-module.",
+          "conseils": "Visuele controle bij ingedrukt pedaal. Vervang of ga naar garage."
+        },
+        "de": {
+          "name": "Bremslicht defekt",
+          "signification": "Mindestens eine Bremslichtbirne ist defekt.",
+          "action": "Birne schnell tauschen (gesetzlich vorgeschrieben).",
+          "causes": "Durchgebrannte Birne; Sicherung; schlechter Kontakt; LED-Modul.",
+          "conseils": "Sichtprüfung bei gedrücktem Pedal. Tausch oder Werkstatt."
+        },
+        "es": {
+          "name": "Luz de freno averiada",
+          "signification": "Al menos una lámpara de freno no funciona.",
+          "action": "Sustituye la lámpara rápido (obligación legal).",
+          "causes": "Lámpara fundida; fusible; mal contacto; módulo LED.",
+          "conseils": "Comprobación visual pulsando el pedal. Sustituye o acude al taller."
         }
       }
     },
@@ -788,6 +1523,41 @@
           "action": "Trajet long (30 min) à régime soutenu sur autoroute.",
           "causes": "Trajets courts répétés ; urbain ; injecteurs encrassés.",
           "conseils": "30+ min à >2000 tr/min. Régénération forcée en atelier si persistant."
+        },
+        "en": {
+          "name": "Diesel particulate filter (DPF)",
+          "signification": "The diesel particulate filter is clogged.",
+          "action": "Take a long highway drive (30+ min) at sustained RPM.",
+          "causes": "Repeated short trips; urban driving; clogged injectors.",
+          "conseils": "Drive 30+ min above 2000 rpm. If light persists, forced regeneration at workshop."
+        },
+        "it": {
+          "name": "Filtro antiparticolato (FAP/DPF)",
+          "signification": "Il filtro antiparticolato diesel è intasato.",
+          "action": "Percorri un viaggio lungo (30 min) a regime sostenuto in autostrada.",
+          "causes": "Tragitti brevi ripetuti; uso urbano; iniettori sporchi.",
+          "conseils": "Guida 30+ min a oltre 2000 giri. Se persiste, rigenerazione forzata in officina."
+        },
+        "nl": {
+          "name": "Roetfilter (DPF/FAP)",
+          "signification": "Het dieselroetfilter is verstopt.",
+          "action": "Maak een lange rit (30 min) op snelweg bij hoog toerental.",
+          "causes": "Herhaalde korte ritten; stadsgebruik; vervuilde injectoren.",
+          "conseils": "30+ min boven 2000 tpm rijden. Blijft het lampje, geforceerde regeneratie in garage."
+        },
+        "de": {
+          "name": "Dieselpartikelfilter (DPF/FAP)",
+          "signification": "Der Dieselpartikelfilter ist zugesetzt.",
+          "action": "Lange Autobahnfahrt (30+ Min.) bei hoher Drehzahl.",
+          "causes": "Wiederholte Kurzstrecken; Stadtbetrieb; verkokte Einspritzdüsen.",
+          "conseils": "30+ Min. über 2000 U/min fahren. Bleibt die Leuchte, Zwangsregeneration in Werkstatt."
+        },
+        "es": {
+          "name": "Filtro de partículas (FAP/DPF)",
+          "signification": "El filtro de partículas diésel está obstruido.",
+          "action": "Realiza un trayecto largo (30 min) a régimen sostenido en autopista.",
+          "causes": "Trayectos cortos repetidos; uso urbano; inyectores sucios.",
+          "conseils": "30+ min por encima de 2000 rpm. Si persiste, regeneración forzada en taller."
         }
       }
     },
@@ -814,6 +1584,41 @@
           "action": "Aucune action : fonction normale.",
           "causes": "Activation manuelle ; pente détectée.",
           "conseils": "Désactivable via le bouton dédié."
+        },
+        "en": {
+          "name": "Hill descent control",
+          "signification": "The hill descent control function is on.",
+          "action": "None: normal operation.",
+          "causes": "Manual activation; auto-detected slope.",
+          "conseils": "Deactivate via the dedicated button if not wanted."
+        },
+        "it": {
+          "name": "Controllo discesa",
+          "signification": "La funzione di controllo discesa è attivata.",
+          "action": "Nessuna: funzionamento normale.",
+          "causes": "Attivazione manuale; pendenza rilevata automaticamente.",
+          "conseils": "Disattivabile dal pulsante dedicato se non desiderato."
+        },
+        "nl": {
+          "name": "Hill Descent Control",
+          "signification": "De afdaalassistent is geactiveerd.",
+          "action": "Geen: normale werking.",
+          "causes": "Handmatige activatie; helling automatisch gedetecteerd.",
+          "conseils": "Uitschakelbaar via de speciale knop indien niet gewenst."
+        },
+        "de": {
+          "name": "Bergabfahrhilfe",
+          "signification": "Die Bergabfahrhilfe ist aktiv.",
+          "action": "Keine: normaler Betrieb.",
+          "causes": "Manuelle Aktivierung; automatische Hangerkennung.",
+          "conseils": "Per Schalter deaktivierbar, wenn nicht gewünscht."
+        },
+        "es": {
+          "name": "Control de descenso",
+          "signification": "La función de control de descenso está activada.",
+          "action": "Ninguna: funcionamiento normal.",
+          "causes": "Activación manual; pendiente detectada automáticamente.",
+          "conseils": "Desactivable mediante el botón dedicado si no se desea."
         }
       }
     },
@@ -848,6 +1653,41 @@
           "action": "Faites le plein dès que possible.",
           "causes": "Réservoir presque vide ; jauge défectueuse.",
           "conseils": "Rejoignez une station. Évitez de rouler à sec (pompe)."
+        },
+        "en": {
+          "name": "Low fuel",
+          "signification": "Fuel tank nearly empty (typically < 50-80 km range).",
+          "action": "Refuel as soon as possible.",
+          "causes": "Tank nearly empty; faulty gauge (rare).",
+          "conseils": "Head to the nearest gas station. Avoid running dry (fuel pump risk)."
+        },
+        "it": {
+          "name": "Carburante basso",
+          "signification": "Serbatoio quasi vuoto (tipicamente < 50-80 km di autonomia).",
+          "action": "Fai rifornimento al più presto.",
+          "causes": "Serbatoio quasi vuoto; indicatore difettoso (raro).",
+          "conseils": "Raggiungi un distributore. Evita di rimanere a secco (rischio pompa)."
+        },
+        "nl": {
+          "name": "Brandstof bijna op",
+          "signification": "Tank bijna leeg (meestal < 50-80 km bereik).",
+          "action": "Tank zo snel mogelijk bij.",
+          "causes": "Bijna lege tank; defecte meter (zeldzaam).",
+          "conseils": "Rijd naar het dichtstbijzijnde tankstation. Niet droogrijden (brandstofpomp)."
+        },
+        "de": {
+          "name": "Niedriger Kraftstoffstand",
+          "signification": "Tank fast leer (meist < 50-80 km Reichweite).",
+          "action": "So bald wie möglich tanken.",
+          "causes": "Tank fast leer; defekter Geber (selten).",
+          "conseils": "Nächste Tankstelle anfahren. Nicht leerfahren (Kraftstoffpumpe)."
+        },
+        "es": {
+          "name": "Combustible bajo",
+          "signification": "Depósito casi vacío (típicamente < 50-80 km de autonomía).",
+          "action": "Reposta cuanto antes.",
+          "causes": "Depósito casi vacío; aforador defectuoso (raro).",
+          "conseils": "Acude a la gasolinera más cercana. Evita rodar en seco (riesgo de bomba)."
         }
       }
     },
@@ -882,6 +1722,41 @@
           "action": "Clignotant : adaptez. Fixe : contrôle.",
           "causes": "Adhérence faible ; capteur HS ; ESP désactivé.",
           "conseils": "Ralentissez. Vérifiez activation ESP. Diagnostic si fixe."
+        },
+        "en": {
+          "name": "Stability control active",
+          "signification": "ESP is intervening (flashing) or has a fault (steady).",
+          "action": "If flashing: adapt your driving. If steady: have it checked.",
+          "causes": "Low grip (rain, snow); faulty sensor; ESP disabled manually.",
+          "conseils": "Slow down. Check ESP is not disabled. Diagnostic scan if steady."
+        },
+        "it": {
+          "name": "Controllo di stabilità attivo",
+          "signification": "L'ESP interviene (lampeggia) o è in errore (fisso).",
+          "action": "Lampeggia: adatta la guida. Fisso: fai controllare.",
+          "causes": "Aderenza scarsa (pioggia, neve); sensore guasto; ESP disattivato manualmente.",
+          "conseils": "Rallenta. Verifica che l'ESP non sia disattivato. Diagnosi se fisso."
+        },
+        "nl": {
+          "name": "Stabiliteitscontrole actief",
+          "signification": "ESP grijpt in (knippert) of heeft een storing (vast).",
+          "action": "Knippert: pas rijden aan. Vast: laat nakijken.",
+          "causes": "Slechte grip (regen, sneeuw); defecte sensor; ESP handmatig uit.",
+          "conseils": "Vertraag. Controleer of ESP aanstaat. Diagnose bij vast lampje."
+        },
+        "de": {
+          "name": "Stabilitätskontrolle aktiv",
+          "signification": "ESP greift ein (blinkt) oder hat Störung (dauerhaft).",
+          "action": "Blinkt: Fahrweise anpassen. Dauerhaft: prüfen lassen.",
+          "causes": "Geringe Haftung (Regen, Schnee); defekter Sensor; ESP manuell deaktiviert.",
+          "conseils": "Langsamer fahren. Prüfen, ob ESP aktiv ist. Diagnose bei Dauerleuchten."
+        },
+        "es": {
+          "name": "Control de estabilidad activo",
+          "signification": "El ESP interviene (parpadea) o tiene fallo (fijo).",
+          "action": "Parpadeo: adapta la conducción. Fijo: revísalo.",
+          "causes": "Adherencia baja (lluvia, nieve); sensor averiado; ESP desactivado manualmente.",
+          "conseils": "Reduce velocidad. Comprueba que ESP esté activo. Diagnóstico si fijo."
         }
       }
     },
@@ -916,6 +1791,41 @@
           "action": "Rejoignez une borne de recharge rapidement.",
           "causes": "Autonomie résiduelle faible ; consommation élevée.",
           "conseils": "Mode ECO. Localisation borne via GPS/app."
+        },
+        "en": {
+          "name": "EV battery low",
+          "signification": "Traction battery state of charge is low.",
+          "action": "Head to a charging station soon.",
+          "causes": "Low remaining range; high consumption (cold, highway).",
+          "conseils": "Enable ECO mode. Locate nearest charger via GPS/app."
+        },
+        "it": {
+          "name": "Batteria EV scarica",
+          "signification": "Stato di carica della batteria di trazione basso.",
+          "action": "Raggiungi presto una colonnina di ricarica.",
+          "causes": "Autonomia residua bassa; consumo elevato (freddo, autostrada).",
+          "conseils": "Attiva la modalità ECO. Trova la colonnina più vicina via GPS/app."
+        },
+        "nl": {
+          "name": "EV-accu bijna leeg",
+          "signification": "Lage laadtoestand van de tractiebatterij.",
+          "action": "Rijd snel naar een laadpunt.",
+          "causes": "Lage resterende actieradius; hoog verbruik (kou, snelweg).",
+          "conseils": "Activeer de ECO-modus. Zoek dichtstbijzijnde laadpunt via GPS/app."
+        },
+        "de": {
+          "name": "EV-Batterie schwach",
+          "signification": "Niedriger Ladestand der Antriebsbatterie.",
+          "action": "Schnell zur Ladesäule.",
+          "causes": "Geringe Restreichweite; hoher Verbrauch (Kälte, Autobahn).",
+          "conseils": "ECO-Modus aktivieren. Nächste Ladesäule per GPS/App suchen."
+        },
+        "es": {
+          "name": "Batería EV baja",
+          "signification": "Estado de carga de la batería de tracción bajo.",
+          "action": "Dirígete pronto a un punto de recarga.",
+          "causes": "Autonomía residual baja; consumo elevado (frío, autopista).",
+          "conseils": "Activa el modo ECO. Localiza el cargador más cercano por GPS/app."
         }
       }
     },
@@ -950,6 +1860,41 @@
           "action": "Remplacez ou faites vérifier au garage.",
           "causes": "Ampoule grillée ; module LED ; fusible.",
           "conseils": "Identifiez l'ampoule en faisant le tour. Remplacement."
+        },
+        "en": {
+          "name": "Light bulb out",
+          "signification": "An exterior bulb is defective.",
+          "action": "Replace the bulb or have it checked at a workshop.",
+          "causes": "Blown bulb; faulty LED module; fuse.",
+          "conseils": "Identify the faulty bulb by walking around the car. Replace per manual."
+        },
+        "it": {
+          "name": "Lampada guasta",
+          "signification": "Una lampadina esterna è difettosa.",
+          "action": "Sostituiscila o fai controllare in officina.",
+          "causes": "Lampadina bruciata; modulo LED guasto; fusibile.",
+          "conseils": "Identifica la lampada difettosa girando intorno al veicolo. Sostituisci secondo manuale."
+        },
+        "nl": {
+          "name": "Lamp defect",
+          "signification": "Een buitenlamp is defect.",
+          "action": "Vervang het lampje of laat het in de garage doen.",
+          "causes": "Doorgebrand lampje; defect LED-module; zekering.",
+          "conseils": "Identificeer het defecte lampje door om de auto te lopen. Vervang volgens handleiding."
+        },
+        "de": {
+          "name": "Leuchte defekt",
+          "signification": "Eine Außenbeleuchtung ist defekt.",
+          "action": "Birne tauschen oder in Werkstatt prüfen lassen.",
+          "causes": "Durchgebrannte Birne; defektes LED-Modul; Sicherung.",
+          "conseils": "Defekte Birne durch Umrunden des Fahrzeugs identifizieren. Wechsel laut Handbuch."
+        },
+        "es": {
+          "name": "Iluminación defectuosa",
+          "signification": "Una luz exterior está defectuosa.",
+          "action": "Sustituye la lámpara o acude al taller.",
+          "causes": "Lámpara fundida; módulo LED averiado; fusible.",
+          "conseils": "Identifica la lámpara defectuosa rodeando el coche. Sustituye según manual."
         }
       }
     },
@@ -976,6 +1921,41 @@
           "action": "Éteignez hors brouillard/neige (éblouissement + amende).",
           "causes": "Activation manuelle.",
           "conseils": "Désactivez via le commodo."
+        },
+        "en": {
+          "name": "Fog lights on",
+          "signification": "Your fog lights are on.",
+          "action": "Turn them off outside fog/snow (dazzling + fine).",
+          "causes": "Manual activation.",
+          "conseils": "Disable via the stalk switch."
+        },
+        "it": {
+          "name": "Fendinebbia accesi",
+          "signification": "I tuoi fendinebbia sono accesi.",
+          "action": "Spegnili fuori da nebbia/neve (abbagliano + multa).",
+          "causes": "Attivazione manuale.",
+          "conseils": "Disattiva tramite la leva."
+        },
+        "nl": {
+          "name": "Mistlampen aan",
+          "signification": "Uw mistlampen branden.",
+          "action": "Schakel uit buiten mist/sneeuw (verblindt + boete).",
+          "causes": "Handmatige activatie.",
+          "conseils": "Schakel uit via de schakelaar."
+        },
+        "de": {
+          "name": "Nebelleuchten an",
+          "signification": "Ihre Nebelleuchten sind an.",
+          "action": "Außerhalb von Nebel/Schnee ausschalten (Blendung + Bußgeld).",
+          "causes": "Manuelle Aktivierung.",
+          "conseils": "Per Schalter deaktivieren."
+        },
+        "es": {
+          "name": "Antinieblas encendidas",
+          "signification": "Tus antinieblas están encendidas.",
+          "action": "Apágalas fuera de niebla/nieve (deslumbra + multa).",
+          "causes": "Activación manual.",
+          "conseils": "Desactiva con el mando."
         }
       }
     },
@@ -1010,6 +1990,41 @@
           "action": "Faites contrôler : autonomie/fonctions peuvent être limitées.",
           "causes": "Capteur, calculateur ou faisceau défaillant.",
           "conseils": "Diagnostic OBD pour identifier le composant."
+        },
+        "en": {
+          "name": "Electrical fault",
+          "signification": "Electrical component failure.",
+          "action": "Have it checked: range or functions may be limited.",
+          "causes": "Faulty sensor, ECU or wiring harness.",
+          "conseils": "OBD diagnostic at workshop to identify the component."
+        },
+        "it": {
+          "name": "Guasto elettrico",
+          "signification": "Anomalia di un componente elettrico.",
+          "action": "Fai controllare: autonomia o funzioni potrebbero essere limitate.",
+          "causes": "Sensore, centralina o cablaggio difettosi.",
+          "conseils": "Diagnosi OBD in officina per identificare il componente."
+        },
+        "nl": {
+          "name": "Elektrische storing",
+          "signification": "Storing in een elektrisch onderdeel.",
+          "action": "Laat nakijken: actieradius of functies kunnen beperkt zijn.",
+          "causes": "Defecte sensor, regelmodule of kabelboom.",
+          "conseils": "OBD-diagnose in garage om het onderdeel te identificeren."
+        },
+        "de": {
+          "name": "Elektrische Störung",
+          "signification": "Störung eines elektrischen Bauteils.",
+          "action": "Prüfen lassen: Reichweite oder Funktionen können eingeschränkt sein.",
+          "causes": "Defekter Sensor, Steuergerät oder Kabelbaum.",
+          "conseils": "OBD-Diagnose in Werkstatt zur Bauteilidentifikation."
+        },
+        "es": {
+          "name": "Avería eléctrica",
+          "signification": "Fallo de un componente eléctrico.",
+          "action": "Hazlo revisar: autonomía o funciones pueden verse limitadas.",
+          "causes": "Sensor, centralita o cableado defectuosos.",
+          "conseils": "Diagnóstico OBD en taller para identificar el componente."
         }
       }
     },
@@ -1036,6 +2051,41 @@
           "action": "Vidangez le filtre pour éviter dommage pompe.",
           "causes": "Carburant contaminé ; condensation ; filtre saturé.",
           "conseils": "Purgez la vis de vidange. Remplacement si récurrent."
+        },
+        "en": {
+          "name": "Water in fuel filter (diesel)",
+          "signification": "Water has been detected in the diesel filter.",
+          "action": "Drain the filter quickly to avoid pump damage.",
+          "causes": "Contaminated fuel; condensation; saturated filter.",
+          "conseils": "Open the drain plug. If recurring, replace filter and check fuel."
+        },
+        "it": {
+          "name": "Acqua nel filtro carburante (diesel)",
+          "signification": "Presenza di acqua nel filtro gasolio.",
+          "action": "Scarica subito il filtro per evitare danni alla pompa.",
+          "causes": "Carburante contaminato; condensa; filtro saturo.",
+          "conseils": "Apri la vite di scarico. Se ricorre, sostituisci il filtro e controlla il carburante."
+        },
+        "nl": {
+          "name": "Water in brandstoffilter (diesel)",
+          "signification": "Water gedetecteerd in het dieselfilter.",
+          "action": "Tap het filter snel af om pompschade te voorkomen.",
+          "causes": "Verontreinigde brandstof; condens; verzadigd filter.",
+          "conseils": "Open de aftapplug. Komt het terug, vervang filter en controleer brandstof."
+        },
+        "de": {
+          "name": "Wasser im Kraftstofffilter (Diesel)",
+          "signification": "Wasser im Dieselfilter erkannt.",
+          "action": "Filter schnell ablassen, um Pumpenschaden zu vermeiden.",
+          "causes": "Verunreinigter Kraftstoff; Kondensat; gesättigter Filter.",
+          "conseils": "Ablassschraube öffnen. Wenn wiederkehrend, Filter tauschen und Kraftstoff prüfen."
+        },
+        "es": {
+          "name": "Agua en filtro de combustible (diésel)",
+          "signification": "Presencia de agua en el filtro de gasoil.",
+          "action": "Drena el filtro rápido para evitar daño en la bomba.",
+          "causes": "Combustible contaminado; condensación; filtro saturado.",
+          "conseils": "Abre el tornillo de purga. Si se repite, sustituye el filtro y revisa el combustible."
         }
       }
     },
@@ -1074,6 +2124,41 @@
           "action": "Vérifiez et regonflez selon préconisations.",
           "causes": "Température ; petite fuite ; valve ; crevaison lente.",
           "conseils": "Regonflage à la station. Contrôle si récurrent."
+        },
+        "en": {
+          "name": "Low tire pressure",
+          "signification": "At least one tire is under-inflated.",
+          "action": "Check pressures and re-inflate per spec.",
+          "causes": "Temperature; slow leak; valve; slow puncture.",
+          "conseils": "Re-inflate at a station. If recurring, check for a puncture."
+        },
+        "it": {
+          "name": "Pressione pneumatici bassa",
+          "signification": "Almeno uno pneumatico è sgonfio.",
+          "action": "Controlla le pressioni e gonfia secondo specifica.",
+          "causes": "Temperatura; piccola perdita; valvola; foratura lenta.",
+          "conseils": "Gonfia in stazione. Se ricorre, controlla per foratura."
+        },
+        "nl": {
+          "name": "Bandenspanning te laag",
+          "signification": "Minstens één band is te zacht.",
+          "action": "Controleer de spanning en pomp op spec.",
+          "causes": "Temperatuur; klein lek; ventiel; trage lekkage.",
+          "conseils": "Pomp bij op tankstation. Komt het terug, controleer op lek."
+        },
+        "de": {
+          "name": "Reifendruck zu niedrig",
+          "signification": "Mindestens ein Reifen hat zu wenig Druck.",
+          "action": "Druck prüfen und nach Vorgabe aufpumpen.",
+          "causes": "Temperatur; kleines Leck; Ventil; schleichender Plattfuß.",
+          "conseils": "An der Tankstelle aufpumpen. Bei Wiederholung Reifen prüfen."
+        },
+        "es": {
+          "name": "Presión de neumáticos baja",
+          "signification": "Al menos un neumático está deshinchado.",
+          "action": "Comprueba presiones e infla según especificación.",
+          "causes": "Temperatura; fuga pequeña; válvula; pinchazo lento.",
+          "conseils": "Infla en estación. Si se repite, busca un pinchazo."
         }
       }
     },
@@ -1120,6 +2205,41 @@
           "action": "Fixe : diagnostic. Clignotant : arrêt immédiat.",
           "causes": "Sonde lambda ; bobines ; EGR ; injecteur ; FAP ; AdBlue.",
           "conseils": "Lecture codes défaut OBD2 obligatoire."
+        },
+        "en": {
+          "name": "Check engine",
+          "signification": "Engine fault detected by ECU. Flashing = serious.",
+          "action": "Steady: diagnose quickly. Flashing: stop immediately.",
+          "causes": "O2 sensor; coils; EGR; injector; sensor; DPF; AdBlue.",
+          "conseils": "OBD2 fault code read mandatory. Do not ignore."
+        },
+        "it": {
+          "name": "Avaria motore (Check Engine)",
+          "signification": "Anomalia motore rilevata dalla centralina. Lampeggia = grave.",
+          "action": "Fisso: diagnostica rapida. Lampeggia: fermati subito.",
+          "causes": "Sonda lambda; bobine; EGR; iniettore; sensore; FAP; AdBlue.",
+          "conseils": "Lettura codici OBD2 obbligatoria. Non ignorare."
+        },
+        "nl": {
+          "name": "Motorstoring (Check Engine)",
+          "signification": "Motorstoring gedetecteerd door regelmodule. Knipperend = ernstig.",
+          "action": "Vast: snel diagnose. Knipperend: direct stoppen.",
+          "causes": "Lambdasonde; bobines; EGR; injector; sensor; DPF; AdBlue.",
+          "conseils": "OBD2-foutcodes uitlezen verplicht. Niet negeren."
+        },
+        "de": {
+          "name": "Motorstörung (Check Engine)",
+          "signification": "Motorfehler vom Steuergerät erkannt. Blinkend = schwerwiegend.",
+          "action": "Dauerhaft: schnell diagnostizieren. Blinkend: sofort anhalten.",
+          "causes": "Lambdasonde; Zündspulen; AGR; Einspritzdüse; Sensor; DPF; AdBlue.",
+          "conseils": "OBD2-Fehlercodes auslesen Pflicht. Nicht ignorieren."
+        },
+        "es": {
+          "name": "Avería motor (Check Engine)",
+          "signification": "Anomalía del motor detectada por la centralita. Parpadeo = grave.",
+          "action": "Fijo: diagnóstico rápido. Parpadeo: detente inmediato.",
+          "causes": "Sonda lambda; bobinas; EGR; inyector; sensor; FAP; AdBlue.",
+          "conseils": "Lectura de códigos OBD2 obligatoria. No ignorar."
         }
       }
     },
@@ -1150,6 +2270,41 @@
           "action": "Appuyez sur la pédale d'embrayage.",
           "causes": "Fonctionnement normal Start/Stop.",
           "conseils": "Aucune intervention nécessaire."
+        },
+        "en": {
+          "name": "Press the clutch",
+          "signification": "Start/Stop system asks you to depress the clutch to restart.",
+          "action": "Press the clutch pedal.",
+          "causes": "Normal Start/Stop operation.",
+          "conseils": "No action needed."
+        },
+        "it": {
+          "name": "Premere la frizione",
+          "signification": "Il sistema Start/Stop chiede di premere la frizione per riavviare.",
+          "action": "Premi il pedale della frizione.",
+          "causes": "Funzionamento normale Start/Stop.",
+          "conseils": "Nessuna azione necessaria."
+        },
+        "nl": {
+          "name": "Trap de koppeling in",
+          "signification": "Het Start/Stop-systeem vraagt de koppeling in te trappen.",
+          "action": "Trap het koppelingspedaal in.",
+          "causes": "Normale werking Start/Stop.",
+          "conseils": "Geen actie nodig."
+        },
+        "de": {
+          "name": "Kupplung treten",
+          "signification": "Start/Stopp-System fordert Treten der Kupplung zum Neustart.",
+          "action": "Kupplungspedal treten.",
+          "causes": "Normale Funktion Start/Stopp.",
+          "conseils": "Keine Aktion erforderlich."
+        },
+        "es": {
+          "name": "Pulsa el embrague",
+          "signification": "El sistema Start/Stop pide pulsar el embrague para reiniciar.",
+          "action": "Pulsa el pedal del embrague.",
+          "causes": "Funcionamiento normal Start/Stop.",
+          "conseils": "No requiere intervención."
         }
       }
     },
@@ -1180,6 +2335,41 @@
           "action": "Conduisez prudemment, évitez routes dégradées.",
           "causes": "Amortisseur fuyard ; rotule ; capteur hauteur.",
           "conseils": "Contrôle visuel et diagnostic. Remplacement par paire."
+        },
+        "en": {
+          "name": "Damper / suspension fault",
+          "signification": "Suspension component failure.",
+          "action": "Drive carefully, avoid rough roads.",
+          "causes": "Leaking damper; failed ball joint; height sensor; active suspension.",
+          "conseils": "Visual check and diagnostic at workshop. Replace dampers in pairs."
+        },
+        "it": {
+          "name": "Ammortizzatore / sospensione guasti",
+          "signification": "Guasto di un componente della sospensione.",
+          "action": "Guida con prudenza, evita strade dissestate.",
+          "causes": "Ammortizzatore che perde olio; testina guasta; sensore di altezza; sospensione attiva.",
+          "conseils": "Verifica visiva e diagnosi in officina. Sostituisci gli ammortizzatori in coppia."
+        },
+        "nl": {
+          "name": "Schokdemper / vering defect",
+          "signification": "Storing aan een veerelement.",
+          "action": "Rij voorzichtig, vermijd slechte wegen.",
+          "causes": "Lekkende demper; defect kogelgewricht; hoogtesensor; actieve vering.",
+          "conseils": "Visuele controle en diagnose in garage. Vervang dempers per paar."
+        },
+        "de": {
+          "name": "Stoßdämpfer / Fahrwerk defekt",
+          "signification": "Störung eines Fahrwerksbauteils.",
+          "action": "Vorsichtig fahren, schlechte Straßen meiden.",
+          "causes": "Undichter Dämpfer; defektes Kugelgelenk; Höhensensor; aktives Fahrwerk.",
+          "conseils": "Sichtprüfung und Diagnose in Werkstatt. Dämpfer paarweise tauschen."
+        },
+        "es": {
+          "name": "Amortiguador / suspensión defectuosos",
+          "signification": "Avería de un elemento de suspensión.",
+          "action": "Conduce con prudencia, evita carreteras en mal estado.",
+          "causes": "Amortiguador con fuga; rótula gastada; sensor de altura; suspensión activa.",
+          "conseils": "Comprobación visual y diagnóstico en taller. Sustituye amortiguadores por pares."
         }
       }
     },
@@ -1210,6 +2400,41 @@
           "action": "Approchez la clé ou changez la pile.",
           "causes": "Pile faible ; clé hors de portée ; brouillage radio.",
           "conseils": "Remplacez la pile. Utilisez le lecteur de secours."
+        },
+        "en": {
+          "name": "Key not detected",
+          "signification": "The car no longer detects the key fob.",
+          "action": "Bring the key closer or replace the battery.",
+          "causes": "Low battery; key out of range; radio interference.",
+          "conseils": "Replace the battery. Use the emergency reader (usually near the start button)."
+        },
+        "it": {
+          "name": "Chiave non rilevata",
+          "signification": "L'auto non rileva più la chiave senza contatto.",
+          "action": "Avvicina la chiave o sostituisci la batteria.",
+          "causes": "Batteria scarica; chiave fuori portata; interferenze radio.",
+          "conseils": "Sostituisci la batteria. Usa il lettore di emergenza (vicino al pulsante)."
+        },
+        "nl": {
+          "name": "Sleutel niet gedetecteerd",
+          "signification": "De auto detecteert de keyless sleutel niet meer.",
+          "action": "Houd de sleutel dichterbij of vervang de batterij.",
+          "causes": "Lege batterij; sleutel buiten bereik; radiostoring.",
+          "conseils": "Vervang de batterij. Gebruik de noodlezer (meestal bij de startknop)."
+        },
+        "de": {
+          "name": "Schlüssel nicht erkannt",
+          "signification": "Das Auto erkennt den Funkschlüssel nicht mehr.",
+          "action": "Schlüssel näher halten oder Batterie tauschen.",
+          "causes": "Schwache Batterie; Schlüssel außerhalb Reichweite; Funkstörung.",
+          "conseils": "Batterie tauschen. Notleseposition nutzen (meist nahe Startknopf)."
+        },
+        "es": {
+          "name": "Llave no detectada",
+          "signification": "El coche ya no detecta la llave sin contacto.",
+          "action": "Acerca la llave o cambia la pila.",
+          "causes": "Pila baja; llave fuera de alcance; interferencia radio.",
+          "conseils": "Cambia la pila. Usa el lector de emergencia (cerca del botón de arranque)."
         }
       }
     },
@@ -1240,6 +2465,41 @@
           "action": "Remplacez rapidement pour éviter d'endommager disques.",
           "causes": "Usure normale (30 000 à 70 000 km).",
           "conseils": "Remplacement plaquettes (et disques si besoin)."
+        },
+        "en": {
+          "name": "Worn brake pads",
+          "signification": "Brake pads have reached the wear limit.",
+          "action": "Replace quickly to avoid damaging the discs.",
+          "causes": "Normal wear (between 30,000 and 70,000 km).",
+          "conseils": "Replace pads (and discs if needed) at a workshop."
+        },
+        "it": {
+          "name": "Pastiglie freno usurate",
+          "signification": "Le pastiglie hanno raggiunto la soglia di usura.",
+          "action": "Sostituiscile rapidamente per non rovinare i dischi.",
+          "causes": "Usura normale (tra 30.000 e 70.000 km).",
+          "conseils": "Sostituisci pastiglie (e dischi se necessario) in officina."
+        },
+        "nl": {
+          "name": "Remblokken versleten",
+          "signification": "De remblokken hebben de slijtagegrens bereikt.",
+          "action": "Vervang snel om de schijven niet te beschadigen.",
+          "causes": "Normale slijtage (tussen 30.000 en 70.000 km).",
+          "conseils": "Vervang remblokken (en schijven indien nodig) bij een garage."
+        },
+        "de": {
+          "name": "Bremsbeläge verschlissen",
+          "signification": "Bremsbeläge haben die Verschleißgrenze erreicht.",
+          "action": "Schnell tauschen, um Bremsscheiben nicht zu beschädigen.",
+          "causes": "Normaler Verschleiß (zwischen 30.000 und 70.000 km).",
+          "conseils": "Beläge (und ggf. Scheiben) in Werkstatt tauschen."
+        },
+        "es": {
+          "name": "Pastillas de freno desgastadas",
+          "signification": "Las pastillas han alcanzado el límite de desgaste.",
+          "action": "Sustitúyelas rápido para no dañar los discos.",
+          "causes": "Desgaste normal (entre 30.000 y 70.000 km).",
+          "conseils": "Sustituye pastillas (y discos si necesario) en taller."
         }
       }
     },
@@ -1274,6 +2534,41 @@
           "action": "Contrôle avant endommagement moteur.",
           "causes": "Pompe ; filtre bouché ; injecteur ; pression.",
           "conseils": "Diagnostic atelier. Évitez réservoir presque vide."
+        },
+        "en": {
+          "name": "Fuel system fault",
+          "signification": "Anomaly in the fuel supply.",
+          "action": "Have it checked before engine damage.",
+          "causes": "Weak fuel pump; clogged filter; injector; wrong pressure.",
+          "conseils": "Workshop diagnostic. Avoid running on a nearly empty tank."
+        },
+        "it": {
+          "name": "Problema al sistema carburante",
+          "signification": "Anomalia nel circuito di alimentazione.",
+          "action": "Fai controllare prima che il motore si danneggi.",
+          "causes": "Pompa carburante debole; filtro intasato; iniettore; pressione errata.",
+          "conseils": "Diagnosi in officina. Evita di guidare col serbatoio quasi vuoto."
+        },
+        "nl": {
+          "name": "Brandstofsysteem-storing",
+          "signification": "Storing in het brandstofcircuit.",
+          "action": "Laat controleren voor motorschade ontstaat.",
+          "causes": "Zwakke brandstofpomp; verstopt filter; injector; verkeerde druk.",
+          "conseils": "Diagnose in garage. Vermijd rijden met bijna lege tank."
+        },
+        "de": {
+          "name": "Kraftstoffsystem-Störung",
+          "signification": "Anomalie im Kraftstoffsystem.",
+          "action": "Vor Motorschaden prüfen lassen.",
+          "causes": "Schwache Kraftstoffpumpe; verstopfter Filter; Einspritzdüse; falscher Druck.",
+          "conseils": "Werkstattdiagnose. Nicht mit fast leerem Tank fahren."
+        },
+        "es": {
+          "name": "Problema sistema de combustible",
+          "signification": "Anomalía en el circuito de alimentación.",
+          "action": "Hazlo revisar antes de dañar el motor.",
+          "causes": "Bomba de combustible débil; filtro obstruido; inyector; presión incorrecta.",
+          "conseils": "Diagnóstico en taller. Evita circular con depósito casi vacío."
         }
       }
     },
@@ -1300,6 +2595,41 @@
           "action": "Adaptez vitesse et distances.",
           "causes": "Température basse mesurée.",
           "conseils": "Conduite douce. Pneus hiver sous 7°C."
+        },
+        "en": {
+          "name": "Ice warning",
+          "signification": "Outside temperature is low (< 3°C): risk of ice.",
+          "action": "Adapt speed and increase following distance.",
+          "causes": "Low temperature measured by exterior sensor.",
+          "conseils": "Drive smoothly. Winter tires recommended below 7°C."
+        },
+        "it": {
+          "name": "Avviso ghiaccio",
+          "signification": "Temperatura esterna bassa (< 3°C): rischio ghiaccio.",
+          "action": "Adatta velocità e distanze.",
+          "causes": "Temperatura bassa rilevata dal sensore esterno.",
+          "conseils": "Guida con dolcezza. Pneumatici invernali consigliati sotto i 7°C."
+        },
+        "nl": {
+          "name": "IJswaarschuwing",
+          "signification": "Buitentemperatuur laag (< 3°C): kans op ijzel.",
+          "action": "Pas snelheid en volgafstand aan.",
+          "causes": "Lage temperatuur gemeten door buitensensor.",
+          "conseils": "Rij voorzichtig. Winterbanden aanbevolen onder 7°C."
+        },
+        "de": {
+          "name": "Glatteiswarnung",
+          "signification": "Außentemperatur niedrig (< 3°C): Glatteisgefahr.",
+          "action": "Geschwindigkeit anpassen und Abstand vergrößern.",
+          "causes": "Niedrige Temperatur vom Außensensor gemessen.",
+          "conseils": "Sanft fahren. Winterreifen unter 7°C empfohlen."
+        },
+        "es": {
+          "name": "Aviso de hielo",
+          "signification": "Temperatura exterior baja (< 3°C): riesgo de hielo.",
+          "action": "Adapta velocidad y distancias.",
+          "causes": "Temperatura baja medida por el sensor exterior.",
+          "conseils": "Conduce con suavidad. Neumáticos de invierno recomendados bajo 7°C."
         }
       }
     },
@@ -1326,6 +2656,41 @@
           "action": "Actionnez phares/essuie-glaces manuellement.",
           "causes": "Capteur décollé du pare-brise ; câblage.",
           "conseils": "Nettoyez la zone capteur. Contrôle atelier si persistant."
+        },
+        "en": {
+          "name": "Light / rain sensor fault",
+          "signification": "Auto sensors are not working.",
+          "action": "Operate headlights/wipers manually.",
+          "causes": "Sensor unstuck from windshield; wiring.",
+          "conseils": "Clean the sensor area. If persistent, workshop check."
+        },
+        "it": {
+          "name": "Sensore luce / pioggia guasto",
+          "signification": "I sensori automatici non funzionano.",
+          "action": "Aziona luci/tergi manualmente.",
+          "causes": "Sensore staccato dal parabrezza; cablaggio.",
+          "conseils": "Pulisci la zona del sensore. Se persiste, controllo in officina."
+        },
+        "nl": {
+          "name": "Regen-/lichtsensor defect",
+          "signification": "Automatische sensoren werken niet.",
+          "action": "Bedien koplampen/ruitenwissers handmatig.",
+          "causes": "Sensor losgekomen van voorruit; bedrading.",
+          "conseils": "Maak de sensorzone schoon. Blijft het, naar garage."
+        },
+        "de": {
+          "name": "Licht-/Regensensor defekt",
+          "signification": "Automatische Sensoren funktionieren nicht.",
+          "action": "Scheinwerfer/Wischer manuell bedienen.",
+          "causes": "Sensor von der Scheibe gelöst; Verkabelung.",
+          "conseils": "Sensorbereich reinigen. Bei dauerhaftem Problem in Werkstatt."
+        },
+        "es": {
+          "name": "Sensor de luz / lluvia defectuoso",
+          "signification": "Los sensores automáticos no funcionan.",
+          "action": "Acciona luces/limpia manualmente.",
+          "causes": "Sensor despegado del parabrisas; cableado.",
+          "conseils": "Limpia la zona del sensor. Si persiste, revisión en taller."
         }
       }
     },
@@ -1360,6 +2725,41 @@
           "action": "Attendez extinction avant de démarrer.",
           "causes": "Démarrage à froid normal ; bougies HS si maintenu.",
           "conseils": "Contrôle bougies si voyant persistant."
+        },
+        "en": {
+          "name": "Diesel preheat",
+          "signification": "Glow plugs are pre-heating.",
+          "action": "Wait for the light to go out before starting.",
+          "causes": "Cold start normal; defective glow plugs if stays on.",
+          "conseils": "If light stays on after a few seconds, have plugs checked."
+        },
+        "it": {
+          "name": "Preriscaldamento (diesel)",
+          "signification": "Preriscaldamento delle candelette in corso.",
+          "action": "Attendi lo spegnimento prima di avviare.",
+          "causes": "Avviamento a freddo normale; candelette guaste se persiste.",
+          "conseils": "Se la spia resta accesa dopo alcuni secondi, fai controllare le candelette."
+        },
+        "nl": {
+          "name": "Voorgloeien (diesel)",
+          "signification": "De gloeibougies zijn aan het voorgloeien.",
+          "action": "Wacht tot het lampje uitgaat voor je start.",
+          "causes": "Normale koude start; defecte gloeibougies als het blijft branden.",
+          "conseils": "Blijft het lampje branden na enkele seconden, laat gloeibougies controleren."
+        },
+        "de": {
+          "name": "Vorglühen (Diesel)",
+          "signification": "Glühkerzen werden vorgeglüht.",
+          "action": "Vor dem Start auf Erlöschen warten.",
+          "causes": "Normaler Kaltstart; defekte Glühkerzen, wenn dauerhaft.",
+          "conseils": "Bleibt die Leuchte nach Sekunden an, Glühkerzen prüfen lassen."
+        },
+        "es": {
+          "name": "Precalentamiento (diésel)",
+          "signification": "Precalentamiento de las bujías en curso.",
+          "action": "Espera a que se apague antes de arrancar.",
+          "causes": "Arranque en frío normal; bujías defectuosas si persiste.",
+          "conseils": "Si la luz sigue encendida tras unos segundos, revisa las bujías."
         }
       }
     },
@@ -1402,6 +2802,41 @@
           "action": "Freinage normal OK mais sans antiblocage.",
           "causes": "Capteur roue ; câblage ; calculateur ABS ; fusible.",
           "conseils": "Diagnostic OBD pour identifier capteur défectueux."
+        },
+        "en": {
+          "name": "ABS fault",
+          "signification": "ABS is no longer working.",
+          "action": "Normal braking still works, but without anti-lock: drive carefully.",
+          "causes": "Faulty wheel sensor; broken wiring; ABS ECU; fuse.",
+          "conseils": "OBD diagnostic to identify the faulty sensor. Often an easy replacement."
+        },
+        "it": {
+          "name": "Sistema ABS guasto",
+          "signification": "L'ABS non funziona più.",
+          "action": "La frenata normale funziona ma senza ABS: guida con prudenza.",
+          "causes": "Sensore ruota guasto; cablaggio rotto; centralina ABS; fusibile.",
+          "conseils": "Diagnosi OBD per individuare il sensore difettoso. Spesso sostituzione semplice."
+        },
+        "nl": {
+          "name": "ABS defect",
+          "signification": "ABS werkt niet meer.",
+          "action": "Normale remwerking blijft, maar zonder ABS: rij voorzichtig.",
+          "causes": "Defecte wielsensor; gebroken bedrading; ABS-module; zekering.",
+          "conseils": "OBD-diagnose om de sensor te identificeren. Vaak eenvoudige vervanging."
+        },
+        "de": {
+          "name": "ABS defekt",
+          "signification": "ABS funktioniert nicht mehr.",
+          "action": "Normale Bremse funktioniert, aber ohne ABS: vorsichtig fahren.",
+          "causes": "Defekter Raddrehzahlsensor; gerissene Verkabelung; ABS-Steuergerät; Sicherung.",
+          "conseils": "OBD-Diagnose zur Identifikation des Sensors. Oft einfacher Austausch."
+        },
+        "es": {
+          "name": "Sistema ABS averiado",
+          "signification": "El ABS ya no funciona.",
+          "action": "La frenada normal sigue funcionando pero sin ABS: conduce con prudencia.",
+          "causes": "Sensor de rueda averiado; cableado roto; centralita ABS; fusible.",
+          "conseils": "Diagnóstico OBD para identificar el sensor. A menudo cambio sencillo."
         }
       }
     },
@@ -1432,6 +2867,41 @@
           "action": "Évitez routes dégradées. Contrôle rapide.",
           "causes": "Fuite coussin ; compresseur ; capteur hauteur.",
           "conseils": "Test étanchéité, diagnostic spécialiste."
+        },
+        "en": {
+          "name": "Air suspension fault",
+          "signification": "Air suspension is not working properly.",
+          "action": "Avoid rough roads. Have it checked quickly.",
+          "causes": "Air spring leak; failed compressor; height sensor.",
+          "conseils": "Leak test and diagnostic at a suspension specialist."
+        },
+        "it": {
+          "name": "Sospensione pneumatica guasta",
+          "signification": "La sospensione pneumatica non funziona correttamente.",
+          "action": "Evita strade dissestate. Fai controllare al più presto.",
+          "causes": "Perdita del cuscinetto pneumatico; compressore guasto; sensore di altezza.",
+          "conseils": "Test di tenuta e diagnosi presso specialista sospensioni."
+        },
+        "nl": {
+          "name": "Luchtvering defect",
+          "signification": "De luchtvering werkt niet correct.",
+          "action": "Vermijd slechte wegen. Laat snel nakijken.",
+          "causes": "Lekkend luchtkussen; defecte compressor; hoogtesensor.",
+          "conseils": "Lektest en diagnose bij veerspecialist."
+        },
+        "de": {
+          "name": "Luftfederung defekt",
+          "signification": "Die Luftfederung funktioniert nicht richtig.",
+          "action": "Schlechte Straßen meiden. Schnell prüfen lassen.",
+          "causes": "Leckendes Luftkissen; defekter Kompressor; Höhensensor.",
+          "conseils": "Dichtheitsprüfung und Diagnose beim Fahrwerksspezialisten."
+        },
+        "es": {
+          "name": "Suspensión neumática averiada",
+          "signification": "La suspensión neumática no funciona bien.",
+          "action": "Evita carreteras en mal estado. Revisión urgente.",
+          "causes": "Fuga en cojín neumático; compresor averiado; sensor de altura.",
+          "conseils": "Prueba de estanqueidad y diagnóstico en especialista de suspensión."
         }
       }
     },
@@ -1454,6 +2924,41 @@
           "action": "Consultez le menu information.",
           "causes": "Notification système.",
           "conseils": "Naviguez dans le menu."
+        },
+        "en": {
+          "name": "Information",
+          "signification": "New information available in the vehicle menu.",
+          "action": "Check the on-board information menu.",
+          "causes": "System notification.",
+          "conseils": "Navigate the menu to read the message."
+        },
+        "it": {
+          "name": "Informazione",
+          "signification": "Nuova informazione disponibile nel menu del veicolo.",
+          "action": "Consulta il menu informazioni del veicolo.",
+          "causes": "Notifica del sistema.",
+          "conseils": "Naviga nel menu per leggere il messaggio."
+        },
+        "nl": {
+          "name": "Informatie",
+          "signification": "Nieuwe informatie in het voertuigmenu.",
+          "action": "Raadpleeg het informatiemenu van het voertuig.",
+          "causes": "Systeemmelding.",
+          "conseils": "Navigeer in het menu om het bericht te lezen."
+        },
+        "de": {
+          "name": "Information",
+          "signification": "Neue Information im Fahrzeugmenü verfügbar.",
+          "action": "Informationsmenü prüfen.",
+          "causes": "Systembenachrichtigung.",
+          "conseils": "Durch das Menü navigieren, um die Nachricht zu lesen."
+        },
+        "es": {
+          "name": "Información",
+          "signification": "Nueva información disponible en el menú del vehículo.",
+          "action": "Consulta el menú de información.",
+          "causes": "Notificación del sistema.",
+          "conseils": "Navega por el menú para leer el mensaje."
         }
       }
     },
@@ -1484,6 +2989,41 @@
           "action": "Vérifiez raccordement avant de tracter.",
           "causes": "Mauvais branchement ; capteur ; faisceau remorque.",
           "conseils": "Contrôle prise et faisceau remorque."
+        },
+        "en": {
+          "name": "Trailer hitch fault",
+          "signification": "Issue with the trailer hitch or its electrical link.",
+          "action": "Check the connection before towing.",
+          "causes": "Bad electrical contact; faulty sensor; trailer harness.",
+          "conseils": "Check plug and trailer harness. Workshop diagnostic if persistent."
+        },
+        "it": {
+          "name": "Gancio traino difettoso",
+          "signification": "Problema al gancio di traino o al collegamento elettrico.",
+          "action": "Controlla il collegamento prima di trainare.",
+          "causes": "Cattivo contatto elettrico; sensore guasto; cablaggio rimorchio.",
+          "conseils": "Controlla presa e cablaggio rimorchio. Diagnosi in officina se persiste."
+        },
+        "nl": {
+          "name": "Trekhaak defect",
+          "signification": "Probleem met de trekhaak of elektrische aansluiting.",
+          "action": "Controleer de aansluiting voor het slepen.",
+          "causes": "Slecht elektrisch contact; defecte sensor; aanhanger-bedrading.",
+          "conseils": "Controleer stekker en aanhangerbedrading. Diagnose in garage bij blijvend probleem."
+        },
+        "de": {
+          "name": "Anhängerkupplung defekt",
+          "signification": "Problem an der Anhängerkupplung oder Elektroanschluss.",
+          "action": "Vor dem Ziehen Anschluss prüfen.",
+          "causes": "Schlechter Kontakt; defekter Sensor; Anhängerkabelbaum.",
+          "conseils": "Stecker und Anhängerkabelbaum prüfen. Werkstattdiagnose bei Persistenz."
+        },
+        "es": {
+          "name": "Enganche de remolque defectuoso",
+          "signification": "Problema con el enganche o su conexión eléctrica.",
+          "action": "Comprueba la conexión antes de remolcar.",
+          "causes": "Mal contacto eléctrico; sensor averiado; cableado remolque.",
+          "conseils": "Comprueba toma y mazo de remolque. Diagnóstico en taller si persiste."
         }
       }
     },
@@ -1514,6 +3054,41 @@
           "action": "Contrôlez la pression des 4 pneus.",
           "causes": "Perte air lente ; crevaison ; TPMS HS ; pile capteur.",
           "conseils": "Regonflage et inspection visuelle."
+        },
+        "en": {
+          "name": "Tire pressure change",
+          "signification": "Pressure variation detected by TPMS sensors.",
+          "action": "Check all four tire pressures.",
+          "causes": "Slow air loss; puncture; faulty TPMS sensor; sensor battery low.",
+          "conseils": "Inflate and visually inspect. Replace sensor if needed."
+        },
+        "it": {
+          "name": "Variazione pressione pneumatici",
+          "signification": "Variazione di pressione rilevata dai sensori TPMS.",
+          "action": "Controlla la pressione di tutti e quattro i pneumatici.",
+          "causes": "Lenta perdita d'aria; foratura; TPMS guasto; batteria sensore.",
+          "conseils": "Gonfia e ispeziona visivamente. Sostituisci il sensore se necessario."
+        },
+        "nl": {
+          "name": "Bandenspanning wijziging",
+          "signification": "Drukverandering gedetecteerd door TPMS-sensoren.",
+          "action": "Controleer de spanning van alle vier de banden.",
+          "causes": "Langzaam luchtverlies; lek; defecte TPMS; batterij van sensor leeg.",
+          "conseils": "Pomp op en inspecteer visueel. Vervang sensor indien nodig."
+        },
+        "de": {
+          "name": "Reifendruck-Änderung",
+          "signification": "Druckänderung von TPMS-Sensoren erkannt.",
+          "action": "Druck aller vier Reifen prüfen.",
+          "causes": "Langsamer Luftverlust; Reifenpanne; defekter TPMS; Sensorbatterie leer.",
+          "conseils": "Aufpumpen und Sichtprüfung. Sensor ggf. tauschen."
+        },
+        "es": {
+          "name": "Cambio de presión neumáticos",
+          "signification": "Variación de presión detectada por sensores TPMS.",
+          "action": "Comprueba la presión de los cuatro neumáticos.",
+          "causes": "Fuga lenta; pinchazo; TPMS averiado; pila del sensor agotada.",
+          "conseils": "Infla e inspecciona visualmente. Sustituye el sensor si es necesario."
         }
       }
     },
@@ -1544,6 +3119,41 @@
           "action": "Contrôle pour éviter casse transmission.",
           "causes": "Niveau huile bas ; usure ; capteur.",
           "conseils": "Vérification huile de pont. Diagnostic spécialisé."
+        },
+        "en": {
+          "name": "Differential fault",
+          "signification": "Anomaly in the differential.",
+          "action": "Have it checked to avoid drivetrain damage.",
+          "causes": "Low oil; wear; faulty sensor.",
+          "conseils": "Check axle oil level. Specialist diagnostic."
+        },
+        "it": {
+          "name": "Differenziale guasto",
+          "signification": "Anomalia al differenziale.",
+          "action": "Fai controllare per evitare rotture della trasmissione.",
+          "causes": "Olio basso; usura; sensore guasto.",
+          "conseils": "Controlla il livello olio del ponte. Diagnosi presso specialista."
+        },
+        "nl": {
+          "name": "Differentieel defect",
+          "signification": "Storing in het differentieel.",
+          "action": "Laat nakijken om transmissieschade te voorkomen.",
+          "causes": "Te weinig olie; slijtage; defecte sensor.",
+          "conseils": "Controleer olieniveau van eindaandrijving. Specialistische diagnose."
+        },
+        "de": {
+          "name": "Differential defekt",
+          "signification": "Anomalie am Differential.",
+          "action": "Zur Vermeidung von Antriebsschäden prüfen lassen.",
+          "causes": "Niedriger Ölstand; Verschleiß; defekter Sensor.",
+          "conseils": "Ölstand der Achse prüfen. Diagnose beim Spezialisten."
+        },
+        "es": {
+          "name": "Diferencial averiado",
+          "signification": "Anomalía del diferencial.",
+          "action": "Hazlo revisar para evitar rotura de transmisión.",
+          "causes": "Aceite bajo; desgaste; sensor averiado.",
+          "conseils": "Comprueba nivel de aceite del puente. Diagnóstico en especialista."
         }
       }
     },
@@ -1574,6 +3184,41 @@
           "action": "Évitez sollicitations 4x4. Contrôle.",
           "causes": "Visco-coupleur ; Haldex ; niveau huile.",
           "conseils": "Vidange et diagnostic 4x4."
+        },
+        "en": {
+          "name": "Rear differential fault",
+          "signification": "Anomaly in the rear differential (4x4).",
+          "action": "Avoid 4x4 use. Have it checked.",
+          "causes": "Failed viscous coupling; Haldex; oil level.",
+          "conseils": "Oil change and diagnostic at a 4x4 specialist."
+        },
+        "it": {
+          "name": "Differenziale posteriore guasto",
+          "signification": "Anomalia al differenziale posteriore (4x4).",
+          "action": "Evita di sollecitare il 4x4. Fai controllare.",
+          "causes": "Giunto viscoso guasto; Haldex; livello olio.",
+          "conseils": "Cambio olio e diagnosi presso specialista 4x4."
+        },
+        "nl": {
+          "name": "Achterdifferentieel defect",
+          "signification": "Storing in het achterdifferentieel (4x4).",
+          "action": "Vermijd 4x4-belasting. Laat nakijken.",
+          "causes": "Defecte viscokoppeling; Haldex; oliepeil.",
+          "conseils": "Olieverversing en diagnose bij 4x4-specialist."
+        },
+        "de": {
+          "name": "Hinterachsdifferential defekt",
+          "signification": "Anomalie am Hinterachsdifferential (4x4).",
+          "action": "4x4-Belastung meiden. Prüfen lassen.",
+          "causes": "Defekte Viscokupplung; Haldex; Ölstand.",
+          "conseils": "Ölwechsel und Diagnose beim 4x4-Spezialisten."
+        },
+        "es": {
+          "name": "Diferencial trasero averiado",
+          "signification": "Anomalía en el diferencial trasero (4x4).",
+          "action": "Evita usar el 4x4. Hazlo revisar.",
+          "causes": "Acoplamiento viscoso averiado; Haldex; nivel de aceite.",
+          "conseils": "Cambio de aceite y diagnóstico en especialista 4x4."
         }
       }
     },
@@ -1612,6 +3257,41 @@
           "action": "Faites l'appoint : vide = pas de redémarrage.",
           "causes": "Consommation normale (1L / 1000 km).",
           "conseils": "Achat en station/supermarché, appoint selon notice."
+        },
+        "en": {
+          "name": "AdBlue almost empty",
+          "signification": "The AdBlue tank is nearly empty.",
+          "action": "Refill quickly: an empty tank will prevent restart.",
+          "causes": "Normal consumption (about 1L per 1000 km).",
+          "conseils": "Buy AdBlue at gas station or supermarket. Refill per instructions."
+        },
+        "it": {
+          "name": "AdBlue quasi esaurito",
+          "signification": "Il serbatoio AdBlue è quasi vuoto.",
+          "action": "Fai rabbocco rapidamente: serbatoio vuoto = niente avviamento.",
+          "causes": "Consumo normale (circa 1L ogni 1000 km).",
+          "conseils": "Acquista AdBlue al distributore/supermercato. Rabbocca secondo istruzioni."
+        },
+        "nl": {
+          "name": "AdBlue bijna op",
+          "signification": "De AdBlue-tank is bijna leeg.",
+          "action": "Vul snel bij: lege tank = geen herstart.",
+          "causes": "Normaal verbruik (ca. 1L per 1000 km).",
+          "conseils": "Koop AdBlue bij tankstation of supermarkt. Vul bij volgens handleiding."
+        },
+        "de": {
+          "name": "AdBlue fast leer",
+          "signification": "Der AdBlue-Tank ist fast leer.",
+          "action": "Schnell nachfüllen: leerer Tank = kein Neustart.",
+          "causes": "Normaler Verbrauch (ca. 1L pro 1000 km).",
+          "conseils": "AdBlue an Tankstelle/Supermarkt kaufen. Laut Anleitung nachfüllen."
+        },
+        "es": {
+          "name": "AdBlue casi vacío",
+          "signification": "El depósito AdBlue está casi vacío.",
+          "action": "Reposta rápido: depósito vacío = no arranca.",
+          "causes": "Consumo normal (1L cada 1000 km aprox.).",
+          "conseils": "Compra AdBlue en gasolinera/supermercado. Rellena según instrucciones."
         }
       }
     },
@@ -1650,6 +3330,41 @@
           "action": "Évitez charges. Clignotant : arrêt rapide.",
           "causes": "Surchauffe huile ; capteur vitesse ; solénoïde ; usure.",
           "conseils": "Diagnostic boîte. Vidange si surchauffe."
+        },
+        "en": {
+          "name": "Gearbox fault",
+          "signification": "Overheating (steady) or serious issue (flashing).",
+          "action": "Avoid heavy loads. If flashing: stop quickly.",
+          "causes": "Oil overheat; speed sensor; solenoid; internal wear.",
+          "conseils": "Gearbox diagnostic. Oil change if overheating."
+        },
+        "it": {
+          "name": "Cambio guasto",
+          "signification": "Surriscaldamento (fisso) o problema grave (lampeggia).",
+          "action": "Evita carichi. Lampeggia: fermati rapidamente.",
+          "causes": "Surriscaldamento olio; sensore di velocità; solenoide; usura interna.",
+          "conseils": "Diagnosi cambio. Cambio olio in caso di surriscaldamento."
+        },
+        "nl": {
+          "name": "Versnellingsbak defect",
+          "signification": "Oververhitting (vast) of ernstig probleem (knippert).",
+          "action": "Vermijd belasting. Knippert: stop snel.",
+          "causes": "Oververhitte olie; toerentalsensor; solenoïde; interne slijtage.",
+          "conseils": "Diagnose versnellingsbak. Olieverversing bij oververhitting."
+        },
+        "de": {
+          "name": "Getriebe-Störung",
+          "signification": "Überhitzung (dauerhaft) oder schweres Problem (blinkt).",
+          "action": "Belastung vermeiden. Blinkt: schnell anhalten.",
+          "causes": "Ölüberhitzung; Drehzahlsensor; Solenoid; interner Verschleiß.",
+          "conseils": "Getriebediagnose. Ölwechsel bei Überhitzung."
+        },
+        "es": {
+          "name": "Caja de cambios averiada",
+          "signification": "Sobrecalentamiento (fijo) o problema grave (parpadeo).",
+          "action": "Evita cargas. Parpadeo: detente rápido.",
+          "causes": "Sobrecalentamiento de aceite; sensor de régimen; solenoide; desgaste interno.",
+          "conseils": "Diagnóstico de caja. Cambio de aceite si hay sobrecalentamiento."
         }
       }
     },
@@ -1676,6 +3391,41 @@
           "action": "Vérifiez utilité ; éteignez en stationnement prolongé.",
           "causes": "Activation manuelle.",
           "conseils": "Commodo sur 0 ou Auto."
+        },
+        "en": {
+          "name": "Parking / position lights on",
+          "signification": "Position lights are on.",
+          "action": "Check if needed; turn off if parked for long.",
+          "causes": "Manual activation.",
+          "conseils": "Set the stalk to 0 or Auto to turn them off."
+        },
+        "it": {
+          "name": "Luci di posizione accese",
+          "signification": "Le luci di posizione sono accese.",
+          "action": "Verifica l'utilità; spegnile se parcheggiato a lungo.",
+          "causes": "Attivazione manuale.",
+          "conseils": "Leva su 0 o Auto per spegnerle."
+        },
+        "nl": {
+          "name": "Stadslichten aan",
+          "signification": "De stadslichten branden.",
+          "action": "Controleer of nodig; uitzetten bij langdurig parkeren.",
+          "causes": "Handmatige activatie.",
+          "conseils": "Schakelaar op 0 of Auto om uit te zetten."
+        },
+        "de": {
+          "name": "Standlicht / Parklicht an",
+          "signification": "Das Standlicht ist an.",
+          "action": "Prüfen, ob nötig; bei langem Parken ausschalten.",
+          "causes": "Manuelle Aktivierung.",
+          "conseils": "Schalter auf 0 oder Auto zum Ausschalten."
+        },
+        "es": {
+          "name": "Luces de posición encendidas",
+          "signification": "Las luces de posición están encendidas.",
+          "action": "Comprueba si son necesarias; apaga si está aparcado largo tiempo.",
+          "causes": "Activación manual.",
+          "conseils": "Mando en 0 o Auto para apagar."
         }
       }
     },
@@ -1698,6 +3448,41 @@
           "action": "Éteignez avant de quitter le véhicule.",
           "causes": "Plafonnier laissé sur ON.",
           "conseils": "Mettez plafonnier sur 'porte' ou OFF."
+        },
+        "en": {
+          "name": "Interior light on",
+          "signification": "Interior lighting is on.",
+          "action": "Turn off before leaving the vehicle.",
+          "causes": "Dome light left in ON position.",
+          "conseils": "Set dome light to 'door' or OFF."
+        },
+        "it": {
+          "name": "Plafoniera accesa",
+          "signification": "L'illuminazione interna è accesa.",
+          "action": "Spegnila prima di lasciare il veicolo.",
+          "causes": "Plafoniera lasciata su ON.",
+          "conseils": "Plafoniera su 'porta' o OFF."
+        },
+        "nl": {
+          "name": "Interieurverlichting aan",
+          "signification": "De interieurverlichting brandt.",
+          "action": "Uitschakelen voor het verlaten van de auto.",
+          "causes": "Plafondlamp op ON laten staan.",
+          "conseils": "Plafondlamp op 'deur' of OFF zetten."
+        },
+        "de": {
+          "name": "Innenraumlicht an",
+          "signification": "Die Innenbeleuchtung ist an.",
+          "action": "Vor dem Verlassen ausschalten.",
+          "causes": "Deckenleuchte auf ON gelassen.",
+          "conseils": "Deckenleuchte auf 'Tür' oder OFF stellen."
+        },
+        "es": {
+          "name": "Luz interior encendida",
+          "signification": "La iluminación interior está encendida.",
+          "action": "Apaga antes de salir del vehículo.",
+          "causes": "Plafón dejado en ON.",
+          "conseils": "Plafón en 'puerta' o OFF."
         }
       }
     },
@@ -1728,6 +3513,41 @@
           "action": "Aucune action : redémarrage seul.",
           "causes": "Fonctionnement normal.",
           "conseils": "Désactivable via bouton 'A OFF'."
+        },
+        "en": {
+          "name": "Start/Stop active",
+          "signification": "Engine auto-stopped while stationary.",
+          "action": "None: engine will restart on its own.",
+          "causes": "Normal Start/Stop operation.",
+          "conseils": "Can be disabled via the 'A OFF' button."
+        },
+        "it": {
+          "name": "Start/Stop attivato",
+          "signification": "Motore spento automaticamente all'arresto.",
+          "action": "Nessuna: si riavvia da solo.",
+          "causes": "Funzionamento normale Start/Stop.",
+          "conseils": "Disattivabile col pulsante 'A OFF'."
+        },
+        "nl": {
+          "name": "Start/Stop actief",
+          "signification": "Motor automatisch afgeslagen bij stilstand.",
+          "action": "Geen: start zelf weer.",
+          "causes": "Normale werking Start/Stop.",
+          "conseils": "Uitschakelbaar via knop 'A OFF'."
+        },
+        "de": {
+          "name": "Start/Stopp aktiv",
+          "signification": "Motor wurde im Stand automatisch abgeschaltet.",
+          "action": "Keine: startet selbstständig.",
+          "causes": "Normale Funktion Start/Stopp.",
+          "conseils": "Über Taste 'A OFF' deaktivierbar."
+        },
+        "es": {
+          "name": "Start/Stop activado",
+          "signification": "Motor apagado automáticamente en parada.",
+          "action": "Ninguna: rearranca solo.",
+          "causes": "Funcionamiento normal Start/Stop.",
+          "conseils": "Desactivable con el botón 'A OFF'."
         }
       }
     },
@@ -1758,6 +3578,41 @@
           "action": "Vérifiez consigne vitesse et distance.",
           "causes": "Activation manuelle.",
           "conseils": "Réglage via commandes au volant."
+        },
+        "en": {
+          "name": "Adaptive Cruise Control",
+          "signification": "Adaptive cruise (white = on, green = active).",
+          "action": "Check speed setpoint and following distance.",
+          "causes": "Manual activation.",
+          "conseils": "Adjust speed and distance via steering wheel controls."
+        },
+        "it": {
+          "name": "Cruise Control Adattivo",
+          "signification": "Regolatore adattivo (bianco = attivato, verde = attivo).",
+          "action": "Verifica velocità impostata e distanza.",
+          "causes": "Attivazione manuale.",
+          "conseils": "Regola velocità e distanza dai comandi al volante."
+        },
+        "nl": {
+          "name": "Adaptieve cruise control",
+          "signification": "Adaptieve cruise (wit = aan, groen = actief).",
+          "action": "Controleer ingestelde snelheid en afstand.",
+          "causes": "Handmatige activatie.",
+          "conseils": "Stel snelheid en afstand in via stuurbedieningen."
+        },
+        "de": {
+          "name": "Adaptiver Tempomat",
+          "signification": "Adaptiver Tempomat (weiß = aktiviert, grün = aktiv).",
+          "action": "Geschwindigkeits- und Abstandsvorgabe prüfen.",
+          "causes": "Manuelle Aktivierung.",
+          "conseils": "Geschwindigkeit und Abstand über Lenkradtasten einstellen."
+        },
+        "es": {
+          "name": "Control de crucero adaptativo",
+          "signification": "Crucero adaptativo (blanco = activado, verde = activo).",
+          "action": "Verifica velocidad consignada y distancia.",
+          "causes": "Activación manual.",
+          "conseils": "Ajusta velocidad y distancia desde el volante."
         }
       }
     },
@@ -1788,6 +3643,41 @@
           "action": "Appuyez sur la pédale de frein si demandé.",
           "causes": "Fonction normale Auto Hold.",
           "conseils": "Activable/désactivable via bouton dédié."
+        },
+        "en": {
+          "name": "Auto Hold / Brake pedal",
+          "signification": "Auto Hold active or asking for brake pedal press.",
+          "action": "Press the brake pedal if requested.",
+          "causes": "Normal Auto Hold operation.",
+          "conseils": "Toggleable via the dedicated button."
+        },
+        "it": {
+          "name": "Auto Hold / Pedale freno",
+          "signification": "Auto Hold attivo o richiesta di pressione del freno.",
+          "action": "Premi il pedale del freno se richiesto.",
+          "causes": "Funzionamento normale Auto Hold.",
+          "conseils": "Attivabile/disattivabile dal pulsante dedicato."
+        },
+        "nl": {
+          "name": "Auto Hold / Rempedaal",
+          "signification": "Auto Hold actief of vraag om rempedaal in te drukken.",
+          "action": "Trap rempedaal in indien gevraagd.",
+          "causes": "Normale werking Auto Hold.",
+          "conseils": "In/uitschakelbaar via speciale knop."
+        },
+        "de": {
+          "name": "Auto Hold / Bremspedal",
+          "signification": "Auto Hold aktiv oder Bremspedal-Anforderung.",
+          "action": "Bremspedal drücken, wenn gefordert.",
+          "causes": "Normale Funktion Auto Hold.",
+          "conseils": "Über dedizierte Taste ein-/ausschaltbar."
+        },
+        "es": {
+          "name": "Auto Hold / Pedal de freno",
+          "signification": "Auto Hold activo o pide pulsar el freno.",
+          "action": "Pulsa el pedal de freno si se solicita.",
+          "causes": "Funcionamiento normal Auto Hold.",
+          "conseils": "Activable/desactivable con el botón dedicado."
         }
       }
     },
@@ -1814,6 +3704,41 @@
           "action": "Aucune action.",
           "causes": "Activation manuelle ou auto.",
           "conseils": "Vérifiez position du commodo."
+        },
+        "en": {
+          "name": "Low beams on",
+          "signification": "Your dipped headlights are on.",
+          "action": "No action needed.",
+          "causes": "Manual or auto activation.",
+          "conseils": "Check the stalk position (Auto / 0 / lights)."
+        },
+        "it": {
+          "name": "Anabbaglianti accesi",
+          "signification": "I tuoi anabbaglianti sono accesi.",
+          "action": "Nessuna azione necessaria.",
+          "causes": "Attivazione manuale o automatica.",
+          "conseils": "Verifica la posizione della leva (Auto / 0 / luci)."
+        },
+        "nl": {
+          "name": "Dimlichten aan",
+          "signification": "Uw dimlichten branden.",
+          "action": "Geen actie nodig.",
+          "causes": "Handmatige of automatische activatie.",
+          "conseils": "Controleer schakelaarpositie (Auto / 0 / lichten)."
+        },
+        "de": {
+          "name": "Abblendlicht an",
+          "signification": "Ihr Abblendlicht ist an.",
+          "action": "Keine Aktion erforderlich.",
+          "causes": "Manuelle oder automatische Aktivierung.",
+          "conseils": "Schalterstellung prüfen (Auto / 0 / Licht)."
+        },
+        "es": {
+          "name": "Luces de cruce encendidas",
+          "signification": "Tus luces de cruce están encendidas.",
+          "action": "No requiere acción.",
+          "causes": "Activación manual o automática.",
+          "conseils": "Comprueba posición del mando (Auto / 0 / luces)."
         }
       }
     },
@@ -1840,6 +3765,41 @@
           "action": "Prenez rendez-vous chez votre garagiste.",
           "causes": "Échéance kilométrique ou temporelle atteinte.",
           "conseils": "Vidange, filtres, contrôles selon carnet."
+        },
+        "en": {
+          "name": "Service indicator",
+          "signification": "Periodic service is due.",
+          "action": "Make an appointment with your mechanic.",
+          "causes": "Mileage or time interval reached.",
+          "conseils": "Oil change, filters and checks per service book."
+        },
+        "it": {
+          "name": "Indicatore di servizio",
+          "signification": "Manutenzione periodica necessaria.",
+          "action": "Prenota dal meccanico.",
+          "causes": "Scadenza chilometrica o temporale raggiunta.",
+          "conseils": "Tagliando, filtri e controlli secondo libretto."
+        },
+        "nl": {
+          "name": "Onderhoudsindicator",
+          "signification": "Periodiek onderhoud nodig.",
+          "action": "Maak afspraak met uw monteur.",
+          "causes": "Kilometer- of tijdsinterval bereikt.",
+          "conseils": "Olieverversing, filters en controles volgens onderhoudsboekje."
+        },
+        "de": {
+          "name": "Service-Anzeige",
+          "signification": "Periodische Wartung erforderlich.",
+          "action": "Werkstatttermin vereinbaren.",
+          "causes": "Kilometer- oder Zeitintervall erreicht.",
+          "conseils": "Ölwechsel, Filter und Prüfungen laut Serviceheft."
+        },
+        "es": {
+          "name": "Indicador de mantenimiento",
+          "signification": "Mantenimiento periódico necesario.",
+          "action": "Pide cita con tu mecánico.",
+          "causes": "Vencimiento kilométrico o temporal.",
+          "conseils": "Cambio de aceite, filtros y revisiones según libro."
         }
       }
     },
@@ -1866,6 +3826,41 @@
           "action": "Aucune action.",
           "causes": "Activation automatique.",
           "conseils": "Aide à la visibilité en virage."
+        },
+        "en": {
+          "name": "Adaptive headlights on",
+          "signification": "Headlights follow steering movements.",
+          "action": "No action.",
+          "causes": "Automatic activation.",
+          "conseils": "Cornering visibility aid."
+        },
+        "it": {
+          "name": "Fari adattivi attivi",
+          "signification": "I fari seguono i movimenti dello sterzo.",
+          "action": "Nessuna azione.",
+          "causes": "Attivazione automatica.",
+          "conseils": "Aiuto alla visibilità in curva."
+        },
+        "nl": {
+          "name": "Adaptieve koplampen aan",
+          "signification": "De koplampen volgen het stuur.",
+          "action": "Geen actie.",
+          "causes": "Automatische activatie.",
+          "conseils": "Hulpmiddel voor zicht in bochten."
+        },
+        "de": {
+          "name": "Adaptives Licht aktiv",
+          "signification": "Scheinwerfer folgen der Lenkbewegung.",
+          "action": "Keine Aktion.",
+          "causes": "Automatische Aktivierung.",
+          "conseils": "Sichthilfe in Kurven."
+        },
+        "es": {
+          "name": "Faros adaptativos activos",
+          "signification": "Los faros siguen el movimiento del volante.",
+          "action": "Ninguna acción.",
+          "causes": "Activación automática.",
+          "conseils": "Ayuda a la visibilidad en curvas."
         }
       }
     },
@@ -1888,6 +3883,41 @@
           "action": "Utilisez uniquement par visibilité réduite.",
           "causes": "Activation manuelle.",
           "conseils": "Éteignez dès visibilité retrouvée."
+        },
+        "en": {
+          "name": "Front fog lights on",
+          "signification": "Front fog lights are on.",
+          "action": "Use only in very poor visibility.",
+          "causes": "Manual activation.",
+          "conseils": "Turn off as soon as visibility improves."
+        },
+        "it": {
+          "name": "Fendinebbia anteriori",
+          "signification": "I fendinebbia anteriori sono accesi.",
+          "action": "Da usare solo con visibilità molto ridotta.",
+          "causes": "Attivazione manuale.",
+          "conseils": "Spegnili appena la visibilità migliora."
+        },
+        "nl": {
+          "name": "Mistlampen voor",
+          "signification": "De mistlampen voor branden.",
+          "action": "Alleen gebruiken bij zeer slecht zicht.",
+          "causes": "Handmatige activatie.",
+          "conseils": "Uitschakelen zodra het zicht verbetert."
+        },
+        "de": {
+          "name": "Nebelscheinwerfer an",
+          "signification": "Die Nebelscheinwerfer sind an.",
+          "action": "Nur bei sehr schlechter Sicht verwenden.",
+          "causes": "Manuelle Aktivierung.",
+          "conseils": "Ausschalten, sobald die Sicht besser ist."
+        },
+        "es": {
+          "name": "Antinieblas delanteros",
+          "signification": "Los antinieblas delanteros están encendidos.",
+          "action": "Usar solo con visibilidad muy reducida.",
+          "causes": "Activación manual.",
+          "conseils": "Apagar cuando mejore la visibilidad."
         }
       }
     },
@@ -1910,6 +3940,41 @@
           "action": "Aucune action : la voiture optimise la conso.",
           "causes": "Activation via bouton ECO.",
           "conseils": "Désactivable si plus de réactivité souhaitée."
+        },
+        "en": {
+          "name": "ECO mode on",
+          "signification": "Economical driving mode is active.",
+          "action": "None: the car optimizes consumption.",
+          "causes": "Activation via the ECO button.",
+          "conseils": "Can be disabled if you want more responsiveness."
+        },
+        "it": {
+          "name": "Modalità ECO attiva",
+          "signification": "Modalità di guida economica attiva.",
+          "action": "Nessuna: l'auto ottimizza i consumi.",
+          "causes": "Attivazione col pulsante ECO.",
+          "conseils": "Disattivabile se preferisci più reattività."
+        },
+        "nl": {
+          "name": "ECO-modus aan",
+          "signification": "Zuinige rijmodus is actief.",
+          "action": "Geen: de auto optimaliseert het verbruik.",
+          "causes": "Activering via ECO-knop.",
+          "conseils": "Uitschakelbaar voor meer reactievermogen."
+        },
+        "de": {
+          "name": "ECO-Modus aktiv",
+          "signification": "Sparsamer Fahrmodus aktiv.",
+          "action": "Keine: das Fahrzeug optimiert den Verbrauch.",
+          "causes": "Aktivierung über ECO-Taste.",
+          "conseils": "Bei Bedarf für mehr Spritzigkeit deaktivierbar."
+        },
+        "es": {
+          "name": "Modo ECO activo",
+          "signification": "Modo de conducción económica activo.",
+          "action": "Ninguna: el coche optimiza el consumo.",
+          "causes": "Activación mediante botón ECO.",
+          "conseils": "Desactivable si quieres más respuesta."
         }
       }
     },
@@ -1936,6 +4001,41 @@
           "action": "Éteignez après la manœuvre.",
           "causes": "Activation commodo.",
           "conseils": "Clignotement rapide = ampoule grillée."
+        },
+        "en": {
+          "name": "Turn signal",
+          "signification": "A turn signal is active.",
+          "action": "Cancel the signal after the maneuver.",
+          "causes": "Stalk activation.",
+          "conseils": "Fast blinking = bulb out, replace it."
+        },
+        "it": {
+          "name": "Indicatore di direzione",
+          "signification": "Un indicatore di direzione è attivo.",
+          "action": "Spegnilo dopo la manovra.",
+          "causes": "Attivazione tramite leva.",
+          "conseils": "Lampeggio rapido = lampadina bruciata, sostituiscila."
+        },
+        "nl": {
+          "name": "Richtingaanwijzer",
+          "signification": "Een richtingaanwijzer is actief.",
+          "action": "Schakel uit na de manoeuvre.",
+          "causes": "Activering via stuurschakelaar.",
+          "conseils": "Snel knipperen = lampje stuk, vervang het."
+        },
+        "de": {
+          "name": "Blinker",
+          "signification": "Ein Blinker ist aktiv.",
+          "action": "Nach dem Manöver ausschalten.",
+          "causes": "Aktivierung per Lenkstockschalter.",
+          "conseils": "Schnelles Blinken = Birne defekt, ersetzen."
+        },
+        "es": {
+          "name": "Intermitente",
+          "signification": "Un intermitente está activo.",
+          "action": "Apaga tras la maniobra.",
+          "causes": "Activación con el mando.",
+          "conseils": "Parpadeo rápido = lámpara fundida, sustitúyela."
         }
       }
     },
@@ -1962,6 +4062,41 @@
           "action": "Surveillez la route ; freinage = désactivation.",
           "causes": "Activation manuelle.",
           "conseils": "Désactivable par bouton ou pédale de frein."
+        },
+        "en": {
+          "name": "Cruise control on",
+          "signification": "Cruise control maintains a constant speed.",
+          "action": "Watch the road; braking will disable it.",
+          "causes": "Manual activation.",
+          "conseils": "Can be disabled by button or brake pedal."
+        },
+        "it": {
+          "name": "Cruise control attivo",
+          "signification": "Il cruise control mantiene una velocità costante.",
+          "action": "Sorveglia la strada; frenare lo disattiva.",
+          "causes": "Attivazione manuale.",
+          "conseils": "Disattivabile con pulsante o pedale del freno."
+        },
+        "nl": {
+          "name": "Cruise control aan",
+          "signification": "Cruise control houdt een constante snelheid aan.",
+          "action": "Houd de weg in het oog; remmen schakelt uit.",
+          "causes": "Handmatige activatie.",
+          "conseils": "Uit te schakelen via knop of rempedaal."
+        },
+        "de": {
+          "name": "Tempomat aktiv",
+          "signification": "Der Tempomat hält eine konstante Geschwindigkeit.",
+          "action": "Verkehr beobachten; Bremsen deaktiviert ihn.",
+          "causes": "Manuelle Aktivierung.",
+          "conseils": "Per Taste oder Bremspedal deaktivierbar."
+        },
+        "es": {
+          "name": "Control de crucero activo",
+          "signification": "El control de crucero mantiene una velocidad constante.",
+          "action": "Vigila la carretera; frenar lo desactiva.",
+          "causes": "Activación manual.",
+          "conseils": "Desactivable con botón o pedal de freno."
         }
       }
     },
@@ -1984,6 +4119,41 @@
           "action": "Aucune action.",
           "causes": "Activation manuelle.",
           "conseils": "Kick-down pour dépasser temporairement."
+        },
+        "en": {
+          "name": "Speed limiter",
+          "signification": "The limiter prevents exceeding the set speed.",
+          "action": "No action.",
+          "causes": "Manual activation.",
+          "conseils": "Kick-down (full throttle) temporarily overrides."
+        },
+        "it": {
+          "name": "Limitatore di velocità",
+          "signification": "Il limitatore impedisce di superare la velocità impostata.",
+          "action": "Nessuna azione.",
+          "causes": "Attivazione manuale.",
+          "conseils": "Kick-down (gas a fondo) per superare temporaneamente."
+        },
+        "nl": {
+          "name": "Snelheidsbegrenzer",
+          "signification": "De begrenzer voorkomt overschrijding van de ingestelde snelheid.",
+          "action": "Geen actie.",
+          "causes": "Handmatige activatie.",
+          "conseils": "Kick-down (vol gas) overschrijdt tijdelijk."
+        },
+        "de": {
+          "name": "Geschwindigkeitsbegrenzer",
+          "signification": "Der Begrenzer verhindert das Überschreiten der eingestellten Geschwindigkeit.",
+          "action": "Keine Aktion.",
+          "causes": "Manuelle Aktivierung.",
+          "conseils": "Kick-down (Vollgas) überschreitet kurzfristig."
+        },
+        "es": {
+          "name": "Limitador de velocidad",
+          "signification": "El limitador impide superar la velocidad fijada.",
+          "action": "Ninguna acción.",
+          "causes": "Activación manual.",
+          "conseils": "Kick-down (pedal a fondo) supera temporalmente."
         }
       }
     },
@@ -2018,6 +4188,41 @@
           "action": "Suivez signaux sonores et écran.",
           "causes": "Activation auto en marche AR ou bouton.",
           "conseils": "Nettoyez les capteurs si dysfonctionnement."
+        },
+        "en": {
+          "name": "Parking sensors active",
+          "signification": "Parking assist is on.",
+          "action": "Follow the audible and on-screen cues.",
+          "causes": "Auto activation in reverse or via button.",
+          "conseils": "Clean the sensors if they misbehave."
+        },
+        "it": {
+          "name": "Sensori di parcheggio attivi",
+          "signification": "L'aiuto al parcheggio è in funzione.",
+          "action": "Segui i segnali sonori e a schermo.",
+          "causes": "Attivazione automatica in retromarcia o via pulsante.",
+          "conseils": "Pulisci i sensori in caso di malfunzionamento."
+        },
+        "nl": {
+          "name": "Parkeersensoren actief",
+          "signification": "Parkeerhulp is in werking.",
+          "action": "Volg geluids- en schermsignalen.",
+          "causes": "Automatische activering bij achteruit of via knop.",
+          "conseils": "Maak sensoren schoon bij storing."
+        },
+        "de": {
+          "name": "Parksensoren aktiv",
+          "signification": "Einparkhilfe ist in Betrieb.",
+          "action": "Akustische und Displaysignale beachten.",
+          "causes": "Automatische Aktivierung beim Rückwärtsgang oder per Taste.",
+          "conseils": "Sensoren reinigen bei Fehlfunktion."
+        },
+        "es": {
+          "name": "Sensores de aparcamiento activos",
+          "signification": "La ayuda al aparcamiento está en funcionamiento.",
+          "action": "Sigue las señales acústicas y de pantalla.",
+          "causes": "Activación automática en marcha atrás o con botón.",
+          "conseils": "Limpia los sensores si fallan."
         }
       }
     },
@@ -2044,6 +4249,41 @@
           "action": "Adaptez selon chargement.",
           "causes": "Activation via molette ou capteur charge.",
           "conseils": "Réglez pour ne pas éblouir."
+        },
+        "en": {
+          "name": "Headlight height adjustment",
+          "signification": "Manual or auto headlight aim adjustment.",
+          "action": "Adjust according to load.",
+          "causes": "Activation via dial or load sensor.",
+          "conseils": "Set correctly to avoid dazzling others."
+        },
+        "it": {
+          "name": "Regolazione altezza fari",
+          "signification": "Regolazione manuale o automatica dell'altezza dei fari.",
+          "action": "Adatta in base al carico.",
+          "causes": "Attivazione tramite manopola o sensore di carico.",
+          "conseils": "Regola correttamente per non abbagliare."
+        },
+        "nl": {
+          "name": "Hoogte-instelling koplampen",
+          "signification": "Handmatige of automatische hoogtebijstelling.",
+          "action": "Pas aan op basis van belading.",
+          "causes": "Activering via knop of beladingssensor.",
+          "conseils": "Stel correct in om niet te verblinden."
+        },
+        "de": {
+          "name": "Leuchtweitenregulierung",
+          "signification": "Manuelle oder automatische Leuchtweitenregelung.",
+          "action": "An Beladung anpassen.",
+          "causes": "Aktivierung per Rad oder Beladungssensor.",
+          "conseils": "Korrekt einstellen, um nicht zu blenden."
+        },
+        "es": {
+          "name": "Regulación altura faros",
+          "signification": "Regulación manual o automática de la altura de los faros.",
+          "action": "Adáptala según la carga.",
+          "causes": "Activación con ruleta o sensor de carga.",
+          "conseils": "Ajusta correctamente para no deslumbrar."
         }
       }
     },
@@ -2070,6 +4310,41 @@
           "action": "Aucune action.",
           "causes": "Charge batterie suffisante ; sélection manuelle.",
           "conseils": "Bascule thermique auto si batterie vide."
+        },
+        "en": {
+          "name": "EV mode active",
+          "signification": "You are driving in pure electric (hybrid).",
+          "action": "No action.",
+          "causes": "Sufficient battery charge; manual selection.",
+          "conseils": "Auto-switches to combustion when battery is empty."
+        },
+        "it": {
+          "name": "Modalità EV attiva",
+          "signification": "Stai viaggiando in elettrico al 100% (ibrida).",
+          "action": "Nessuna azione.",
+          "causes": "Batteria sufficientemente carica; selezione manuale.",
+          "conseils": "Passaggio automatico al termico a batteria scarica."
+        },
+        "nl": {
+          "name": "EV-modus actief",
+          "signification": "U rijdt volledig elektrisch (hybride).",
+          "action": "Geen actie.",
+          "causes": "Voldoende acculading; handmatige selectie.",
+          "conseils": "Automatische omschakeling naar brandstof bij lege accu."
+        },
+        "de": {
+          "name": "EV-Modus aktiv",
+          "signification": "Sie fahren rein elektrisch (Hybrid).",
+          "action": "Keine Aktion.",
+          "causes": "Ausreichende Batterieladung; manuelle Auswahl.",
+          "conseils": "Automatischer Wechsel zum Verbrennungsmotor bei leerer Batterie."
+        },
+        "es": {
+          "name": "Modo EV activo",
+          "signification": "Conduces 100% en eléctrico (híbrido).",
+          "action": "Ninguna acción.",
+          "causes": "Carga de batería suficiente; selección manual.",
+          "conseils": "Cambio automático a térmico al agotarse la batería."
         }
       }
     },
@@ -2096,6 +4371,41 @@
           "action": "Faites l'appoint.",
           "causes": "Consommation normale.",
           "conseils": "Liquide adapté saison (antigel en hiver)."
+        },
+        "en": {
+          "name": "Top up washer fluid",
+          "signification": "Washer fluid level is low.",
+          "action": "Top up the reservoir.",
+          "causes": "Normal consumption.",
+          "conseils": "Use seasonally appropriate fluid (anti-freeze in winter)."
+        },
+        "it": {
+          "name": "Rabboccare liquido lavavetri",
+          "signification": "Livello del liquido lavavetri basso.",
+          "action": "Rabbocca il serbatoio.",
+          "causes": "Consumo normale.",
+          "conseils": "Usa un liquido adatto alla stagione (antigelo in inverno)."
+        },
+        "nl": {
+          "name": "Ruitensproeier bijvullen",
+          "signification": "Niveau ruitensproeiervloeistof is laag.",
+          "action": "Vul het reservoir bij.",
+          "causes": "Normaal verbruik.",
+          "conseils": "Gebruik seizoensgebonden vloeistof (antivries in winter)."
+        },
+        "de": {
+          "name": "Wischwasser nachfüllen",
+          "signification": "Wischwasserstand niedrig.",
+          "action": "Behälter nachfüllen.",
+          "causes": "Normaler Verbrauch.",
+          "conseils": "Saisonal angepasste Flüssigkeit verwenden (Frostschutz im Winter)."
+        },
+        "es": {
+          "name": "Rellenar limpiaparabrisas",
+          "signification": "Nivel del líquido limpiaparabrisas bajo.",
+          "action": "Rellena el depósito.",
+          "causes": "Consumo normal.",
+          "conseils": "Usa líquido adecuado a la estación (anticongelante en invierno)."
         }
       }
     },
@@ -2122,6 +4432,41 @@
           "action": "Adaptez vitesse et restez vigilant.",
           "causes": "Conditions météo.",
           "conseils": "Pneus hiver conseillés sous 7°C."
+        },
+        "en": {
+          "name": "Low outside temperature",
+          "signification": "Outside temperature is low (ice risk).",
+          "action": "Adapt speed and stay alert.",
+          "causes": "Weather conditions.",
+          "conseils": "Winter tires recommended below 7°C."
+        },
+        "it": {
+          "name": "Temperatura esterna bassa",
+          "signification": "Temperatura esterna bassa (rischio ghiaccio).",
+          "action": "Adatta velocità e rimani vigile.",
+          "causes": "Condizioni meteo.",
+          "conseils": "Pneumatici invernali consigliati sotto i 7°C."
+        },
+        "nl": {
+          "name": "Lage buitentemperatuur",
+          "signification": "Lage buitentemperatuur (kans op ijzel).",
+          "action": "Pas snelheid aan en blijf alert.",
+          "causes": "Weersomstandigheden.",
+          "conseils": "Winterbanden aanbevolen onder 7°C."
+        },
+        "de": {
+          "name": "Niedrige Außentemperatur",
+          "signification": "Niedrige Außentemperatur (Glatteisgefahr).",
+          "action": "Geschwindigkeit anpassen, aufmerksam bleiben.",
+          "causes": "Wetterbedingungen.",
+          "conseils": "Winterreifen unter 7°C empfohlen."
+        },
+        "es": {
+          "name": "Temperatura exterior baja",
+          "signification": "Temperatura exterior baja (riesgo de hielo).",
+          "action": "Adapta velocidad y mantente atento.",
+          "causes": "Condiciones meteorológicas.",
+          "conseils": "Neumáticos de invierno recomendados bajo 7°C."
         }
       }
     },
@@ -2148,6 +4493,41 @@
           "action": "Aucune action.",
           "causes": "Activation manuelle.",
           "conseils": "Désactivable via commodo."
+        },
+        "en": {
+          "name": "Auto wipers on",
+          "signification": "Automatic wipers are active.",
+          "action": "No action.",
+          "causes": "Manual activation.",
+          "conseils": "Can be disabled via the wiper stalk."
+        },
+        "it": {
+          "name": "Tergicristalli automatici attivi",
+          "signification": "I tergicristalli automatici sono in funzione.",
+          "action": "Nessuna azione.",
+          "causes": "Attivazione manuale.",
+          "conseils": "Disattivabili tramite la leva tergi."
+        },
+        "nl": {
+          "name": "Automatische ruitenwissers aan",
+          "signification": "Automatische ruitenwissers actief.",
+          "action": "Geen actie.",
+          "causes": "Handmatige activering.",
+          "conseils": "Uitschakelbaar via ruitenwisserschakelaar."
+        },
+        "de": {
+          "name": "Automatikwischer aktiv",
+          "signification": "Automatikwischer sind aktiv.",
+          "action": "Keine Aktion.",
+          "causes": "Manuelle Aktivierung.",
+          "conseils": "Per Wischerhebel deaktivierbar."
+        },
+        "es": {
+          "name": "Limpiaparabrisas automáticos activos",
+          "signification": "Los limpiaparabrisas automáticos están funcionando.",
+          "action": "Ninguna acción.",
+          "causes": "Activación manual.",
+          "conseils": "Desactivables con el mando del limpia."
         }
       }
     },
@@ -2170,6 +4550,41 @@
           "action": "Aucune action.",
           "causes": "Activation manuelle.",
           "conseils": "Nettoyez la zone du capteur si erratique."
+        },
+        "en": {
+          "name": "Rain sensor on",
+          "signification": "The rain sensor is active.",
+          "action": "No action.",
+          "causes": "Manual activation.",
+          "conseils": "Clean the sensor area if behavior is erratic."
+        },
+        "it": {
+          "name": "Sensore pioggia attivo",
+          "signification": "Il sensore pioggia è attivo.",
+          "action": "Nessuna azione.",
+          "causes": "Attivazione manuale.",
+          "conseils": "Pulisci la zona del sensore se il comportamento è irregolare."
+        },
+        "nl": {
+          "name": "Regensensor aan",
+          "signification": "De regensensor is actief.",
+          "action": "Geen actie.",
+          "causes": "Handmatige activering.",
+          "conseils": "Maak sensorzone schoon bij grillig gedrag."
+        },
+        "de": {
+          "name": "Regensensor aktiv",
+          "signification": "Der Regensensor ist aktiv.",
+          "action": "Keine Aktion.",
+          "causes": "Manuelle Aktivierung.",
+          "conseils": "Sensorbereich bei sprunghaftem Verhalten reinigen."
+        },
+        "es": {
+          "name": "Sensor de lluvia activo",
+          "signification": "El sensor de lluvia está activo.",
+          "action": "Ninguna acción.",
+          "causes": "Activación manual.",
+          "conseils": "Limpia la zona del sensor si funciona errático."
         }
       }
     },
@@ -2192,6 +4607,41 @@
           "action": "Désactivez quand visibilité rétablie.",
           "causes": "Activation manuelle.",
           "conseils": "Combinez avec clim pour rapidité."
+        },
+        "en": {
+          "name": "Windshield defrost on",
+          "signification": "Front defrost is active.",
+          "action": "Turn off when visibility is restored.",
+          "causes": "Manual activation.",
+          "conseils": "Combine with A/C for faster defrosting."
+        },
+        "it": {
+          "name": "Sbrinamento parabrezza attivo",
+          "signification": "Lo sbrinamento anteriore è attivo.",
+          "action": "Disattiva quando la visibilità è ripristinata.",
+          "causes": "Attivazione manuale.",
+          "conseils": "Combina con il climatizzatore per sbrinamento rapido."
+        },
+        "nl": {
+          "name": "Voorruitontwaseming aan",
+          "signification": "Voorruitontwaseming is actief.",
+          "action": "Uitschakelen wanneer zicht hersteld is.",
+          "causes": "Handmatige activering.",
+          "conseils": "Combineer met airco voor sneller ontwasemen."
+        },
+        "de": {
+          "name": "Frontscheibenheizung aktiv",
+          "signification": "Frontscheibenentfeuchtung aktiv.",
+          "action": "Bei wiederhergestellter Sicht ausschalten.",
+          "causes": "Manuelle Aktivierung.",
+          "conseils": "Mit Klimaanlage kombinieren für schnelleres Entfeuchten."
+        },
+        "es": {
+          "name": "Desempañado de parabrisas activo",
+          "signification": "El desempañado delantero está activo.",
+          "action": "Desactiva al recuperar visibilidad.",
+          "causes": "Activación manual.",
+          "conseils": "Combina con A/C para desempañar más rápido."
         }
       }
     },
@@ -2218,6 +4668,41 @@
           "action": "Désactivez après usage (batterie).",
           "causes": "Activation manuelle.",
           "conseils": "Coupure auto après 10-15 min."
+        },
+        "en": {
+          "name": "Rear window defrost on",
+          "signification": "Rear window defrost is active.",
+          "action": "Turn off after use (battery saving).",
+          "causes": "Manual activation.",
+          "conseils": "Auto-off after 10-15 min on most vehicles."
+        },
+        "it": {
+          "name": "Sbrinamento lunotto attivo",
+          "signification": "Lo sbrinamento lunotto è attivo.",
+          "action": "Disattiva dopo l'uso (risparmio batteria).",
+          "causes": "Attivazione manuale.",
+          "conseils": "Spegnimento automatico dopo 10-15 min sulla maggior parte dei veicoli."
+        },
+        "nl": {
+          "name": "Achterruitverwarming aan",
+          "signification": "De achterruitverwarming is actief.",
+          "action": "Uitschakelen na gebruik (accu sparen).",
+          "causes": "Handmatige activering.",
+          "conseils": "Auto-uit na 10-15 min op de meeste auto's."
+        },
+        "de": {
+          "name": "Heckscheibenheizung aktiv",
+          "signification": "Heckscheibenheizung ist aktiv.",
+          "action": "Nach Gebrauch ausschalten (Batterie sparen).",
+          "causes": "Manuelle Aktivierung.",
+          "conseils": "Bei den meisten Fahrzeugen Abschaltautomatik nach 10-15 Min."
+        },
+        "es": {
+          "name": "Luneta térmica activa",
+          "signification": "La luneta térmica está activa.",
+          "action": "Apaga tras el uso (ahorra batería).",
+          "causes": "Activación manual.",
+          "conseils": "Apagado automático tras 10-15 min en la mayoría de vehículos."
         }
       }
     },
@@ -2244,6 +4729,41 @@
           "action": "Aucune action.",
           "causes": "Activation manuelle ou programmée.",
           "conseils": "Programmable télécommande/app selon modèle."
+        },
+        "en": {
+          "name": "Parking heater on",
+          "signification": "Cabin pre-heating (before departure).",
+          "action": "No action.",
+          "causes": "Manual or scheduled activation.",
+          "conseils": "Schedulable via remote or app depending on model."
+        },
+        "it": {
+          "name": "Riscaldatore di stazionamento attivo",
+          "signification": "Preriscaldamento abitacolo (prima della partenza).",
+          "action": "Nessuna azione.",
+          "causes": "Attivazione manuale o programmata.",
+          "conseils": "Programmabile da telecomando o app a seconda del modello."
+        },
+        "nl": {
+          "name": "Standkachel aan",
+          "signification": "Voorverwarmen interieur (voor vertrek).",
+          "action": "Geen actie.",
+          "causes": "Handmatige of geplande activering.",
+          "conseils": "Programmeerbaar via afstandsbediening of app afhankelijk van model."
+        },
+        "de": {
+          "name": "Standheizung aktiv",
+          "signification": "Vorheizen des Innenraums (vor der Abfahrt).",
+          "action": "Keine Aktion.",
+          "causes": "Manuelle oder programmierte Aktivierung.",
+          "conseils": "Per Fernbedienung oder App programmierbar je nach Modell."
+        },
+        "es": {
+          "name": "Calefactor estacionario activo",
+          "signification": "Precalentamiento del habitáculo (antes de salir).",
+          "action": "Ninguna acción.",
+          "causes": "Activación manual o programada.",
+          "conseils": "Programable por mando o app según modelo."
         }
       }
     },
@@ -2270,6 +4790,41 @@
           "action": "Réglez intensité selon confort.",
           "causes": "Activation manuelle.",
           "conseils": "Généralement 3 niveaux d'intensité."
+        },
+        "en": {
+          "name": "Heated seats on",
+          "signification": "Seat heating is on.",
+          "action": "Adjust the intensity for comfort.",
+          "causes": "Manual activation.",
+          "conseils": "Usually 3 intensity levels available."
+        },
+        "it": {
+          "name": "Sedili riscaldati attivi",
+          "signification": "Il riscaldamento del sedile è attivo.",
+          "action": "Regola l'intensità per il comfort.",
+          "causes": "Attivazione manuale.",
+          "conseils": "Generalmente 3 livelli di intensità disponibili."
+        },
+        "nl": {
+          "name": "Stoelverwarming aan",
+          "signification": "De stoelverwarming is actief.",
+          "action": "Stel intensiteit in voor comfort.",
+          "causes": "Handmatige activering.",
+          "conseils": "Meestal 3 intensiteitsniveaus beschikbaar."
+        },
+        "de": {
+          "name": "Sitzheizung aktiv",
+          "signification": "Die Sitzheizung ist aktiv.",
+          "action": "Intensität nach Komfort einstellen.",
+          "causes": "Manuelle Aktivierung.",
+          "conseils": "Meist 3 Intensitätsstufen verfügbar."
+        },
+        "es": {
+          "name": "Calefacción de asientos activa",
+          "signification": "La calefacción del asiento está activa.",
+          "action": "Ajusta la intensidad según comodidad.",
+          "causes": "Activación manual.",
+          "conseils": "Normalmente 3 niveles de intensidad."
         }
       }
     },
@@ -2296,6 +4851,41 @@
           "action": "Roulez en douceur jusqu'à extinction.",
           "causes": "Démarrage à froid normal.",
           "conseils": "Évitez les hauts régimes."
+        },
+        "en": {
+          "name": "Cold engine",
+          "signification": "Engine has not reached operating temperature.",
+          "action": "Drive gently until the light goes off.",
+          "causes": "Normal cold start.",
+          "conseils": "Avoid high revs while the light is on."
+        },
+        "it": {
+          "name": "Motore freddo",
+          "signification": "Il motore non ha raggiunto la temperatura di esercizio.",
+          "action": "Guida con dolcezza fino allo spegnimento.",
+          "causes": "Avviamento a freddo normale.",
+          "conseils": "Evita gli alti regimi mentre la spia è accesa."
+        },
+        "nl": {
+          "name": "Koude motor",
+          "signification": "Motor heeft de bedrijfstemperatuur niet bereikt.",
+          "action": "Rij rustig tot het lampje uitgaat.",
+          "causes": "Normale koude start.",
+          "conseils": "Vermijd hoog toerental zolang het lampje brandt."
+        },
+        "de": {
+          "name": "Motor kalt",
+          "signification": "Motor hat die Betriebstemperatur nicht erreicht.",
+          "action": "Sanft fahren, bis die Leuchte erlischt.",
+          "causes": "Normaler Kaltstart.",
+          "conseils": "Hohe Drehzahlen vermeiden, solange die Leuchte an ist."
+        },
+        "es": {
+          "name": "Motor frío",
+          "signification": "El motor no ha alcanzado la temperatura de servicio.",
+          "action": "Conduce con suavidad hasta que se apague.",
+          "causes": "Arranque en frío normal.",
+          "conseils": "Evita altas revoluciones mientras esté encendida."
         }
       }
     },
@@ -2322,6 +4912,41 @@
           "action": "Éteignez en croisement/suivi.",
           "causes": "Activation manuelle ou automatique.",
           "conseils": "Bascule auto sur phares matriciels."
+        },
+        "en": {
+          "name": "High beams",
+          "signification": "High beams are on.",
+          "action": "Turn off when crossing or following another vehicle.",
+          "causes": "Manual or automatic activation.",
+          "conseils": "Matrix headlights switch automatically on some models."
+        },
+        "it": {
+          "name": "Abbaglianti",
+          "signification": "Gli abbaglianti sono accesi.",
+          "action": "Spegnili quando incroci o segui un altro veicolo.",
+          "causes": "Attivazione manuale o automatica.",
+          "conseils": "Commutazione automatica sui modelli con fari Matrix."
+        },
+        "nl": {
+          "name": "Grootlicht",
+          "signification": "Het grootlicht brandt.",
+          "action": "Uitschakelen bij tegenliggers of voor de auto vóór u.",
+          "causes": "Handmatige of automatische activering.",
+          "conseils": "Automatische omschakeling op modellen met matrix-koplampen."
+        },
+        "de": {
+          "name": "Fernlicht",
+          "signification": "Das Fernlicht ist an.",
+          "action": "Bei Gegenverkehr oder Vordermann ausschalten.",
+          "causes": "Manuelle oder automatische Aktivierung.",
+          "conseils": "Bei Matrix-Scheinwerfern automatische Umschaltung."
+        },
+        "es": {
+          "name": "Luces largas",
+          "signification": "Las luces largas están encendidas.",
+          "action": "Apaga al cruzarte o seguir a otro vehículo.",
+          "causes": "Activación manual o automática.",
+          "conseils": "Cambio automático en modelos con faros matriciales."
         }
       }
     }
