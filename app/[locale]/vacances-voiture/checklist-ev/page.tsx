@@ -124,7 +124,7 @@ function ChecklistContent() {
 
   return (
     <main className="container checklist-ev-page" style={{ paddingTop: 36, paddingBottom: 64 }}>
-      {/* Styles imprimés — version épurée (10 conseils seuls) */}
+      {/* Styles imprimés — version 1 page A4, layout 2 colonnes */}
       <style>{`
         .checklist-ev-print-only { display: none; }
         @media print {
@@ -136,49 +136,111 @@ function ChecklistContent() {
             color: #111 !important;
             padding: 0 !important;
             max-width: none !important;
+            font-size: 9pt !important;
           }
           .checklist-ev-page h1,
           .checklist-ev-page h2,
           .checklist-ev-page h3 { color: #111 !important; }
           .checklist-ev-page a { color: #111 !important; text-decoration: none; }
           body { background: #fff !important; }
-          /* Cards conseils en print */
+
+          /* === Layout 2 colonnes pour les 10 conseils === */
+          .checklist-ev-tips-grid {
+            display: block !important;
+            column-count: 2 !important;
+            column-gap: 6mm !important;
+            column-fill: balance !important;
+          }
+
+          /* Cards conseils — ultra compactes */
           .checklist-ev-page .checklist-ev-tip {
-            page-break-inside: avoid;
-            break-inside: avoid;
-            border: 1px solid #d1d5db !important;
+            page-break-inside: avoid !important;
+            break-inside: avoid !important;
+            border: none !important;
+            border-left: 2.5pt solid #888 !important;
             background: #fff !important;
             color: #111 !important;
-            margin-bottom: 8px !important;
-            padding: 12px !important;
+            margin: 0 0 4pt 0 !important;
+            padding: 3pt 0 3pt 6pt !important;
             box-shadow: none !important;
+            border-radius: 0 !important;
+            display: block !important;
           }
-          /* Titre print et footer print */
-          .checklist-ev-print-title {
-            font-size: 1.3rem !important;
+          .checklist-ev-page .checklist-ev-tip > div:first-child {
+            display: inline !important;
+            text-align: left !important;
+            min-width: 0 !important;
+            margin-right: 4pt;
+          }
+          .checklist-ev-page .checklist-ev-tip > div:first-child > div:first-child {
+            display: none !important; /* emoji caché pour gagner de la place */
+          }
+          .checklist-ev-page .checklist-ev-tip > div:first-child > div:last-child {
+            display: inline !important;
+            font-size: 11pt !important;
+            font-weight: 800 !important;
+            color: #111 !important;
+            margin: 0 !important;
+          }
+          .checklist-ev-page .checklist-ev-tip > div:last-child {
+            display: inline !important;
+          }
+
+          /* Sous-éléments individuels */
+          .checklist-ev-page .tip-category { display: none !important; }
+          .checklist-ev-page .tip-nuance   { display: none !important; }
+          .checklist-ev-page .tip-why      { display: none !important; }
+          .checklist-ev-page .tip-title {
+            font-size: 9.5pt !important;
             font-weight: 700 !important;
-            margin: 0 0 4px 0 !important;
+            margin: 0 0 1pt 0 !important;
+            display: inline !important;
+          }
+          .checklist-ev-page .tip-impact {
+            font-size: 8.5pt !important;
+            font-weight: 600 !important;
+            margin: 1pt 0 1pt 0 !important;
+            display: block !important;
             color: #111 !important;
           }
+          .checklist-ev-page .tip-what {
+            font-size: 8.5pt !important;
+            line-height: 1.35 !important;
+            margin: 0 !important;
+            color: #222 !important;
+            display: block !important;
+          }
+          .checklist-ev-page .tip-what strong { font-weight: 700; }
+
+          /* Titre print et footer print */
+          .checklist-ev-print-title {
+            font-size: 12pt !important;
+            font-weight: 700 !important;
+            margin: 0 0 1pt 0 !important;
+            color: #111 !important;
+            text-align: center;
+          }
           .checklist-ev-print-subtitle {
-            font-size: 0.85rem !important;
+            font-size: 8pt !important;
             color: #555 !important;
-            margin: 0 0 14px 0 !important;
-            padding-bottom: 8px !important;
-            border-bottom: 1px solid #d1d5db !important;
+            margin: 0 0 6pt 0 !important;
+            padding-bottom: 4pt !important;
+            border-bottom: 0.5pt solid #999 !important;
+            text-align: center;
           }
           .checklist-ev-print-footer {
-            margin-top: 16px !important;
-            padding-top: 8px !important;
-            border-top: 1px solid #d1d5db !important;
-            font-size: 0.72rem !important;
+            margin-top: 4pt !important;
+            padding-top: 3pt !important;
+            border-top: 0.5pt solid #999 !important;
+            font-size: 7pt !important;
             color: #777 !important;
             text-align: center !important;
           }
-          /* H2 'Les 10 conseils' un peu plus discret */
+          /* H2 'Les 10 conseils' masqué */
           .checklist-ev-tips-h2 { display: none !important; }
-          /* Marges A4 */
-          @page { margin: 12mm 14mm; }
+
+          /* Marges A4 réduites */
+          @page { margin: 8mm 10mm; size: A4 portrait; }
         }
         .checklist-ev-tip {
           transition: transform 0.15s ease, box-shadow 0.15s ease;
@@ -243,9 +305,9 @@ function ChecklistContent() {
       </section>
 
       {/* 10 conseils */}
-      <section style={{ marginBottom: 40 }}>
+      <section className="checklist-ev-tips-section" style={{ marginBottom: 40 }}>
         <h2 className="checklist-ev-tips-h2" style={h2}>{t('tips_h2')}</h2>
-        <div style={{ display: 'grid', gap: 14 }}>
+        <div className="checklist-ev-tips-grid" style={{ display: 'grid', gap: 14 }}>
           {TIPS.map((tip) => (
             <article
               key={tip.num}
@@ -274,7 +336,7 @@ function ChecklistContent() {
 
               {/* Contenu */}
               <div>
-                <div style={{
+                <div className="tip-category" style={{
                   display: 'inline-block', padding: '3px 10px', borderRadius: 999,
                   background: `${CAT_COLOR[tip.cat]}22`, color: CAT_COLOR[tip.cat],
                   fontSize: '0.72rem', fontWeight: 700, textTransform: 'uppercase',
@@ -282,22 +344,22 @@ function ChecklistContent() {
                 }}>
                   {t(tip.cat as 'cat_road')}
                 </div>
-                <h3 style={{ fontSize: '1.1rem', margin: 0, marginBottom: 8 }}>
+                <h3 className="tip-title" style={{ fontSize: '1.1rem', margin: 0, marginBottom: 8 }}>
                   {t(`tip_${tip.num}_title` as 'tip_1_title')}
                 </h3>
-                <div style={{
+                <div className="tip-impact" style={{
                   fontSize: '0.85rem', fontWeight: 600,
                   color: CAT_COLOR[tip.cat], marginBottom: 8,
                 }}>
                   💡 {t(`tip_${tip.num}_impact` as 'tip_1_impact')}
                 </div>
-                <p style={{ fontSize: '0.92rem', lineHeight: 1.6, margin: 0, marginBottom: 8 }}>
+                <p className="tip-what" style={{ fontSize: '0.92rem', lineHeight: 1.6, margin: 0, marginBottom: 8 }}>
                   <strong>{t('label_what')} :</strong> {t(`tip_${tip.num}_what` as 'tip_1_what')}
                 </p>
-                <p style={{ fontSize: '0.88rem', lineHeight: 1.6, margin: 0, marginBottom: 8, color: 'var(--color-text-muted)' }}>
+                <p className="tip-nuance" style={{ fontSize: '0.88rem', lineHeight: 1.6, margin: 0, marginBottom: 8, color: 'var(--color-text-muted)' }}>
                   <strong>{t('label_nuance')} :</strong> {t(`tip_${tip.num}_nuance` as 'tip_1_nuance')}
                 </p>
-                <p style={{ fontSize: '0.85rem', lineHeight: 1.55, margin: 0, color: 'var(--color-text-muted)', fontStyle: 'italic' }}>
+                <p className="tip-why" style={{ fontSize: '0.85rem', lineHeight: 1.55, margin: 0, color: 'var(--color-text-muted)', fontStyle: 'italic' }}>
                   {t('label_why')} : {t(`tip_${tip.num}_why` as 'tip_1_why')}
                 </p>
               </div>
