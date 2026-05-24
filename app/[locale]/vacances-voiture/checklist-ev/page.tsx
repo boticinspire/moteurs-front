@@ -124,23 +124,61 @@ function ChecklistContent() {
 
   return (
     <main className="container checklist-ev-page" style={{ paddingTop: 36, paddingBottom: 64 }}>
-      {/* Styles imprimés + bandeau été */}
+      {/* Styles imprimés — version épurée (10 conseils seuls) */}
       <style>{`
+        .checklist-ev-print-only { display: none; }
         @media print {
-          .checklist-ev-page nav,
+          /* Cacher tout sauf les conseils et le print-only */
           .checklist-ev-page .no-print { display: none !important; }
+          .checklist-ev-page .checklist-ev-print-only { display: block !important; }
+          /* Réinit page */
+          .checklist-ev-page {
+            color: #111 !important;
+            padding: 0 !important;
+            max-width: none !important;
+          }
+          .checklist-ev-page h1,
+          .checklist-ev-page h2,
+          .checklist-ev-page h3 { color: #111 !important; }
+          .checklist-ev-page a { color: #111 !important; text-decoration: none; }
+          body { background: #fff !important; }
+          /* Cards conseils en print */
           .checklist-ev-page .checklist-ev-tip {
             page-break-inside: avoid;
             break-inside: avoid;
-            border: 1px solid #e5e7eb !important;
+            border: 1px solid #d1d5db !important;
             background: #fff !important;
             color: #111 !important;
-            margin-bottom: 10px !important;
+            margin-bottom: 8px !important;
+            padding: 12px !important;
+            box-shadow: none !important;
           }
-          .checklist-ev-page { color: #111 !important; }
-          .checklist-ev-page h1, .checklist-ev-page h2, .checklist-ev-page h3 { color: #111 !important; }
-          .checklist-ev-page a { color: #111 !important; text-decoration: underline; }
-          body { background: #fff !important; }
+          /* Titre print et footer print */
+          .checklist-ev-print-title {
+            font-size: 1.3rem !important;
+            font-weight: 700 !important;
+            margin: 0 0 4px 0 !important;
+            color: #111 !important;
+          }
+          .checklist-ev-print-subtitle {
+            font-size: 0.85rem !important;
+            color: #555 !important;
+            margin: 0 0 14px 0 !important;
+            padding-bottom: 8px !important;
+            border-bottom: 1px solid #d1d5db !important;
+          }
+          .checklist-ev-print-footer {
+            margin-top: 16px !important;
+            padding-top: 8px !important;
+            border-top: 1px solid #d1d5db !important;
+            font-size: 0.72rem !important;
+            color: #777 !important;
+            text-align: center !important;
+          }
+          /* H2 'Les 10 conseils' un peu plus discret */
+          .checklist-ev-tips-h2 { display: none !important; }
+          /* Marges A4 */
+          @page { margin: 12mm 14mm; }
         }
         .checklist-ev-tip {
           transition: transform 0.15s ease, box-shadow 0.15s ease;
@@ -150,6 +188,12 @@ function ChecklistContent() {
           box-shadow: 0 6px 18px rgba(0,0,0,0.08);
         }
       `}</style>
+
+      {/* Header imprimé minimal — affiché uniquement à l'impression */}
+      <div className="checklist-ev-print-only">
+        <h1 className="checklist-ev-print-title">{t('print_doc_title')}</h1>
+        <p className="checklist-ev-print-subtitle">{t('print_doc_subtitle')}</p>
+      </div>
 
       {/* Breadcrumb */}
       <nav className="no-print" style={{ fontSize: '0.82rem', color: 'var(--color-text-muted)', marginBottom: 22 }}>
@@ -161,7 +205,7 @@ function ChecklistContent() {
       </nav>
 
       {/* Hero */}
-      <header style={{ marginBottom: 24 }}>
+      <header className="no-print" style={{ marginBottom: 24 }}>
         <div style={{ fontSize: '0.82rem', color: 'var(--color-primary)', fontWeight: 600, marginBottom: 8, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
           {t('hero_eyebrow', { annee: ANNEE })}
         </div>
@@ -182,7 +226,7 @@ function ChecklistContent() {
       </header>
 
       {/* Stats clés */}
-      <section style={{ marginBottom: 36 }}>
+      <section className="no-print" style={{ marginBottom: 36 }}>
         <div style={{ display: 'grid', gap: 12, gridTemplateColumns: 'repeat(auto-fit, minmax(170px, 1fr))' }}>
           <Stat valeur={t('stat_1_value')} label={t('stat_1_label')} />
           <Stat valeur={t('stat_2_value')} label={t('stat_2_label')} />
@@ -192,7 +236,7 @@ function ChecklistContent() {
       </section>
 
       {/* Intro éditoriale */}
-      <section style={{ marginBottom: 32 }}>
+      <section className="no-print" style={{ marginBottom: 32 }}>
         <p style={{ fontSize: '0.95rem', lineHeight: 1.65, color: 'var(--color-text)', maxWidth: 760 }}>
           {t('intro_para')}
         </p>
@@ -200,7 +244,7 @@ function ChecklistContent() {
 
       {/* 10 conseils */}
       <section style={{ marginBottom: 40 }}>
-        <h2 style={h2}>{t('tips_h2')}</h2>
+        <h2 className="checklist-ev-tips-h2" style={h2}>{t('tips_h2')}</h2>
         <div style={{ display: 'grid', gap: 14 }}>
           {TIPS.map((tip) => (
             <article
@@ -260,10 +304,14 @@ function ChecklistContent() {
             </article>
           ))}
         </div>
+        {/* Footer print minimal */}
+        <div className="checklist-ev-print-only checklist-ev-print-footer">
+          moteurs.com/vacances-voiture/checklist-ev
+        </div>
       </section>
 
       {/* FAQ */}
-      <section style={{ marginBottom: 36 }}>
+      <section className="no-print" style={{ marginBottom: 36 }}>
         <h2 style={h2}>{t('faq_h2')}</h2>
         <div style={{ display: 'grid', gap: 10 }}>
           {[1, 2, 3, 4, 5].map((i) => (

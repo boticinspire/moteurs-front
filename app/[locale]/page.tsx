@@ -352,9 +352,14 @@ export default function HomePage() {
                 <div className="v2-eyebrow">{t('summer_eyebrow')}</div>
                 <h2>{t('summer_title_a')} <span className="grad">{t('summer_title_glow')}</span></h2>
               </div>
-              <Link className="v2-btn v2-btn-ghost" href="/vacances-voiture">
-                {t('summer_cta_all')} <svg className="v2-ic"><use href="#i-arrow-right" /></svg>
-              </Link>
+              <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
+                <Link className="v2-btn v2-btn-ghost" href="/vacances-voiture/checklist-ev">
+                  🖨️ {t('summer_cta_checklist')} <svg className="v2-ic"><use href="#i-arrow-right" /></svg>
+                </Link>
+                <Link className="v2-btn v2-btn-ghost" href="/vacances-voiture">
+                  {t('summer_cta_all')} <svg className="v2-ic"><use href="#i-arrow-right" /></svg>
+                </Link>
+              </div>
             </div>
             <div className="v2-iti-grid">
               {[
@@ -448,6 +453,12 @@ export default function HomePage() {
               <h3>{t('tool8_title')}</h3>
               <p>{t('tool8_desc')}</p>
               <span className="open">{t('tool8_cta')} <svg className="v2-ic"><use href="#i-arrow-right" /></svg></span>
+            </Link>
+            <Link className="v2-tcard c-amber" href="/vacances-voiture/checklist-ev">
+              <div className="icbox"><svg className="v2-ic"><use href="#i-file-text" /></svg></div>
+              <h3>{t('tool9_title')}</h3>
+              <p>{t('tool9_desc')}</p>
+              <span className="open">{t('tool9_cta')} <svg className="v2-ic"><use href="#i-arrow-right" /></svg></span>
             </Link>
           </div>
         </div>
