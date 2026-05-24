@@ -710,13 +710,69 @@ const PAGE_CSS = `
   border: 1px solid var(--color-border);
   border-radius: var(--radius-md);
   overflow: hidden;
+  position: relative;
 }
-.docs-europe-tool .infographic-table-wrap { overflow-x: auto; }
+/* Visual hint that the table is horizontally scrollable */
+.docs-europe-tool .infographic::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 12px; /* leave room for scrollbar */
+  width: 32px;
+  background: linear-gradient(to right, rgba(255,255,255,0) 0%, rgba(0,0,0,0.08) 100%);
+  pointer-events: none;
+  z-index: 4;
+  border-top-right-radius: var(--radius-md);
+}
+.docs-europe-tool .infographic-table-wrap {
+  overflow-x: auto;
+  overflow-y: hidden;
+  /* Always-visible custom scrollbar so users know they can scroll */
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-primary) rgba(0,0,0,0.06);
+}
+.docs-europe-tool .infographic-table-wrap::-webkit-scrollbar {
+  height: 10px;
+  -webkit-appearance: none;
+}
+.docs-europe-tool .infographic-table-wrap::-webkit-scrollbar-track {
+  background: rgba(0,0,0,0.06);
+}
+.docs-europe-tool .infographic-table-wrap::-webkit-scrollbar-thumb {
+  background: var(--color-primary);
+  border-radius: 5px;
+}
+.docs-europe-tool .infographic-table-wrap::-webkit-scrollbar-thumb:hover {
+  background: var(--color-primary-dark);
+}
 .docs-europe-tool .infographic-table {
   width: 100%;
-  border-collapse: collapse;
+  border-collapse: separate; /* required so sticky cell background covers row stripes */
+  border-spacing: 0;
   font-size: 0.75rem;
-  min-width: 1280px;
+  min-width: 1180px;
+}
+/* Sticky "Pays" column — stays visible while user scrolls horizontally */
+.docs-europe-tool .infographic-table thead th:first-child,
+.docs-europe-tool .infographic-table tbody td:first-child {
+  position: sticky;
+  left: 0;
+  z-index: 2;
+}
+.docs-europe-tool .infographic-table thead th:first-child {
+  z-index: 3;
+  background: var(--color-bg-dark);
+}
+.docs-europe-tool .infographic-table tbody td:first-child {
+  background: var(--color-bg-card);
+  box-shadow: 4px 0 6px -4px rgba(0,0,0,0.18);
+}
+.docs-europe-tool .infographic-table tbody tr:nth-child(even) td:first-child {
+  background: #fafbfd;
+}
+.docs-europe-tool .infographic-table tbody tr:hover td:first-child {
+  background: var(--color-bg-alt);
 }
 .docs-europe-tool .infographic-table thead th {
   background: var(--color-bg-dark);
@@ -984,7 +1040,18 @@ const PAGE_CSS = `
     margin-bottom: 4px;
   }
   .docs-europe-tool .infographic-table-wrap { overflow: visible !important; }
-  .docs-europe-tool .infographic-table { min-width: 0 !important; font-size: 6pt !important; }
+  .docs-europe-tool .infographic-table {
+    min-width: 0 !important;
+    font-size: 6pt !important;
+    border-collapse: collapse !important;
+  }
+  /* Disable sticky + scroll hint in print */
+  .docs-europe-tool .infographic::after { display: none !important; }
+  .docs-europe-tool .infographic-table thead th:first-child,
+  .docs-europe-tool .infographic-table tbody td:first-child {
+    position: static !important;
+    box-shadow: none !important;
+  }
   .docs-europe-tool .infographic-table thead th {
     background: #0a1b3d !important; color: #fff !important;
     padding: 4px 3px !important;
