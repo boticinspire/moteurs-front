@@ -1,6 +1,7 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import { Link, useRouter } from '@/i18n/navigation'
 import ScanVoyant from './ScanVoyant'
 
 // ─── Types ────────────────────────────────────────────────────────────────────
@@ -294,18 +295,18 @@ const TREE: Record<string, TreeNode> = {
 // ─── Catégories de symptômes ──────────────────────────────────────────────────
 
 interface Symptome {
-  id:          string
-  label:       string
-  emoji:       string
-  description: string
-  firstNodeId: string
-  urgence?:    boolean
+  id:           string
+  label:        string
+  emoji:        string
+  description:  string
+  firstNodeId:  string
+  urgence?:     boolean
+  externalRoute?: string  // Si défini, redirige vers cette route au lieu de lancer le wizard
 }
 
 const SYMPTOMES: Symptome[] = [
   { id: 'ne_demarre_pas',   label: 'Ne démarre pas',        emoji: '🚫', description: 'Aucun démarrage, rien ne se passe, clé bloquée…', firstNodeId: 'nd_phares' },
-  { id: 'voyant_allume',    label: 'Voyant allumé',         emoji: '⚠️', description: 'Un ou plusieurs voyants sur le tableau de bord', firstNodeId: 'v_quel' },
-  { id: 'voyant_autre',     label: 'Autre voyant',          emoji: '🔵', description: 'AdBlue, FAP, TPMS, ABS, ESP…', firstNodeId: 'v_quel2' },
+  { id: 'voyant_allume',    label: 'Voyant allumé',         emoji: '⚠️', description: 'Identifier visuellement parmi les 75 témoins du tableau de bord', firstNodeId: 'v_quel', externalRoute: '/assistant-depannage/voyants' },
   { id: 'bruit_bizarre',    label: 'Bruit inhabituel',      emoji: '🔊', description: 'Claquement, grincement, sifflement, vibration…', firstNodeId: 'b_origine' },
   { id: 'perte_puissance',  label: 'Perte de puissance',   emoji: '📉', description: 'Le moteur manque de force, ralentit, a des ratés', firstNodeId: 'pp_voyant' },
   { id: 'probleme_freins',  label: 'Freinage anormal',     emoji: '🛑', description: 'Pédale molle, bruit, vibrations, traction…', firstNodeId: 'fr_type', urgence: true },
@@ -344,6 +345,7 @@ const btnOption = (actif = false, danger = false): React.CSSProperties => ({
 type Mode = 'wizard' | 'scan'
 
 export default function AssistantDepannage() {
+  const router = useRouter()
   const [mode,         setMode]         = useState<Mode>('wizard')
   const [etape,        setEtape]        = useState<EtapeWizard>('symptome')
   const [motorisation, setMotorisation] = useState<Motorisation>('essence')
@@ -354,10 +356,36 @@ export default function AssistantDepannage() {
   const [erreur,       setErreur]       = useState<string>('')
   const [derniersRep,  setDerniersRep]  = useState<Reponse[]>([])
 
+  // Auto-démarrage du wizard sur le flux voyant si l'utilisateur revient
+  // depuis le catalogue avec ?wizard=voyant (utilise window.location pour éviter
+  // le Suspense boundary requis par useSearchParams sous Next.js 16)
+  useEffect(() => {
+    if (typeof window === 'undefined') return
+    const params = new URLSearchParams(window.location.search)
+    if (params.get('wizard') === 'voyant') {
+      const symptomeVoyant: Symptome = {
+        id: 'voyant_allume',
+        label: 'Voyant allumé',
+        emoji: '⚠️',
+        description: 'Diagnostic guidé par questions',
+        firstNodeId: 'v_quel',
+      }
+      setSymptome(symptomeVoyant)
+      setNodeId('v_quel')
+      setReponses([])
+      setEtape('questions')
+    }
+  }, [])
+
   const currentNode = TREE[nodeId]
 
   // ── Choisir un symptôme ──────────────────────────────────────────────────
   const choisirSymptome = (s: Symptome) => {
+    // Certains symptômes redirigent vers une route dédiée plutôt que le wizard
+    if (s.externalRoute) {
+      router.push(s.externalRoute)
+      return
+    }
     setSymptome(s)
     setNodeId(s.firstNodeId)
     setReponses([])

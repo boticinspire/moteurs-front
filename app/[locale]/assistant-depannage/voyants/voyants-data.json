@@ -1,0 +1,2329 @@
+{
+  "meta": {
+    "version": 1,
+    "total": 75,
+    "categories": {
+      "fr": {
+        "freinage": "Freinage",
+        "moteur": "Moteur",
+        "electrique": "Système électrique",
+        "securite": "Sécurité",
+        "carburant": "Carburant",
+        "eclairage": "Éclairage",
+        "roues_chassis": "Roues & châssis",
+        "climatisation": "Climatisation & confort",
+        "divers": "Autres"
+      },
+      "it": {
+        "freinage": "Frenata",
+        "moteur": "Motore",
+        "electrique": "Sistema elettrico",
+        "securite": "Sicurezza",
+        "carburant": "Carburante",
+        "eclairage": "Illuminazione",
+        "roues_chassis": "Ruote e telaio",
+        "climatisation": "Climatizzazione e comfort",
+        "divers": "Altri"
+      },
+      "en": {
+        "freinage": "Braking",
+        "moteur": "Engine",
+        "electrique": "Electrical",
+        "securite": "Safety",
+        "carburant": "Fuel",
+        "eclairage": "Lighting",
+        "roues_chassis": "Wheels & chassis",
+        "climatisation": "HVAC & comfort",
+        "divers": "Other"
+      }
+    },
+    "colors": {
+      "fr": {
+        "red": "Rouge",
+        "yellow": "Jaune",
+        "green": "Vert",
+        "white": "Blanc",
+        "blue": "Bleu"
+      },
+      "it": {
+        "red": "Rosso",
+        "yellow": "Giallo",
+        "green": "Verde",
+        "white": "Bianco",
+        "blue": "Blu"
+      },
+      "en": {
+        "red": "Red",
+        "yellow": "Yellow",
+        "green": "Green",
+        "white": "White",
+        "blue": "Blue"
+      }
+    },
+    "urgency": {
+      "fr": {
+        "critical": "Critique",
+        "high": "Élevée",
+        "medium": "Moyenne",
+        "low": "Faible",
+        "info": "Informatif"
+      },
+      "it": {
+        "critical": "Critico",
+        "high": "Elevato",
+        "medium": "Medio",
+        "low": "Basso",
+        "info": "Informativo"
+      },
+      "en": {
+        "critical": "Critical",
+        "high": "High",
+        "medium": "Medium",
+        "low": "Low",
+        "info": "Info"
+      }
+    },
+    "source": "https://dats24.be/fr/particulier/blog/temoins-lumineux-tableau-de-bord-",
+    "icons_source": "Material Design Icons (Pictogrammers) — Apache 2.0"
+  },
+  "voyants": [
+    {
+      "id": 1,
+      "icon": "car-parking-brake",
+      "color": "red",
+      "urgency": "critical",
+      "category": "freinage",
+      "obd_codes": [
+        {
+          "code": "C0061",
+          "description": "Circuit contacteur frein à main"
+        },
+        {
+          "code": "B1342",
+          "description": "Module frein défectueux"
+        },
+        {
+          "code": "C0900",
+          "description": "Frein de stationnement"
+        }
+      ],
+      "i18n": {
+        "fr": {
+          "name": "Frein à main",
+          "signification": "Le frein à main est activé ou il y a un dysfonctionnement du système de freinage.",
+          "action": "Vérifiez que le frein à main est désactivé. S'il reste allumé, arrêtez-vous.",
+          "causes": "Frein à main encore activé ; manque de liquide de frein ; capteur défectueux.",
+          "conseils": "Désactivez complètement le frein à main. Contrôlez le niveau de liquide. Si le voyant persiste, consultez un garagiste."
+        }
+      }
+    },
+    {
+      "id": 2,
+      "icon": "oil",
+      "color": "red",
+      "urgency": "critical",
+      "category": "moteur",
+      "obd_codes": [
+        {
+          "code": "P0520",
+          "description": "Circuit capteur pression huile"
+        },
+        {
+          "code": "P0521",
+          "description": "Plage/performance"
+        },
+        {
+          "code": "P0522",
+          "description": "Tension basse"
+        },
+        {
+          "code": "P0523",
+          "description": "Tension haute"
+        }
+      ],
+      "i18n": {
+        "fr": {
+          "name": "Niveau / pression d'huile moteur",
+          "signification": "La pression d'huile est trop basse pendant la conduite.",
+          "action": "Arrêtez immédiatement le moteur pour éviter des dommages graves.",
+          "causes": "Niveau d'huile trop bas ; fuite ; pompe à huile ; capteur HS.",
+          "conseils": "Vérifiez le niveau à la jauge, complétez si nécessaire. Si voyant maintenu, garage immédiat."
+        }
+      }
+    },
+    {
+      "id": 3,
+      "icon": "car-battery",
+      "color": "red",
+      "urgency": "critical",
+      "category": "electrique",
+      "obd_codes": [
+        {
+          "code": "P0562",
+          "description": "Tension système basse"
+        },
+        {
+          "code": "P0563",
+          "description": "Tension système haute"
+        },
+        {
+          "code": "P0620",
+          "description": "Commande générateur"
+        },
+        {
+          "code": "P0625",
+          "description": "Circuit champ alternateur"
+        }
+      ],
+      "i18n": {
+        "fr": {
+          "name": "Batterie",
+          "signification": "La batterie n'est plus alimentée en électricité.",
+          "action": "Limitez la consommation électrique et rejoignez un garage rapidement.",
+          "causes": "Alternateur ; courroie ; câblage ; batterie en fin de vie.",
+          "conseils": "Coupez les équipements non essentiels. Faites contrôler alternateur et batterie."
+        }
+      }
+    },
+    {
+      "id": 4,
+      "icon": "car-coolant-level",
+      "color": "red",
+      "urgency": "critical",
+      "category": "moteur",
+      "obd_codes": [
+        {
+          "code": "P0115",
+          "description": "Circuit capteur temp moteur"
+        },
+        {
+          "code": "P0117",
+          "description": "Tension basse"
+        },
+        {
+          "code": "P0118",
+          "description": "Tension haute"
+        },
+        {
+          "code": "P0128",
+          "description": "Thermostat (temp insuffisante)"
+        },
+        {
+          "code": "P0480",
+          "description": "Relais ventilateur 1"
+        }
+      ],
+      "i18n": {
+        "fr": {
+          "name": "Liquide de refroidissement",
+          "signification": "Surchauffe du moteur détectée.",
+          "action": "Arrêtez-vous immédiatement dans un endroit sûr et coupez le moteur.",
+          "causes": "Niveau bas ; fuite ; thermostat ; ventilateur ; pompe à eau.",
+          "conseils": "Laissez refroidir 30 min avant d'ouvrir le bouchon. Diagnostic indispensable."
+        }
+      }
+    },
+    {
+      "id": 5,
+      "icon": "airbag",
+      "color": "red",
+      "urgency": "high",
+      "category": "securite",
+      "obd_codes": [
+        {
+          "code": "B0001-B0099",
+          "description": "Codes airbag (passager/conducteur/rideaux)"
+        },
+        {
+          "code": "B0010",
+          "description": "Déploiement airbag avant conducteur"
+        },
+        {
+          "code": "B0020",
+          "description": "Airbag passager"
+        },
+        {
+          "code": "B1000",
+          "description": "Calculateur airbag"
+        }
+      ],
+      "i18n": {
+        "fr": {
+          "name": "Airbag",
+          "signification": "Problème détecté avec le système d'airbag.",
+          "action": "Faites contrôler rapidement : risque d'absence de déploiement.",
+          "causes": "Capteur ; connecteur sous siège ; calculateur ; débranchement batterie.",
+          "conseils": "Vérifiez les connecteurs sous les sièges. Diagnostic à la valise."
+        }
+      }
+    },
+    {
+      "id": 6,
+      "icon": "seatbelt",
+      "color": "red",
+      "urgency": "medium",
+      "category": "securite",
+      "obd_codes": [
+        {
+          "code": "B0081",
+          "description": "Capteur ceinture conducteur"
+        },
+        {
+          "code": "B0083",
+          "description": "Capteur ceinture passager"
+        },
+        {
+          "code": "B1900",
+          "description": "Prétensionneur"
+        }
+      ],
+      "i18n": {
+        "fr": {
+          "name": "Ceinture de sécurité",
+          "signification": "Un passager n'a pas bouclé sa ceinture.",
+          "action": "Assurez-vous que tous les occupants ont attaché leur ceinture.",
+          "causes": "Ceinture non bouclée ; poids sur siège passager ; capteur boucle.",
+          "conseils": "Bouclez toutes les ceintures. Retirez objets lourds des sièges."
+        }
+      }
+    },
+    {
+      "id": 7,
+      "icon": "car-door",
+      "color": "red",
+      "urgency": "medium",
+      "category": "securite",
+      "obd_codes": [
+        {
+          "code": "B1340",
+          "description": "Contacteur porte conducteur"
+        },
+        {
+          "code": "B1341",
+          "description": "Contacteur porte passager"
+        },
+        {
+          "code": "B1310",
+          "description": "Contacteur capot"
+        },
+        {
+          "code": "B1320",
+          "description": "Contacteur coffre"
+        }
+      ],
+      "i18n": {
+        "fr": {
+          "name": "Porte / capot / hayon ouvert",
+          "signification": "Une ouverture n'est pas correctement fermée.",
+          "action": "Vérifiez et refermez correctement avant de repartir.",
+          "causes": "Fermeture incomplète ; contacteur HS ; joint déformé.",
+          "conseils": "Réouvrez puis refermez fermement. Contrôle des contacteurs si persistant."
+        }
+      }
+    },
+    {
+      "id": 8,
+      "icon": "steering",
+      "color": "red",
+      "urgency": "medium",
+      "category": "divers",
+      "obd_codes": [
+        {
+          "code": "B2000",
+          "description": "Verrouillage colonne direction"
+        },
+        {
+          "code": "B2001",
+          "description": "Antivol direction"
+        },
+        {
+          "code": "P1631",
+          "description": "Immobiliseur"
+        }
+      ],
+      "i18n": {
+        "fr": {
+          "name": "Verrouillage de direction",
+          "signification": "Le verrouillage antivol de la direction est activé.",
+          "action": "Tournez le volant tout en actionnant la clé/bouton.",
+          "causes": "Volant bloqué après stationnement roues braquées.",
+          "conseils": "Mouvement doux du volant en actionnant le démarreur."
+        }
+      }
+    },
+    {
+      "id": 9,
+      "icon": "car-brake-alert",
+      "color": "red",
+      "urgency": "high",
+      "category": "securite",
+      "obd_codes": [
+        {
+          "code": "C1B00",
+          "description": "Avertisseur collision avant (FCW)"
+        },
+        {
+          "code": "U0151",
+          "description": "Perte com module retenue"
+        },
+        {
+          "code": "C1A50",
+          "description": "Système assistance conduite"
+        }
+      ],
+      "i18n": {
+        "fr": {
+          "name": "Avertissement de proximité / collision",
+          "signification": "Vous roulez trop près du véhicule qui précède.",
+          "action": "Reprenez vos distances de sécurité immédiatement.",
+          "causes": "Distance insuffisante ; radar/caméra encrassé.",
+          "conseils": "Augmentez les distances. Nettoyez radar/caméra avant."
+        }
+      }
+    },
+    {
+      "id": 10,
+      "icon": "car-key",
+      "color": "red",
+      "urgency": "high",
+      "category": "divers",
+      "obd_codes": [
+        {
+          "code": "P0615",
+          "description": "Circuit relais démarreur"
+        },
+        {
+          "code": "P0616",
+          "description": "Tension basse relais"
+        },
+        {
+          "code": "P1631",
+          "description": "Immobiliseur non programmé"
+        },
+        {
+          "code": "B2780",
+          "description": "Antidémarrage transpondeur"
+        }
+      ],
+      "i18n": {
+        "fr": {
+          "name": "Problème au démarrage",
+          "signification": "Dysfonctionnement du système de démarrage.",
+          "action": "Ne forcez pas le démarrage : diagnostic nécessaire.",
+          "causes": "Démarreur ; batterie ; immobiliseur ; clé non reconnue.",
+          "conseils": "Vérifiez batterie et clé. Diagnostic chez un garagiste."
+        }
+      }
+    },
+    {
+      "id": 11,
+      "icon": "car-brake-fluid-level",
+      "color": "red",
+      "urgency": "critical",
+      "category": "freinage",
+      "obd_codes": [
+        {
+          "code": "C1201",
+          "description": "Niveau liquide frein bas"
+        },
+        {
+          "code": "C0265",
+          "description": "Circuit valve ABS"
+        },
+        {
+          "code": "C1289",
+          "description": "Capteur niveau frein"
+        }
+      ],
+      "i18n": {
+        "fr": {
+          "name": "Niveau de liquide de frein bas",
+          "signification": "Niveau de liquide de frein insuffisant.",
+          "action": "Ne roulez plus : sécurité de freinage compromise.",
+          "causes": "Usure plaquettes ; fuite circuit ; bouchon réservoir.",
+          "conseils": "Complétez (DOT4/DOT5). Contrôlez durites, étriers, maître-cylindre."
+        }
+      }
+    },
+    {
+      "id": 12,
+      "icon": "car-esp",
+      "color": "red",
+      "urgency": "high",
+      "category": "securite",
+      "obd_codes": [
+        {
+          "code": "C0035",
+          "description": "Capteur vitesse roue AV gauche"
+        },
+        {
+          "code": "C0040",
+          "description": "Capteur vitesse roue AV droite"
+        },
+        {
+          "code": "C0045",
+          "description": "Capteur vitesse roue AR"
+        },
+        {
+          "code": "C0050",
+          "description": "Capteur angle volant"
+        },
+        {
+          "code": "U0121",
+          "description": "Perte com module ABS"
+        }
+      ],
+      "i18n": {
+        "fr": {
+          "name": "Système ESP défectueux",
+          "signification": "Le contrôle de stabilité ne fonctionne plus.",
+          "action": "Conduisez prudemment dans les virages et sur sol glissant.",
+          "causes": "Capteur de roue ; capteur angle volant ; calculateur ABS/ESP.",
+          "conseils": "Évitez manœuvres brusques. Diagnostic électronique."
+        }
+      }
+    },
+    {
+      "id": 13,
+      "icon": "car-emergency-brake",
+      "color": "red",
+      "urgency": "high",
+      "category": "securite",
+      "obd_codes": [
+        {
+          "code": "C1B00",
+          "description": "Avertisseur de collision"
+        },
+        {
+          "code": "C1B01",
+          "description": "Freinage urgence (AEB)"
+        },
+        {
+          "code": "U0233",
+          "description": "Perte com module radar"
+        }
+      ],
+      "i18n": {
+        "fr": {
+          "name": "Système RBS (freinage automatique) défectueux",
+          "signification": "Le freinage d'urgence automatique ne fonctionne plus.",
+          "action": "Restez vigilant : aucune assistance en cas d'obstacle.",
+          "causes": "Caméra/radar avant encrassé ; calculateur HS.",
+          "conseils": "Nettoyez pare-brise et capteurs avant. Contrôle spécialiste."
+        }
+      }
+    },
+    {
+      "id": 14,
+      "icon": "car-brake-parking",
+      "color": "red",
+      "urgency": "info",
+      "category": "freinage",
+      "obd_codes": [
+        {
+          "code": "C0900",
+          "description": "Frein de stationnement électronique"
+        },
+        {
+          "code": "C0901",
+          "description": "Moteur EPB gauche"
+        },
+        {
+          "code": "C0902",
+          "description": "Moteur EPB droit"
+        }
+      ],
+      "i18n": {
+        "fr": {
+          "name": "Frein de stationnement électronique activé",
+          "signification": "Le frein à main électronique est engagé.",
+          "action": "Désactivez-le avant de partir.",
+          "causes": "Frein engagé volontairement.",
+          "conseils": "Appuyez sur le bouton EPB. Si refus, manuel/garagiste."
+        }
+      }
+    },
+    {
+      "id": 15,
+      "icon": "alert-octagon",
+      "color": "red",
+      "urgency": "critical",
+      "category": "moteur",
+      "obd_codes": [
+        {
+          "code": "P0606",
+          "description": "Calculateur moteur dysfonctionnement"
+        },
+        {
+          "code": "P0700",
+          "description": "Système transmission"
+        },
+        {
+          "code": "U0100",
+          "description": "Perte com avec ECM"
+        }
+      ],
+      "i18n": {
+        "fr": {
+          "name": "Mode de secours",
+          "signification": "Le véhicule est passé en mode dégradé.",
+          "action": "Roulez à faible vitesse jusqu'au garage le plus proche.",
+          "causes": "Défaillance moteur, boîte ou électronique critique.",
+          "conseils": "Ne sollicitez pas le moteur. Diagnostic immédiat (OBD)."
+        }
+      }
+    },
+    {
+      "id": 16,
+      "icon": "car-transmission",
+      "color": "red",
+      "urgency": "high",
+      "category": "moteur",
+      "obd_codes": [
+        {
+          "code": "P0700",
+          "description": "Système transmission demande TCM"
+        },
+        {
+          "code": "P0741",
+          "description": "Convertisseur couple (lockup)"
+        },
+        {
+          "code": "P0780",
+          "description": "Problème changement vitesse"
+        },
+        {
+          "code": "P0218",
+          "description": "Surchauffe boîte"
+        }
+      ],
+      "i18n": {
+        "fr": {
+          "name": "Défaillance de la transmission",
+          "signification": "Problème moteur ou transmission, perte de puissance.",
+          "action": "Évitez charges lourdes et fortes accélérations.",
+          "causes": "Surchauffe boîte ; huile usée ; capteur régime ; embrayage.",
+          "conseils": "Diagnostic transmission. Rejoignez un garage à vitesse modérée."
+        }
+      }
+    },
+    {
+      "id": 17,
+      "icon": "car-convertible",
+      "color": "red",
+      "urgency": "low",
+      "category": "divers",
+      "obd_codes": [
+        {
+          "code": "B1850",
+          "description": "Moteur toit ouvrant"
+        },
+        {
+          "code": "B1880",
+          "description": "Capteur position toit"
+        },
+        {
+          "code": "(spécifique constructeur)",
+          "description": ""
+        }
+      ],
+      "i18n": {
+        "fr": {
+          "name": "Problème toit ouvrant",
+          "signification": "Dysfonctionnement du toit ouvrant.",
+          "action": "Fermez complètement. Contrôle si voyant maintenu.",
+          "causes": "Mécanisme grippé ; rails encrassés ; moteur HS.",
+          "conseils": "Nettoyez/graissez les rails. Réinitialisation possible."
+        }
+      }
+    },
+    {
+      "id": 18,
+      "icon": "car-sports",
+      "color": "red",
+      "urgency": "low",
+      "category": "divers",
+      "obd_codes": [
+        {
+          "code": "Codes spécifiques constructeur (Porsche, Audi, etc.)",
+          "description": ""
+        },
+        {
+          "code": "Exemples : B10A0-B10AF (système aileron)",
+          "description": ""
+        }
+      ],
+      "i18n": {
+        "fr": {
+          "name": "Aileron / spoiler défectueux",
+          "signification": "Dysfonctionnement du spoiler réglable.",
+          "action": "Faites vérifier, surtout sur autoroute.",
+          "causes": "Moteur aileron HS ; capteur position ; calculateur.",
+          "conseils": "Contrôle mécanisme et faisceau (spécifique constructeur)."
+        }
+      }
+    },
+    {
+      "id": 19,
+      "icon": "key-alert",
+      "color": "yellow",
+      "urgency": "low",
+      "category": "divers",
+      "obd_codes": [
+        {
+          "code": "B1681",
+          "description": "Pile clé faible"
+        },
+        {
+          "code": "B2780",
+          "description": "Transpondeur non détecté"
+        }
+      ],
+      "i18n": {
+        "fr": {
+          "name": "Pile de la clé de voiture presque vide",
+          "signification": "La pile de la télécommande est presque déchargée.",
+          "action": "Remplacez la pile à court terme.",
+          "causes": "Pile usée (2-3 ans typiquement).",
+          "conseils": "Remplacez (souvent CR2032/CR2025). Réinitialisez si besoin."
+        }
+      }
+    },
+    {
+      "id": 20,
+      "icon": "vector-line",
+      "color": "yellow",
+      "urgency": "info",
+      "category": "securite",
+      "obd_codes": [
+        {
+          "code": "C1A50",
+          "description": "Système assistance maintien voie"
+        },
+        {
+          "code": "U0151",
+          "description": "Perte com module LKAS"
+        },
+        {
+          "code": "U0235",
+          "description": "Perte com caméra"
+        }
+      ],
+      "i18n": {
+        "fr": {
+          "name": "Lane Assist / Assistance de sortie de route",
+          "signification": "État du maintien de voie (vert/blanc actif, jaune défaut).",
+          "action": "Aucune si informatif. Contrôle si défaut.",
+          "causes": "Caméra sale ; marquages absents ; système désactivé.",
+          "conseils": "Nettoyez le pare-brise. Vérifiez paramètres véhicule."
+        }
+      }
+    },
+    {
+      "id": 21,
+      "icon": "car-brake-warning",
+      "color": "yellow",
+      "urgency": "medium",
+      "category": "freinage",
+      "obd_codes": [
+        {
+          "code": "B1342",
+          "description": "Circuit ampoule feu stop"
+        },
+        {
+          "code": "B2272",
+          "description": "Feu stop centre"
+        },
+        {
+          "code": "B2274",
+          "description": "Feu stop gauche"
+        },
+        {
+          "code": "B2276",
+          "description": "Feu stop droit"
+        }
+      ],
+      "i18n": {
+        "fr": {
+          "name": "Feux stop défectueux",
+          "signification": "Au moins une ampoule de feu stop ne fonctionne plus.",
+          "action": "Remplacez rapidement (obligation légale).",
+          "causes": "Ampoule grillée ; fusible ; mauvais contact ; LED.",
+          "conseils": "Test visuel pédale appuyée. Remplacement."
+        }
+      }
+    },
+    {
+      "id": 22,
+      "icon": "filter-variant",
+      "color": "yellow",
+      "urgency": "medium",
+      "category": "freinage",
+      "obd_codes": [
+        {
+          "code": "P2002",
+          "description": "Efficacité FAP en dessous seuil"
+        },
+        {
+          "code": "P2452",
+          "description": "Capteur pression différentielle FAP"
+        },
+        {
+          "code": "P2453",
+          "description": "Plage/performance FAP"
+        },
+        {
+          "code": "P244A",
+          "description": "Pression diff FAP basse"
+        },
+        {
+          "code": "P244B",
+          "description": "Pression diff FAP haute"
+        }
+      ],
+      "i18n": {
+        "fr": {
+          "name": "Filtre à particules (FAP/DPF)",
+          "signification": "Le filtre à particules diesel est encrassé.",
+          "action": "Trajet long (30 min) à régime soutenu sur autoroute.",
+          "causes": "Trajets courts répétés ; urbain ; injecteurs encrassés.",
+          "conseils": "30+ min à >2000 tr/min. Régénération forcée en atelier si persistant."
+        }
+      }
+    },
+    {
+      "id": 23,
+      "icon": "trending-down",
+      "color": "yellow",
+      "urgency": "info",
+      "category": "divers",
+      "obd_codes": [
+        {
+          "code": "C1414",
+          "description": "Contrôle descente (HDC)"
+        },
+        {
+          "code": "(codes typiquement informatifs)",
+          "description": ""
+        }
+      ],
+      "i18n": {
+        "fr": {
+          "name": "Contrôle de descente / Frein de montagne",
+          "signification": "La fonction de contrôle de descente est activée.",
+          "action": "Aucune action : fonction normale.",
+          "causes": "Activation manuelle ; pente détectée.",
+          "conseils": "Désactivable via le bouton dédié."
+        }
+      }
+    },
+    {
+      "id": 24,
+      "icon": "fuel",
+      "color": "yellow",
+      "urgency": "medium",
+      "category": "carburant",
+      "obd_codes": [
+        {
+          "code": "P0461",
+          "description": "Circuit jauge niveau carburant"
+        },
+        {
+          "code": "P0462",
+          "description": "Tension basse jauge"
+        },
+        {
+          "code": "P0463",
+          "description": "Tension haute jauge"
+        },
+        {
+          "code": "P0464",
+          "description": "Jauge intermittente"
+        }
+      ],
+      "i18n": {
+        "fr": {
+          "name": "Niveau de carburant bas",
+          "signification": "Réservoir bientôt vide (< 50-80 km d'autonomie).",
+          "action": "Faites le plein dès que possible.",
+          "causes": "Réservoir presque vide ; jauge défectueuse.",
+          "conseils": "Rejoignez une station. Évitez de rouler à sec (pompe)."
+        }
+      }
+    },
+    {
+      "id": 25,
+      "icon": "car-traction-control",
+      "color": "yellow",
+      "urgency": "medium",
+      "category": "securite",
+      "obd_codes": [
+        {
+          "code": "C0035-C0045",
+          "description": "Capteurs vitesse roues"
+        },
+        {
+          "code": "C0050",
+          "description": "Capteur angle volant"
+        },
+        {
+          "code": "C0196",
+          "description": "Capteur lacet/accélération"
+        },
+        {
+          "code": "U0121",
+          "description": "Perte com ABS"
+        }
+      ],
+      "i18n": {
+        "fr": {
+          "name": "Système de contrôle de stabilité activé",
+          "signification": "L'ESP intervient (clignote) ou est en défaut (fixe).",
+          "action": "Clignotant : adaptez. Fixe : contrôle.",
+          "causes": "Adhérence faible ; capteur HS ; ESP désactivé.",
+          "conseils": "Ralentissez. Vérifiez activation ESP. Diagnostic si fixe."
+        }
+      }
+    },
+    {
+      "id": 26,
+      "icon": "battery-charging-low",
+      "color": "yellow",
+      "urgency": "high",
+      "category": "electrique",
+      "obd_codes": [
+        {
+          "code": "P0A80",
+          "description": "Remplacer batterie hybride"
+        },
+        {
+          "code": "P0AFA",
+          "description": "Tension batterie hybride basse"
+        },
+        {
+          "code": "P0A7F",
+          "description": "Module batterie détérioré"
+        },
+        {
+          "code": "P1AE6",
+          "description": "Performance batterie HV"
+        }
+      ],
+      "i18n": {
+        "fr": {
+          "name": "Batterie faible voiture électrique",
+          "signification": "Niveau de charge batterie de traction faible.",
+          "action": "Rejoignez une borne de recharge rapidement.",
+          "causes": "Autonomie résiduelle faible ; consommation élevée.",
+          "conseils": "Mode ECO. Localisation borne via GPS/app."
+        }
+      }
+    },
+    {
+      "id": 27,
+      "icon": "car-light-alert",
+      "color": "yellow",
+      "urgency": "medium",
+      "category": "eclairage",
+      "obd_codes": [
+        {
+          "code": "B1351",
+          "description": "Phare avant gauche"
+        },
+        {
+          "code": "B1352",
+          "description": "Phare avant droit"
+        },
+        {
+          "code": "B1380",
+          "description": "Feu arrière gauche"
+        },
+        {
+          "code": "B1381",
+          "description": "Feu arrière droit"
+        }
+      ],
+      "i18n": {
+        "fr": {
+          "name": "Éclairage défectueux",
+          "signification": "Une ampoule extérieure est défaillante.",
+          "action": "Remplacez ou faites vérifier au garage.",
+          "causes": "Ampoule grillée ; module LED ; fusible.",
+          "conseils": "Identifiez l'ampoule en faisant le tour. Remplacement."
+        }
+      }
+    },
+    {
+      "id": 28,
+      "icon": "car-light-fog",
+      "color": "yellow",
+      "urgency": "info",
+      "category": "eclairage",
+      "obd_codes": [
+        {
+          "code": "N/A",
+          "description": "voyant informatif"
+        },
+        {
+          "code": "B1392",
+          "description": "Si défaut circuit antibrouillard"
+        }
+      ],
+      "i18n": {
+        "fr": {
+          "name": "Feux antibrouillard activés",
+          "signification": "Vos antibrouillards sont allumés.",
+          "action": "Éteignez hors brouillard/neige (éblouissement + amende).",
+          "causes": "Activation manuelle.",
+          "conseils": "Désactivez via le commodo."
+        }
+      }
+    },
+    {
+      "id": 29,
+      "icon": "flash-alert",
+      "color": "yellow",
+      "urgency": "medium",
+      "category": "electrique",
+      "obd_codes": [
+        {
+          "code": "U0001-U0299",
+          "description": "Perte communication CAN"
+        },
+        {
+          "code": "P0606",
+          "description": "Processeur calculateur moteur"
+        },
+        {
+          "code": "P0610",
+          "description": "Erreur option véhicule"
+        },
+        {
+          "code": "U0073",
+          "description": "Bus communication off"
+        }
+      ],
+      "i18n": {
+        "fr": {
+          "name": "Panne électrique",
+          "signification": "Défaillance d'un composant électrique.",
+          "action": "Faites contrôler : autonomie/fonctions peuvent être limitées.",
+          "causes": "Capteur, calculateur ou faisceau défaillant.",
+          "conseils": "Diagnostic OBD pour identifier le composant."
+        }
+      }
+    },
+    {
+      "id": 30,
+      "icon": "water-percent-alert",
+      "color": "yellow",
+      "urgency": "medium",
+      "category": "carburant",
+      "obd_codes": [
+        {
+          "code": "P008A",
+          "description": "Eau détectée dans carburant"
+        },
+        {
+          "code": "P0182",
+          "description": "Capteur température carburant"
+        }
+      ],
+      "i18n": {
+        "fr": {
+          "name": "Eau dans le filtre à carburant (diesel)",
+          "signification": "Présence d'eau dans le filtre à gasoil.",
+          "action": "Vidangez le filtre pour éviter dommage pompe.",
+          "causes": "Carburant contaminé ; condensation ; filtre saturé.",
+          "conseils": "Purgez la vis de vidange. Remplacement si récurrent."
+        }
+      }
+    },
+    {
+      "id": 31,
+      "icon": "car-tire-alert",
+      "color": "yellow",
+      "urgency": "medium",
+      "category": "roues_chassis",
+      "obd_codes": [
+        {
+          "code": "C0750",
+          "description": "Capteur TPMS roue AV gauche"
+        },
+        {
+          "code": "C0755",
+          "description": "TPMS AV droite"
+        },
+        {
+          "code": "C0760",
+          "description": "TPMS AR gauche"
+        },
+        {
+          "code": "C0765",
+          "description": "TPMS AR droite"
+        },
+        {
+          "code": "C2200",
+          "description": "Module TPMS"
+        }
+      ],
+      "i18n": {
+        "fr": {
+          "name": "Pression des pneus trop faible",
+          "signification": "Au moins un pneu est sous-gonflé.",
+          "action": "Vérifiez et regonflez selon préconisations.",
+          "causes": "Température ; petite fuite ; valve ; crevaison lente.",
+          "conseils": "Regonflage à la station. Contrôle si récurrent."
+        }
+      }
+    },
+    {
+      "id": 32,
+      "icon": "engine",
+      "color": "yellow",
+      "urgency": "high",
+      "category": "moteur",
+      "obd_codes": [
+        {
+          "code": "P0171",
+          "description": "Mélange trop pauvre banc 1"
+        },
+        {
+          "code": "P0174",
+          "description": "Mélange trop pauvre banc 2"
+        },
+        {
+          "code": "P0300",
+          "description": "Ratés combustion multiples"
+        },
+        {
+          "code": "P0301-P0304",
+          "description": "Raté cylindre 1 à 4"
+        },
+        {
+          "code": "P0420",
+          "description": "Catalyseur efficacité (banc 1)"
+        },
+        {
+          "code": "P0430",
+          "description": "Catalyseur efficacité (banc 2)"
+        },
+        {
+          "code": "P0455",
+          "description": "Grande fuite EVAP"
+        }
+      ],
+      "i18n": {
+        "fr": {
+          "name": "Panne moteur (Check Engine)",
+          "signification": "Anomalie moteur. Clignotant = grave.",
+          "action": "Fixe : diagnostic. Clignotant : arrêt immédiat.",
+          "causes": "Sonde lambda ; bobines ; EGR ; injecteur ; FAP ; AdBlue.",
+          "conseils": "Lecture codes défaut OBD2 obligatoire."
+        }
+      }
+    },
+    {
+      "id": 33,
+      "icon": "car-clutch",
+      "color": "yellow",
+      "urgency": "info",
+      "category": "moteur",
+      "obd_codes": [
+        {
+          "code": "P0810",
+          "description": "Erreur position embrayage"
+        },
+        {
+          "code": "P0830",
+          "description": "Contacteur pédale embrayage"
+        },
+        {
+          "code": "P0832",
+          "description": "Tension basse contacteur"
+        }
+      ],
+      "i18n": {
+        "fr": {
+          "name": "Appuyer sur l'embrayage",
+          "signification": "Le Start/Stop demande d'appuyer sur l'embrayage.",
+          "action": "Appuyez sur la pédale d'embrayage.",
+          "causes": "Fonctionnement normal Start/Stop.",
+          "conseils": "Aucune intervention nécessaire."
+        }
+      }
+    },
+    {
+      "id": 34,
+      "icon": "car-back",
+      "color": "yellow",
+      "urgency": "medium",
+      "category": "roues_chassis",
+      "obd_codes": [
+        {
+          "code": "C1A05",
+          "description": "Capteur hauteur AV gauche"
+        },
+        {
+          "code": "C1A06",
+          "description": "Capteur hauteur AV droit"
+        },
+        {
+          "code": "C1A45",
+          "description": "Système suspension pilotée"
+        }
+      ],
+      "i18n": {
+        "fr": {
+          "name": "Amortisseur / suspension défectueux",
+          "signification": "Défaillance d'un élément de suspension.",
+          "action": "Conduisez prudemment, évitez routes dégradées.",
+          "causes": "Amortisseur fuyard ; rotule ; capteur hauteur.",
+          "conseils": "Contrôle visuel et diagnostic. Remplacement par paire."
+        }
+      }
+    },
+    {
+      "id": 35,
+      "icon": "key-remove",
+      "color": "yellow",
+      "urgency": "low",
+      "category": "divers",
+      "obd_codes": [
+        {
+          "code": "B1681",
+          "description": "Pile clé faible"
+        },
+        {
+          "code": "B2780",
+          "description": "Transpondeur non détecté"
+        },
+        {
+          "code": "P1631",
+          "description": "Code immobiliseur incorrect"
+        }
+      ],
+      "i18n": {
+        "fr": {
+          "name": "Clé non détectée",
+          "signification": "La voiture ne détecte plus la clé sans contact.",
+          "action": "Approchez la clé ou changez la pile.",
+          "causes": "Pile faible ; clé hors de portée ; brouillage radio.",
+          "conseils": "Remplacez la pile. Utilisez le lecteur de secours."
+        }
+      }
+    },
+    {
+      "id": 36,
+      "icon": "car-brake-worn-linings",
+      "color": "yellow",
+      "urgency": "medium",
+      "category": "freinage",
+      "obd_codes": [
+        {
+          "code": "B1339",
+          "description": "Capteur usure plaquettes AV gauche"
+        },
+        {
+          "code": "B1340",
+          "description": "Capteur usure plaquettes AV droite"
+        },
+        {
+          "code": "C1287",
+          "description": "Capteur usure intégré"
+        }
+      ],
+      "i18n": {
+        "fr": {
+          "name": "Plaquettes de frein usées",
+          "signification": "Plaquettes ayant atteint le seuil d'usure.",
+          "action": "Remplacez rapidement pour éviter d'endommager disques.",
+          "causes": "Usure normale (30 000 à 70 000 km).",
+          "conseils": "Remplacement plaquettes (et disques si besoin)."
+        }
+      }
+    },
+    {
+      "id": 37,
+      "icon": "fuel-pump",
+      "color": "yellow",
+      "urgency": "high",
+      "category": "carburant",
+      "obd_codes": [
+        {
+          "code": "P0087",
+          "description": "Pression rampe injection trop basse"
+        },
+        {
+          "code": "P0088",
+          "description": "Pression rampe trop haute"
+        },
+        {
+          "code": "P0190",
+          "description": "Circuit capteur rampe"
+        },
+        {
+          "code": "P0191",
+          "description": "Plage/performance capteur"
+        }
+      ],
+      "i18n": {
+        "fr": {
+          "name": "Problème système de carburant",
+          "signification": "Anomalie circuit d'alimentation.",
+          "action": "Contrôle avant endommagement moteur.",
+          "causes": "Pompe ; filtre bouché ; injecteur ; pression.",
+          "conseils": "Diagnostic atelier. Évitez réservoir presque vide."
+        }
+      }
+    },
+    {
+      "id": 38,
+      "icon": "snowflake-alert",
+      "color": "yellow",
+      "urgency": "info",
+      "category": "divers",
+      "obd_codes": [
+        {
+          "code": "N/A",
+          "description": "voyant informatif"
+        },
+        {
+          "code": "P0072/P0073",
+          "description": "Si capteur temp ext HS"
+        }
+      ],
+      "i18n": {
+        "fr": {
+          "name": "Avertissement de verglas",
+          "signification": "Température extérieure basse (< 3°C).",
+          "action": "Adaptez vitesse et distances.",
+          "causes": "Température basse mesurée.",
+          "conseils": "Conduite douce. Pneus hiver sous 7°C."
+        }
+      }
+    },
+    {
+      "id": 39,
+      "icon": "weather-rainy",
+      "color": "yellow",
+      "urgency": "low",
+      "category": "divers",
+      "obd_codes": [
+        {
+          "code": "B1342",
+          "description": "Capteur pluie défectueux"
+        },
+        {
+          "code": "B2477",
+          "description": "Module capteur pluie/lumière"
+        }
+      ],
+      "i18n": {
+        "fr": {
+          "name": "Capteur de luminosité ou de pluie défectueux",
+          "signification": "Capteurs automatiques inopérants.",
+          "action": "Actionnez phares/essuie-glaces manuellement.",
+          "causes": "Capteur décollé du pare-brise ; câblage.",
+          "conseils": "Nettoyez la zone capteur. Contrôle atelier si persistant."
+        }
+      }
+    },
+    {
+      "id": 40,
+      "icon": "heating-coil",
+      "color": "yellow",
+      "urgency": "info",
+      "category": "divers",
+      "obd_codes": [
+        {
+          "code": "P0380",
+          "description": "Circuit bougies préchauffage A"
+        },
+        {
+          "code": "P0381",
+          "description": "Témoin préchauffage"
+        },
+        {
+          "code": "P0382",
+          "description": "Tension basse bougies"
+        },
+        {
+          "code": "P0670",
+          "description": "Module commande préchauffage"
+        }
+      ],
+      "i18n": {
+        "fr": {
+          "name": "Préchauffage (moteurs diesel)",
+          "signification": "Préchauffage des bougies en cours.",
+          "action": "Attendez extinction avant de démarrer.",
+          "causes": "Démarrage à froid normal ; bougies HS si maintenu.",
+          "conseils": "Contrôle bougies si voyant persistant."
+        }
+      }
+    },
+    {
+      "id": 41,
+      "icon": "car-brake-abs",
+      "color": "yellow",
+      "urgency": "high",
+      "category": "freinage",
+      "obd_codes": [
+        {
+          "code": "C0035",
+          "description": "Capteur ABS AV gauche"
+        },
+        {
+          "code": "C0040",
+          "description": "Capteur ABS AV droit"
+        },
+        {
+          "code": "C0045",
+          "description": "Capteur ABS AR gauche"
+        },
+        {
+          "code": "C0050",
+          "description": "Capteur ABS AR droit"
+        },
+        {
+          "code": "C0110",
+          "description": "Pompe ABS"
+        },
+        {
+          "code": "U0121",
+          "description": "Perte com module ABS"
+        }
+      ],
+      "i18n": {
+        "fr": {
+          "name": "Système ABS défectueux",
+          "signification": "L'ABS ne fonctionne plus.",
+          "action": "Freinage normal OK mais sans antiblocage.",
+          "causes": "Capteur roue ; câblage ; calculateur ABS ; fusible.",
+          "conseils": "Diagnostic OBD pour identifier capteur défectueux."
+        }
+      }
+    },
+    {
+      "id": 42,
+      "icon": "car-back",
+      "color": "yellow",
+      "urgency": "medium",
+      "category": "securite",
+      "obd_codes": [
+        {
+          "code": "C1A20",
+          "description": "Compresseur suspension pneumatique"
+        },
+        {
+          "code": "C1A30",
+          "description": "Capteur hauteur véhicule"
+        },
+        {
+          "code": "C1A40",
+          "description": "Soupape suspension"
+        }
+      ],
+      "i18n": {
+        "fr": {
+          "name": "Panne de suspension pneumatique",
+          "signification": "Suspension pneumatique défaillante.",
+          "action": "Évitez routes dégradées. Contrôle rapide.",
+          "causes": "Fuite coussin ; compresseur ; capteur hauteur.",
+          "conseils": "Test étanchéité, diagnostic spécialiste."
+        }
+      }
+    },
+    {
+      "id": 43,
+      "icon": "information-outline",
+      "color": "yellow",
+      "urgency": "info",
+      "category": "divers",
+      "obd_codes": [
+        {
+          "code": "N/A",
+          "description": "voyant informatif"
+        }
+      ],
+      "i18n": {
+        "fr": {
+          "name": "Information",
+          "signification": "Nouvelle info dans le menu véhicule.",
+          "action": "Consultez le menu information.",
+          "causes": "Notification système.",
+          "conseils": "Naviguez dans le menu."
+        }
+      }
+    },
+    {
+      "id": 44,
+      "icon": "truck-trailer",
+      "color": "yellow",
+      "urgency": "medium",
+      "category": "divers",
+      "obd_codes": [
+        {
+          "code": "B1390",
+          "description": "Circuit éclairage remorque"
+        },
+        {
+          "code": "B1395",
+          "description": "Module attelage électrique"
+        },
+        {
+          "code": "(spécifique constructeur)",
+          "description": ""
+        }
+      ],
+      "i18n": {
+        "fr": {
+          "name": "Crochet d'attelage défectueux",
+          "signification": "Problème crochet d'attelage / raccordement.",
+          "action": "Vérifiez raccordement avant de tracter.",
+          "causes": "Mauvais branchement ; capteur ; faisceau remorque.",
+          "conseils": "Contrôle prise et faisceau remorque."
+        }
+      }
+    },
+    {
+      "id": 45,
+      "icon": "car-tire-alert",
+      "color": "yellow",
+      "urgency": "medium",
+      "category": "roues_chassis",
+      "obd_codes": [
+        {
+          "code": "C0750-C0765",
+          "description": "Capteurs TPMS (4 roues)"
+        },
+        {
+          "code": "C2200",
+          "description": "Module TPMS"
+        },
+        {
+          "code": "C2201",
+          "description": "Capteur TPMS pile faible"
+        }
+      ],
+      "i18n": {
+        "fr": {
+          "name": "Changement de pression des pneus",
+          "signification": "Variation pression détectée par TPMS.",
+          "action": "Contrôlez la pression des 4 pneus.",
+          "causes": "Perte air lente ; crevaison ; TPMS HS ; pile capteur.",
+          "conseils": "Regonflage et inspection visuelle."
+        }
+      }
+    },
+    {
+      "id": 46,
+      "icon": "cog",
+      "color": "yellow",
+      "urgency": "medium",
+      "category": "roues_chassis",
+      "obd_codes": [
+        {
+          "code": "P175A",
+          "description": "Différentiel verrouillage"
+        },
+        {
+          "code": "P175B",
+          "description": "Différentiel performance"
+        },
+        {
+          "code": "C1A60",
+          "description": "Différentiel arrière (4x4)"
+        }
+      ],
+      "i18n": {
+        "fr": {
+          "name": "Différentiel défectueux",
+          "signification": "Anomalie différentiel.",
+          "action": "Contrôle pour éviter casse transmission.",
+          "causes": "Niveau huile bas ; usure ; capteur.",
+          "conseils": "Vérification huile de pont. Diagnostic spécialisé."
+        }
+      }
+    },
+    {
+      "id": 47,
+      "icon": "cog-outline",
+      "color": "yellow",
+      "urgency": "medium",
+      "category": "roues_chassis",
+      "obd_codes": [
+        {
+          "code": "P175C",
+          "description": "Différentiel AR position"
+        },
+        {
+          "code": "C1A65",
+          "description": "Embrayage Haldex (VAG)"
+        },
+        {
+          "code": "P1858",
+          "description": "Pression embrayage AR"
+        }
+      ],
+      "i18n": {
+        "fr": {
+          "name": "Différentiel arrière défectueux",
+          "signification": "Anomalie différentiel arrière (4x4).",
+          "action": "Évitez sollicitations 4x4. Contrôle.",
+          "causes": "Visco-coupleur ; Haldex ; niveau huile.",
+          "conseils": "Vidange et diagnostic 4x4."
+        }
+      }
+    },
+    {
+      "id": 48,
+      "icon": "watering-can",
+      "color": "yellow",
+      "urgency": "high",
+      "category": "carburant",
+      "obd_codes": [
+        {
+          "code": "P204F",
+          "description": "SCR système performance"
+        },
+        {
+          "code": "P207F",
+          "description": "Qualité réducteur SCR"
+        },
+        {
+          "code": "P20E8",
+          "description": "Pression réducteur basse"
+        },
+        {
+          "code": "P20EE",
+          "description": "Catalyseur SCR efficacité"
+        },
+        {
+          "code": "P203F",
+          "description": "Niveau réservoir réducteur bas"
+        }
+      ],
+      "i18n": {
+        "fr": {
+          "name": "AdBlue presque vide",
+          "signification": "Réservoir AdBlue presque vide.",
+          "action": "Faites l'appoint : vide = pas de redémarrage.",
+          "causes": "Consommation normale (1L / 1000 km).",
+          "conseils": "Achat en station/supermarché, appoint selon notice."
+        }
+      }
+    },
+    {
+      "id": 49,
+      "icon": "car-manual-transmission",
+      "color": "yellow",
+      "urgency": "high",
+      "category": "moteur",
+      "obd_codes": [
+        {
+          "code": "P0218",
+          "description": "Surchauffe boîte"
+        },
+        {
+          "code": "P0700",
+          "description": "Système transmission demande"
+        },
+        {
+          "code": "P0780",
+          "description": "Erreur changement vitesse"
+        },
+        {
+          "code": "P0741",
+          "description": "Convertisseur couple (lockup)"
+        },
+        {
+          "code": "P0962",
+          "description": "Solénoïde pression A"
+        }
+      ],
+      "i18n": {
+        "fr": {
+          "name": "Boîte de vitesses défectueuse",
+          "signification": "Surchauffe (fixe) ou problème grave (clignotant).",
+          "action": "Évitez charges. Clignotant : arrêt rapide.",
+          "causes": "Surchauffe huile ; capteur vitesse ; solénoïde ; usure.",
+          "conseils": "Diagnostic boîte. Vidange si surchauffe."
+        }
+      }
+    },
+    {
+      "id": 50,
+      "icon": "car-parking-lights",
+      "color": "yellow",
+      "urgency": "info",
+      "category": "eclairage",
+      "obd_codes": [
+        {
+          "code": "N/A",
+          "description": "voyant informatif"
+        },
+        {
+          "code": "B1392",
+          "description": "Si défaut circuit feux position"
+        }
+      ],
+      "i18n": {
+        "fr": {
+          "name": "Feux de position / stationnement activés",
+          "signification": "Feux de position allumés.",
+          "action": "Vérifiez utilité ; éteignez en stationnement prolongé.",
+          "causes": "Activation manuelle.",
+          "conseils": "Commodo sur 0 ou Auto."
+        }
+      }
+    },
+    {
+      "id": 51,
+      "icon": "lightbulb-on",
+      "color": "yellow",
+      "urgency": "info",
+      "category": "eclairage",
+      "obd_codes": [
+        {
+          "code": "N/A",
+          "description": "voyant informatif"
+        }
+      ],
+      "i18n": {
+        "fr": {
+          "name": "Éclairage intérieur activé",
+          "signification": "Éclairage intérieur allumé.",
+          "action": "Éteignez avant de quitter le véhicule.",
+          "causes": "Plafonnier laissé sur ON.",
+          "conseils": "Mettez plafonnier sur 'porte' ou OFF."
+        }
+      }
+    },
+    {
+      "id": 52,
+      "icon": "car-engine-start",
+      "color": "yellow",
+      "urgency": "info",
+      "category": "moteur",
+      "obd_codes": [
+        {
+          "code": "P1899",
+          "description": "BCM start/stop"
+        },
+        {
+          "code": "P050A",
+          "description": "Performance régulation ralenti froid"
+        },
+        {
+          "code": "(spécifique constructeur)",
+          "description": ""
+        }
+      ],
+      "i18n": {
+        "fr": {
+          "name": "Système Start/Stop activé",
+          "signification": "Moteur coupé automatiquement à l'arrêt.",
+          "action": "Aucune action : redémarrage seul.",
+          "causes": "Fonctionnement normal.",
+          "conseils": "Désactivable via bouton 'A OFF'."
+        }
+      }
+    },
+    {
+      "id": 53,
+      "icon": "car-cruise-control",
+      "color": "yellow",
+      "urgency": "info",
+      "category": "divers",
+      "obd_codes": [
+        {
+          "code": "C1A50",
+          "description": "Système assistance conduite"
+        },
+        {
+          "code": "P0571",
+          "description": "Contacteur pédale frein A"
+        },
+        {
+          "code": "U0233",
+          "description": "Perte com module radar ACC"
+        }
+      ],
+      "i18n": {
+        "fr": {
+          "name": "Cruise Control Adaptatif",
+          "signification": "Régulateur adaptatif (blanc activé, vert actif).",
+          "action": "Vérifiez consigne vitesse et distance.",
+          "causes": "Activation manuelle.",
+          "conseils": "Réglage via commandes au volant."
+        }
+      }
+    },
+    {
+      "id": 54,
+      "icon": "car-brake-hold",
+      "color": "yellow",
+      "urgency": "info",
+      "category": "freinage",
+      "obd_codes": [
+        {
+          "code": "C0900",
+          "description": "Frein de stationnement EPB"
+        },
+        {
+          "code": "P0571-P0577",
+          "description": "Contacteur frein"
+        },
+        {
+          "code": "(spécifique constructeur)",
+          "description": ""
+        }
+      ],
+      "i18n": {
+        "fr": {
+          "name": "Auto Hold / Pédale de frein",
+          "signification": "Auto Hold actif ou demande appui sur frein.",
+          "action": "Appuyez sur la pédale de frein si demandé.",
+          "causes": "Fonction normale Auto Hold.",
+          "conseils": "Activable/désactivable via bouton dédié."
+        }
+      }
+    },
+    {
+      "id": 55,
+      "icon": "car-light-dimmed",
+      "color": "yellow",
+      "urgency": "info",
+      "category": "eclairage",
+      "obd_codes": [
+        {
+          "code": "N/A",
+          "description": "voyant informatif"
+        },
+        {
+          "code": "B1351/B1352",
+          "description": "Si défaut circuit phares"
+        }
+      ],
+      "i18n": {
+        "fr": {
+          "name": "Feux de croisement activés",
+          "signification": "Vos codes sont allumés.",
+          "action": "Aucune action.",
+          "causes": "Activation manuelle ou auto.",
+          "conseils": "Vérifiez position du commodo."
+        }
+      }
+    },
+    {
+      "id": 56,
+      "icon": "car-wrench",
+      "color": "yellow",
+      "urgency": "low",
+      "category": "divers",
+      "obd_codes": [
+        {
+          "code": "N/A",
+          "description": "compteur entretien (pas un défaut)"
+        },
+        {
+          "code": "Réinitialisation via combiné d'instruments",
+          "description": ""
+        }
+      ],
+      "i18n": {
+        "fr": {
+          "name": "Indication de service / entretien",
+          "signification": "Entretien périodique requis.",
+          "action": "Prenez rendez-vous chez votre garagiste.",
+          "causes": "Échéance kilométrique ou temporelle atteinte.",
+          "conseils": "Vidange, filtres, contrôles selon carnet."
+        }
+      }
+    },
+    {
+      "id": 57,
+      "icon": "car-light-dimmed",
+      "color": "green",
+      "urgency": "info",
+      "category": "eclairage",
+      "obd_codes": [
+        {
+          "code": "N/A",
+          "description": "voyant informatif"
+        },
+        {
+          "code": "B2510",
+          "description": "Si défaut moteur orientation phare"
+        }
+      ],
+      "i18n": {
+        "fr": {
+          "name": "Phares adaptatifs activés",
+          "signification": "Phares suivent les mouvements du volant.",
+          "action": "Aucune action.",
+          "causes": "Activation automatique.",
+          "conseils": "Aide à la visibilité en virage."
+        }
+      }
+    },
+    {
+      "id": 58,
+      "icon": "car-light-fog",
+      "color": "green",
+      "urgency": "info",
+      "category": "eclairage",
+      "obd_codes": [
+        {
+          "code": "N/A",
+          "description": "voyant informatif"
+        }
+      ],
+      "i18n": {
+        "fr": {
+          "name": "Feux antibrouillard avant",
+          "signification": "Antibrouillards avant allumés.",
+          "action": "Utilisez uniquement par visibilité réduite.",
+          "causes": "Activation manuelle.",
+          "conseils": "Éteignez dès visibilité retrouvée."
+        }
+      }
+    },
+    {
+      "id": 59,
+      "icon": "leaf",
+      "color": "green",
+      "urgency": "info",
+      "category": "divers",
+      "obd_codes": [
+        {
+          "code": "N/A",
+          "description": "voyant informatif"
+        }
+      ],
+      "i18n": {
+        "fr": {
+          "name": "Mode ECO activé",
+          "signification": "Mode de conduite économique en fonction.",
+          "action": "Aucune action : la voiture optimise la conso.",
+          "causes": "Activation via bouton ECO.",
+          "conseils": "Désactivable si plus de réactivité souhaitée."
+        }
+      }
+    },
+    {
+      "id": 60,
+      "icon": "arrow-right-bold",
+      "color": "green",
+      "urgency": "info",
+      "category": "eclairage",
+      "obd_codes": [
+        {
+          "code": "N/A",
+          "description": "voyant informatif"
+        },
+        {
+          "code": "B2299",
+          "description": "Si circuit clignotant défaillant"
+        }
+      ],
+      "i18n": {
+        "fr": {
+          "name": "Clignotant",
+          "signification": "Un clignotant est activé.",
+          "action": "Éteignez après la manœuvre.",
+          "causes": "Activation commodo.",
+          "conseils": "Clignotement rapide = ampoule grillée."
+        }
+      }
+    },
+    {
+      "id": 61,
+      "icon": "car-cruise-control",
+      "color": "green",
+      "urgency": "info",
+      "category": "divers",
+      "obd_codes": [
+        {
+          "code": "N/A",
+          "description": "voyant informatif"
+        },
+        {
+          "code": "P0571",
+          "description": "Contacteur frein A (si défaut)"
+        }
+      ],
+      "i18n": {
+        "fr": {
+          "name": "Cruise control activé",
+          "signification": "Régulateur de vitesse maintient vitesse constante.",
+          "action": "Surveillez la route ; freinage = désactivation.",
+          "causes": "Activation manuelle.",
+          "conseils": "Désactivable par bouton ou pédale de frein."
+        }
+      }
+    },
+    {
+      "id": 62,
+      "icon": "car-speed-limiter",
+      "color": "green",
+      "urgency": "info",
+      "category": "divers",
+      "obd_codes": [
+        {
+          "code": "N/A",
+          "description": "voyant informatif"
+        }
+      ],
+      "i18n": {
+        "fr": {
+          "name": "Limiteur de vitesse",
+          "signification": "Limiteur empêche de dépasser la vitesse définie.",
+          "action": "Aucune action.",
+          "causes": "Activation manuelle.",
+          "conseils": "Kick-down pour dépasser temporairement."
+        }
+      }
+    },
+    {
+      "id": 63,
+      "icon": "parking",
+      "color": "green",
+      "urgency": "info",
+      "category": "divers",
+      "obd_codes": [
+        {
+          "code": "C1A70",
+          "description": "Capteur ultrasonique AR gauche"
+        },
+        {
+          "code": "C1A71",
+          "description": "AR droit"
+        },
+        {
+          "code": "C1A72",
+          "description": "AV gauche"
+        },
+        {
+          "code": "C1A73",
+          "description": "AV droit"
+        }
+      ],
+      "i18n": {
+        "fr": {
+          "name": "Capteurs de stationnement actifs",
+          "signification": "Aide au stationnement en fonction.",
+          "action": "Suivez signaux sonores et écran.",
+          "causes": "Activation auto en marche AR ou bouton.",
+          "conseils": "Nettoyez les capteurs si dysfonctionnement."
+        }
+      }
+    },
+    {
+      "id": 64,
+      "icon": "low-beam",
+      "color": "green",
+      "urgency": "info",
+      "category": "eclairage",
+      "obd_codes": [
+        {
+          "code": "B2520",
+          "description": "Moteur correcteur de phare"
+        },
+        {
+          "code": "B2521",
+          "description": "Capteur de charge"
+        }
+      ],
+      "i18n": {
+        "fr": {
+          "name": "Réglage hauteur des phares",
+          "signification": "Réglage manuel ou auto de la hauteur des phares.",
+          "action": "Adaptez selon chargement.",
+          "causes": "Activation via molette ou capteur charge.",
+          "conseils": "Réglez pour ne pas éblouir."
+        }
+      }
+    },
+    {
+      "id": 65,
+      "icon": "car-electric",
+      "color": "green",
+      "urgency": "info",
+      "category": "electrique",
+      "obd_codes": [
+        {
+          "code": "N/A",
+          "description": "voyant informatif"
+        },
+        {
+          "code": "P0A0F",
+          "description": "Mode forçage moteur électrique"
+        }
+      ],
+      "i18n": {
+        "fr": {
+          "name": "Mode VE activé",
+          "signification": "Vous roulez en 100 % électrique (hybride).",
+          "action": "Aucune action.",
+          "causes": "Charge batterie suffisante ; sélection manuelle.",
+          "conseils": "Bascule thermique auto si batterie vide."
+        }
+      }
+    },
+    {
+      "id": 66,
+      "icon": "wiper-wash",
+      "color": "white",
+      "urgency": "low",
+      "category": "climatisation",
+      "obd_codes": [
+        {
+          "code": "B1346",
+          "description": "Capteur niveau lave-glace"
+        },
+        {
+          "code": "(typiquement informatif)",
+          "description": ""
+        }
+      ],
+      "i18n": {
+        "fr": {
+          "name": "Remplir le liquide lave-glace",
+          "signification": "Niveau lave-glace bas.",
+          "action": "Faites l'appoint.",
+          "causes": "Consommation normale.",
+          "conseils": "Liquide adapté saison (antigel en hiver)."
+        }
+      }
+    },
+    {
+      "id": 67,
+      "icon": "snowflake",
+      "color": "white",
+      "urgency": "info",
+      "category": "climatisation",
+      "obd_codes": [
+        {
+          "code": "N/A",
+          "description": "voyant informatif"
+        },
+        {
+          "code": "P0072/P0073",
+          "description": "Si capteur temp ext HS"
+        }
+      ],
+      "i18n": {
+        "fr": {
+          "name": "Basses températures extérieures",
+          "signification": "Température extérieure basse (verglas).",
+          "action": "Adaptez vitesse et restez vigilant.",
+          "causes": "Conditions météo.",
+          "conseils": "Pneus hiver conseillés sous 7°C."
+        }
+      }
+    },
+    {
+      "id": 68,
+      "icon": "wiper",
+      "color": "white",
+      "urgency": "info",
+      "category": "climatisation",
+      "obd_codes": [
+        {
+          "code": "N/A",
+          "description": "voyant informatif"
+        },
+        {
+          "code": "B2477",
+          "description": "Si capteur pluie défaillant"
+        }
+      ],
+      "i18n": {
+        "fr": {
+          "name": "Essuie-glaces automatiques activés",
+          "signification": "Essuie-glaces auto en fonction.",
+          "action": "Aucune action.",
+          "causes": "Activation manuelle.",
+          "conseils": "Désactivable via commodo."
+        }
+      }
+    },
+    {
+      "id": 69,
+      "icon": "weather-rainy",
+      "color": "white",
+      "urgency": "info",
+      "category": "climatisation",
+      "obd_codes": [
+        {
+          "code": "N/A",
+          "description": "voyant informatif"
+        }
+      ],
+      "i18n": {
+        "fr": {
+          "name": "Capteur de pluie activé",
+          "signification": "Capteur de pluie en fonction.",
+          "action": "Aucune action.",
+          "causes": "Activation manuelle.",
+          "conseils": "Nettoyez la zone du capteur si erratique."
+        }
+      }
+    },
+    {
+      "id": 70,
+      "icon": "car-defrost-front",
+      "color": "white",
+      "urgency": "info",
+      "category": "climatisation",
+      "obd_codes": [
+        {
+          "code": "N/A",
+          "description": "voyant informatif"
+        }
+      ],
+      "i18n": {
+        "fr": {
+          "name": "Désembuage du pare-brise activé",
+          "signification": "Désembuage avant actif.",
+          "action": "Désactivez quand visibilité rétablie.",
+          "causes": "Activation manuelle.",
+          "conseils": "Combinez avec clim pour rapidité."
+        }
+      }
+    },
+    {
+      "id": 71,
+      "icon": "car-defrost-rear",
+      "color": "white",
+      "urgency": "info",
+      "category": "climatisation",
+      "obd_codes": [
+        {
+          "code": "N/A",
+          "description": "voyant informatif"
+        },
+        {
+          "code": "B2645",
+          "description": "Si défaut résistance dégivrage AR"
+        }
+      ],
+      "i18n": {
+        "fr": {
+          "name": "Chauffage de fenêtre arrière activé",
+          "signification": "Dégivrage arrière en fonction.",
+          "action": "Désactivez après usage (batterie).",
+          "causes": "Activation manuelle.",
+          "conseils": "Coupure auto après 10-15 min."
+        }
+      }
+    },
+    {
+      "id": 72,
+      "icon": "home-thermometer",
+      "color": "white",
+      "urgency": "info",
+      "category": "climatisation",
+      "obd_codes": [
+        {
+          "code": "N/A",
+          "description": "voyant informatif"
+        },
+        {
+          "code": "Webasto/Eberspächer codes mfg",
+          "description": ""
+        }
+      ],
+      "i18n": {
+        "fr": {
+          "name": "Chauffage de stationnement activé",
+          "signification": "Préchauffage habitacle (avant départ).",
+          "action": "Aucune action.",
+          "causes": "Activation manuelle ou programmée.",
+          "conseils": "Programmable télécommande/app selon modèle."
+        }
+      }
+    },
+    {
+      "id": 73,
+      "icon": "car-seat-heater",
+      "color": "white",
+      "urgency": "info",
+      "category": "climatisation",
+      "obd_codes": [
+        {
+          "code": "N/A",
+          "description": "voyant informatif"
+        },
+        {
+          "code": "B2655",
+          "description": "Si défaut résistance siège"
+        }
+      ],
+      "i18n": {
+        "fr": {
+          "name": "Chauffage des sièges activé",
+          "signification": "Chauffage de siège en fonction.",
+          "action": "Réglez intensité selon confort.",
+          "causes": "Activation manuelle.",
+          "conseils": "Généralement 3 niveaux d'intensité."
+        }
+      }
+    },
+    {
+      "id": 74,
+      "icon": "coolant-temperature",
+      "color": "blue",
+      "urgency": "info",
+      "category": "climatisation",
+      "obd_codes": [
+        {
+          "code": "N/A",
+          "description": "voyant informatif"
+        },
+        {
+          "code": "P0115-P0119",
+          "description": "Si capteur temp défaut"
+        }
+      ],
+      "i18n": {
+        "fr": {
+          "name": "Moteur froid",
+          "signification": "Moteur pas à température de fonctionnement.",
+          "action": "Roulez en douceur jusqu'à extinction.",
+          "causes": "Démarrage à froid normal.",
+          "conseils": "Évitez les hauts régimes."
+        }
+      }
+    },
+    {
+      "id": 75,
+      "icon": "car-light-high",
+      "color": "blue",
+      "urgency": "info",
+      "category": "eclairage",
+      "obd_codes": [
+        {
+          "code": "N/A",
+          "description": "voyant informatif"
+        },
+        {
+          "code": "B1391",
+          "description": "Si défaut circuit feux de route"
+        }
+      ],
+      "i18n": {
+        "fr": {
+          "name": "Feux de route / pleins phares",
+          "signification": "Feux de route allumés.",
+          "action": "Éteignez en croisement/suivi.",
+          "causes": "Activation manuelle ou automatique.",
+          "conseils": "Bascule auto sur phares matriciels."
+        }
+      }
+    }
+  ]
+}
