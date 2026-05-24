@@ -47,6 +47,7 @@ const PAGES_STATIQUES: { url: string; priority: number; changeFreq: MetadataRout
   { url: '/tco',           priority: 0.8,  changeFreq: 'monthly' },
   { url: '/recharge-electrique', priority: 0.9, changeFreq: 'weekly' },
   { url: '/vacances-voiture',    priority: 0.9, changeFreq: 'weekly' },
+  { url: '/vacances-voiture/checklist-ev', priority: 0.85, changeFreq: 'monthly' },
   { url: '/cout-voiture',        priority: 0.9, changeFreq: 'weekly' },
   { url: '/depannage',           priority: 0.9, changeFreq: 'weekly' },
   { url: '/documents-auto',      priority: 0.85, changeFreq: 'monthly' },

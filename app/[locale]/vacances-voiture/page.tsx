@@ -259,6 +259,7 @@ function VacancesContent() {
           <Link href="/recharge-electrique" style={btnSecondaire}>{t('outils_recharge')}</Link>
           <Link href="/simulateur" style={btnSecondaire}>{t('outils_simulateur')}</Link>
           <Link href="/constat" style={btnSecondaire}>{t('outils_constat')}</Link>
+          <Link href="/vacances-voiture/checklist-ev" style={btnSecondaire}>{t('outils_checklist_ev')}</Link>
         </div>
       </section>
     </main>

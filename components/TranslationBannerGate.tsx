@@ -21,6 +21,7 @@ const TRANSLATED_ROUTES = new Set<string>([
   '/simulateur',
   '/recharge-electrique',
   '/vacances-voiture',
+  '/vacances-voiture/checklist-ev',
   '/depannage',
   '/cout-voiture',
   '/documents-auto',
