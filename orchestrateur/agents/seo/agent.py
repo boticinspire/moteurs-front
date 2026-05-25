@@ -12,6 +12,9 @@ import logging
 import re
 from datetime import datetime, timezone
 
+import anthropic
+
+from config import get_settings
 from database import get_supabase
 
 logger = logging.getLogger(__name__)
@@ -195,6 +198,98 @@ def _verifier_meta(article: dict) -> dict:
     return {"avertissements": avertissements, "meta_ok": len(avertissements) == 0}
 
 
+# ── 2bis. Correction meta via Claude Haiku ────────────────────────────────────
+
+_PROMPT_CORRECTION_META = """\
+Tu corriges des balises meta SEO pour un article publié sur moteurs.com (média transition énergétique des transports).
+
+Article :
+- Titre : {titre}
+- Résumé : {resume}
+- Pays cible : {pays}
+
+Balises actuelles HORS PLAGE :
+- meta_title : "{mt}" ({len_mt} car.)
+- meta_description : "{md}" ({len_md} car.)
+
+CONTRAINTES STRICTES (à respecter à la lettre) :
+- meta_title : entre 55 et 60 caractères inclus (jamais plus de 60, jamais moins de 50)
+- meta_description : entre 150 et 160 caractères inclus (jamais plus de 160, jamais moins de 140)
+- Garder les mots-clés SEO principaux et le sens initial
+- Pas de guillemets typographiques, pas de retours à la ligne
+- Le titre doit rester accrocheur, la description doit donner envie de cliquer
+
+Réponds UNIQUEMENT en JSON strict (aucun commentaire, aucun bloc markdown) :
+{{"meta_title": "...", "meta_description": "..."}}
+"""
+
+
+def _corriger_meta_via_haiku(article: dict) -> dict | None:
+    """
+    Appelle Claude Haiku pour raccourcir meta_title et meta_description quand
+    ils sont hors plage. Retourne {"meta_title": ..., "meta_description": ...}
+    ou None si la correction a échoué.
+    """
+    mt = article.get("meta_title", "") or ""
+    md = article.get("meta_description", "") or ""
+    try:
+        settings = get_settings()
+        client = anthropic.Anthropic(api_key=settings.anthropic_api_key)
+
+        prompt = _PROMPT_CORRECTION_META.format(
+            titre=(article.get("titre_provisoire") or "")[:200],
+            resume=(article.get("resume_50mots") or "")[:400],
+            pays=article.get("pays_cible", "FR"),
+            mt=mt,
+            md=md,
+            len_mt=len(mt),
+            len_md=len(md),
+        )
+
+        resp = client.messages.create(
+            model="claude-haiku-4-5-20251001",
+            max_tokens=400,
+            messages=[{"role": "user", "content": prompt}],
+        )
+        raw = (resp.content[0].text or "").strip()
+
+        # Tolérer un éventuel fence ```json ... ```
+        if raw.startswith("```"):
+            raw = raw.strip("`")
+            if raw.lower().startswith("json"):
+                raw = raw[4:].strip()
+
+        data = json.loads(raw)
+        nouveau_mt = (data.get("meta_title") or "").strip()
+        nouveau_md = (data.get("meta_description") or "").strip()
+
+        # Garde-fous : tronquer doucement si Haiku déborde encore (rare)
+        if len(nouveau_mt) > 60:
+            nouveau_mt = nouveau_mt[:60].rstrip(" ,.;:-—")
+        if len(nouveau_md) > 160:
+            nouveau_md = nouveau_md[:160].rstrip(" ,.;:-—")
+
+        # Refuser si Haiku a renvoyé vide ou des valeurs absurdes
+        if not nouveau_mt or not nouveau_md:
+            logger.warning(
+                f"[AgentSEO] Haiku a renvoyé une valeur vide pour article #{article.get('id')} — correction ignorée"
+            )
+            return None
+
+        return {"meta_title": nouveau_mt, "meta_description": nouveau_md}
+
+    except json.JSONDecodeError as e:
+        logger.warning(
+            f"[AgentSEO] Réponse Haiku non JSON pour article #{article.get('id')} : {e} — correction ignorée"
+        )
+        return None
+    except Exception as e:
+        logger.error(
+            f"[AgentSEO] Erreur correction Haiku article #{article.get('id')} : {e}"
+        )
+        return None
+
+
 # ── 3. Maillage interne ───────────────────────────────────────────────────────
 
 def _construire_cibles_maillage(articles_publies_db: list[dict]) -> list[dict]:
@@ -307,8 +402,29 @@ async def enrichir_article_seo(article_id: int) -> dict:
     # ── Étape 1 : JSON-LD ──
     json_ld = _generer_json_ld(article)
 
-    # ── Étape 2 : vérification meta ──
+    # ── Étape 2 : vérification meta + correction Haiku si hors plage ──
     meta_rapport = _verifier_meta(article)
+    meta_corrigee = None
+    if not meta_rapport["meta_ok"]:
+        logger.info(
+            f"[AgentSEO] Tentative de correction meta via Haiku pour article #{article_id}"
+        )
+        meta_corrigee = _corriger_meta_via_haiku(article)
+        if meta_corrigee:
+            # Mettre à jour l'article local pour les étapes suivantes (JSON-LD déjà généré,
+            # on régénère pour bénéficier de la nouvelle meta_description)
+            article["meta_title"] = meta_corrigee["meta_title"]
+            article["meta_description"] = meta_corrigee["meta_description"]
+            # Re-vérification
+            meta_rapport = _verifier_meta(article)
+            # Re-générer le JSON-LD avec la nouvelle description
+            json_ld = _generer_json_ld(article)
+            logger.info(
+                f"[AgentSEO] ✅ Meta corrigées via Haiku pour article #{article_id} : "
+                f"title={len(meta_corrigee['meta_title'])} car., "
+                f"desc={len(meta_corrigee['meta_description'])} car. — "
+                f"meta_ok={meta_rapport['meta_ok']}"
+            )
 
     # ── Étape 3 : maillage interne ──
     # Charger les articles publiés en base (hors article courant)
@@ -336,13 +452,17 @@ async def enrichir_article_seo(article_id: int) -> dict:
 
     # ── Étape 5 : sauvegarde en base ──
     try:
-        supabase.table("articles").update({
+        update_payload = {
             "contenu_html": contenu_final,
             "etat_code": "PUBLIE",
             "etat_updated_at": datetime.now(timezone.utc).isoformat(),
             "published_at": datetime.now(timezone.utc).isoformat(),
             "niveau_confiance": "ÉLEVÉ" if meta_rapport["meta_ok"] else "MOYEN",
-        }).eq("id", article_id).execute()
+        }
+        if meta_corrigee:
+            update_payload["meta_title"] = meta_corrigee["meta_title"]
+            update_payload["meta_description"] = meta_corrigee["meta_description"]
+        supabase.table("articles").update(update_payload).eq("id", article_id).execute()
 
         logger.info(
             f"[AgentSEO] ✅ Article #{article_id} enrichi — "
@@ -359,5 +479,6 @@ async def enrichir_article_seo(article_id: int) -> dict:
         "liens_internes": nb_liens,
         "meta_ok": meta_rapport["meta_ok"],
         "meta_avertissements": meta_rapport["avertissements"],
+        "meta_corrigee_via_haiku": meta_corrigee is not None,
         "schemas_generes": ["Article"] + (["FAQPage"] if article.get("faq_json") else []),
     }
