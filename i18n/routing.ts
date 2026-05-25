@@ -13,6 +13,13 @@ export const routing = defineRouting({
   locales: ['fr', 'en', 'nl', 'de', 'es', 'it'],
   defaultLocale: 'fr',
   localePrefix: 'as-needed',
+  // Désactivé : sans ça, next-intl redirige les visiteurs (et Googlebot)
+  // dont Accept-Language contient 'en' vers /en/... — ce qui casse l'indexation
+  // de toutes les pages FR dans Google Search Console (statut « Sans objet »
+  // sur des centaines d'URLs). Avec localeDetection: false, les URLs nues
+  // servent toujours FR, et les autres langues restent accessibles via
+  // le LanguageSwitcher et les URLs préfixées (/en/, /de/, etc.).
+  localeDetection: false,
   localeCookie: {
     name: 'NEXT_LOCALE',
     maxAge: 60 * 60 * 24 * 365, // 1 an
