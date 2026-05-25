@@ -204,16 +204,68 @@ export default function AdminPage() {
   }
 
   // ── Utilisateurs ──
+  // Bypass SDK Supabase (qui stalle sur navigator.locks au 1er render).
+  // Fetch direct PostgREST vers /rest/v1/rpc/* avec token lu depuis localStorage.
+  function getAccessToken(): string | null {
+    try {
+      const raw = localStorage.getItem('sb-moteurs-auth')
+      if (!raw) return null
+      const parsed = JSON.parse(raw)
+      return parsed?.access_token || parsed?.currentSession?.access_token || null
+    } catch { return null }
+  }
+
   async function chargerUsers() {
     setUsersLoading(true)
-    const { data, error } = await sb.rpc('admin_get_users')
-    if (!error) setUsers((data as AdminUser[]) || [])
-    setUsersLoading(false)
+    try {
+      const token = getAccessToken()
+      const url = `${process.env.NEXT_PUBLIC_SUPABASE_URL}/rest/v1/rpc/admin_get_users`
+      const res = await fetch(url, {
+        method: 'POST',
+        headers: {
+          'apikey': process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+        },
+        body: '{}',
+      })
+      if (res.ok) {
+        const data = await res.json()
+        setUsers((data as AdminUser[]) || [])
+      } else {
+        console.warn('[admin] chargerUsers HTTP', res.status, await res.text())
+      }
+    } catch (e) {
+      console.error('[admin] chargerUsers error', e)
+    } finally {
+      setUsersLoading(false)
+    }
   }
 
   async function chargerUserDetail(userId: string) {
-    const { data } = await sb.rpc('admin_get_user_detail', { p_user_id: userId })
-    setUserDetail(data as UserDetail)
+    try {
+      const token = getAccessToken()
+      const url = `${process.env.NEXT_PUBLIC_SUPABASE_URL}/rest/v1/rpc/admin_get_user_detail`
+      const res = await fetch(url, {
+        method: 'POST',
+        headers: {
+          'apikey': process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+        },
+        body: JSON.stringify({ p_user_id: userId }),
+      })
+      if (res.ok) {
+        const data = await res.json()
+        setUserDetail(data as UserDetail)
+      } else {
+        console.warn('[admin] chargerUserDetail HTTP', res.status, await res.text())
+      }
+    } catch (e) {
+      console.error('[admin] chargerUserDetail error', e)
+    }
   }
 
   async function supprimerProfil(userId: string) {
