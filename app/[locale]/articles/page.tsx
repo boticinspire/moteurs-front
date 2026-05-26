@@ -11,7 +11,7 @@ export const revalidate = 300
 export default async function ArticlesPage() {
   const { data: articles } = await supabase
     .from('articles')
-    .select('slug, titre_provisoire, resume_50mots, pays_cible, published_at, niveau_confiance')
+    .select('slug, titre_provisoire, resume_50mots, pays_cible, cible, published_at, niveau_confiance')
     .eq('etat_code', 'PUBLIE')
     .order('published_at', { ascending: false })
     .limit(1000)

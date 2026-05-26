@@ -16,6 +16,7 @@ export type Article = {
   contenu_html: string | null
   faq_json: { question: string; reponse: string }[] | null
   pays_cible: 'FR' | 'BE' | 'CH' | 'CA' | 'LU'
+  cible: 'particulier' | 'pro' | 'mixte'
   niveau_confiance: 'ÉLEVÉ' | 'MOYEN' | 'FAIBLE' | 'DATA_MISSING' | null
   etat_code: string
   published_at: string | null
@@ -33,4 +34,24 @@ export const CONF_CLASS: Record<string, string> = {
 export const CONF_LABEL: Record<string, string> = {
   'ÉLEVÉ': 'Confiance ÉLEVÉ', 'MOYEN': 'Confiance MOYEN',
   'FAIBLE': 'À vérifier', 'DATA_MISSING': 'À vérifier',
+}
+
+export type Cible = 'particulier' | 'pro' | 'mixte'
+
+export const CIBLE_LABEL: Record<Cible, string> = {
+  particulier: 'Pour les particuliers',
+  pro: 'Pour les pros',
+  mixte: 'Particuliers et pros',
+}
+
+export const CIBLE_LABEL_COURT: Record<Cible, string> = {
+  particulier: 'Particulier',
+  pro: 'Pro',
+  mixte: 'Mixte',
+}
+
+export const CIBLE_COLOR: Record<Cible, { bg: string; fg: string; border: string }> = {
+  particulier: { bg: 'rgba(59,130,246,0.10)',  fg: '#1d4ed8', border: 'rgba(59,130,246,0.35)' },
+  pro:         { bg: 'rgba(0,184,135,0.10)',   fg: '#047857', border: 'rgba(0,184,135,0.35)' },
+  mixte:       { bg: 'rgba(148,163,184,0.12)', fg: '#475569', border: 'rgba(148,163,184,0.35)' },
 }

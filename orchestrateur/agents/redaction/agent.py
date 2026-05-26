@@ -81,6 +81,82 @@ PAYS_DECLINATIONS: dict[str, list[str]] = {
 }
 
 
+# ── Étape 0 : classification cible audience (Claude Haiku) ────────────────────
+# Détermine si le signal cible "particulier" (B2C), "pro" (B2B) ou "mixte"
+# (mérite 2 versions distinctes). Réutilisé par toutes les déclinaisons pays.
+
+CIBLES_VALIDES = ("particulier", "pro", "mixte")
+
+PROMPT_CLASSIFIER_CIBLE = """\
+Tu classifies un signal de veille selon son audience principale chez Moteurs.com,
+un média sur la transition énergétique des transports routiers.
+
+TITRE : {titre}
+RÉSUMÉ : {resume}
+
+Détermine l'audience principale :
+- "particulier" : intéresse d'abord les ménages (achat voiture perso, bonus écologique,
+  prime conversion, recharge maison/copro, ZFE pour particuliers, vélo électrique,
+  scooter perso, vacances en VE, autonomie réelle, ergonomie habitacle...)
+- "pro" : intéresse d'abord les entreprises (flottes, VUL, camions, déductibilité
+  fiscale entreprise, suramortissement, ATN voiture de société, leasing pro, IK,
+  transport routier, livraison, artisan, PME, infrastructure de recharge entreprise)
+- "mixte" : mérite 2 traitements distincts car concerne fortement les 2 audiences
+  (ZFE qui touche pros ET particuliers, infrastructure de recharge publique,
+  fin du thermique 2035, prix de l'énergie, accord politique majeur)
+
+Réponds STRICTEMENT par un seul mot : particulier, pro, ou mixte
+"""
+
+
+def _detecter_cible_heuristique(item: dict) -> str:
+    """Fallback heuristique sur mots-clés B2B classiques."""
+    mots_pro = [
+        "flotte", "flottes", "pme", "artisan", "artisans",
+        "camion", "camions", "van", "vul", "utilitaire", "utilitaires",
+        "entreprise", "entreprises", "professionnel", "professionnels",
+        "livraison", "transport routier", "chauffeur", "chauffeurs",
+        "fleet", "atn", "déductibilité", "deductibilite", "suramortissement",
+        "leasing pro", "ik", "indemnité kilométrique",
+    ]
+    texte = " ".join([item.get("titre", ""), item.get("resume_ia", "")]).lower()
+    return "pro" if any(m in texte for m in mots_pro) else "particulier"
+
+
+async def _classifier_cible(item: dict) -> str:
+    """
+    Classifier Haiku : particulier / pro / mixte.
+    Fallback heuristique mot-clés en cas d'erreur.
+    """
+    titre = (item.get("titre", "") or "")[:200]
+    resume = (item.get("resume_ia", "") or "")[:500]
+
+    try:
+        client = anthropic.Anthropic(api_key=settings.anthropic_api_key)
+        message = client.messages.create(
+            model="claude-haiku-4-5-20251001",
+            max_tokens=10,
+            messages=[{
+                "role": "user",
+                "content": PROMPT_CLASSIFIER_CIBLE.format(titre=titre, resume=resume),
+            }],
+        )
+        reponse = message.content[0].text.strip().lower()
+        for c in CIBLES_VALIDES:
+            if c in reponse:
+                logger.info(f"[AgentRédaction] Cible classifiée : {c} (titre={titre[:50]!r})")
+                return c
+        logger.warning(
+            f"[AgentRédaction] Classifier réponse inattendue : {reponse!r} → fallback heuristique"
+        )
+    except Exception as e:
+        logger.error(f"[AgentRédaction] Erreur classifier Haiku : {e} → fallback heuristique")
+
+    fallback = _detecter_cible_heuristique(item)
+    logger.info(f"[AgentRédaction] Cible (heuristique) : {fallback}")
+    return fallback
+
+
 # ── Étape 1 : extraction de faits (Claude Haiku) ─────────────────────────────
 # On ne transmet JAMAIS le texte brut à l'étape rédaction.
 # Seuls des faits synthétisés (chiffres, acteurs, décisions) passent la frontière.
@@ -186,6 +262,68 @@ CONSIGNES RÉDACTIONNELLES :
 question dans la FAQ
 """
 
+
+# ── Étape 2 bis : rédaction PARTICULIER (Claude Sonnet) ──────────────────────
+# Variante grand public : ton « vous », profils-types chiffrés, vocabulaire
+# sans jargon B2B, CTA orientés outils (simulateur, comparateur), pas formulaire commercial.
+
+PROMPT_REDACTION_PARTICULIER = """\
+Tu es le rédacteur expert de Moteurs.com qui parle aux PARTICULIERS de transition énergétique
+avec clarté, précision et pédagogie. Pas de jargon B2B.
+
+SIGNAL DE VEILLE :
+- Titre du sujet : {titre}
+- Source d'information : {source_nom} ({pays_source}, langue originale : {langue_source})
+- URL de la source : {url_origine}
+
+FAITS CLÉS EXTRAITS DE LA SOURCE :
+{faits_extraits}
+
+PAYS CIBLE : {pays_nom}
+CONTEXTE RÉGLEMENTAIRE ET FISCAL LOCAL :
+{contexte_reglementaire}
+
+---
+
+MISSION : Rédige un article ORIGINAL et COMPLET pour Moteurs.com, EN FRANÇAIS,
+ciblant spécifiquement les PARTICULIERS basés en {pays_nom}.
+
+⚠️ RÈGLE ABSOLUE : tu n'as PAS accès au texte source original. Les faits ci-dessus sont
+les seules données issues de la source. Tout le reste — analyse, exemples chiffrés,
+conseils pratiques — est ta propre production originale.
+
+PUBLIC : ménages, familles, jeunes actifs, retraités. PAS des pros, PAS des gestionnaires de flotte.
+
+TON ET STYLE :
+- Tu t'adresses au lecteur en « vous », jamais à « votre entreprise » ou « votre flotte »
+- Vocabulaire interdit sans définition simple en parenthèses : TCO, flotte, IK, déductibilité,
+  amortissement, lease, super-bonus pro, ATN
+- Tu emploies au moins UN exemple chiffré centré sur un profil-type concret, par exemple :
+  • Couple avec 2 enfants, ~12 000 km/an, mix urbain/route
+  • Retraité, ~8 000 km/an, principalement urbain
+  • Jeune actif urbain, ~6 000 km/an, sans place de parking attitrée
+  • Famille rurale, ~18 000 km/an, maison avec garage
+- Quand tu chiffres : impact en €/mois, €/an ou payback (années). Pas en €/km abstrait.
+- Si tu emploies un sigle (ZFE, VE, PHEV, BEV, CEE), explique-le en une phrase à la 1re occurrence
+
+CONSIGNES RÉDACTIONNELLES :
+1. Chapeau (2-3 phrases) : ce qui change CONCRÈTEMENT pour vous, lecteur {pays_nom}s
+2. 3 à 4 sections <h2>, dont obligatoirement une intitulée « {pays_nom} : ce que vous gagnez
+   (ou perdez) » qui intègre le contexte réglementaire local ci-dessus
+3. Au moins UN bloc « Exemple chiffré » avec un profil-type complet :
+   profil + kilométrage annuel + situation recharge + calcul €/an d'économie ou de surcoût
+4. Une section finale « Concrètement, qu'est-ce que je fais ? » avec 2-3 actions actionnables
+   (vérifier votre éligibilité au bonus, simuler votre trajet, etc.)
+5. Note de source en fin : « D'après <a href='{url_origine}'>{source_nom}</a> »
+6. 550 à 750 mots au total
+7. Pas de titre répété dans le corps de l'article
+8. N'invente pas de chiffres — si tu n'as pas l'info, dis « selon les estimations » ou pose
+   la question dans la FAQ
+9. CTA naturel vers les outils Moteurs.com : /simulateur (TCO perso),
+   /comparer-trajet (coût d'un trajet), /espace-membres (alertes aides personnalisées).
+   ⚠️ JAMAIS de CTA vers un formulaire commercial ou une démo B2B.
+"""
+
 # Schéma tool_use — Claude encode le JSON, pas de problème d'échappement HTML
 TOOL_ARTICLE = {
     "name": "creer_article",
@@ -271,33 +409,48 @@ async def generer_article(
     source: dict,
     pays_cible: str,
     faits_extraits: str,
+    cible: str = "pro",
 ) -> dict | None:
     """
     Étape 2 — Claude Sonnet rédige un article original pour un pays cible donné.
     Les faits extraits sont partagés (calculés une seule fois en amont).
+    cible : "particulier" ou "pro" (jamais "mixte" — celui-là explose en 2 appels en amont).
     Retourne le dict de l'article, ou None en cas d'échec.
     """
     client = anthropic.Anthropic(api_key=settings.anthropic_api_key)
-    segment = _detecter_segment(item)
+    cible = cible if cible in ("particulier", "pro") else "pro"
+    segment = "B2B" if cible == "pro" else "Particulier"
     public = (
         "professionnels : PME, artisans, gestionnaires de flottes"
-        if segment == "B2B"
-        else "particuliers souhaitant passer à un véhicule à énergie alternative"
+        if cible == "pro"
+        else "particuliers, familles, jeunes actifs et retraités"
     )
 
     contexte = CONTEXTES_PAYS.get(pays_cible, CONTEXTES_PAYS["FR"])
 
-    prompt = PROMPT_REDACTION.format(
-        titre=item.get("titre", ""),
-        source_nom=source.get("nom", "Source externe"),
-        pays_source=source.get("pays", "EU"),
-        langue_source=source.get("langue", "fr"),
-        url_origine=item.get("url_origine", ""),
-        faits_extraits=faits_extraits,
-        pays_nom=contexte["nom"],
-        contexte_reglementaire=contexte["contexte_reglementaire"],
-        public_cible=public,
-    )
+    if cible == "particulier":
+        prompt = PROMPT_REDACTION_PARTICULIER.format(
+            titre=item.get("titre", ""),
+            source_nom=source.get("nom", "Source externe"),
+            pays_source=source.get("pays", "EU"),
+            langue_source=source.get("langue", "fr"),
+            url_origine=item.get("url_origine", ""),
+            faits_extraits=faits_extraits,
+            pays_nom=contexte["nom"],
+            contexte_reglementaire=contexte["contexte_reglementaire"],
+        )
+    else:
+        prompt = PROMPT_REDACTION.format(
+            titre=item.get("titre", ""),
+            source_nom=source.get("nom", "Source externe"),
+            pays_source=source.get("pays", "EU"),
+            langue_source=source.get("langue", "fr"),
+            url_origine=item.get("url_origine", ""),
+            faits_extraits=faits_extraits,
+            pays_nom=contexte["nom"],
+            contexte_reglementaire=contexte["contexte_reglementaire"],
+            public_cible=public,
+        )
 
     try:
         message = client.messages.create(
@@ -320,6 +473,7 @@ async def generer_article(
         data["_segment_detecte"] = segment
         data["_faits_extraits"] = faits_extraits
         data["_pays_cible"] = pays_cible
+        data["_cible"] = cible
         return data
 
     except anthropic.APIError as e:
@@ -358,17 +512,31 @@ async def generer_declinaisons(item: dict, source: dict) -> list[dict]:
     pays_cibles = PAYS_DECLINATIONS.get(pays_source, ["FR", "BE", "CH", "CA"])
     logger.info(f"[AgentRédaction] Signal {pays_source} → déclinaisons : {pays_cibles}")
 
-    # ── Étape 2 : rédaction originale par pays cible ──
-    articles = []
-    for pays in pays_cibles:
-        logger.info(f"[AgentRédaction] Génération {pays} : {item.get('titre', '')[:50]}")
-        article = await generer_article(item, source, pays, faits_extraits)
-        if article:
-            articles.append(article)
-        else:
-            logger.warning(f"[AgentRédaction] Échec génération {pays}")
+    # ── Étape 1bis : classification audience (Haiku) ──
+    cible_globale = await _classifier_cible(item)
+    cibles_a_generer = (
+        ["particulier", "pro"] if cible_globale == "mixte" else [cible_globale]
+    )
+    logger.info(
+        f"[AgentRédaction] Classification audience : {cible_globale} "
+        f"→ versions à générer : {cibles_a_generer}"
+    )
 
-    logger.info(f"[AgentRédaction] {len(articles)}/{len(pays_cibles)} déclinaisons générées")
+    # ── Étape 2 : rédaction originale par (pays × cible) ──
+    articles = []
+    total_attendu = len(pays_cibles) * len(cibles_a_generer)
+    for pays in pays_cibles:
+        for c in cibles_a_generer:
+            logger.info(
+                f"[AgentRédaction] Génération {pays}/{c} : {item.get('titre', '')[:50]}"
+            )
+            article = await generer_article(item, source, pays, faits_extraits, c)
+            if article:
+                articles.append(article)
+            else:
+                logger.warning(f"[AgentRédaction] Échec génération {pays}/{c}")
+
+    logger.info(f"[AgentRédaction] {len(articles)}/{total_attendu} déclinaisons générées")
     return articles
 
 
@@ -389,14 +557,18 @@ async def run_redaction_item(item: dict, source: dict) -> int:
 
     for article_data in articles_data:
         pays_cible = article_data.get("_pays_cible", "FR")
+        cible_audience = article_data.get("_cible", "pro")
+        if cible_audience not in ("particulier", "pro"):
+            cible_audience = "pro"
         segment_nom = article_data.get("segment", article_data.get("_segment_detecte", "Particulier"))
         segment_id = SEGMENTS.get(segment_nom, 2)
 
-        # Slug suffixé par pays : aide-vul-electrique-fr, aide-vul-electrique-be…
+        # Slug suffixé par pays + suffixe audience pour différencier mixte (-par / -pro)
         base_slug = article_data.get("slug") or _slugify(
             article_data.get("titre", item.get("titre", ""))
         )
-        slug = f"{base_slug}-{pays_cible.lower()}"
+        suffixe_cible = "par" if cible_audience == "particulier" else "pro"
+        slug = f"{base_slug}-{pays_cible.lower()}-{suffixe_cible}"
 
         try:
             result = supabase.table("articles").insert({
@@ -404,6 +576,7 @@ async def run_redaction_item(item: dict, source: dict) -> int:
                 "slug": slug,
                 "profil_id": 1,
                 "segment_id": segment_id,
+                "cible": cible_audience,
                 "pays_cible": pays_cible,
                 "etat_code": "EN_ATTENTE_VALIDATION",
                 "etat_updated_at": datetime.utcnow().isoformat(),

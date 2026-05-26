@@ -3,21 +3,24 @@
 import { useState, useMemo, useEffect, Suspense } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { Link } from '@/i18n/navigation'
-import { CONF_CLASS, CONF_LABEL, type Article } from '@/lib/supabase'
+import { CONF_CLASS, CONF_LABEL, CIBLE_LABEL_COURT, CIBLE_COLOR, type Article, type Cible } from '@/lib/supabase'
 import Flag from '@/components/Flag'
 
 const PAYS_LABELS: Record<string, string> = { FR: 'France', BE: 'Belgique', CH: 'Suisse', CA: 'Canada', LU: 'Luxembourg' }
 
-type ArticleRow = Pick<Article, 'slug' | 'titre_provisoire' | 'resume_50mots' | 'pays_cible' | 'published_at' | 'niveau_confiance'>
+type ArticleRow = Pick<Article, 'slug' | 'titre_provisoire' | 'resume_50mots' | 'pays_cible' | 'cible' | 'published_at' | 'niveau_confiance'>
 
 const PAYS_LIST = ['FR', 'BE', 'CH', 'CA', 'LU'] as const
 const PAYS_STORAGE_KEY = 'moteurs_pays_filter'
+const CIBLE_STORAGE_KEY = 'moteurs_cible_filter'
+const CIBLES_VALIDES: Cible[] = ['particulier', 'pro']
 const PAGE_SIZE = 25
 
 function ArticleSearchInner({ articles }: { articles: ArticleRow[] }) {
   const searchParams = useSearchParams()
   const [query,      setQuery]      = useState('')
   const [pays,       setPays]       = useState('')
+  const [cible,      setCible]      = useState<'' | Cible>('')
   const [confiance,  setConfiance]  = useState('')
   const [page,       setPage]       = useState(1)
 
@@ -26,14 +29,26 @@ function ArticleSearchInner({ articles }: { articles: ArticleRow[] }) {
     const urlPays = searchParams.get('pays')?.toUpperCase() ?? ''
     if (urlPays && PAYS_LIST.includes(urlPays as typeof PAYS_LIST[number])) {
       setPays(urlPays)
-      return
+    } else {
+      try {
+        const saved = localStorage.getItem(PAYS_STORAGE_KEY)
+        if (saved && PAYS_LIST.includes(saved as typeof PAYS_LIST[number])) {
+          setPays(saved)
+        }
+      } catch { /* ignore */ }
     }
-    try {
-      const saved = localStorage.getItem(PAYS_STORAGE_KEY)
-      if (saved && PAYS_LIST.includes(saved as typeof PAYS_LIST[number])) {
-        setPays(saved)
-      }
-    } catch { /* ignore */ }
+
+    const urlCible = searchParams.get('cible')?.toLowerCase() ?? ''
+    if (CIBLES_VALIDES.includes(urlCible as Cible)) {
+      setCible(urlCible as Cible)
+    } else {
+      try {
+        const savedCible = localStorage.getItem(CIBLE_STORAGE_KEY)
+        if (savedCible && CIBLES_VALIDES.includes(savedCible as Cible)) {
+          setCible(savedCible as Cible)
+        }
+      } catch { /* ignore */ }
+    }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
@@ -46,13 +61,22 @@ function ArticleSearchInner({ articles }: { articles: ArticleRow[] }) {
     } catch { /* ignore */ }
   }
 
+  function handleCibleChange(value: '' | Cible) {
+    setCible(value)
+    try {
+      if (value) localStorage.setItem(CIBLE_STORAGE_KEY, value)
+      else localStorage.removeItem(CIBLE_STORAGE_KEY)
+    } catch { /* ignore */ }
+  }
+
   // Remise à la page 1 dès qu'un filtre change
-  useEffect(() => { setPage(1) }, [query, pays, confiance])
+  useEffect(() => { setPage(1) }, [query, pays, cible, confiance])
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase()
     return articles.filter((a) => {
       if (pays && a.pays_cible !== pays) return false
+      if (cible && a.cible !== cible && a.cible !== 'mixte') return false
       if (confiance && a.niveau_confiance !== confiance) return false
       if (q) {
         const inTitre   = a.titre_provisoire?.toLowerCase().includes(q)
@@ -61,21 +85,59 @@ function ArticleSearchInner({ articles }: { articles: ArticleRow[] }) {
       }
       return true
     })
-  }, [articles, query, pays, confiance])
+  }, [articles, query, pays, cible, confiance])
 
   const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE))
   const currentPage = Math.min(page, totalPages)
   const paginated   = filtered.slice((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE)
 
-  const hasFilters = query || pays || confiance
+  const hasFilters = query || pays || cible || confiance
 
   function reset() {
     setQuery(''); setConfiance(''); setPage(1)
     handlePaysChange('')
+    handleCibleChange('')
   }
 
   return (
     <>
+      {/* ── Toggle cible audience ── */}
+      <div role="tablist" aria-label="Filtrer par audience" style={{
+        display: 'flex', gap: 6, marginBottom: 14, flexWrap: 'wrap',
+      }}>
+        {([
+          { value: '' as const, label: 'Tous', emoji: '📋' },
+          { value: 'particulier' as Cible, label: CIBLE_LABEL_COURT.particulier, emoji: '🚗' },
+          { value: 'pro' as Cible, label: CIBLE_LABEL_COURT.pro, emoji: '🚚' },
+        ]).map((opt) => {
+          const active = cible === opt.value
+          return (
+            <button
+              key={opt.value || 'all'}
+              role="tab"
+              aria-selected={active}
+              onClick={() => handleCibleChange(opt.value)}
+              style={{
+                padding: '8px 16px',
+                borderRadius: 'var(--radius-md)',
+                border: '1.5px solid',
+                borderColor: active ? 'var(--color-primary)' : 'var(--color-border)',
+                background: active ? 'var(--color-primary)' : 'white',
+                color: active ? 'white' : 'var(--color-text)',
+                fontSize: '0.88rem',
+                fontWeight: active ? 700 : 500,
+                cursor: 'pointer',
+                transition: 'all 0.15s',
+                display: 'inline-flex', alignItems: 'center', gap: 6,
+              }}
+            >
+              <span aria-hidden style={{ fontSize: '0.95rem' }}>{opt.emoji}</span>
+              {opt.label}
+            </button>
+          )
+        })}
+      </div>
+
       {/* ── Barre de recherche + filtres ── */}
       <div style={{
         display: 'flex', gap: 10, flexWrap: 'wrap', alignItems: 'center',
@@ -165,6 +227,7 @@ function ArticleSearchInner({ articles }: { articles: ArticleRow[] }) {
                 {' '}sur <strong>{filtered.length}</strong> décryptage{filtered.length > 1 ? 's' : ''}
                 {query && <> · «&nbsp;<em>{query}</em>&nbsp;»</>}
                 {pays && <> · <Flag code={pays.toLowerCase()} size={14} /> {PAYS_LABELS[pays]}</>}
+                {cible && <> · {CIBLE_LABEL_COURT[cible]}</>}
                 {confiance && <> · {CONF_LABEL[confiance] ?? confiance}</>}
               </>
           }
@@ -240,8 +303,18 @@ function ArticleSearchInner({ articles }: { articles: ArticleRow[] }) {
                     </span>
                   </div>
                 </div>
-                <div>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 6, alignItems: 'flex-end' }}>
                   <span className="tag" style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}><Flag code={p.toLowerCase()} size={14} /> {p}</span>
+                  {a.cible && a.cible !== 'mixte' && (
+                    <span style={{
+                      fontSize: '0.7rem', fontWeight: 600,
+                      padding: '3px 8px', borderRadius: 999,
+                      background: CIBLE_COLOR[a.cible].bg,
+                      color: CIBLE_COLOR[a.cible].fg,
+                      border: `1px solid ${CIBLE_COLOR[a.cible].border}`,
+                      whiteSpace: 'nowrap',
+                    }}>{CIBLE_LABEL_COURT[a.cible]}</span>
+                  )}
                 </div>
               </article>
             )

@@ -946,5 +946,21 @@
     "back_to_hub": "Back to the holiday hub",
     "cta_compare": "Compare your trip",
     "cta_recharge": "Choose a charging card"
+  },
+  "Articles": {
+    "filter": {
+      "cibleLabel": "Filter by audience",
+      "cibleAll": "All",
+      "cibleParticulier": "Consumer",
+      "ciblePro": "Business"
+    },
+    "badge": {
+      "particulier": "For consumers",
+      "pro": "For businesses"
+    },
+    "viewMore": {
+      "particulier": "All consumer briefings",
+      "pro": "All business briefings"
+    }
   }
 }

@@ -1,9 +1,14 @@
 
 import { getStaticMetadata } from '@/lib/seo-keywords'
+import DerniersDecryptages from '@/components/DerniersDecryptages'
+
+export const revalidate = 1800
+
 
 export const metadata = getStaticMetadata('/particulier')
-export default function ParticulierPage() {
+export default async function ParticulierPage() {
   return (
+    <>
     <div dangerouslySetInnerHTML={{ __html: `<section class="hero">
 <div class="container">
 <h1>Pour vous, votre famille,<br/><span class="accent">le bon véhicule au bon budget.</span></h1>
@@ -154,5 +159,7 @@ export default function ParticulierPage() {
     </div>
 </div>
 </section>` }} />
+    <DerniersDecryptages cible="particulier" />
+    </>
   )
 }

@@ -3,7 +3,7 @@
 import { useEffect, useState, useCallback } from 'react'
 import { Link } from '@/i18n/navigation'
 import Flag from '@/components/Flag'
-import { FLAGS } from '@/lib/supabase'
+import { FLAGS, CIBLE_LABEL_COURT, CIBLE_COLOR, type Cible } from '@/lib/supabase'
 import { getSupabaseClient } from '@/lib/user-context'
 import { useUserContext } from '@/context/UserContextProvider'
 
@@ -16,7 +16,7 @@ const ADMIN_EMAIL = '356904@gmail.com'
 
 type Article = {
   id: number; slug: string; titre_provisoire: string; resume_50mots: string | null
-  contenu_html: string | null; pays_cible: string; niveau_confiance: string | null
+  contenu_html: string | null; pays_cible: string; cible: Cible | null; niveau_confiance: string | null
   etat_code: string; created_at: string; sources_json: any
 }
 type Post = { id: number; article_id: number; plateforme: string; contenu: string; publie: boolean }
@@ -53,6 +53,7 @@ export default function AdminPage() {
   const [articles, setArticles]       = useState<Article[]>([])
   const [selected, setSelected]       = useState<Article | null>(null)
   const [filter, setFilter]           = useState<string>('EN_ATTENTE_VALIDATION')
+  const [cibleFilter, setCibleFilter] = useState<'' | Cible>('')
   const [stats, setStats]             = useState<Record<string, number>>({})
   const [actionMsg, setActionMsg]     = useState('')
   const [posts, setPosts]             = useState<Post[]>([])
@@ -94,7 +95,7 @@ export default function AdminPage() {
   async function chargerArticles(etat: string) {
     setFilter(etat); setSelected(null)
     const { data } = await sb.from('articles')
-      .select('id, slug, titre_provisoire, resume_50mots, contenu_html, pays_cible, niveau_confiance, etat_code, created_at, sources_json')
+      .select('id, slug, titre_provisoire, resume_50mots, contenu_html, pays_cible, cible, niveau_confiance, etat_code, created_at, sources_json')
       .eq('etat_code', etat).order('created_at', { ascending: false })
     setArticles(data || [])
   }
@@ -134,6 +135,14 @@ export default function AdminPage() {
   }
 
   // ── Actions articles ──
+  async function changeCible(id: number, nouvelleCible: Cible) {
+    const { error } = await sb.from('articles').update({ cible: nouvelleCible }).eq('id', id)
+    if (error) { msg('✗ Erreur maj cible : ' + error.message); return }
+    setArticles(prev => prev.map(a => a.id === id ? { ...a, cible: nouvelleCible } : a))
+    if (selected?.id === id) setSelected(s => s ? { ...s, cible: nouvelleCible } : s)
+    msg('✓ Cible mise à jour : ' + nouvelleCible)
+  }
+
   async function valider(id: number) {
     msg('Publication en cours…')
     const { error } = await sb.from('articles').update({ etat_code: 'VALIDE' }).eq('id', id)
@@ -417,11 +426,34 @@ export default function AdminPage() {
             </div>
           )}
 
+          {/* Filtre cible audience */}
+          <div style={{ display: 'flex', gap: 6, marginBottom: 12, flexWrap: 'wrap' }}>
+            <span style={{ fontSize: '0.78rem', color: 'var(--color-text-soft)', alignSelf: 'center', marginRight: 6 }}>Cible :</span>
+            {([
+              ['', 'Toutes'],
+              ['particulier', '👥 Particulier'],
+              ['pro', '🏢 Pro'],
+              ['mixte', '⚖ Mixte'],
+            ] as const).map(([val, lab]) => {
+              const active = cibleFilter === val
+              return (
+                <button key={val || 'all'} onClick={() => setCibleFilter(val as '' | Cible)} style={{
+                  padding: '4px 12px', borderRadius: 16,
+                  border: '1px solid ' + (active ? 'var(--color-primary)' : 'var(--color-border)'),
+                  background: active ? 'var(--color-primary)' : 'white',
+                  color: active ? 'white' : 'var(--color-text)',
+                  fontSize: '0.78rem', fontWeight: active ? 600 : 400,
+                  cursor: 'pointer',
+                }}>{lab}</button>
+              )
+            })}
+          </div>
+
           <div style={{ display: 'grid', gridTemplateColumns: '320px 1fr', gap: 20, alignItems: 'start' }}>
             {/* Liste */}
             <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-              {articles.length === 0 && <p style={{ color: 'var(--color-text-soft)', padding: 20 }}>Aucun article.</p>}
-              {articles.map(a => (
+              {articles.filter(a => !cibleFilter || a.cible === cibleFilter).length === 0 && <p style={{ color: 'var(--color-text-soft)', padding: 20 }}>Aucun article.</p>}
+              {articles.filter(a => !cibleFilter || a.cible === cibleFilter).map(a => (
                 <div key={a.id} onClick={() => setSelected(a)} style={{
                   padding: '11px 14px', background: 'var(--color-bg-alt)',
                   border: `1px solid ${selected?.id === a.id ? 'var(--color-primary)' : 'var(--color-border)'}`,
@@ -430,6 +462,15 @@ export default function AdminPage() {
                   <div style={{ display: 'flex', gap: 6, alignItems: 'center', marginBottom: 5 }}>
                     <Flag code={a.pays_cible.toLowerCase()} size={16} />
                     <span style={{ fontSize: '0.7rem', padding: '1px 6px', background: 'var(--color-bg)', border: '1px solid var(--color-border)', borderRadius: 10, color: 'var(--color-text-soft)' }}>{a.pays_cible}</span>
+                    {a.cible && (
+                      <span style={{
+                        fontSize: '0.65rem', fontWeight: 600,
+                        padding: '1px 7px', borderRadius: 10,
+                        background: CIBLE_COLOR[a.cible].bg,
+                        color: CIBLE_COLOR[a.cible].fg,
+                        border: '1px solid ' + CIBLE_COLOR[a.cible].border,
+                      }}>{CIBLE_LABEL_COURT[a.cible]}</span>
+                    )}
                     <span style={{ fontSize: '0.7rem', color: 'var(--color-text-soft)', marginLeft: 'auto' }}>{new Date(a.created_at).toLocaleDateString('fr-FR')}</span>
                   </div>
                   <div style={{ fontWeight: 600, fontSize: '0.85rem', lineHeight: 1.3 }}>{a.titre_provisoire}</div>
@@ -446,8 +487,22 @@ export default function AdminPage() {
                 </div>
               ) : (
                 <div style={{ background: 'var(--color-bg-alt)', border: '1px solid var(--color-border)', borderRadius: 10, overflow: 'hidden' }}>
-                  <div style={{ padding: '14px 18px', borderBottom: '1px solid var(--color-border)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <div style={{ padding: '14px 18px', borderBottom: '1px solid var(--color-border)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 12, flexWrap: 'wrap' }}>
                     <span style={{ fontWeight: 700 }}>{FLAGS[selected.pays_cible]} {selected.pays_cible} · {selected.niveau_confiance || 'MOYEN'}</span>
+                    <select
+                      value={selected.cible || 'mixte'}
+                      onChange={e => changeCible(selected.id, e.target.value as Cible)}
+                      style={{
+                        fontSize: '0.78rem', padding: '4px 8px',
+                        border: '1px solid var(--color-border)', borderRadius: 6,
+                        background: 'white', color: 'var(--color-text)',
+                      }}
+                      title="Audience cible (corrigeable manuellement)"
+                    >
+                      <option value="particulier">👥 Particulier</option>
+                      <option value="pro">🏢 Pro</option>
+                      <option value="mixte">⚖ Mixte</option>
+                    </select>
                     <span style={{ fontSize: '0.78rem', color: 'var(--color-text-soft)' }}>{selected.slug}</span>
                   </div>
                   <div style={{ padding: 18, maxHeight: '55vh', overflowY: 'auto' }}>

@@ -946,5 +946,21 @@
     "back_to_hub": "Terug naar de vakantiehub",
     "cta_compare": "Vergelijk uw rit",
     "cta_recharge": "Kies een laadpas"
+  },
+  "Articles": {
+    "filter": {
+      "cibleLabel": "Filter op doelgroep",
+      "cibleAll": "Alle",
+      "cibleParticulier": "Particulier",
+      "ciblePro": "Zakelijk"
+    },
+    "badge": {
+      "particulier": "Voor particulieren",
+      "pro": "Voor bedrijven"
+    },
+    "viewMore": {
+      "particulier": "Alle particuliere analyses",
+      "pro": "Alle zakelijke analyses"
+    }
   }
 }

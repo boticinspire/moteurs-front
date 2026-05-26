@@ -946,5 +946,21 @@
     "back_to_hub": "Volver al hub de vacaciones",
     "cta_compare": "Comparar su trayecto",
     "cta_recharge": "Elegir una tarjeta de recarga"
+  },
+  "Articles": {
+    "filter": {
+      "cibleLabel": "Filtrar por audiencia",
+      "cibleAll": "Todos",
+      "cibleParticulier": "Particular",
+      "ciblePro": "Profesional"
+    },
+    "badge": {
+      "particulier": "Para particulares",
+      "pro": "Para profesionales"
+    },
+    "viewMore": {
+      "particulier": "Todos los análisis para particulares",
+      "pro": "Todos los análisis para profesionales"
+    }
   }
 }

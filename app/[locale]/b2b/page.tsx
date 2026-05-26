@@ -1,9 +1,14 @@
 
 import { getStaticMetadata } from '@/lib/seo-keywords'
+import DerniersDecryptages from '@/components/DerniersDecryptages'
+
+export const revalidate = 1800
+
 
 export const metadata = getStaticMetadata('/b2b')
-export default function B2BPage() {
+export default async function B2BPage() {
   return (
+    <>
     <div dangerouslySetInnerHTML={{ __html: `<section class="hero">
 <div class="container">
 <h1>Espace PME, artisans &amp; flottes :<br/><span class="accent">arbitrer sur le TCO réel.</span></h1>
@@ -277,5 +282,7 @@ export default function B2BPage() {
     </div>
 </div>
 </section>` }} />
+    <DerniersDecryptages cible="pro" />
+    </>
   )
 }

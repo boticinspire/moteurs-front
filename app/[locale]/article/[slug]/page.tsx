@@ -1,6 +1,6 @@
 import { notFound } from 'next/navigation'
 import type { Metadata } from 'next'
-import { supabase, FLAGS, CONF_CLASS, CONF_LABEL, type Article } from '@/lib/supabase'
+import { supabase, FLAGS, CONF_CLASS, CONF_LABEL, CIBLE_LABEL, CIBLE_COLOR, type Article } from '@/lib/supabase'
 import Flag from '@/components/Flag'
 import ArticleActions from './ArticleActions'
 
@@ -108,6 +108,15 @@ export default async function ArticlePage({
             <span className="page-hero-badge" style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}><Flag code={pays.toLowerCase()} size={16} /> {pays}</span>
             {dateStr && <span className="page-hero-badge">📅 {dateStr}</span>}
             <span className={`confidence ${confCls}`} style={{ fontSize: '0.72rem' }}>{confLbl}</span>
+            {article.cible && article.cible !== 'mixte' && (
+              <span className="page-hero-badge" style={{
+                background: CIBLE_COLOR[article.cible].bg,
+                color: CIBLE_COLOR[article.cible].fg,
+                border: `1px solid ${CIBLE_COLOR[article.cible].border}`,
+              }}>
+                {article.cible === 'particulier' ? '👥' : '🏢'} {CIBLE_LABEL[article.cible]}
+              </span>
+            )}
           </div>
           <h1 style={{ position: 'relative', lineHeight: 1.18, maxWidth: 720 }}>
             {article.titre_provisoire}
@@ -179,6 +188,39 @@ export default async function ArticlePage({
             titre={article.titre_provisoire ?? ''}
             url={`https://moteurs.com/article/${article.slug}`}
           />
+
+          {/* ── Voir tous les décryptages pour cette cible ── */}
+          {article.cible && article.cible !== 'mixte' && (
+            <div className="no-print" style={{
+              marginTop: 32, padding: '20px 22px',
+              background: CIBLE_COLOR[article.cible].bg,
+              border: `1px solid ${CIBLE_COLOR[article.cible].border}`,
+              borderRadius: 12,
+              display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+              flexWrap: 'wrap', gap: 12,
+            }}>
+              <div>
+                <div style={{ fontSize: '0.78rem', color: CIBLE_COLOR[article.cible].fg, fontWeight: 700, marginBottom: 4 }}>
+                  {article.cible === 'particulier' ? '👥 PARTICULIERS' : '🏢 PROFESSIONNELS'}
+                </div>
+                <div style={{ fontSize: '0.95rem', color: 'var(--color-text)' }}>
+                  Découvrez tous nos décryptages {article.cible === 'particulier' ? 'pour les particuliers' : 'pour les pros'}.
+                </div>
+              </div>
+              <a href={`/articles?cible=${article.cible}`} style={{
+                padding: '10px 18px',
+                background: CIBLE_COLOR[article.cible].fg,
+                color: 'white',
+                borderRadius: 8,
+                textDecoration: 'none',
+                fontWeight: 600,
+                fontSize: '0.9rem',
+                whiteSpace: 'nowrap',
+              }}>
+                Voir les décryptages →
+              </a>
+            </div>
+          )}
 
           {/* ── Copyright ── */}
           <div className="no-print" style={{

@@ -946,5 +946,21 @@
     "back_to_hub": "Zurück zum Urlaubs-Hub",
     "cta_compare": "Vergleichen Sie Ihre Strecke",
     "cta_recharge": "Eine Ladekarte wählen"
+  },
+  "Articles": {
+    "filter": {
+      "cibleLabel": "Nach Zielgruppe filtern",
+      "cibleAll": "Alle",
+      "cibleParticulier": "Privatperson",
+      "ciblePro": "Unternehmen"
+    },
+    "badge": {
+      "particulier": "Für Privatpersonen",
+      "pro": "Für Unternehmen"
+    },
+    "viewMore": {
+      "particulier": "Alle Analysen für Privatpersonen",
+      "pro": "Alle Analysen für Unternehmen"
+    }
   }
 }

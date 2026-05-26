@@ -946,5 +946,21 @@
     "back_to_hub": "Torna all'hub vacanze",
     "cta_compare": "Confronta il vostro viaggio",
     "cta_recharge": "Scegliete una tessera di ricarica"
+  },
+  "Articles": {
+    "filter": {
+      "cibleLabel": "Filtra per pubblico",
+      "cibleAll": "Tutti",
+      "cibleParticulier": "Privato",
+      "ciblePro": "Azienda"
+    },
+    "badge": {
+      "particulier": "Per i privati",
+      "pro": "Per le aziende"
+    },
+    "viewMore": {
+      "particulier": "Tutti gli approfondimenti per i privati",
+      "pro": "Tutti gli approfondimenti per le aziende"
+    }
   }
 }

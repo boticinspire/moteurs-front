@@ -946,5 +946,21 @@
     "back_to_hub": "Retour au hub vacances",
     "cta_compare": "Comparer votre trajet",
     "cta_recharge": "Choisir une carte de recharge"
+  },
+  "Articles": {
+    "filter": {
+      "cibleLabel": "Filtrer par audience",
+      "cibleAll": "Tous",
+      "cibleParticulier": "Particulier",
+      "ciblePro": "Pro"
+    },
+    "badge": {
+      "particulier": "Pour les particuliers",
+      "pro": "Pour les pros"
+    },
+    "viewMore": {
+      "particulier": "Tous nos décryptages particuliers",
+      "pro": "Tous nos décryptages pros"
+    }
   }
 }

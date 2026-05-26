@@ -15,6 +15,7 @@ type Profil = {
   prenom: string
   type_profil: string
   pays: string
+  cible_preferee: '' | 'particulier' | 'pro'
 }
 
 type Alerte = {
@@ -45,7 +46,7 @@ export default function EspaceMembresPage() {
   const [email, setEmail]       = useState('')
   const [sending, setSending]   = useState(false)
   const [status, setStatus]     = useState<{ msg: string; ok: boolean } | null>(null)
-  const [profil, setProfil]     = useState<Profil>({ prenom: '', type_profil: 'B2B', pays: 'FR' })
+  const [profil, setProfil]     = useState<Profil>({ prenom: '', type_profil: 'B2B', pays: 'FR', cible_preferee: '' })
   const [alerte, setAlerte]     = useState<Alerte>({ pays: ['FR'], segments: [], mots_cles: '', actif: true })
   const [saveStatus, setSaveStatus] = useState('')
   const [articles, setArticles] = useState<any[]>([])
@@ -151,7 +152,7 @@ export default function EspaceMembresPage() {
     // Profil
     const profils = await pgFetch(`profils_membres?select=*&id=eq.${userId}`)
     const p = profils[0]
-    if (p) setProfil({ prenom: p.prenom || '', type_profil: p.profil_type || 'B2B', pays: p.pays || 'FR' })
+    if (p) setProfil({ prenom: p.prenom || '', type_profil: p.profil_type || 'B2B', pays: p.pays || 'FR', cible_preferee: (p.cible_preferee as ''|'particulier'|'pro') || '' })
 
     // Alertes
     const alertes = await pgFetch(`alertes_utilisateurs?select=*&user_id=eq.${userId}`)
@@ -166,7 +167,11 @@ export default function EspaceMembresPage() {
 
     // Articles récents selon profil
     const paysUser = p?.pays || 'FR'
-    const arts = await pgFetch(`articles?select=slug,titre_provisoire,resume_50mots,published_at&etat_code=eq.PUBLIE&pays_cible=eq.${paysUser}&order=published_at.desc&limit=5`)
+    const ciblePref = (p?.cible_preferee as ''|'particulier'|'pro') || ''
+    const cibleFilter = ciblePref
+      ? `&cible=in.(${ciblePref},mixte)`
+      : ''
+    const arts = await pgFetch(`articles?select=slug,titre_provisoire,resume_50mots,published_at,cible&etat_code=eq.PUBLIE&pays_cible=eq.${paysUser}${cibleFilter}&order=published_at.desc&limit=5`)
     if (arts) setArticles(arts)
     console.log('[chargerDonnees] DONE')
   }
@@ -208,6 +213,7 @@ export default function EspaceMembresPage() {
         prenom: profil.prenom,
         profil_type: profil.type_profil,
         pays: profil.pays,
+        cible_preferee: profil.cible_preferee || null,
       }
       console.log('[profil save] fetch direct AVANT, token present=', !!token)
       const res = await fetch(url, {
@@ -367,6 +373,20 @@ export default function EspaceMembresPage() {
                 <option value="B2B">Professionnel (PME, artisan, flotte)</option>
                 <option value="Particulier">Particulier</option>
               </select>
+            </div>
+            <div className="profil-field">
+              <label>Mes décryptages préférés</label>
+              <select
+                value={profil.cible_preferee}
+                onChange={e => setProfil(p => ({ ...p, cible_preferee: e.target.value as ''|'particulier'|'pro' }))}
+              >
+                <option value="">Tous (pas de préférence)</option>
+                <option value="particulier">👥 Plutôt pour les particuliers</option>
+                <option value="pro">🏢 Plutôt pour les pros</option>
+              </select>
+              <p style={{ fontSize: '0.74rem', color: 'var(--color-text-soft)', marginTop: 4 }}>
+                Sert à filtrer votre feed et vos alertes. Les décryptages «&nbsp;mixtes&nbsp;» restent affichés dans tous les cas.
+              </p>
             </div>
             <div className="profil-field">
               <label>Mon pays</label>

@@ -83,6 +83,33 @@ ARTICLES_STATIQUES = [
 
 # ── 1. JSON-LD ────────────────────────────────────────────────────────────────
 
+def _build_audience(cible: str) -> dict:
+    """
+    Construit Schema.org/Audience pour le JSON-LD Article selon la cible.
+    - particulier → PeopleAudience (grand public)
+    - pro         → BusinessAudience (entreprises, PME, flottes)
+    - mixte / autre → PeopleAudience générique sans restriction
+    """
+    cible = (cible or "mixte").lower()
+    if cible == "pro":
+        return {
+            "@type": "BusinessAudience",
+            "audienceType": "PME, artisans, gestionnaires de flottes",
+            "name": "Professionnels du transport routier",
+        }
+    if cible == "particulier":
+        return {
+            "@type": "PeopleAudience",
+            "audienceType": "Particuliers, foyers, automobilistes individuels",
+            "name": "Grand public — particuliers",
+        }
+    return {
+        "@type": "PeopleAudience",
+        "audienceType": "Tous publics — particuliers et professionnels",
+        "name": "Grand public et professionnels",
+    }
+
+
 def _generer_json_ld(article: dict) -> str:
     """
     Génère un bloc <script type='application/ld+json'> avec :
@@ -131,6 +158,7 @@ def _generer_json_ld(article: dict) -> str:
             "name": "Transition énergétique des transports routiers",
             "description": "TCO, ZFE, aides à l'achat de véhicules propres, fiscalité automobile France Belgique Suisse Canada",
         },
+        "audience": _build_audience(article.get("cible", "mixte")),
         "datePublished": published,
         "dateModified": modified,
         "inLanguage": lang_map.get(pays, "fr-FR"),
