@@ -10,7 +10,10 @@
     "lint": "eslint",
     "sync-fallbacks": "node scripts/sync-fallbacks.mjs",
     "export-routes": "node scripts/export-routes.mjs",
-    "export-routes:dry": "node scripts/export-routes.mjs --dry-run"
+    "export-routes:dry": "node scripts/export-routes.mjs --dry-run",
+    "seo:audit": "node scripts/seo-audit.mjs",
+    "seo:inject": "node scripts/seo-inject.mjs",
+    "seo:full": "node scripts/seo-inject.mjs && node scripts/seo-audit.mjs"
   },
   "dependencies": {
     "@parcel/watcher": "^2.5.6",

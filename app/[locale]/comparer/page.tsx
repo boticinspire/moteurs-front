@@ -17,6 +17,7 @@ export async function generateMetadata({
   const { locale } = await params
   const t = await getTranslations({ locale, namespace: 'Comparer' })
   return {
+    alternates: { canonical: 'https://moteurs.com/comparer' },
     title: t('meta_title'),
     description: t('meta_desc'),
   }

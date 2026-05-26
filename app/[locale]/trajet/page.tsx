@@ -5,16 +5,10 @@
 import type { Metadata } from 'next'
 import { Link } from '@/i18n/navigation'
 import { TRAJETS_SEO } from '@/lib/trajets-seo'
+import { getStaticMetadata } from '@/lib/seo-keywords'
 
-export const metadata: Metadata = {
-  title: 'Itinéraires vacances Europe — coût, péages, recharge | Moteurs.com',
-  description:
-    'Comparez le coût et les contraintes des 15 grands itinéraires vacances européens : péages, vignettes, recharge électrique, ZFE — diesel, essence, électrique, hybride.',
-  openGraph: {
-    title: 'Itinéraires vacances Europe — calcul de coût',
-    description: '15 trajets vacances décryptés : péages, vignettes, recharge VE, motorisation la moins chère.',
-  },
-}
+export const metadata = getStaticMetadata('/trajet')
+
 
 export default function PageTrajetsIndex() {
   return (

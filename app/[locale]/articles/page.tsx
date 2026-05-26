@@ -1,13 +1,12 @@
 import type { Metadata } from 'next'
 import { supabase, type Article } from '@/lib/supabase'
 import ArticleSearch from './ArticleSearch'
+import { getStaticMetadata } from '@/lib/seo-keywords'
+
+export const metadata = getStaticMetadata('/articles')
+
 
 export const revalidate = 300
-
-export const metadata: Metadata = {
-  title: 'Décryptages',
-  description: 'Tous les décryptages Moteurs.com : TCO, aides, ZFE, motorisations 2026. Filtrables et recherchables par mots-clés.',
-}
 
 export default async function ArticlesPage() {
   const { data: articles } = await supabase
