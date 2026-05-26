@@ -19,7 +19,7 @@ class Settings(BaseSettings):
 
     # Scheduling
     veille_heures_actives: str = "07:00-22:00"
-    veille_frequence_par_jour: int = 4
+    veille_frequence_par_jour: int = 1
 
     # Redis
     redis_url: str = "redis://redis:6379/0"
