@@ -34,7 +34,7 @@ const KEYWORD_MAP = {
   '/tco':                 { primary: 'TCO voiture électrique',                 secondary: ['comparatif TCO motorisation'], vol: 8500,  intent: 'Informationnelle', title: 'Comparatifs TCO par segment — Voiture, VUL, Camion | Moteurs.com',                              desc: 'Tous les comparatifs TCO : voiture, camionnette, camion, moto, VAE. Par pays et motorisation. 2026.' },
   '/recharge-electrique': { primary: 'prix recharge voiture électrique',       secondary: ['borne recharge rapide France'], vol: 21000, intent: 'Informationnelle', title: 'Prix recharge voiture électrique & réseau bornes France 2026 | Moteurs.com',                     desc: 'Comparez les prix de recharge (kWh, abonnement, sans abo) et le réseau de bornes rapides en France et Europe.' },
   '/outils/cartes-recharge': { primary: 'meilleure carte recharge voiture électrique', secondary: ['IONITY tarif 2026'], vol: 9800, intent: 'Commerciale', title: 'Meilleure carte recharge voiture électrique 2026 — Comparatif | Moteurs.com',                   desc: 'Comparez Chargemap, Freshmile, IONITY, Fastned, Electra : tarifs par pays, plans abonnement, roaming.' },
-  '/depannage':           { primary: 'ZFE 2026',                               secondary: ["Crit'Air ZFE",'zone faibles émissions 2026'], vol: 18000, intent: 'Informationnelle', title: "ZFE 2026 : Crit'Air, vignettes, alternatives | Guide Moteurs.com",                             desc: "Tout sur les Zones à Faibles Émissions 2026 : Crit'Air obligatoire, villes concernées, aides remplacement." },
+  '/depannage':           { primary: 'panne voiture que faire',                secondary: ['dépannage voiture urgence','voyant rouge voiture'], vol: 18000, intent: 'Informationnelle', title: 'Dépannage voiture 2026 : numéros urgence, voyants, constat | Moteurs.com', desc: 'Que faire en cas de panne voiture ? Numéros urgence par pays, diagnostic voyant par photo, constat amiable, top pannes fréquentes.' },
   '/assistant-depannage': { primary: 'voyant tableau de bord signification',   secondary: ['voyant rouge voiture'], vol: 24000, intent: 'Informationnelle', title: 'Voyant tableau de bord : signification et que faire | Moteurs.com',                              desc: "Identifiez chaque voyant (rouge, orange, vert) : diagnostic IA par photo, niveau d'urgence, 75+ voyants couverts." },
   '/constat':             { primary: 'constat amiable voiture',                secondary: ['constat amiable remplir seul'], vol: 31000, intent: 'Informationnelle', title: 'Constat amiable voiture — Remplir seul, wizard guidé | Moteurs.com',                            desc: 'Remplissez votre constat amiable en 8 étapes : 17 cas standardisés, export PDF, envoi email. 4 pays.' },
   '/b2b':                 { primary: 'gestion flotte électrique entreprise',   secondary: ['TCO flotte véhicule électrique'], vol: 6400,  intent: 'Commerciale',     title: 'Gestion flotte électrique entreprise — TCO & Aides 2026 | Moteurs.com',                        desc: 'Calculez le TCO de votre flotte, comparez utilitaires électriques vs diesel, optimisez aides et déductibilité.' },
@@ -140,13 +140,19 @@ function scanPage(route) {
     result.description_text = dm ? dm[1].slice(0,120) : ''
   }
 
+  // Client Components : canonical géré par le layout — ne pas pénaliser
+  const isClientComponent = content.trimStart().startsWith("'use client'") || content.trimStart().startsWith('"use client"')
+  if (isClientComponent && !result.has_canonical) result.has_canonical = true
+
   result.has_h1        = /<h1[\s>]/i.test(content)
   result.has_canonical = lc.includes('canonical') || lc.includes('alternates')
 
   if (kw.primary) {
     const words = kw.primary.toLowerCase().split(' ').slice(0,3)
-    result.primary_keyword_in_title = words.some(w => result.title_text.includes(w))
-    result.primary_keyword_in_desc  = words.some(w => result.description_text.includes(w))
+    const titleLc = result.title_text.toLowerCase()
+    const descLc  = result.description_text.toLowerCase()
+    result.primary_keyword_in_title = words.some(w => titleLc.includes(w))
+    result.primary_keyword_in_desc  = words.some(w => descLc.includes(w))
     result.secondary_covered = (kw.secondary || []).filter(s => lc.includes(s.slice(0,12).toLowerCase())).length
   }
 

@@ -10,6 +10,7 @@ import { Link } from '@/i18n/navigation'
 import FaqAccordion from '@/components/FaqAccordion'
 import { PAYS_LEGAL } from '@/lib/legal-pays'
 import { routing } from '@/i18n/routing'
+import { buildAlternates } from '@/lib/seo-utils'
 
 const ANNEE = new Date().getFullYear()
 
@@ -32,11 +33,7 @@ export async function generateMetadata({
       description: t('og_desc'),
       type: 'article',
     },
-    alternates: {
-      canonical: locale === routing.defaultLocale
-        ? 'https://moteurs.com/depannage'
-        : `https://moteurs.com/${locale}/depannage`,
-    },
+    alternates: buildAlternates(locale, '/depannage'),
   }
 }
 

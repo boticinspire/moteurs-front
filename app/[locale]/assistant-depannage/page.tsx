@@ -1,13 +1,28 @@
 import type { Metadata } from 'next'
+import { setRequestLocale } from 'next-intl/server'
 import AssistantDepannage from './AssistantDepannage'
+import { buildAlternates } from '@/lib/seo-utils'
 
-export const metadata: Metadata = {
-  title: 'Assistant Dépannage Auto — Moteurs.com',
-  description: 'Identifiez votre panne en quelques questions. Diagnostic guidé pour essence, diesel, hybride et électrique. Voyants, bruit, perte de puissance, recharge impossible…',
-  alternates: { canonical: 'https://moteurs.com/assistant-depannage' },
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>
+}): Promise<Metadata> {
+  const { locale } = await params
+  return {
+    title: 'Voyant tableau de bord : signification & diagnostic auto | Moteurs.com',
+    description: 'Identifiez votre panne en quelques questions. Diagnostic guidé pour essence, diesel, hybride et électrique. Voyants, bruit, perte de puissance, recharge impossible…',
+    alternates: buildAlternates(locale, '/assistant-depannage'),
+  }
 }
 
-export default function PageAssistantDepannage() {
+export default async function PageAssistantDepannage({
+  params,
+}: {
+  params: Promise<{ locale: string }>
+}) {
+  const { locale } = await params
+  setRequestLocale(locale)
   return (
     <main style={{ padding: '40px 20px 80px' }}>
       <div style={{ maxWidth: 680, margin: '0 auto' }}>

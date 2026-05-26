@@ -4,6 +4,7 @@ import { getTranslations, setRequestLocale } from 'next-intl/server'
 import ComparateurTCO from './ComparateurTCO'
 import FaqAccordion from '@/components/FaqAccordion'
 import { routing } from '@/i18n/routing'
+import { buildAlternates } from '@/lib/seo-utils'
 
 export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }))
@@ -17,7 +18,7 @@ export async function generateMetadata({
   const { locale } = await params
   const t = await getTranslations({ locale, namespace: 'Comparer' })
   return {
-    alternates: { canonical: 'https://moteurs.com/comparer' },
+    alternates: buildAlternates(locale, '/comparer'),
     title: t('meta_title'),
     description: t('meta_desc'),
   }
