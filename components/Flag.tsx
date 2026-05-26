@@ -1,7 +1,7 @@
 /**
  * Flag — affiche le drapeau d'un pays via SVG local (public/flags/)
  * Compatible tous navigateurs et réseaux filtrés (Norton, proxies…).
- * Codes supportés : fr, be, ch, ca (minuscules ISO 3166-1)
+ * Codes supportés : fr, be, ch, ca, lu (minuscules ISO 3166-1)
  */
 export default function Flag({ code, size = 16 }: { code: string; size?: number }) {
   const iso = code.toLowerCase()
