@@ -1,8 +1,11 @@
-{
-  "host": "moteurs.com",
-  "key": "83dfd5cc3e064f91a86c12050835e52e",
-  "keyLocation": "https://moteurs.com/83dfd5cc3e064f91a86c12050835e52e.txt",
-  "urlList": [
+# IndexNow — Moteurs.com — 129 URLs
+# Lance ce script depuis PowerShell une fois le deploy Vercel terminé
+
+$payload = @{
+    host        = "moteurs.com"
+    key         = "83dfd5cc3e064f91a86c12050835e52e"
+    keyLocation = "https://moteurs.com/83dfd5cc3e064f91a86c12050835e52e.txt"
+    urlList     = @(
     "https://moteurs.com/",
     "https://moteurs.com/comparer",
     "https://moteurs.com/comparer-trajet",
@@ -132,5 +135,13 @@
     "https://moteurs.com/trajet/suede-foret-noire/camping-car",
     "https://moteurs.com/trajet/suede-foret-noire/le-moins-cher",
     "https://moteurs.com/trajet/suede-foret-noire/depuis-goteborg"
-  ]
-}
+    )
+} | ConvertTo-Json -Depth 3
+
+$response = Invoke-RestMethod `
+    -Uri "https://api.indexnow.org/IndexNow" `
+    -Method POST `
+    -ContentType "application/json; charset=utf-8" `
+    -Body $payload
+
+Write-Host "✅ IndexNow répondu : $response"
