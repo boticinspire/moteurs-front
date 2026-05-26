@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex">
+  <title>Demo embed Moteurs.com</title>
+  <style>
+    body { font: 16px/1.5 system-ui, -apple-system, Segoe UI, sans-serif;
+           max-width: 880px; margin: 0 auto; padding: 32px 20px; color: #222; }
+    h1 { font-size: 28px; margin: 0 0 8px; }
+    .lede { color: #555; margin: 0 0 32px; }
+    h2 { font-size: 18px; margin: 32px 0 12px; }
+    .demo-box { border: 1px dashed #c8c8c8; border-radius: 10px;
+                background: #fafafa; padding: 6px; margin: 12px 0 24px; }
+    pre { background: #1f2430; color: #f4f4f4; border-radius: 8px;
+          padding: 14px 16px; overflow-x: auto; font-size: 13px;
+          font-family: "SF Mono", Menlo, Consolas, monospace; }
+    code { background: #f0f0f0; padding: 1px 5px; border-radius: 3px; }
+  </style>
+</head>
+<body>
+  <h1>Demo — Embed Moteurs.com</h1>
+  <p class="lede">
+    Cette page simule un site partenaire qui integrerait nos calculateurs.
+    Aucune dependance, juste un &lt;div&gt; et un &lt;script&gt;.
+  </p>
+
+  <h2>1. Comparateur TCO — thème clair (FR)</h2>
+  <div class="demo-box">
+    <div data-moteurs-embed="tco"
+         data-partner="demo-fr"
+         data-lang="fr"
+         data-theme="light"></div>
+  </div>
+
+  <h2>2. Comparateur TCO — thème sombre avec accent partenaire (EN)</h2>
+  <div class="demo-box" style="background:#0b1320;">
+    <div data-moteurs-embed="tco"
+         data-partner="demo-en-dark"
+         data-lang="en"
+         data-theme="dark"
+         data-accent="#3b82f6"></div>
+  </div>
+
+  <h2>3. Snippet à coller chez le partenaire</h2>
+  <pre>&lt;div data-moteurs-embed="tco"
+     data-partner="votre-slug"
+     data-lang="fr"
+     data-theme="light"&gt;&lt;/div&gt;
+&lt;script async src="https://moteurs.com/embed/loader.js"&gt;&lt;/script&gt;</pre>
+
+  <p>
+    Les attributs <code>data-partner</code>, <code>data-lang</code>,
+    <code>data-theme</code> et <code>data-accent</code> sont optionnels.
+    Sans rien, l'embed s'affiche en FR / thème clair / sans tracking partenaire.
+  </p>
+
+  <!-- En local, on cible le loader sur la meme origine ; en prod, mettre moteurs.com -->
+  <script async src="/embed/loader.js"></script>
+</body>
+</html>

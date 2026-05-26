@@ -1,0 +1,28 @@
+{
+  "host": "moteurs.com",
+  "key": "83dfd5cc3e064f91a86c12050835e52e",
+  "keyLocation": "https://moteurs.com/83dfd5cc3e064f91a86c12050835e52e.txt",
+  "urlList": [
+    "https://moteurs.com/assistant-depannage",
+    "https://moteurs.com/assistant-depannage/voyants",
+    "https://moteurs.com/constat",
+    "https://moteurs.com/outils/cartes-recharge",
+    "https://moteurs.com/outils/documents-europe",
+    "https://moteurs.com/outils/cartes-recharge/allego",
+    "https://moteurs.com/outils/cartes-recharge/blink-charging-be",
+    "https://moteurs.com/outils/cartes-recharge/blue-corner",
+    "https://moteurs.com/outils/cartes-recharge/chargemap-pass",
+    "https://moteurs.com/outils/cartes-recharge/electra",
+    "https://moteurs.com/outils/cartes-recharge/enbw-mobility",
+    "https://moteurs.com/outils/cartes-recharge/eneco-emobility",
+    "https://moteurs.com/outils/cartes-recharge/fastned-gold",
+    "https://moteurs.com/outils/cartes-recharge/freshmile",
+    "https://moteurs.com/outils/cartes-recharge/ionity-passport",
+    "https://moteurs.com/outils/cartes-recharge/izivia-pass",
+    "https://moteurs.com/outils/cartes-recharge/lidl-plus",
+    "https://moteurs.com/outils/cartes-recharge/luminus-electric",
+    "https://moteurs.com/outils/cartes-recharge/plugsurfing",
+    "https://moteurs.com/outils/cartes-recharge/totalenergies-charge",
+    "https://moteurs.com/sitemap.xml"
+  ]
+}

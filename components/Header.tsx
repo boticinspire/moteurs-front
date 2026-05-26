@@ -12,13 +12,13 @@ export default function Header() {
   const path = usePathname()
   const [open, setOpen] = useState(false)
 
-  const navLinks: { href: NavHref; label: string }[] = [
+  const navLinks: { href: NavHref; label: string; urgent?: boolean }[] = [
     { href: '/',                     label: t('nav_home') },
     { href: '/articles',             label: t('nav_articles') },
     { href: '/recharge-electrique',  label: t('nav_recharge') },
     { href: '/vacances-voiture',     label: t('nav_vacances') },
     { href: '/cout-voiture',         label: t('nav_tco') },
-    { href: '/depannage',            label: t('nav_depannage') },
+    { href: '/depannage',            label: t('nav_depannage'), urgent: true },
     { href: '/documents-auto',       label: t('nav_documents') },
     { href: '/outils',               label: t('nav_outils') },
   ]
@@ -84,9 +84,20 @@ export default function Header() {
           </Link>
 
           <nav className="main-nav">
-            {navLinks.map(({ href, label }) => (
-              <Link key={href} href={href} className={path === href ? 'active' : ''}>
-                {label}
+            {navLinks.map(({ href, label, urgent }) => (
+              <Link
+                key={href}
+                href={href}
+                className={path === href ? 'active' : ''}
+                style={urgent ? {
+                  color: '#f97316',
+                  fontWeight: 700,
+                  background: 'rgba(249,115,22,0.10)',
+                  padding: '3px 10px',
+                  borderRadius: '6px',
+                } : undefined}
+              >
+                {urgent ? '🔧 ' : ''}{label}
               </Link>
             ))}
           </nav>
@@ -135,13 +146,14 @@ export default function Header() {
           </div>
 
           <nav className="mobile-nav-links">
-            {navLinks.map(({ href, label }) => (
+            {navLinks.map(({ href, label, urgent }) => (
               <Link
                 key={href}
                 href={href}
                 className={`mobile-nav-link${path === href ? ' active' : ''}`}
+                style={urgent ? { color: '#f97316', fontWeight: 700 } : undefined}
               >
-                {label}
+                {urgent ? '🔧 ' : ''}{label}
               </Link>
             ))}
           </nav>

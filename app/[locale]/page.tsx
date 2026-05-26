@@ -280,6 +280,72 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* ===== 3 usages principaux ===== */}
+      <section className="v2-section v2-section-tight" style={{ background: 'var(--color-bg-alt, #f8f9fa)', borderTop: '1px solid var(--color-border, #e8eaed)' }}>
+        <div className="v2-container">
+          <h2 style={{ textAlign: 'center', fontSize: '1.1rem', fontWeight: 700, marginBottom: '1.25rem', color: 'var(--color-text)' }}>
+            {t('usages_section_title')}
+          </h2>
+          <div className="v2-tools-grid v2-tools-grid-3">
+            {/* Trajet — primaire vert */}
+            <Link className="v2-tcard c-green" href="/comparer-trajet" style={{ border: '2px solid #22c55e' }}>
+              <div className="icbox"><svg className="v2-ic"><use href="#i-route" /></svg></div>
+              <h3>{t('usage_trajet_title')}</h3>
+              <p>{t('usage_trajet_desc')}</p>
+              <div style={{ display: 'flex', gap: 8, margin: '6px 0', flexWrap: 'wrap' }}>
+                <span style={{ fontSize: '.72rem', color: '#888', display: 'flex', alignItems: 'center', gap: 3 }}>
+                  <span style={{ width: 5, height: 5, borderRadius: '50%', background: '#22c55e', display: 'inline-block' }} />
+                  {t('usage_trajet_micro1')}
+                </span>
+                <span style={{ fontSize: '.72rem', color: '#888', display: 'flex', alignItems: 'center', gap: 3 }}>
+                  <span style={{ width: 5, height: 5, borderRadius: '50%', background: '#22c55e', display: 'inline-block' }} />
+                  {t('usage_trajet_micro2')}
+                </span>
+              </div>
+              <span className="open" style={{ marginTop: 'auto', fontWeight: 700 }}>
+                {t('usage_trajet_cta')} <svg className="v2-ic"><use href="#i-arrow-right" /></svg>
+              </span>
+            </Link>
+
+            {/* TCO — neutre */}
+            <Link className="v2-tcard c-blue" href="/comparer">
+              <div className="icbox"><svg className="v2-ic"><use href="#i-bar-chart" /></svg></div>
+              <h3>{t('usage_tco_title')}</h3>
+              <p>{t('usage_tco_desc')}</p>
+              <span className="open" style={{ marginTop: 'auto' }}>
+                {t('usage_tco_cta')} <svg className="v2-ic"><use href="#i-arrow-right" /></svg>
+              </span>
+            </Link>
+
+            {/* Panne — urgent orange */}
+            <Link className="v2-tcard c-orange" href="/depannage" style={{ position: 'relative', border: '2px solid #f97316', background: 'linear-gradient(135deg, #fff7ed 0%, #fff 100%)' }}>
+              <span style={{
+                position: 'absolute', top: 10, right: 10,
+                background: '#f97316', color: 'white',
+                fontSize: '.65rem', fontWeight: 700, padding: '2px 8px', borderRadius: 10,
+                textTransform: 'uppercase', letterSpacing: '.3px',
+              }}>
+                {t('usage_panne_badge')}
+              </span>
+              <div className="icbox"><svg className="v2-ic"><use href="#i-wrench" /></svg></div>
+              <h3 style={{ color: '#c2410c' }}>{t('usage_panne_title')}</h3>
+              <p>{t('usage_panne_desc')}</p>
+              <div style={{ display: 'flex', gap: 8, margin: '6px 0', flexWrap: 'wrap' }}>
+                {[t('usage_panne_micro1'), t('usage_panne_micro2'), t('usage_panne_micro3')].map((m, i) => (
+                  <span key={i} style={{ fontSize: '.72rem', color: '#888', display: 'flex', alignItems: 'center', gap: 3 }}>
+                    <span style={{ width: 5, height: 5, borderRadius: '50%', background: '#22c55e', display: 'inline-block' }} />
+                    {m}
+                  </span>
+                ))}
+              </div>
+              <span className="open" style={{ marginTop: 'auto', color: '#f97316', fontWeight: 700 }}>
+                {t('usage_panne_cta')} <svg className="v2-ic"><use href="#i-arrow-right" /></svg>
+              </span>
+            </Link>
+          </div>
+        </div>
+      </section>
+
       {/* ===== 3 outils pour gérer une panne ===== */}
       <section className="v2-section v2-section-tight">
         <div className="v2-container">
@@ -293,11 +359,20 @@ export default function HomePage() {
             </Link>
           </div>
           <div className="v2-tools-grid v2-tools-grid-3">
-            <Link className="v2-tcard c-orange v2-tcard-urgent" href="/assistant-depannage">
+            <Link className="v2-tcard c-orange v2-tcard-urgent" href="/assistant-depannage" style={{ position: 'relative', border: '2px solid #f97316' }}>
+              <span style={{
+                position: 'absolute', top: 10, right: 10,
+                background: '#f97316', color: 'white',
+                fontSize: '.65rem', fontWeight: 700, padding: '2px 8px', borderRadius: 10,
+                textTransform: 'uppercase', letterSpacing: '.3px',
+              }}>
+                {t('panne_card1_badge')}
+              </span>
               <div className="icbox"><svg className="v2-ic"><use href="#i-camera" /></svg></div>
               <h3>{t('panne_card1_title')}</h3>
               <p>{t('panne_card1_desc')}</p>
-              <span className="open">{t('panne_card1_cta')} <svg className="v2-ic"><use href="#i-arrow-right" /></svg></span>
+              <p style={{ fontSize: '.72rem', color: '#888', margin: '4px 0 0' }}>{t('panne_card1_micro')}</p>
+              <span className="open" style={{ fontWeight: 700 }}>{t('panne_card1_cta')} <svg className="v2-ic"><use href="#i-arrow-right" /></svg></span>
             </Link>
             <Link className="v2-tcard c-amber" href="/constat">
               <div className="icbox"><svg className="v2-ic"><use href="#i-file-text" /></svg></div>
@@ -393,6 +468,25 @@ export default function HomePage() {
         </section>
       )}
 
+      {/* ===== Pourquoi nous croire ===== */}
+      <section className="v2-section alt">
+        <div className="v2-container">
+          <div className="v2-section-head">
+            <div className="left">
+              <div className="v2-eyebrow">{t('why_eyebrow')}</div>
+              <h2>{t('why_title_a')} <span className="grad">{t('why_title_glow')}</span></h2>
+            </div>
+          </div>
+          <div className="v2-tools-grid">
+            <div className="v2-tcard c-blue"><div className="icbox"><svg className="v2-ic"><use href="#i-bar-chart" /></svg></div><h3>{t('why_1_title')}</h3><p>{t('why_1_desc')}</p></div>
+            <div className="v2-tcard c-green"><div className="icbox"><svg className="v2-ic"><use href="#i-shield-check" /></svg></div><h3>{t('why_2_title')}</h3><p>{t('why_2_desc')}</p></div>
+            <div className="v2-tcard c-violet"><div className="icbox"><svg className="v2-ic"><use href="#i-globe" /></svg></div><h3>{t('why_3_title')}</h3><p>{t('why_3_desc')}</p></div>
+            <div className="v2-tcard c-orange"><div className="icbox"><svg className="v2-ic"><use href="#i-leaf" /></svg></div><h3>{t('why_4_title')}</h3><p>{t('why_4_desc')}</p></div>
+          </div>
+        </div>
+      </section>
+
+
       {/* ===== Tools grid ===== */}
       <section className="v2-section">
         <div className="v2-container">
@@ -460,24 +554,6 @@ export default function HomePage() {
               <p>{t('tool9_desc')}</p>
               <span className="open">{t('tool9_cta')} <svg className="v2-ic"><use href="#i-arrow-right" /></svg></span>
             </Link>
-          </div>
-        </div>
-      </section>
-
-      {/* ===== Pourquoi nous croire ===== */}
-      <section className="v2-section alt">
-        <div className="v2-container">
-          <div className="v2-section-head">
-            <div className="left">
-              <div className="v2-eyebrow">{t('why_eyebrow')}</div>
-              <h2>{t('why_title_a')} <span className="grad">{t('why_title_glow')}</span></h2>
-            </div>
-          </div>
-          <div className="v2-tools-grid">
-            <div className="v2-tcard c-blue"><div className="icbox"><svg className="v2-ic"><use href="#i-bar-chart" /></svg></div><h3>{t('why_1_title')}</h3><p>{t('why_1_desc')}</p></div>
-            <div className="v2-tcard c-green"><div className="icbox"><svg className="v2-ic"><use href="#i-shield-check" /></svg></div><h3>{t('why_2_title')}</h3><p>{t('why_2_desc')}</p></div>
-            <div className="v2-tcard c-violet"><div className="icbox"><svg className="v2-ic"><use href="#i-globe" /></svg></div><h3>{t('why_3_title')}</h3><p>{t('why_3_desc')}</p></div>
-            <div className="v2-tcard c-orange"><div className="icbox"><svg className="v2-ic"><use href="#i-leaf" /></svg></div><h3>{t('why_4_title')}</h3><p>{t('why_4_desc')}</p></div>
           </div>
         </div>
       </section>

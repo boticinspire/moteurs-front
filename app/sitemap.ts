@@ -71,6 +71,11 @@ const PAGES_STATIQUES: { url: string; priority: number; changeFreq: MetadataRout
   { url: '/articles/ca', priority: 0.8, changeFreq: 'daily'   },
   { url: '/b2b',        priority: 0.7, changeFreq: 'monthly' },
   { url: '/particulier', priority: 0.7, changeFreq: 'monthly' },
+  { url: '/assistant-depannage',          priority: 0.85, changeFreq: 'weekly'  },
+  { url: '/assistant-depannage/voyants',  priority: 0.75, changeFreq: 'monthly' },
+  { url: '/constat',                       priority: 0.8,  changeFreq: 'monthly' },
+  { url: '/outils/cartes-recharge',        priority: 0.85, changeFreq: 'weekly'  },
+  { url: '/outils/documents-europe',       priority: 0.75, changeFreq: 'monthly' },
   { url: '/a-propos',       priority: 0.4, changeFreq: 'yearly' },
   { url: '/mentions-legales', priority: 0.3, changeFreq: 'yearly' },
 ]
@@ -94,6 +99,30 @@ async function fetchArticlesSlugs(): Promise<{ slug: string; updated_at: string 
     if (!res.ok) return []
     const data: { slug: string; updated_at: string }[] = await res.json()
     return data
+  } catch {
+    return []
+  }
+}
+
+/**
+ * Liste les cartes de recharge actives via le backend Railway (memoire identique
+ * a celle utilisee par /api/cartes-recharge → ComparateurCartes).
+ * Sert a generer dynamiquement les URLs /outils/cartes-recharge/[carte_id].
+ */
+async function fetchCartesIds(): Promise<{ id: string; updated_at: string }[]> {
+  try {
+    const res = await fetch(
+      'https://orchestrateur-production.up.railway.app/recharge/cartes',
+      {
+        headers: { Accept: 'application/json' },
+        next: { revalidate: 3600 },
+      }
+    )
+    if (!res.ok) return []
+    const data: { nb?: number; cartes?: { id: string; actif?: boolean; updated_at?: string }[] } = await res.json()
+    return (data.cartes ?? [])
+      .filter(c => c.actif !== false && typeof c.id === 'string' && c.id.length > 0)
+      .map(c => ({ id: c.id, updated_at: c.updated_at ?? new Date().toISOString() }))
   } catch {
     return []
   }
@@ -136,12 +165,20 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     }))
   )
 
-  const articles = await fetchArticlesSlugs()
+  const [articles, cartes] = await Promise.all([fetchArticlesSlugs(), fetchCartesIds()])
   const articleEntries: MetadataRoute.Sitemap = articles.map(a => ({
     url: `${BASE}/article/${a.slug}`,
     lastModified: new Date(a.updated_at).toISOString(),
     changeFrequency: 'weekly' as const,
     priority: 0.85,
+  }))
+
+  const carteEntries: MetadataRoute.Sitemap = cartes.map(c => ({
+    url: `${BASE}/outils/cartes-recharge/${c.id}`,
+    lastModified: new Date(c.updated_at).toISOString(),
+    changeFrequency: 'weekly' as const,
+    priority: 0.8,
+    alternates: { languages: altLanguages(`/outils/cartes-recharge/${c.id}`) },
   }))
 
   return [
@@ -150,5 +187,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...trajetSeoEntries,
     ...tcoEntries,
     ...articleEntries,
+    ...carteEntries,
   ]
 }
