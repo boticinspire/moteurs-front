@@ -1,3 +1,7 @@
+
+import { getStaticMetadata } from '@/lib/seo-keywords'
+
+export const metadata = getStaticMetadata('/particulier')
 export default function ParticulierPage() {
   return (
     <div dangerouslySetInnerHTML={{ __html: `<section class="hero">

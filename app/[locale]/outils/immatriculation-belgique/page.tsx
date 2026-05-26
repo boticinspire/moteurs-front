@@ -1,6 +1,10 @@
 'use client'
 
 import { useState, useMemo } from 'react'
+import { getStaticMetadata } from '@/lib/seo-keywords'
+
+export const metadata = getStaticMetadata('/outils/immatriculation-belgique')
+
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 // WALLONIE — Formule exacte (réforme 01/07/2025, valable jusqu'au 30/06/2026)

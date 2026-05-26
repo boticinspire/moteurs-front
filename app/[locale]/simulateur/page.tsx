@@ -5,6 +5,10 @@ import { useLocale, useTranslations } from 'next-intl'
 import FaqAccordion from '@/components/FaqAccordion'
 import { useUserContext } from '@/context/UserContextProvider'
 import { routing } from '@/i18n/routing'
+import { getStaticMetadata } from '@/lib/seo-keywords'
+
+export const metadata = getStaticMetadata('/simulateur')
+
 
 // HTML statique du formulaire — reste en FR pour cette vague ; les ids sont
 // utilises par simulateur.js externe.

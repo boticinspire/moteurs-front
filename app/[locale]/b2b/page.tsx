@@ -1,3 +1,7 @@
+
+import { getStaticMetadata } from '@/lib/seo-keywords'
+
+export const metadata = getStaticMetadata('/b2b')
 export default function B2BPage() {
   return (
     <div dangerouslySetInnerHTML={{ __html: `<section class="hero">

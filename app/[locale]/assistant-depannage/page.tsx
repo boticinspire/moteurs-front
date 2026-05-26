@@ -4,6 +4,7 @@ import AssistantDepannage from './AssistantDepannage'
 export const metadata: Metadata = {
   title: 'Assistant Dépannage Auto — Moteurs.com',
   description: 'Identifiez votre panne en quelques questions. Diagnostic guidé pour essence, diesel, hybride et électrique. Voyants, bruit, perte de puissance, recharge impossible…',
+  alternates: { canonical: 'https://moteurs.com/assistant-depannage' },
 }
 
 export default function PageAssistantDepannage() {

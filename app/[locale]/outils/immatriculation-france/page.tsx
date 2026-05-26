@@ -1,6 +1,10 @@
 'use client'
 
 import { useState, useMemo } from 'react'
+import { getStaticMetadata } from '@/lib/seo-keywords'
+
+export const metadata = getStaticMetadata('/outils/immatriculation-france')
+
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 // Puissance fiscale (chevaux fiscaux) — formule officielle ANTS
