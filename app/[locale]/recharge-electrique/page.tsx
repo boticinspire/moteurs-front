@@ -64,7 +64,7 @@ export default async function PageRechargeElectrique({
       {
         '@type': 'BreadcrumbList',
         itemListElement: [
-          { '@type': 'ListItem', position: 1, name: tHub.raw('crumb_home') === undefined ? 'Accueil' : '',          item: 'https://moteurs.com/' },
+          { '@type': 'ListItem', position: 1, name: tHub('crumb_home'),          item: 'https://moteurs.com/' },
           { '@type': 'ListItem', position: 2, name: tHub('crumb_current'),    item: 'https://moteurs.com/recharge-electrique' },
         ],
       },
