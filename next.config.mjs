@@ -4,6 +4,16 @@ const withNextIntl = createNextIntlPlugin('./i18n/request.ts')
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  async redirects() {
+    return [
+      {
+        source: '/:path*',
+        has: [{ type: 'host', value: 'www.moteurs.com' }],
+        destination: 'https://moteurs.com/:path*',
+        permanent: true,
+      },
+    ]
+  },
   async headers() {
     return [
       {
