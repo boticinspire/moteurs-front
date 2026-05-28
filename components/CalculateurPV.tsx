@@ -18,7 +18,9 @@ import {
   getTranche,
   type PaysCode,
   type TypeVoie,
+  type RegionBE,
   type TypeInfraction,
+  BAREME_VITESSE_BE,
 } from '@/lib/amendes'
 
 // ─── Constantes ───────────────────────────────────────────────────────────────
@@ -365,9 +367,10 @@ function ResultatCard({ data }: { data: ResultData }) {
 function FormulaireVitesse({ pays }: { pays: PaysCode }) {
   const [voie, setVoie] = useState<TypeVoie>('agglo')
   const [dep, setDep] = useState(15)
+  const [regionBE, setRegionBE] = useState<RegionBE>('WA')
   const [result, setResult] = useState<ReturnType<typeof computeVitesse> | null>(null)
   const info = PAYS[pays]
-  const bareme = BAREME_VITESSE[pays]
+  const bareme = pays === 'BE' ? BAREME_VITESSE_BE[regionBE] : BAREME_VITESSE[pays]
 
   type R = {
     amende_minoree?: number
@@ -397,10 +400,25 @@ function FormulaireVitesse({ pays }: { pays: PaysCode }) {
     if (pays === 'CH' && dep >= 25 && voie === 'agglo') conseils.push('« Raserei » : retrait de permis minimum 2 ans + pénal. Consultez immédiatement un avocat.')
     if (pays === 'CH' && dep >= 30 && voie === 'hors_agglo') conseils.push('« Raserei » : retrait de permis minimum 2 ans + pénal.')
     if (pays === 'CH' && dep >= 35 && voie === 'autoroute') conseils.push('« Raserei » : retrait de permis minimum 2 ans + pénal.')
+    if (pays === 'BE') {
+      if (tranche.tribunal) conseils.push('Convocation probable au tribunal correctionnel. Assistance juridique recommandée.')
+      else conseils.push('Système de points belge (depuis mars 2023) : récupération de points possible via stage agréé.')
+      const regionLabel = regionBE === 'FL' ? 'Flandre (70 km/h)' : regionBE === 'FL90' ? 'Flandre (route 90 km/h)' : regionBE === 'WA' ? 'Wallonie' : 'Bruxelles'
+      const limRegion = regionBE === 'FL' ? '70 km/h hors agglo' : regionBE === 'FL90' ? '90 km/h hors agglo' : regionBE === 'BX' ? (voie === 'agglo' ? '30 km/h en agglo' : '70 km/h hors agglo') : '90 km/h hors agglo'
+      conseils.push(`Limite appliquée — ${regionLabel} : ${limRegion}.`)
+    }
     if (pays === 'CA-QC' && dep >= 46) conseils.push('Suspension du permis sur-le-champ possible. Frais SAAQ s\'ajoutent à l\'amende.')
     if (pays === 'DE' && tranche.note) conseils.push(tranche.note)
     if (pays === 'ES' && tranche.amende_min) conseils.push(`Réduction 50 % si paiement sous 20 jours : ${info.symbole}${tranche.amende_min}.`)
     if (pays === 'IT' && tranche.amende_min) conseils.push(`Réduction 30 % si paiement dans les 5 jours : ${info.symbole}${tranche.amende_min}.`)
+    if (pays === 'LU' && tranche.tribunal) conseils.push('Dépassement important au Luxembourg : procédure judiciaire obligatoire. Assistance juridique vivement recommandée.')
+    if (pays === 'LU' && dep > 20 && !tranche.tribunal) conseils.push('Amende fixe encaissée sur place possible. Conservation du permis si paiement immédiat.')
+    if (pays === 'PT' && tranche.amende_min) conseils.push(`Infractions leves : réduction 50 % si paiement sous 20 jours — ${info.symbole}${tranche.amende_min}.`)
+    if (pays === 'PT' && tranche.suspension) conseils.push('Infração grave ou muito grave : suspension du permis de 1 à 24 mois possible. Contestation en 15 jours.')
+    if (pays === 'PL' && dep >= 31) conseils.push('Pologne : récidive (même excès ≥ 31 km/h dans les 2 ans) → amende doublée jusqu\'à 5 000 zł.')
+    if (pays === 'PL' && tranche.points && tranche.points >= 10) conseils.push('Solde ≥ 24 points : retrait de permis automatique. Recours devant le tribunal de district.')
+    if (pays === 'HR' && dep >= 1 && dep <= 10) conseils.push('Croatie : paiement immédiat sur place → réduction 50 % de l\'amende.')
+    if (pays === 'HR' && tranche.tribunal) conseils.push('Dépassement majeur : poursuites pénales possibles et retrait de permis jusqu\'à 90 jours.')
     if (tranche.note && !conseils.includes(tranche.note)) conseils.push(tranche.note)
     return {
       amende_minoree: tranche.amende_min,
@@ -426,6 +444,17 @@ function FormulaireVitesse({ pays }: { pays: PaysCode }) {
 
   return (
     <div>
+      {pays === 'BE' && (
+        <div style={{ marginBottom: 14 }}>
+          <label style={s.label}>Région belge</label>
+          <select style={s.select} value={regionBE} onChange={e => { setRegionBE(e.target.value as RegionBE); setResult(null) }}>
+            <option value="WA">🟫 Wallonie — 90 km/h hors agglo</option>
+            <option value="FL">🟡 Flandre — 70 km/h hors agglo (défaut depuis 2021)</option>
+            <option value="FL90">🟡 Flandre — route signalisée à 90 km/h</option>
+            <option value="BX">🔵 Bruxelles-Capitale — 30 km/h en agglo</option>
+          </select>
+        </div>
+      )}
       <div style={s.row}>
         <div>
           <label style={s.label}>Type de voie</label>

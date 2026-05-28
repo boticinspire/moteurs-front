@@ -8,7 +8,8 @@
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 
-export type PaysCode = 'FR' | 'BE' | 'CH' | 'CA-QC' | 'DE' | 'ES' | 'IT' | 'NL' | 'GB' | 'AT'
+export type PaysCode = 'FR' | 'BE' | 'CH' | 'CA-QC' | 'DE' | 'ES' | 'IT' | 'NL' | 'GB' | 'AT' | 'LU' | 'PT' | 'PL' | 'HR'
+export type RegionBE = 'FL' | 'FL90' | 'WA' | 'BX'
 export type TypeVoie = 'agglo' | 'hors_agglo' | 'autoroute'
 export type TypeInfraction = 'vitesse' | 'stationnement' | 'comportement' | 'zfe' | 'alcool' | 'stupefiants'
 
@@ -58,7 +59,7 @@ export const PAYS: Record<PaysCode, PaysInfo> = {
     symbole: '€',
     drapeau: '🇧🇪',
     permis_points_total: 12,
-    note_generale: 'Système de points belge en vigueur depuis mars 2023. Perception immédiate (PI) ou tribunal correctionnel selon le dépassement.',
+    note_generale: 'Limites variables par région : Flandre 70 km/h hors agglo (depuis oct. 2021), Wallonie 90 km/h, Bruxelles 30 km/h en agglo. Les perceptions immédiates (PI) sont fédérales et identiques dans les 3 régions. Système de points en vigueur depuis mars 2023.',
   },
   CH: {
     nom: 'Suisse',
@@ -124,6 +125,38 @@ export const PAYS: Record<PaysCode, PaysInfo> = {
     permis_points_total: null,
     note_generale: "Pas de système à points national. Amendes très élevées. Confiscation du véhicule possible en récidive ≥ 60 km/h de dépassement.",
   },
+  LU: {
+    nom: 'Luxembourg',
+    devise: 'EUR',
+    symbole: '€',
+    drapeau: '🇱🇺',
+    permis_points_total: 12,
+    note_generale: "Permis à 12 points. Amendes (avertissements taxés) payables sous 45 jours — double amende après délai. Au-delà de +25 km/h : poursuites judiciaires. Au-delà de +30 km/h : retrait de permis et comparution. Les radars luxembourgeois flashent fréquemment les frontaliers français et belges.",
+  },
+  PT: {
+    nom: 'Portugal',
+    devise: 'EUR',
+    symbole: '€',
+    drapeau: '🇵🇹',
+    permis_points_total: 12,
+    note_generale: "Permis à 12 points (8 en probatoire < 3 ans). Infractions classées : légères / graves / très graves. Réduction de 50 % si paiement dans les 20 jours (infractions légères). Radars nombreux sur A2 et A25. Seuil alcool abaissé à 0,2 g/L pour pros et permis < 3 ans.",
+  },
+  PL: {
+    nom: 'Pologne',
+    devise: 'PLN',
+    symbole: 'zł',
+    drapeau: '🇵🇱',
+    permis_points_total: 24,
+    note_generale: "Système de points additif : on accumule jusqu'à 24 points (→ repassage du permis). Points annulés après 1 an. Autoroute à 140 km/h : vitesse maximale légale la plus élevée d'Europe. Récidive (même infraction ≥ 31 km/h dans les 2 ans) : amende doublée.",
+  },
+  HR: {
+    nom: 'Croatie',
+    devise: 'EUR',
+    symbole: '€',
+    drapeau: '🇭🇷',
+    permis_points_total: null,
+    note_generale: "Pas de système à points. Euro depuis jan. 2023. Réduction de 50 % si paiement immédiat sur place (infractions < 265 €). Phares obligatoires 24h/24 du 1er nov. au 31 mars. Zéro alcool pour < 24 ans et professionnels. Péages sur autoroutes HAC (pas de vignette).",
+  },
 }
 
 // ─── Vitesse ─────────────────────────────────────────────────────────────────
@@ -180,8 +213,8 @@ const VITESSE_FR: BaremerVitesse = {
   },
 }
 
-// Belgique — Perceptions immédiates + correctionnel (SPF Mobilité 2025)
-const VITESSE_BE: BaremerVitesse = {
+// Belgique – Flandre (70 km/h hors agglo depuis oct. 2021)
+const VITESSE_BE_FL: BaremerVitesse = {
   agglo: {
     limite_legale: 50,
     tranches: [
@@ -204,6 +237,109 @@ const VITESSE_BE: BaremerVitesse = {
   },
   autoroute: {
     limite_legale: 120,
+    tranches: [
+      { dep_min: 1,  dep_max: 10, amende: 116,  points: 0, tribunal: false, suspension: false },
+      { dep_min: 11, dep_max: 20, amende: 160,  points: 2, tribunal: false, suspension: false },
+      { dep_min: 21, dep_max: 30, amende: 248,  points: 3, tribunal: false, suspension: false },
+      { dep_min: 31, dep_max: 40, amende: 412,  points: 4, tribunal: false, suspension: false },
+      { dep_min: 41, dep_max: Infinity, amende: 624, amende_max: 4000, points: 6, tribunal: true, suspension: true },
+    ],
+  },
+}
+
+// Belgique – Flandre – routes nationales signalisées à 90 km/h
+// (certaines N-routes non reclassées maintiennent 90 km/h malgré la réforme d'oct. 2021)
+const VITESSE_BE_FL90: BaremerVitesse = {
+  agglo: {
+    limite_legale: 50,
+    tranches: [
+      { dep_min: 1,  dep_max: 10, amende: 116,  points: 0, tribunal: false, suspension: false, note: 'Perception immédiate.' },
+      { dep_min: 11, dep_max: 20, amende: 160,  points: 2, tribunal: false, suspension: false },
+      { dep_min: 21, dep_max: 30, amende: 248,  points: 3, tribunal: false, suspension: false },
+      { dep_min: 31, dep_max: 40, amende: 412,  points: 4, tribunal: false, suspension: false },
+      { dep_min: 41, dep_max: Infinity, amende: 624, amende_max: 4000, points: 6, tribunal: true, suspension: true, note: 'Tribunal correctionnel. Retrait de permis probable.' },
+    ],
+  },
+  hors_agglo: {
+    limite_legale: 90,  // Routes nationales flamandes explicitement signalisées à 90 km/h
+    tranches: [
+      { dep_min: 1,  dep_max: 10, amende: 116,  points: 0, tribunal: false, suspension: false },
+      { dep_min: 11, dep_max: 20, amende: 160,  points: 2, tribunal: false, suspension: false },
+      { dep_min: 21, dep_max: 30, amende: 248,  points: 3, tribunal: false, suspension: false },
+      { dep_min: 31, dep_max: 40, amende: 412,  points: 4, tribunal: false, suspension: false },
+      { dep_min: 41, dep_max: Infinity, amende: 624, amende_max: 4000, points: 6, tribunal: true, suspension: true },
+    ],
+  },
+  autoroute: {
+    limite_legale: 120,
+    tranches: [
+      { dep_min: 1,  dep_max: 10, amende: 116,  points: 0, tribunal: false, suspension: false },
+      { dep_min: 11, dep_max: 20, amende: 160,  points: 2, tribunal: false, suspension: false },
+      { dep_min: 21, dep_max: 30, amende: 248,  points: 3, tribunal: false, suspension: false },
+      { dep_min: 31, dep_max: 40, amende: 412,  points: 4, tribunal: false, suspension: false },
+      { dep_min: 41, dep_max: Infinity, amende: 624, amende_max: 4000, points: 6, tribunal: true, suspension: true },
+    ],
+  },
+}
+
+// Belgique – Wallonie (90 km/h hors agglo)
+const VITESSE_BE_WA: BaremerVitesse = {
+  agglo: {
+    limite_legale: 50,
+    tranches: [
+      { dep_min: 1,  dep_max: 10, amende: 116,  points: 0, tribunal: false, suspension: false, note: 'Perception immédiate.' },
+      { dep_min: 11, dep_max: 20, amende: 160,  points: 2, tribunal: false, suspension: false },
+      { dep_min: 21, dep_max: 30, amende: 248,  points: 3, tribunal: false, suspension: false },
+      { dep_min: 31, dep_max: 40, amende: 412,  points: 4, tribunal: false, suspension: false },
+      { dep_min: 41, dep_max: Infinity, amende: 624, amende_max: 4000, points: 6, tribunal: true, suspension: true, note: 'Tribunal correctionnel. Retrait de permis probable.' },
+    ],
+  },
+  hors_agglo: {
+    limite_legale: 90,  // Wallonie maintient 90 km/h
+    tranches: [
+      { dep_min: 1,  dep_max: 10, amende: 116,  points: 0, tribunal: false, suspension: false },
+      { dep_min: 11, dep_max: 20, amende: 160,  points: 2, tribunal: false, suspension: false },
+      { dep_min: 21, dep_max: 30, amende: 248,  points: 3, tribunal: false, suspension: false },
+      { dep_min: 31, dep_max: 40, amende: 412,  points: 4, tribunal: false, suspension: false },
+      { dep_min: 41, dep_max: Infinity, amende: 624, amende_max: 4000, points: 6, tribunal: true, suspension: true },
+    ],
+  },
+  autoroute: {
+    limite_legale: 120,
+    tranches: [
+      { dep_min: 1,  dep_max: 10, amende: 116,  points: 0, tribunal: false, suspension: false },
+      { dep_min: 11, dep_max: 20, amende: 160,  points: 2, tribunal: false, suspension: false },
+      { dep_min: 21, dep_max: 30, amende: 248,  points: 3, tribunal: false, suspension: false },
+      { dep_min: 31, dep_max: 40, amende: 412,  points: 4, tribunal: false, suspension: false },
+      { dep_min: 41, dep_max: Infinity, amende: 624, amende_max: 4000, points: 6, tribunal: true, suspension: true },
+    ],
+  },
+}
+
+// Belgique – Bruxelles-Capitale (zone 30 km/h généralisée depuis jan. 2021)
+const VITESSE_BE_BX: BaremerVitesse = {
+  agglo: {
+    limite_legale: 30,  // Zone 30 généralisée — exceptions : ring R0, grands boulevards signalés 50/70
+    tranches: [
+      { dep_min: 1,  dep_max: 10, amende: 116,  points: 0, tribunal: false, suspension: false, note: 'Perception immédiate. Seuil bas à 30 km/h.' },
+      { dep_min: 11, dep_max: 20, amende: 160,  points: 2, tribunal: false, suspension: false },
+      { dep_min: 21, dep_max: 30, amende: 248,  points: 3, tribunal: false, suspension: false },
+      { dep_min: 31, dep_max: 40, amende: 412,  points: 4, tribunal: false, suspension: false },
+      { dep_min: 41, dep_max: Infinity, amende: 624, amende_max: 4000, points: 6, tribunal: true, suspension: true, note: 'Tribunal correctionnel. Retrait de permis probable.' },
+    ],
+  },
+  hors_agglo: {
+    limite_legale: 70,  // Région bruxelloise hors agglo
+    tranches: [
+      { dep_min: 1,  dep_max: 10, amende: 116,  points: 0, tribunal: false, suspension: false },
+      { dep_min: 11, dep_max: 20, amende: 160,  points: 2, tribunal: false, suspension: false },
+      { dep_min: 21, dep_max: 30, amende: 248,  points: 3, tribunal: false, suspension: false },
+      { dep_min: 31, dep_max: 40, amende: 412,  points: 4, tribunal: false, suspension: false },
+      { dep_min: 41, dep_max: Infinity, amende: 624, amende_max: 4000, points: 6, tribunal: true, suspension: true },
+    ],
+  },
+  autoroute: {
+    limite_legale: 120,  // Ring R0 et autoroutes traversantes
     tranches: [
       { dep_min: 1,  dep_max: 10, amende: 116,  points: 0, tribunal: false, suspension: false },
       { dep_min: 11, dep_max: 20, amende: 160,  points: 2, tribunal: false, suspension: false },
@@ -291,8 +427,8 @@ const VITESSE_DE: BaremerVitesse = {
     limite_legale: 50,
     tranches: [
       { dep_min: 1,  dep_max: 10, amende: 30,   points: 0, tribunal: false, suspension: false },
-      { dep_min: 11, dep_max: 15, amende: 50,   points: 1, tribunal: false, suspension: false },
-      { dep_min: 16, dep_max: 20, amende: 70,   points: 1, tribunal: false, suspension: false },
+      { dep_min: 11, dep_max: 15, amende: 50,   points: 0, tribunal: false, suspension: false },
+      { dep_min: 16, dep_max: 20, amende: 70,   points: 0, tribunal: false, suspension: false },
       { dep_min: 21, dep_max: 25, amende: 115,  points: 1, tribunal: false, suspension: false },
       { dep_min: 26, dep_max: 30, amende: 180,  points: 1, tribunal: false, suspension: true, note: '1 mois d\'interdiction de conduire.' },
       { dep_min: 31, dep_max: 40, amende: 260,  points: 2, tribunal: false, suspension: true, note: '1 mois d\'interdiction.' },
@@ -306,8 +442,8 @@ const VITESSE_DE: BaremerVitesse = {
     limite_legale: 100,
     tranches: [
       { dep_min: 1,  dep_max: 10, amende: 20,   points: 0, tribunal: false, suspension: false },
-      { dep_min: 11, dep_max: 15, amende: 40,   points: 1, tribunal: false, suspension: false },
-      { dep_min: 16, dep_max: 20, amende: 60,   points: 1, tribunal: false, suspension: false },
+      { dep_min: 11, dep_max: 15, amende: 40,   points: 0, tribunal: false, suspension: false },
+      { dep_min: 16, dep_max: 20, amende: 60,   points: 0, tribunal: false, suspension: false },
       { dep_min: 21, dep_max: 25, amende: 100,  points: 1, tribunal: false, suspension: false },
       { dep_min: 26, dep_max: 30, amende: 150,  points: 1, tribunal: false, suspension: false },
       { dep_min: 31, dep_max: 40, amende: 200,  points: 1, tribunal: false, suspension: true, note: '1 mois d\'interdiction.' },
@@ -321,8 +457,8 @@ const VITESSE_DE: BaremerVitesse = {
     limite_legale: 130,  // recommandation, zones limitées
     tranches: [
       { dep_min: 1,  dep_max: 10, amende: 20,   points: 0, tribunal: false, suspension: false },
-      { dep_min: 11, dep_max: 15, amende: 40,   points: 1, tribunal: false, suspension: false },
-      { dep_min: 16, dep_max: 20, amende: 60,   points: 1, tribunal: false, suspension: false },
+      { dep_min: 11, dep_max: 15, amende: 40,   points: 0, tribunal: false, suspension: false },
+      { dep_min: 16, dep_max: 20, amende: 60,   points: 0, tribunal: false, suspension: false },
       { dep_min: 21, dep_max: 25, amende: 100,  points: 1, tribunal: false, suspension: false },
       { dep_min: 26, dep_max: 30, amende: 150,  points: 1, tribunal: false, suspension: false },
       { dep_min: 31, dep_max: 40, amende: 200,  points: 1, tribunal: false, suspension: true },
@@ -504,9 +640,160 @@ const VITESSE_AT: BaremerVitesse = {
   },
 }
 
+// Luxembourg — Code de la route Grand-Ducal 2025 (avertissements taxés)
+const VITESSE_LU: BaremerVitesse = {
+  agglo: {
+    limite_legale: 50,
+    tranches: [
+      { dep_min: 1,  dep_max: 10, amende: 49,   points: 0, tribunal: false, suspension: false },
+      { dep_min: 11, dep_max: 15, amende: 74,   points: 0, tribunal: false, suspension: false },
+      { dep_min: 16, dep_max: 20, amende: 99,   points: 0, tribunal: false, suspension: false },
+      { dep_min: 21, dep_max: 25, amende: 145,  points: 2, tribunal: false, suspension: false },
+      { dep_min: 26, dep_max: 30, amende: 500,  amende_max: 2500, points: 4, tribunal: true, suspension: false, note: 'Poursuites judiciaires possibles.' },
+      { dep_min: 31, dep_max: Infinity, amende: 1000, amende_max: 10000, points: 6, tribunal: true, suspension: true, note: 'Retrait de permis, interdiction de conduire, confiscation possible.' },
+    ],
+  },
+  hors_agglo: {
+    limite_legale: 90,
+    tranches: [
+      { dep_min: 1,  dep_max: 10, amende: 49,   points: 0, tribunal: false, suspension: false },
+      { dep_min: 11, dep_max: 15, amende: 74,   points: 0, tribunal: false, suspension: false },
+      { dep_min: 16, dep_max: 20, amende: 99,   points: 0, tribunal: false, suspension: false },
+      { dep_min: 21, dep_max: 25, amende: 145,  points: 2, tribunal: false, suspension: false },
+      { dep_min: 26, dep_max: 30, amende: 500,  amende_max: 2500, points: 4, tribunal: true, suspension: false },
+      { dep_min: 31, dep_max: Infinity, amende: 1000, amende_max: 10000, points: 6, tribunal: true, suspension: true },
+    ],
+  },
+  autoroute: {
+    limite_legale: 130,
+    tranches: [
+      { dep_min: 1,  dep_max: 10, amende: 49,   points: 0, tribunal: false, suspension: false },
+      { dep_min: 11, dep_max: 15, amende: 74,   points: 0, tribunal: false, suspension: false },
+      { dep_min: 16, dep_max: 20, amende: 99,   points: 0, tribunal: false, suspension: false },
+      { dep_min: 21, dep_max: 25, amende: 145,  points: 2, tribunal: false, suspension: false },
+      { dep_min: 26, dep_max: 30, amende: 500,  amende_max: 2500, points: 4, tribunal: true, suspension: false },
+      { dep_min: 31, dep_max: Infinity, amende: 1000, amende_max: 10000, points: 6, tribunal: true, suspension: true },
+    ],
+  },
+}
+
+// Portugal — Código da Estrada / ANSR 2025 (infrações leves / graves / muito graves)
+const VITESSE_PT: BaremerVitesse = {
+  agglo: {
+    limite_legale: 50,
+    tranches: [
+      { dep_min: 1,  dep_max: 20, amende_min: 60,  amende: 300,  points: 0, tribunal: false, suspension: false, note: 'Infração leve. Réduction 50 % si paiement sous 20 jours.' },
+      { dep_min: 21, dep_max: 40, amende_min: 120, amende: 600,  points: 2, tribunal: false, suspension: false, note: 'Infração grave. Suspension 1–12 mois possible.' },
+      { dep_min: 41, dep_max: 60, amende_min: 300, amende: 1500, points: 4, tribunal: false, suspension: true,  note: 'Infração muito grave. Suspension 2–24 mois.' },
+      { dep_min: 61, dep_max: Infinity, amende_min: 500, amende: 2500, points: 4, tribunal: true, suspension: true, note: 'Infração muito grave — tribunal.' },
+    ],
+  },
+  hors_agglo: {
+    limite_legale: 90,
+    tranches: [
+      { dep_min: 1,  dep_max: 30, amende_min: 60,  amende: 300,  points: 0, tribunal: false, suspension: false, note: 'Infração leve. Réduction 50 % si paiement sous 20 jours.' },
+      { dep_min: 31, dep_max: 60, amende_min: 120, amende: 600,  points: 2, tribunal: false, suspension: false, note: 'Infração grave.' },
+      { dep_min: 61, dep_max: 80, amende_min: 300, amende: 1500, points: 4, tribunal: false, suspension: true,  note: 'Infração muito grave.' },
+      { dep_min: 81, dep_max: Infinity, amende_min: 500, amende: 2500, points: 4, tribunal: true, suspension: true },
+    ],
+  },
+  autoroute: {
+    limite_legale: 120,
+    tranches: [
+      { dep_min: 1,  dep_max: 30, amende_min: 60,  amende: 300,  points: 0, tribunal: false, suspension: false, note: 'Infração leve. Réduction 50 % si paiement sous 20 jours.' },
+      { dep_min: 31, dep_max: 60, amende_min: 120, amende: 600,  points: 2, tribunal: false, suspension: false },
+      { dep_min: 61, dep_max: 80, amende_min: 300, amende: 1500, points: 4, tribunal: false, suspension: true  },
+      { dep_min: 81, dep_max: Infinity, amende_min: 500, amende: 2500, points: 4, tribunal: true, suspension: true },
+    ],
+  },
+}
+
+// Pologne — Taryfikator mandatów 2026 (PLN — 1 EUR ≈ 4,3 zł)
+const VITESSE_PL: BaremerVitesse = {
+  agglo: {
+    limite_legale: 50,
+    tranches: [
+      { dep_min: 1,  dep_max: 10, amende: 50,   points: 1,  tribunal: false, suspension: false },
+      { dep_min: 11, dep_max: 15, amende: 100,  points: 2,  tribunal: false, suspension: false },
+      { dep_min: 16, dep_max: 20, amende: 200,  points: 3,  tribunal: false, suspension: false },
+      { dep_min: 21, dep_max: 25, amende: 300,  points: 5,  tribunal: false, suspension: false },
+      { dep_min: 26, dep_max: 30, amende: 400,  points: 7,  tribunal: false, suspension: false },
+      { dep_min: 31, dep_max: 40, amende: 800,  amende_max: 1600, points: 9,  tribunal: false, suspension: false, note: 'Récidive dans les 2 ans : 1 600 zł.' },
+      { dep_min: 41, dep_max: 50, amende: 1000, amende_max: 2000, points: 11, tribunal: false, suspension: false, note: 'Récidive : 2 000 zł.' },
+      { dep_min: 51, dep_max: 60, amende: 1500, amende_max: 3000, points: 13, tribunal: false, suspension: false, note: 'Récidive : 3 000 zł.' },
+      { dep_min: 61, dep_max: 70, amende: 2000, amende_max: 4000, points: 14, tribunal: false, suspension: false, note: 'Récidive : 4 000 zł.' },
+      { dep_min: 71, dep_max: Infinity, amende: 2500, amende_max: 5000, points: 15, tribunal: true, suspension: true, note: 'Récidive : 5 000 zł. Retrait de permis possible.' },
+    ],
+  },
+  hors_agglo: {
+    limite_legale: 90,
+    tranches: [
+      { dep_min: 1,  dep_max: 10, amende: 50,   points: 1,  tribunal: false, suspension: false },
+      { dep_min: 11, dep_max: 15, amende: 100,  points: 2,  tribunal: false, suspension: false },
+      { dep_min: 16, dep_max: 20, amende: 200,  points: 3,  tribunal: false, suspension: false },
+      { dep_min: 21, dep_max: 25, amende: 300,  points: 5,  tribunal: false, suspension: false },
+      { dep_min: 26, dep_max: 30, amende: 400,  points: 7,  tribunal: false, suspension: false },
+      { dep_min: 31, dep_max: 40, amende: 800,  amende_max: 1600, points: 9,  tribunal: false, suspension: false },
+      { dep_min: 41, dep_max: 50, amende: 1000, amende_max: 2000, points: 11, tribunal: false, suspension: false },
+      { dep_min: 51, dep_max: 60, amende: 1500, amende_max: 3000, points: 13, tribunal: false, suspension: false },
+      { dep_min: 61, dep_max: 70, amende: 2000, amende_max: 4000, points: 14, tribunal: false, suspension: false },
+      { dep_min: 71, dep_max: Infinity, amende: 2500, amende_max: 5000, points: 15, tribunal: true, suspension: true },
+    ],
+  },
+  autoroute: {
+    limite_legale: 140,  // Plus haute limite légale d'Europe
+    tranches: [
+      { dep_min: 1,  dep_max: 10, amende: 50,   points: 1,  tribunal: false, suspension: false },
+      { dep_min: 11, dep_max: 15, amende: 100,  points: 2,  tribunal: false, suspension: false },
+      { dep_min: 16, dep_max: 20, amende: 200,  points: 3,  tribunal: false, suspension: false },
+      { dep_min: 21, dep_max: 25, amende: 300,  points: 5,  tribunal: false, suspension: false },
+      { dep_min: 26, dep_max: 30, amende: 400,  points: 7,  tribunal: false, suspension: false },
+      { dep_min: 31, dep_max: 40, amende: 800,  amende_max: 1600, points: 9,  tribunal: false, suspension: false },
+      { dep_min: 41, dep_max: 50, amende: 1000, amende_max: 2000, points: 11, tribunal: false, suspension: false },
+      { dep_min: 51, dep_max: 60, amende: 1500, amende_max: 3000, points: 13, tribunal: false, suspension: false },
+      { dep_min: 61, dep_max: 70, amende: 2000, amende_max: 4000, points: 14, tribunal: false, suspension: false },
+      { dep_min: 71, dep_max: Infinity, amende: 2500, amende_max: 5000, points: 15, tribunal: true, suspension: true },
+    ],
+  },
+}
+
+// Croatie — ZSPC (Zakon o sigurnosti prometa na cestama) 2025 (EUR depuis jan. 2023)
+const VITESSE_HR: BaremerVitesse = {
+  agglo: {
+    limite_legale: 50,
+    tranches: [
+      { dep_min: 1,  dep_max: 10, amende: 40,   points: 0, tribunal: false, suspension: false, note: 'Réduction 50 % si paiement immédiat sur place.' },
+      { dep_min: 11, dep_max: 20, amende: 66,   points: 0, tribunal: false, suspension: false },
+      { dep_min: 21, dep_max: 30, amende: 133,  points: 0, tribunal: false, suspension: false },
+      { dep_min: 31, dep_max: 50, amende: 265,  points: 0, tribunal: false, suspension: true, note: 'Suspension possible.' },
+      { dep_min: 51, dep_max: Infinity, amende: 664, amende_max: 1992, points: 0, tribunal: true, suspension: true, note: "Retrait de permis jusqu\'à 90 jours. Poursuites judiciaires." },
+    ],
+  },
+  hors_agglo: {
+    limite_legale: 90,
+    tranches: [
+      { dep_min: 1,  dep_max: 10, amende: 40,   points: 0, tribunal: false, suspension: false, note: 'Réduction 50 % si paiement immédiat.' },
+      { dep_min: 11, dep_max: 20, amende: 66,   points: 0, tribunal: false, suspension: false },
+      { dep_min: 21, dep_max: 30, amende: 133,  points: 0, tribunal: false, suspension: false },
+      { dep_min: 31, dep_max: 50, amende: 265,  points: 0, tribunal: false, suspension: true },
+      { dep_min: 51, dep_max: Infinity, amende: 664, amende_max: 1992, points: 0, tribunal: true, suspension: true },
+    ],
+  },
+  autoroute: {
+    limite_legale: 130,
+    tranches: [
+      { dep_min: 1,  dep_max: 10, amende: 40,   points: 0, tribunal: false, suspension: false },
+      { dep_min: 11, dep_max: 20, amende: 66,   points: 0, tribunal: false, suspension: false },
+      { dep_min: 21, dep_max: 30, amende: 133,  points: 0, tribunal: false, suspension: false },
+      { dep_min: 31, dep_max: 50, amende: 265,  points: 0, tribunal: false, suspension: true },
+      { dep_min: 51, dep_max: Infinity, amende: 664, amende_max: 1992, points: 0, tribunal: true, suspension: true },
+    ],
+  },
+}
+
 export const BAREME_VITESSE: Partial<Record<PaysCode, BaremerVitesse>> = {
   FR: VITESSE_FR,
-  BE: VITESSE_BE,
+  BE: VITESSE_BE_FL,  // legacy — utilisé en fallback (Flandre). Le composant UI utilise BAREME_VITESSE_BE.
   CH: VITESSE_CH,
   'CA-QC': VITESSE_CA_QC,
   DE: VITESSE_DE,
@@ -515,6 +802,17 @@ export const BAREME_VITESSE: Partial<Record<PaysCode, BaremerVitesse>> = {
   NL: VITESSE_NL,
   GB: VITESSE_GB,
   AT: VITESSE_AT,
+  LU: VITESSE_LU,
+  PT: VITESSE_PT,
+  PL: VITESSE_PL,
+  HR: VITESSE_HR,
+}
+
+export const BAREME_VITESSE_BE: Record<RegionBE, BaremerVitesse> = {
+  FL:   VITESSE_BE_FL,
+  FL90: VITESSE_BE_FL90,
+  WA:   VITESSE_BE_WA,
+  BX:   VITESSE_BE_BX,
 }
 
 // ─── Comportement (téléphone, ceinture, refus priorité...) ───────────────────
@@ -601,6 +899,31 @@ export const BAREME_COMPORTEMENT: Partial<Record<PaysCode, InfractionComportemen
     { id: 'feu_rouge', label: 'Passage au feu rouge', amende: 70, amende_max: 1000, points: 0, tribunal: false, suspension: false },
     { id: 'casque_moto', label: 'Défaut de casque', amende: 35, amende_max: 218, points: 0, tribunal: false, suspension: false },
   ],
+  LU: [
+    { id: 'telephone', label: 'Téléphone tenu en main au volant', amende: 145, points: 2, tribunal: false, suspension: false },
+    { id: 'ceinture_conducteur', label: 'Ceinture non bouclée', amende: 49, points: 0, tribunal: false, suspension: false },
+    { id: 'feu_rouge', label: 'Passage au feu rouge', amende: 145, points: 4, tribunal: false, suspension: false },
+    { id: 'casque_moto', label: 'Défaut de casque (moto)', amende: 74, points: 0, tribunal: false, suspension: false },
+  ],
+  PT: [
+    { id: 'telephone', label: 'Téléphone tenu en main', amende_min: 250, amende: 500, points: 3, tribunal: false, suspension: false, note: 'Réduction 50 % si paiement sous 20 jours.' },
+    { id: 'ceinture_conducteur', label: 'Ceinture non bouclée', amende_min: 120, amende: 300, points: 2, tribunal: false, suspension: false },
+    { id: 'feu_rouge', label: 'Passage au feu rouge', amende_min: 250, amende: 1250, points: 4, tribunal: false, suspension: true },
+    { id: 'casque_moto', label: 'Défaut de casque (moto)', amende_min: 120, amende: 600, points: 2, tribunal: false, suspension: false },
+  ],
+  PL: [
+    { id: 'telephone', label: 'Téléphone tenu en main', amende: 500, points: 12, tribunal: false, suspension: false, note: '500 zł + 12 points sur le permis.' },
+    { id: 'ceinture_conducteur', label: 'Ceinture non bouclée', amende: 100, points: 5, tribunal: false, suspension: false },
+    { id: 'feu_rouge', label: 'Passage au feu rouge', amende: 500, points: 10, tribunal: false, suspension: true },
+    { id: 'casque_moto', label: 'Défaut de casque (moto)', amende: 200, points: 5, tribunal: false, suspension: false },
+  ],
+  HR: [
+    { id: 'telephone', label: 'Téléphone tenu en main', amende: 133, points: 0, tribunal: false, suspension: false, note: 'Réduction 50 % si paiement immédiat sur place (< 265 €).' },
+    { id: 'ceinture_conducteur', label: 'Ceinture non bouclée', amende: 66, points: 0, tribunal: false, suspension: false },
+    { id: 'feu_rouge', label: 'Passage au feu rouge / stop', amende: 133, points: 0, tribunal: false, suspension: false },
+    { id: 'casque_moto', label: 'Défaut de casque', amende: 66, points: 0, tribunal: false, suspension: false },
+    { id: 'phares_hiver', label: 'Phares non allumés (nov.–mars)', amende: 40, points: 0, tribunal: false, suspension: false, note: 'Feux de croisement obligatoires 24h/24 du 1er nov. au 31 mars.' },
+  ],
 }
 
 // ─── Stationnement ────────────────────────────────────────────────────────────
@@ -671,6 +994,26 @@ export const BAREME_STATIONNEMENT: Partial<Record<PaysCode, InfractionStationnem
     { id: 'genant', label: 'Stationnement interdit', amende: 50, amende_max: 218, points: 0, fourriere: true },
     { id: 'handicap', label: 'Emplacement handicapé', amende: 72, amende_max: 218, points: 0, fourriere: true },
   ],
+  LU: [
+    { id: 'payant', label: 'Zone bleue / payante sans paiement', amende: 49, points: 0, fourriere: false },
+    { id: 'genant', label: 'Stationnement interdit / gênant', amende: 74, amende_max: 145, points: 0, fourriere: true },
+    { id: 'handicap', label: 'Emplacement réservé PMR', amende: 145, points: 0, fourriere: true },
+  ],
+  PT: [
+    { id: 'payant', label: 'Zone bleue non payée', amende_min: 30, amende: 150, points: 0, fourriere: false },
+    { id: 'genant', label: 'Stationnement interdit / gênant', amende_min: 60, amende: 300, points: 0, fourriere: true },
+    { id: 'handicap', label: 'Emplacement réservé handicapé', amende_min: 120, amende: 600, points: 0, fourriere: true },
+  ],
+  PL: [
+    { id: 'payant', label: 'Zone payante sans paiement', amende: 100, amende_max: 300, points: 0, fourriere: false },
+    { id: 'genant', label: 'Stationnement interdit / gênant', amende: 200, amende_max: 500, points: 0, fourriere: true },
+    { id: 'handicap', label: 'Emplacement réservé handicapé', amende: 500, amende_max: 800, points: 0, fourriere: true },
+  ],
+  HR: [
+    { id: 'payant', label: 'Zone bleue / payante sans paiement', amende: 40, amende_max: 133, points: 0, fourriere: false, note: 'Paiement via app PayDo ou SMS dans les grandes villes.' },
+    { id: 'genant', label: 'Stationnement interdit / gênant', amende: 66, amende_max: 133, points: 0, fourriere: true },
+    { id: 'handicap', label: 'Emplacement réservé handicapé', amende: 133, points: 0, fourriere: true },
+  ],
 }
 
 // ─── ZFE / Crit'Air ───────────────────────────────────────────────────────────
@@ -712,6 +1055,15 @@ export const BAREME_ZFE: Partial<Record<PaysCode, InfractionZFE[]>> = {
   GB: [
     { id: 'ulez_london', label: 'ULEZ Londres — non conforme (< Euro 6 diesel / < Euro 4 essence)', amende: 180, points: 0, note: 'Frais journalier de 12,50 £ en cas de non-conformité ou de non-paiement. Caméras ANPR 24h/24.' },
     { id: 'caz_birmingham', label: 'CAZ Birmingham / Bath — non conforme', amende: 120, points: 0 },
+  ],
+  PT: [
+    { id: 'zef_lisboa', label: "Zone d'émissions faibles Lisbonne — véhicule non conforme", amende_min: 120, amende: 600, points: 0, note: 'ZEF Lisbonne : diesels pré-Euro 5 et essence pré-Euro 4 interdits dans le centre historique.' },
+  ],
+  PL: [
+    { id: 'spw_krakow', label: 'Zone à faibles émissions Cracovie — diesels pré-Euro 4 interdits', amende: 100, amende_max: 500, points: 0, note: "SPW (Strefa Płatnego Parkowania) actif. D\'autres villes polonaises mettent en place des zones similaires." },
+  ],
+  HR: [
+    { id: 'zagreb_restr', label: 'Zone restreinte Zagreb — haute pollution (diesels anciens)', amende: 66, amende_max: 133, points: 0, note: 'Restrictions temporaires lors des pics de pollution. Vérifier les annonces locales.' },
   ],
 }
 
@@ -783,6 +1135,25 @@ export const BAREME_ALCOOL: Partial<Record<PaysCode, TrancheAlcool[]>> = {
     { taux_min: 0.8, taux_max: 1.2, label: 'Taux 0,80–1,19 g/L', amende: 1600, points: 0, tribunal: true, suspension: true },
     { taux_min: 1.2, taux_max: Infinity, label: 'Taux ≥ 1,20 g/L', amende: 3700, amende_max: 5900, points: 0, tribunal: true, suspension: true },
   ],
+  LU: [
+    { taux_min: 0.2, taux_max: 0.5, label: 'Taux 0,20–0,49 g/L (jeune / récidive)', amende: 145, points: 2, tribunal: false, suspension: false, note: 'Seuil 0,2 g/L pour permis < 2 ans.' },
+    { taux_min: 0.5, taux_max: 0.8, label: 'Taux 0,50–0,79 g/L', amende: 500, points: 4, tribunal: false, suspension: true, note: 'Suspension de permis possible.' },
+    { taux_min: 0.8, taux_max: Infinity, label: 'Taux ≥ 0,80 g/L', amende: 1000, amende_max: 10000, points: 6, tribunal: true, suspension: true },
+  ],
+  PT: [
+    { taux_min: 0.2, taux_max: 0.5, label: 'Taux 0,20–0,49 g/L (jeune / pro)', amende_min: 250, amende: 1250, points: 3, tribunal: false, suspension: false, note: 'Seuil 0,2 g/L pour permis < 3 ans et conducteurs professionnels.' },
+    { taux_min: 0.5, taux_max: 1.2, label: 'Taux 0,50–1,19 g/L', amende_min: 250, amende: 1250, points: 3, tribunal: false, suspension: true, note: 'Suspension 1–12 mois.' },
+    { taux_min: 1.2, taux_max: Infinity, label: 'Taux ≥ 1,20 g/L', amende_min: 500, amende: 2500, points: 6, tribunal: true, suspension: true, note: 'Suspension 2–24 mois. Peines pénales.' },
+  ],
+  PL: [
+    { taux_min: 0.2, taux_max: 0.5, label: 'Taux 0,20–0,49 g/L (sobriété diminuée)', amende: 500, amende_max: 5000, points: 0, tribunal: false, suspension: true, note: 'Suspension du permis 6 mois – 3 ans. Arrestation possible.' },
+    { taux_min: 0.5, taux_max: Infinity, label: "Taux ≥ 0,50 g/L (état d\'ivresse — délit pénal)", amende: 5000, amende_max: 30000, points: 0, tribunal: true, suspension: true, note: 'Casier judiciaire. Interdiction de conduire 1–15 ans. Prison possible.' },
+  ],
+  HR: [
+    { taux_min: 0.0, taux_max: 0.5, label: 'Taux 0,01–0,49 g/L (< 24 ans ou professionnel)', amende: 133, amende_max: 265, points: 0, tribunal: false, suspension: true, note: 'Tolérance zéro pour moins de 24 ans et conducteurs professionnels.' },
+    { taux_min: 0.5, taux_max: 1.0, label: 'Taux 0,50–0,99 g/L', amende: 133, amende_max: 265, points: 0, tribunal: false, suspension: true },
+    { taux_min: 1.0, taux_max: Infinity, label: 'Taux ≥ 1,00 g/L', amende: 664, amende_max: 1992, points: 0, tribunal: true, suspension: true, note: 'Retrait de permis. Peines pénales.' },
+  ],
 }
 
 // ─── Stupéfiants ──────────────────────────────────────────────────────────────
@@ -847,6 +1218,26 @@ export const BAREME_STUPEFIANTS: Partial<Record<PaysCode, SanctionstupefiantsPV>
     amende: 800, amende_max: 5900, points: 0, tribunal: true, suspension: true,
     emprisonnement_max: '1 an',
     note: 'Tolérance zéro. Retrait de permis immédiat si test positif.',
+  },
+  LU: {
+    amende: 500, amende_max: 10000, points: 6, tribunal: true, suspension: true,
+    emprisonnement_max: '2 ans',
+    note: 'Tolérance zéro. Retrait de permis immédiat. Prise de sang systématique.',
+  },
+  PT: {
+    amende: 1000, amende_max: 3740, points: 6, tribunal: true, suspension: true,
+    emprisonnement_max: '1 an',
+    note: 'Tolérance zéro. Suspension 2–24 mois. Tests salivaires utilisés par la GNR et la PSP.',
+  },
+  PL: {
+    amende: 2500, amende_max: 30000, points: 0, tribunal: true, suspension: true,
+    emprisonnement_max: '3 ans',
+    note: "Délit pénal. Interdiction de conduire 1–15 ans. Véhicule pouvant être confisqué.",
+  },
+  HR: {
+    amende: 664, amende_max: 1992, points: 0, tribunal: true, suspension: true,
+    emprisonnement_max: '1 an',
+    note: 'Tolérance zéro. Retrait de permis. Tests salivaires + prise de sang obligatoire.',
   },
 }
 
@@ -920,6 +1311,10 @@ function getSourcesVitesse(pays: PaysCode): string[] {
     NL: 'Wet administratiefrechtelijke handhaving verkeersvoorschriften (WAHV)',
     GB: 'Road Traffic Offenders Act 1988 — Fixed Penalty Notice',
     AT: 'FSG (Führerscheingesetz) + STVO AT 2024',
+    LU: 'Code de la route luxembourgeois — Administration des Ponts et Chaussées 2025',
+    PT: 'Código da Estrada — ANSR (Autoridade Nacional de Segurança Rodoviária) 2025',
+    PL: 'Taryfikator mandatów karnych 2026 — Ministerstwo Sprawiedliwości PL',
+    HR: 'Zakon o sigurnosti prometa na cestama (ZSPC) — MUP Hrvatska 2025',
   }
   return [sources[pays]]
 }
