@@ -554,6 +554,12 @@ export default function HomePage() {
               <p>{t('tool9_desc')}</p>
               <span className="open">{t('tool9_cta')} <svg className="v2-ic"><use href="#i-arrow-right" /></svg></span>
             </Link>
+            <Link className="v2-tcard c-red" href="/outils/amende-pv">
+              <div className="icbox"><svg className="v2-ic"><use href="#i-alert-triangle" /></svg></div>
+              <h3>{t('tool10_title')}</h3>
+              <p>{t('tool10_desc')}</p>
+              <span className="open">{t('tool10_cta')} <svg className="v2-ic"><use href="#i-arrow-right" /></svg></span>
+            </Link>
           </div>
         </div>
       </section>

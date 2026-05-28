@@ -198,7 +198,7 @@
     "summer_card_petrol": "Benz.",
     "summer_card_detail": "Detail",
     "tools_eyebrow": "Alle tools",
-    "tools_title_a": "Acht tools om te beslissen",
+    "tools_title_a": "Tien tools om te beslissen",
     "tools_title_glow": "zonder fouten.",
     "tools_cta_all": "Alle tools zien",
     "tool1_title": "Rittenkost",
@@ -265,7 +265,10 @@
     "usage_panne_micro2": "Geen registratie",
     "usage_panne_micro3": "Direct antwoord",
     "panne_card1_badge": "Dringend",
-    "panne_card1_micro": "Gratis · Geen registratie · Direct antwoord"
+    "panne_card1_micro": "Gratis · Geen registratie · Direct antwoord",
+    "tool10_title": "Boetecalculator",
+    "tool10_desc": "Snelheid, parkeren, drank, milieuzones — officiële 2026-tarieven voor 10 landen. Exact bedrag, punten, schorsingsrisico.",
+    "tool10_cta": "Berekenen"
   },
   "About": {
     "title": "Over Moteurs.com",
@@ -579,7 +582,7 @@
     "urgence_body_a": "Het",
     "urgence_body_strong": "112",
     "urgence_body_b": "is het unieke Europese noodnummer (politie, brandweer, ambulance). Het werkt overal in de EU, gratis, zelfs zonder beltegoed. Voor wegbijstand, zie de nummers per land hieronder.",
-    "outils_h2": "3 tools om pech aan te pakken",
+    "outils_h2": "4 tools om een panne te beheren",
     "outils_card1_title": "Foto waarschuwingsscan",
     "outils_card1_desc": "Maak een foto van het lampje of symptoom — de AI zegt of u kunt rijden, wachten of stoppen, en geeft de waarschijnlijke oorzaak.",
     "outils_card1_cta": "Een lampje scannen",
@@ -665,7 +668,10 @@
     "outliens_constat": "Europees formulier →",
     "outliens_assistance": "Pechbijstand →",
     "outliens_vacances": "Op vakantie met de auto →",
-    "outliens_checklist": "Vertrekchecklist →"
+    "outliens_checklist": "Vertrekchecklist →",
+    "outils_card4_title": "Boetecalculator",
+    "outils_card4_desc": "Exact boetebedrag voor snelheid, parkeren, alcohol of milieuzones — 10 landen.",
+    "outils_card4_cta": "Mijn boete berekenen"
   },
   "HubCout": {
     "meta_title": "Totale kost van een auto in {annee}: TCO diesel, benzine, elektrisch, hybride | Moteurs.com",

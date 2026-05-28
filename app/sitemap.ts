@@ -76,6 +76,7 @@ const PAGES_STATIQUES: { url: string; priority: number; changeFreq: MetadataRout
   { url: '/constat',                       priority: 0.8,  changeFreq: 'monthly' },
   { url: '/outils/cartes-recharge',        priority: 0.85, changeFreq: 'weekly'  },
   { url: '/outils/documents-europe',       priority: 0.75, changeFreq: 'monthly' },
+  { url: '/outils/amende-pv',               priority: 0.85, changeFreq: 'monthly'  },
   { url: '/a-propos',       priority: 0.4, changeFreq: 'yearly' },
   { url: '/mentions-legales', priority: 0.3, changeFreq: 'yearly' },
 ]

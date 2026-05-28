@@ -127,10 +127,11 @@ function DepannageContent() {
       {/* 3 outils */}
       <section style={{ marginBottom: 40 }}>
         <h2 style={h2}>{t('outils_h2')}</h2>
-        <div style={{ display: 'grid', gap: 14, gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))' }}>
+        <div style={{ display: 'grid', gap: 14, gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))' }}>
           <CarteOutil href="/assistant-depannage" titre={t('outils_card1_title')} description={t('outils_card1_desc')} cta={t('outils_card1_cta')} urgent />
           <CarteOutil href="/constat"             titre={t('outils_card2_title')} description={t('outils_card2_desc')} cta={t('outils_card2_cta')} />
           <CarteOutil href="/assistance/panne"    titre={t('outils_card3_title')} description={t('outils_card3_desc')} cta={t('outils_card3_cta')} />
+          <CarteOutil href="/outils/amende-pv"   titre={t('outils_card4_title')} description={t('outils_card4_desc')} cta={t('outils_card4_cta')} />
         </div>
       </section>
 
@@ -270,6 +271,7 @@ function DepannageContent() {
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10 }}>
           <Link href="/assistant-depannage" style={btnSecondaire}>{t('outliens_scan')}</Link>
           <Link href="/constat" style={btnSecondaire}>{t('outliens_constat')}</Link>
+          <Link href="/outils/amende-pv" style={btnSecondaire}>{t('outils_card4_cta')}</Link>
           <Link href="/assistance/panne" style={btnSecondaire}>{t('outliens_assistance')}</Link>
           <Link href="/vacances-voiture" style={btnSecondaire}>{t('outliens_vacances')}</Link>
           <Link href="/checklist-depart" style={btnSecondaire}>{t('outliens_checklist')}</Link>
@@ -279,7 +281,7 @@ function DepannageContent() {
   )
 }
 
-function CarteOutil({ href, titre, description, cta, urgent }: { href: '/assistant-depannage' | '/constat' | '/assistance/panne'; titre: string; description: string; cta: string; urgent?: boolean }) {
+function CarteOutil({ href, titre, description, cta, urgent }: { href: '/assistant-depannage' | '/constat' | '/assistance/panne' | '/outils/amende-pv'; titre: string; description: string; cta: string; urgent?: boolean }) {
   return (
     <Link href={href} style={{
       display: 'block', padding: 18, borderRadius: 12,

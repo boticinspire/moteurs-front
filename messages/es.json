@@ -198,7 +198,7 @@
     "summer_card_petrol": "Gas.",
     "summer_card_detail": "Detalle",
     "tools_eyebrow": "Todas las herramientas",
-    "tools_title_a": "Ocho herramientas para decidir",
+    "tools_title_a": "Diez herramientas para decidir",
     "tools_title_glow": "sin equivocarse.",
     "tools_cta_all": "Ver todas las herramientas",
     "tool1_title": "Coste de trayecto",
@@ -265,7 +265,10 @@
     "usage_panne_micro2": "Sin registro",
     "usage_panne_micro3": "Respuesta inmediata",
     "panne_card1_badge": "Urgente",
-    "panne_card1_micro": "Gratis · Sin registro · Respuesta inmediata"
+    "panne_card1_micro": "Gratis · Sin registro · Respuesta inmediata",
+    "tool10_title": "Calculadora de multas",
+    "tool10_desc": "Exceso de velocidad, aparcamiento, alcohol, ZBE — tarifas oficiales 2026 para 10 países. Importe exacto, puntos, riesgo de suspensión.",
+    "tool10_cta": "Calcular"
   },
   "About": {
     "title": "Sobre Moteurs.com",
@@ -579,7 +582,7 @@
     "urgence_body_a": "El",
     "urgence_body_strong": "112",
     "urgence_body_b": "es el número de emergencia único europeo (policía, bomberos, SAMU). Funciona en toda la UE, gratis, incluso sin saldo. Para la asistencia en carretera, ver los números por país abajo.",
-    "outils_h2": "3 herramientas para gestionar una avería",
+    "outils_h2": "4 herramientas para gestionar una avería",
     "outils_card1_title": "Escáner testigo por foto",
     "outils_card1_desc": "Haga una foto del testigo o síntoma — la IA le indica si puede circular, esperar o detenerse, y da la causa probable.",
     "outils_card1_cta": "Escanear un testigo",
@@ -665,7 +668,10 @@
     "outliens_constat": "Parte europeo →",
     "outliens_assistance": "Asistencia avería →",
     "outliens_vacances": "Vacaciones en coche →",
-    "outliens_checklist": "Checklist de salida →"
+    "outliens_checklist": "Checklist de salida →",
+    "outils_card4_title": "Calculadora de multas",
+    "outils_card4_desc": "Importe exacto de su multa — velocidad, aparcamiento, alcohol, ZBE — para 10 países.",
+    "outils_card4_cta": "Calcular mi multa"
   },
   "HubCout": {
     "meta_title": "Coste total de un coche en {annee}: TCO diésel, gasolina, eléctrico, híbrido | Moteurs.com",

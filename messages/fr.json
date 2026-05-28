@@ -198,7 +198,7 @@
     "summer_card_petrol": "Ess.",
     "summer_card_detail": "Détail",
     "tools_eyebrow": "Tous les outils",
-    "tools_title_a": "Huit outils pour décider",
+    "tools_title_a": "Dix outils pour décider",
     "tools_title_glow": "sans se tromper.",
     "tools_cta_all": "Voir tous les outils",
     "tool1_title": "Coût de trajet",
@@ -265,7 +265,10 @@
     "usage_panne_micro2": "Sans inscription",
     "usage_panne_micro3": "Réponse immédiate",
     "panne_card1_badge": "Urgent",
-    "panne_card1_micro": "Gratuit · Sans inscription · Réponse immédiate"
+    "panne_card1_micro": "Gratuit · Sans inscription · Réponse immédiate",
+    "tool10_title": "Calculateur d'amendes",
+    "tool10_desc": "PV vitesse, stationnement, alcool, ZFE — barèmes officiels 2026 pour 10 pays. Montant exact, points retirés, risque de suspension.",
+    "tool10_cta": "Calculer"
   },
   "About": {
     "title": "À propos de Moteurs.com",
@@ -579,7 +582,7 @@
     "urgence_body_a": "Le",
     "urgence_body_strong": "112",
     "urgence_body_b": "est le numéro d'urgence unique européen (police, pompiers, SAMU). Il fonctionne dans toute l'UE, gratuitement, même sans crédit. Pour le dépannage routier, voir les numéros par pays ci-dessous.",
-    "outils_h2": "3 outils pour gérer une panne",
+    "outils_h2": "4 outils pour gérer une panne",
     "outils_card1_title": "Scan voyant par photo",
     "outils_card1_desc": "Prenez une photo du voyant ou symptôme — l'IA vous dit si vous pouvez rouler, attendre ou stopper, et donne la cause probable.",
     "outils_card1_cta": "Scanner un voyant",
@@ -665,7 +668,10 @@
     "outliens_constat": "Constat européen →",
     "outliens_assistance": "Assistance panne →",
     "outliens_vacances": "Vacances voiture →",
-    "outliens_checklist": "Checklist départ →"
+    "outliens_checklist": "Checklist départ →",
+    "outils_card4_title": "Calculateur PV",
+    "outils_card4_desc": "Montant exact de votre amende — vitesse, stationnement, alcool, ZFE — pour la France, la Belgique, la Suisse et 7 autres pays.",
+    "outils_card4_cta": "Calculer mon amende"
   },
   "HubCout": {
     "meta_title": "Coût total d'une voiture en {annee} : TCO diesel, essence, électrique, hybride | Moteurs.com",

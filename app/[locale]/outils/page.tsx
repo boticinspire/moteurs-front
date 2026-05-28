@@ -52,6 +52,15 @@ const OUTILS_PHARES = [
     badge: null,
   },
   {
+    href: '/outils/amende-pv',
+    icon: '⚖️',
+    titre: 'Calculateur PV & Amendes',
+    desc: 'Combien va coûter votre PV ? Excès de vitesse, stationnement, alcool, ZFE — barèmes officiels 2026 pour 10 pays. Amende exacte, points retirés, risque de suspension.',
+    tags: ['FR', 'BE', 'CH', 'CA', 'DE', 'ES', 'IT', 'NL'],
+    cta: 'Calculer mon amende',
+    badge: 'Nouveau',
+  },
+  {
     href: '/comparer',
     icon: '📊',
     titre: 'Comparateur TCO motorisations',

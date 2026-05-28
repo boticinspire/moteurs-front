@@ -198,7 +198,7 @@
     "summer_card_petrol": "Benz.",
     "summer_card_detail": "Dettagli",
     "tools_eyebrow": "Tutti gli strumenti",
-    "tools_title_a": "Otto strumenti per decidere",
+    "tools_title_a": "Dieci strumenti per decidere",
     "tools_title_glow": "senza sbagliare.",
     "tools_cta_all": "Vedi tutti gli strumenti",
     "tool1_title": "Costo tragitto",
@@ -265,7 +265,10 @@
     "usage_panne_micro2": "Senza iscrizione",
     "usage_panne_micro3": "Risposta immediata",
     "panne_card1_badge": "Urgente",
-    "panne_card1_micro": "Gratuito · Senza iscrizione · Risposta immediata"
+    "panne_card1_micro": "Gratuito · Senza iscrizione · Risposta immediata",
+    "tool10_title": "Calcola multa",
+    "tool10_desc": "Velocità, sosta, alcol, ZTL — tariffe ufficiali 2026 per 10 paesi. Importo esatto, punti, sospensione patente.",
+    "tool10_cta": "Calcola"
   },
   "About": {
     "title": "Chi è Moteurs.com",
@@ -579,7 +582,7 @@
     "urgence_body_a": "Il",
     "urgence_body_strong": "112",
     "urgence_body_b": "è il numero di emergenza unico europeo (polizia, vigili del fuoco, soccorso). Funziona in tutta l'UE, gratuitamente, anche senza credito. Per il soccorso stradale, vedi i numeri per paese qui sotto.",
-    "outils_h2": "3 strumenti per gestire un guasto",
+    "outils_h2": "4 strumenti per gestire un guasto",
     "outils_card1_title": "Scansione spia tramite foto",
     "outils_card1_desc": "Scatta una foto della spia o sintomo — l'IA ti dice se puoi guidare, attendere o fermarti, e indica la causa probabile.",
     "outils_card1_cta": "Scansiona una spia",
@@ -665,7 +668,10 @@
     "outliens_constat": "Constatazione europea →",
     "outliens_assistance": "Assistenza guasti →",
     "outliens_vacances": "In vacanza in auto →",
-    "outliens_checklist": "Checklist partenza →"
+    "outliens_checklist": "Checklist partenza →",
+    "outils_card4_title": "Calcola multa",
+    "outils_card4_desc": "Importo esatto della multa — velocità, sosta, alcol, ZTL — per 10 paesi.",
+    "outils_card4_cta": "Calcola la mia multa"
   },
   "HubCout": {
     "meta_title": "Costo totale di un'auto nel {annee}: TCO diesel, benzina, elettrico, ibrido | Moteurs.com",

@@ -198,7 +198,7 @@
     "summer_card_petrol": "Benzin",
     "summer_card_detail": "Detail",
     "tools_eyebrow": "Alle Tools",
-    "tools_title_a": "Acht Tools für die",
+    "tools_title_a": "Zehn Tools zur Entscheidung",
     "tools_title_glow": "richtige Wahl.",
     "tools_cta_all": "Alle Tools ansehen",
     "tool1_title": "Streckenkosten",
@@ -265,7 +265,10 @@
     "usage_panne_micro2": "Ohne Anmeldung",
     "usage_panne_micro3": "Sofortige Antwort",
     "panne_card1_badge": "Dringend",
-    "panne_card1_micro": "Kostenlos · Ohne Anmeldung · Sofortige Antwort"
+    "panne_card1_micro": "Kostenlos · Ohne Anmeldung · Sofortige Antwort",
+    "tool10_title": "Bußgeldrechner",
+    "tool10_desc": "Temposünder, Parken, Alkohol, Umweltzonen — offizielle 2026-Tarife für 10 Länder. Genauer Betrag, Punkte, Fahrverbot.",
+    "tool10_cta": "Berechnen"
   },
   "About": {
     "title": "Über Moteurs.com",
@@ -579,7 +582,7 @@
     "urgence_body_a": "Die",
     "urgence_body_strong": "112",
     "urgence_body_b": "ist die einheitliche europäische Notrufnummer (Polizei, Feuerwehr, Rettungsdienst). Sie funktioniert EU-weit kostenlos, sogar ohne Guthaben. Für die Straßenpannenhilfe siehe die Länder-Nummern unten.",
-    "outils_h2": "3 Tools, um eine Panne zu bewältigen",
+    "outils_h2": "4 Tools zur Pannenverwaltung",
     "outils_card1_title": "Warnleuchten-Scan per Foto",
     "outils_card1_desc": "Foto der Leuchte oder des Symptoms machen — KI sagt Ihnen, ob Sie fahren, warten oder stoppen sollen, und nennt die wahrscheinliche Ursache.",
     "outils_card1_cta": "Warnleuchte scannen",
@@ -665,7 +668,10 @@
     "outliens_constat": "Europäischer Bericht →",
     "outliens_assistance": "Pannenhilfe →",
     "outliens_vacances": "Autourlaub →",
-    "outliens_checklist": "Abfahrts-Checkliste →"
+    "outliens_checklist": "Abfahrts-Checkliste →",
+    "outils_card4_title": "Bußgeldrechner",
+    "outils_card4_desc": "Genaues Bußgeld für Tempo, Parken, Alkohol oder Umweltzonen — 10 Länder.",
+    "outils_card4_cta": "Mein Bußgeld berechnen"
   },
   "HubCout": {
     "meta_title": "Gesamtkosten eines Autos in {annee}: TCO Diesel, Benzin, Elektro, Hybrid | Moteurs.com",

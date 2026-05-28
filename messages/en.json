@@ -198,7 +198,7 @@
     "summer_card_petrol": "Petrol",
     "summer_card_detail": "Details",
     "tools_eyebrow": "All tools",
-    "tools_title_a": "Eight tools to decide",
+    "tools_title_a": "Ten tools to decide",
     "tools_title_glow": "with confidence.",
     "tools_cta_all": "See all tools",
     "tool1_title": "Trip cost",
@@ -265,7 +265,10 @@
     "usage_panne_micro2": "No sign-up",
     "usage_panne_micro3": "Instant answer",
     "panne_card1_badge": "Urgent",
-    "panne_card1_micro": "Free · No sign-up · Instant answer"
+    "panne_card1_micro": "Free · No sign-up · Instant answer",
+    "tool10_title": "Fine Calculator",
+    "tool10_desc": "Speeding, parking, drink-driving, low-emission zones — official 2026 rates for 10 countries. Exact fine, penalty points, suspension risk.",
+    "tool10_cta": "Calculate"
   },
   "About": {
     "title": "About Moteurs.com",
@@ -579,7 +582,7 @@
     "urgence_body_a": "The",
     "urgence_body_strong": "112",
     "urgence_body_b": "is the single European emergency number (police, fire, ambulance). It works throughout the EU, free of charge, even without credit. For roadside assistance, see the per-country numbers below.",
-    "outils_h2": "3 tools to handle a breakdown",
+    "outils_h2": "4 tools to manage a breakdown",
     "outils_card1_title": "Photo warning light scan",
     "outils_card1_desc": "Take a photo of the warning light or symptom — AI tells you whether you can drive, wait or stop, and gives the likely cause.",
     "outils_card1_cta": "Scan a warning light",
@@ -665,7 +668,10 @@
     "outliens_constat": "European claim form →",
     "outliens_assistance": "Breakdown assistance →",
     "outliens_vacances": "Holiday driving →",
-    "outliens_checklist": "Departure checklist →"
+    "outliens_checklist": "Departure checklist →",
+    "outils_card4_title": "Fine Calculator",
+    "outils_card4_desc": "Exact fine for speeding, parking, drink-driving or low-emission zones — France, Belgium, Switzerland and 7 more countries.",
+    "outils_card4_cta": "Calculate my fine"
   },
   "HubCout": {
     "meta_title": "Total cost of a car in {annee}: TCO diesel, petrol, electric, hybrid | Moteurs.com",
