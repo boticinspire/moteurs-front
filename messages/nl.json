@@ -484,7 +484,8 @@
     "outils_assistance": "Laad-assistentie →",
     "outils_simulateur": "TCO-simulator →",
     "outils_comparer_trajet": "Rittenvergelijker →",
-    "outils_trajets": "Vakantieritten →"
+    "outils_trajets": "Vakantieritten →",
+    "crumb_home": "Home"
   },
   "HubVacances": {
     "meta_title": "Op vakantie met de auto {annee}: routes, kosten, tol, vignetten | Moteurs.com",

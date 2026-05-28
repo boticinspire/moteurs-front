@@ -7,6 +7,8 @@
  */
 import { NextResponse } from 'next/server'
 
+export const dynamic = 'force-dynamic'
+
 const RAILWAY_URL = 'https://orchestrateur-production.up.railway.app/recharge/tarifs'
 
 export const revalidate = 3600

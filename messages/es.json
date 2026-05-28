@@ -484,7 +484,8 @@
     "outils_assistance": "Asistencia de carga →",
     "outils_simulateur": "Simulador TCO →",
     "outils_comparer_trajet": "Comparador trayecto →",
-    "outils_trajets": "Trayectos vacaciones →"
+    "outils_trajets": "Trayectos vacaciones →",
+    "crumb_home": "Inicio"
   },
   "HubVacances": {
     "meta_title": "Vacaciones en coche {annee}: rutas, costes, peajes, viñetas | Moteurs.com",

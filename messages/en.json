@@ -484,7 +484,8 @@
     "outils_assistance": "Charging assistance →",
     "outils_simulateur": "TCO simulator →",
     "outils_comparer_trajet": "Trip comparator →",
-    "outils_trajets": "Holiday trips →"
+    "outils_trajets": "Holiday trips →",
+    "crumb_home": "Home"
   },
   "HubVacances": {
     "meta_title": "Car holidays {annee}: routes, costs, tolls, vignettes | Moteurs.com",

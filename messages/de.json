@@ -484,7 +484,8 @@
     "outils_assistance": "Lade-Assistenz →",
     "outils_simulateur": "TCO-Simulator →",
     "outils_comparer_trajet": "Streckenvergleich →",
-    "outils_trajets": "Urlaubsstrecken →"
+    "outils_trajets": "Urlaubsstrecken →",
+    "crumb_home": "Startseite"
   },
   "HubVacances": {
     "meta_title": "Autourlaub {annee}: Routen, Kosten, Maut, Vignetten | Moteurs.com",

@@ -484,7 +484,8 @@
     "outils_assistance": "Assistenza ricarica →",
     "outils_simulateur": "Simulatore TCO →",
     "outils_comparer_trajet": "Comparatore tragitto →",
-    "outils_trajets": "Tragitti vacanze →"
+    "outils_trajets": "Tragitti vacanze →",
+    "crumb_home": "Home"
   },
   "HubVacances": {
     "meta_title": "In vacanza in auto {annee}: itinerari, costi, pedaggi, vignette | Moteurs.com",

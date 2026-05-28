@@ -484,7 +484,8 @@
     "outils_assistance": "Assistance recharge →",
     "outils_simulateur": "Simulateur TCO →",
     "outils_comparer_trajet": "Comparateur trajet →",
-    "outils_trajets": "Trajets vacances →"
+    "outils_trajets": "Trajets vacances →",
+    "crumb_home": "Accueil"
   },
   "HubVacances": {
     "meta_title": "Vacances en voiture {annee} : itinéraires, coûts, péages, vignettes | Moteurs.com",
