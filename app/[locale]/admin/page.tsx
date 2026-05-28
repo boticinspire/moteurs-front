@@ -67,6 +67,11 @@ export default function AdminPage() {
   const [outilsLoaded,  setOutilsLoaded]  = useState(false)
   const [outilsSection, setOutilsSection] = useState<'scans' | 'trajets'>('scans')
 
+  // Simulateur avant/après
+  type SimPrix = { diesel: number; elec: number; gnv?: number }
+  type SimResult = { avant: Record<string, SimPrix>; apres: Record<string, SimPrix>; updated_at: string }
+  const [simResult, setSimResult] = useState<SimResult | null>(null)
+
   // Users tab
   const [users, setUsers]               = useState<AdminUser[]>([])
   const [usersLoading, setUsersLoading] = useState(false)
@@ -199,6 +204,20 @@ export default function AdminPage() {
       await appelerRail('/social/generer-batch', 'Agent Social batch')
       chargerPosts()
     }
+  }
+
+  async function lancerSimulateur() {
+    msg('⛽ Simulateur — récupération des prix actuels…')
+    setSimResult(null)
+    try {
+      const avant = await fetch(`${RAIL}/simulateur/`).then(r => r.json())
+      msg('⛽ Simulateur — mise à jour en cours…')
+      await fetch(`${RAIL}/simulateur/mettre-a-jour`, { method: 'POST' })
+      const apres = await fetch(`${RAIL}/simulateur/`).then(r => r.json())
+      const ts = new Date().toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })
+      setSimResult({ avant: avant.energy_prices, apres: apres.energy_prices, updated_at: ts })
+      msg('✓ Simulateur mis à jour')
+    } catch { msg('✗ Erreur connexion Railway') }
   }
 
   // ── Actions posts sociaux ──
@@ -367,11 +386,47 @@ export default function AdminPage() {
             <button className="btn btn-primary btn-sm"   onClick={() => appelerRail('/seo/traiter-valides', '🚀 SEO')}>🚀 Publier validés</button>
             <button className="btn btn-secondary btn-sm" onClick={() => lancerSocial()}>📣 Posts sociaux (batch)</button>
             <button className="btn btn-secondary btn-sm" onClick={() => appelerRail('/alerte-gov/lancer', '🏛️ Alertes Gov.')}>🏛️ Alertes Gov.</button>
-            <button className="btn btn-secondary btn-sm" onClick={() => appelerRail('/simulateur/mettre-a-jour', '⛽ Simulateur')}>⛽ Simulateur</button>
+            <button className="btn btn-secondary btn-sm" onClick={lancerSimulateur}>⛽ Simulateur</button>
           </div>
           {actionMsg && (
             <div style={{ marginTop: 10, padding: '7px 12px', background: 'var(--color-bg)', borderRadius: 6, fontSize: '0.83rem', color: 'var(--color-text-soft)' }}>
               {actionMsg}
+            </div>
+          )}
+          {simResult && (
+            <div style={{ marginTop: 8, padding: '10px 14px', background: 'var(--color-bg)', borderRadius: 6, fontSize: '0.82rem' }}>
+              <div style={{ fontWeight: 700, marginBottom: 8 }}>⛽ Prix énergie — {simResult.updated_at}</div>
+              <table style={{ borderCollapse: 'collapse', width: '100%' }}>
+                <thead>
+                  <tr style={{ color: 'var(--color-text-soft)' }}>
+                    <th style={{ textAlign: 'left', paddingRight: 12 }}>Pays</th>
+                    <th style={{ textAlign: 'right', paddingRight: 8 }}>Diesel avant</th>
+                    <th style={{ textAlign: 'right', paddingRight: 8 }}>Diesel après</th>
+                    <th style={{ textAlign: 'right', paddingRight: 8 }}>Élec avant</th>
+                    <th style={{ textAlign: 'right' }}>Élec après</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {Object.entries(simResult.apres).map(([pays, apres]) => {
+                    const avant = simResult.avant[pays] ?? apres
+                    const diffD = apres.diesel - avant.diesel
+                    const diffE = apres.elec - avant.elec
+                    return (
+                      <tr key={pays} style={{ borderTop: '1px solid var(--color-border)' }}>
+                        <td style={{ paddingRight: 12, fontWeight: 600, paddingTop: 4, paddingBottom: 4 }}>{pays}</td>
+                        <td style={{ textAlign: 'right', paddingRight: 8, color: 'var(--color-text-soft)' }}>{avant.diesel.toFixed(2)} €</td>
+                        <td style={{ textAlign: 'right', paddingRight: 8, fontWeight: diffD !== 0 ? 700 : 400, color: diffD > 0 ? '#ef4444' : diffD < 0 ? '#22c55e' : 'inherit' }}>
+                          {apres.diesel.toFixed(2)} €{diffD !== 0 ? ` (${diffD > 0 ? '+' : ''}${diffD.toFixed(2)})` : ''}
+                        </td>
+                        <td style={{ textAlign: 'right', paddingRight: 8, color: 'var(--color-text-soft)' }}>{avant.elec.toFixed(3)} €</td>
+                        <td style={{ textAlign: 'right', fontWeight: diffE !== 0 ? 700 : 400, color: diffE > 0 ? '#ef4444' : diffE < 0 ? '#22c55e' : 'inherit' }}>
+                          {apres.elec.toFixed(3)} €{diffE !== 0 ? ` (${diffE > 0 ? '+' : ''}${diffE.toFixed(3)})` : ''}
+                        </td>
+                      </tr>
+                    )
+                  })}
+                </tbody>
+              </table>
             </div>
           )}
         </div>
