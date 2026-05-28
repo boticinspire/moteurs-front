@@ -144,14 +144,14 @@ export default function HomePage() {
           </p>
 
           <div className="v2-profile-tabs" role="tablist">
-            <button className={activeTab === 'trip' ? 'active' : ''} onClick={() => setActiveTab('trip')}>
+            <button role="tab" aria-selected={activeTab === 'trip'} className={activeTab === 'trip' ? 'active' : ''} onClick={() => setActiveTab('trip')}>
               <svg className="v2-ic"><use href={theme === 'light' ? '#i-umbrella' : '#i-route'} /></svg>
               {theme === 'light' ? t('tab_trip_summer') : t('tab_trip_default')}
             </button>
-            <button className={activeTab === 'tco' ? 'active' : ''} onClick={() => setActiveTab('tco')}>
+            <button role="tab" aria-selected={activeTab === 'tco'} className={activeTab === 'tco' ? 'active' : ''} onClick={() => setActiveTab('tco')}>
               <svg className="v2-ic"><use href="#i-bar-chart" /></svg>{t('tab_tco')}
             </button>
-            <button className={activeTab === 'fleet' ? 'active' : ''} onClick={() => setActiveTab('fleet')}>
+            <button role="tab" aria-selected={activeTab === 'fleet'} className={activeTab === 'fleet' ? 'active' : ''} onClick={() => setActiveTab('fleet')}>
               <svg className="v2-ic"><use href="#i-briefcase" /></svg>{t('tab_fleet')}
             </button>
           </div>
@@ -183,15 +183,15 @@ export default function HomePage() {
                     />
                   </div>
                   <div className="field">
-                    <label><svg className="v2-ic"><use href="#i-calendar" /></svg>{t('form_round_trip')}</label>
-                    <select value={allerRetour} onChange={(e) => setAllerRetour(e.target.value as 'yes' | 'no')}>
+                    <label htmlFor="v2-sel-ar"><svg className="v2-ic"><use href="#i-calendar" /></svg>{t('form_round_trip')}</label>
+                    <select id="v2-sel-ar" value={allerRetour} onChange={(e) => setAllerRetour(e.target.value as 'yes' | 'no')}>
                       <option value="yes">{t('form_yes')}</option>
                       <option value="no">{t('form_no')}</option>
                     </select>
                   </div>
                   <div className="field">
-                    <label><svg className="v2-ic"><use href="#i-briefcase" /></svg>{t('form_people')}</label>
-                    <select value={personnes} onChange={(e) => setPersonnes(e.target.value)}>
+                    <label htmlFor="v2-sel-persons"><svg className="v2-ic"><use href="#i-briefcase" /></svg>{t('form_people')}</label>
+                    <select id="v2-sel-persons" value={personnes} onChange={(e) => setPersonnes(e.target.value)}>
                       <option value="2 adults">{t('form_2_adults')}</option>
                       <option value="1">1</option>
                       <option value="3">3</option>
@@ -218,8 +218,8 @@ export default function HomePage() {
                 </div>
               )}
               <div className="field">
-                <label><svg className="v2-ic"><use href="#i-globe" /></svg>{t('form_country')}</label>
-                <select value={pays} onChange={(e) => setPays(e.target.value as 'FR' | 'BE' | 'CH' | 'CA')}>
+                <label htmlFor="v2-sel-pays"><svg className="v2-ic"><use href="#i-globe" /></svg>{t('form_country')}</label>
+                <select id="v2-sel-pays" value={pays} onChange={(e) => setPays(e.target.value as 'FR' | 'BE' | 'CH' | 'CA')}>
                   <option value="FR">{paysLabel.FR}</option>
                   <option value="BE">{paysLabel.BE}</option>
                   <option value="CH">{paysLabel.CH}</option>
@@ -293,11 +293,11 @@ export default function HomePage() {
               <h3>{t('usage_trajet_title')}</h3>
               <p>{t('usage_trajet_desc')}</p>
               <div style={{ display: 'flex', gap: 8, margin: '6px 0', flexWrap: 'wrap' }}>
-                <span style={{ fontSize: '.72rem', color: '#888', display: 'flex', alignItems: 'center', gap: 3 }}>
+                <span style={{ fontSize: '.72rem', color: '#666', display: 'flex', alignItems: 'center', gap: 3 }}>
                   <span style={{ width: 5, height: 5, borderRadius: '50%', background: '#22c55e', display: 'inline-block' }} />
                   {t('usage_trajet_micro1')}
                 </span>
-                <span style={{ fontSize: '.72rem', color: '#888', display: 'flex', alignItems: 'center', gap: 3 }}>
+                <span style={{ fontSize: '.72rem', color: '#666', display: 'flex', alignItems: 'center', gap: 3 }}>
                   <span style={{ width: 5, height: 5, borderRadius: '50%', background: '#22c55e', display: 'inline-block' }} />
                   {t('usage_trajet_micro2')}
                 </span>
@@ -332,13 +332,13 @@ export default function HomePage() {
               <p>{t('usage_panne_desc')}</p>
               <div style={{ display: 'flex', gap: 8, margin: '6px 0', flexWrap: 'wrap' }}>
                 {[t('usage_panne_micro1'), t('usage_panne_micro2'), t('usage_panne_micro3')].map((m, i) => (
-                  <span key={i} style={{ fontSize: '.72rem', color: '#888', display: 'flex', alignItems: 'center', gap: 3 }}>
+                  <span key={i} style={{ fontSize: '.72rem', color: '#666', display: 'flex', alignItems: 'center', gap: 3 }}>
                     <span style={{ width: 5, height: 5, borderRadius: '50%', background: '#22c55e', display: 'inline-block' }} />
                     {m}
                   </span>
                 ))}
               </div>
-              <span className="open" style={{ marginTop: 'auto', color: '#f97316', fontWeight: 700 }}>
+              <span className="open" style={{ marginTop: 'auto', color: '#c2410c', fontWeight: 700 }}>
                 {t('usage_panne_cta')} <svg className="v2-ic"><use href="#i-arrow-right" /></svg>
               </span>
             </Link>
@@ -371,7 +371,7 @@ export default function HomePage() {
               <div className="icbox"><svg className="v2-ic"><use href="#i-camera" /></svg></div>
               <h3>{t('panne_card1_title')}</h3>
               <p>{t('panne_card1_desc')}</p>
-              <p style={{ fontSize: '.72rem', color: '#888', margin: '4px 0 0' }}>{t('panne_card1_micro')}</p>
+              <p style={{ fontSize: '.72rem', color: '#666', margin: '4px 0 0' }}>{t('panne_card1_micro')}</p>
               <span className="open" style={{ fontWeight: 700 }}>{t('panne_card1_cta')} <svg className="v2-ic"><use href="#i-arrow-right" /></svg></span>
             </Link>
             <Link className="v2-tcard c-amber" href="/constat">

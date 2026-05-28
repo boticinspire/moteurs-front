@@ -18,7 +18,7 @@ export default function Footer() {
             </p>
           </div>
           <div>
-            <h4>{t('section_spaces')}</h4>
+            <h3>{t('section_spaces')}</h3>
             <ul>
               <li><Link href="/b2b">{t('link_b2b')}</Link></li>
               <li><Link href="/particulier">{t('link_particulier')}</Link></li>
@@ -36,7 +36,7 @@ export default function Footer() {
             </ul>
           </div>
           <div>
-            <h4>{t('section_countries')}</h4>
+            <h3>{t('section_countries')}</h3>
             <ul>
               <li><Link href={{ pathname: '/articles', query: { pays: 'FR' } }}>{tc('country_fr')}</Link></li>
               <li><Link href={{ pathname: '/articles', query: { pays: 'BE' } }}>{tc('country_be')}</Link></li>
@@ -46,7 +46,7 @@ export default function Footer() {
             </ul>
           </div>
           <div>
-            <h4>{t('section_legal')}</h4>
+            <h3>{t('section_legal')}</h3>
             <ul>
               <li><Link href="/mentions-legales">{t('link_mentions')}</Link></li>
               <li><Link href="/a-propos">{t('link_about')}</Link></li>
