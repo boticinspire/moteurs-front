@@ -13,14 +13,23 @@ import {
 
 const PAYS_MAP: Record<string, Pays> = {
   fr: 'FR', be: 'BE', ch: 'CH', ca: 'CA',
+  de: 'DE', es: 'ES', it: 'IT', nl: 'NL',
+  at: 'AT', pt: 'PT', pl: 'PL', se: 'SE',
+  dk: 'DK', ie: 'IE', fi: 'FI', lu: 'LU',
 }
 
 const PAYS_LABELS: Record<Pays, string> = {
-  FR: 'France', BE: 'Belgique', CH: 'Suisse', CA: 'Canada',
+  FR: 'France', BE: 'Belgique', CH: 'Suisse',  CA: 'Canada',
+  DE: 'Allemagne', ES: 'Espagne', IT: 'Italie', NL: 'Pays-Bas',
+  AT: 'Autriche', PT: 'Portugal', PL: 'Pologne', SE: 'Suède',
+  DK: 'Danemark', IE: 'Irlande', FI: 'Finlande', LU: 'Luxembourg',
 }
 
 const PAYS_FLAGS: Record<Pays, string> = {
   FR: '🇫🇷', BE: '🇧🇪', CH: '🇨🇭', CA: '🇨🇦',
+  DE: '🇩🇪', ES: '🇪🇸', IT: '🇮🇹', NL: '🇳🇱',
+  AT: '🇦🇹', PT: '🇵🇹', PL: '🇵🇱', SE: '🇸🇪',
+  DK: '🇩🇰', IE: '🇮🇪', FI: '🇫🇮', LU: '🇱🇺',
 }
 
 // Slug URL → valeur interne (ex: "vul-moyen" → "vul_moyen")

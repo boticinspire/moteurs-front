@@ -11,10 +11,22 @@ import {
 // ─── Constantes ───────────────────────────────────────────────────────────────
 
 const PAYS_OPTIONS: { value: Pays; label: string }[] = [
-  { value: 'FR', label: 'France' },
-  { value: 'BE', label: 'Belgique' },
-  { value: 'CH', label: 'Suisse' },
-  { value: 'CA', label: 'Canada' },
+  { value: 'FR', label: '🇫🇷 France' },
+  { value: 'BE', label: '🇧🇪 Belgique' },
+  { value: 'CH', label: '🇨🇭 Suisse' },
+  { value: 'CA', label: '🇨🇦 Canada' },
+  { value: 'DE', label: '🇩🇪 Allemagne' },
+  { value: 'ES', label: '🇪🇸 Espagne' },
+  { value: 'IT', label: '🇮🇹 Italie' },
+  { value: 'NL', label: '🇳🇱 Pays-Bas' },
+  { value: 'AT', label: '🇦🇹 Autriche' },
+  { value: 'PT', label: '🇵🇹 Portugal' },
+  { value: 'PL', label: '🇵🇱 Pologne' },
+  { value: 'SE', label: '🇸🇪 Suède' },
+  { value: 'DK', label: '🇩🇰 Danemark' },
+  { value: 'IE', label: '🇮🇪 Irlande' },
+  { value: 'FI', label: '🇫🇮 Finlande' },
+  { value: 'LU', label: '🇱🇺 Luxembourg' },
 ]
 
 const DUREES = [36, 48, 60]

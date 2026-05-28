@@ -1,44 +1,417 @@
 {
   "_meta": {
-    "version": "2026-05-14",
-    "updated_at": "2026-05-14T00:00:00Z",
+    "version": "2026-05-28",
+    "updated_at": "2026-05-28T00:00:00Z",
     "sources": {
       "energy_prices_fr": "https://www.prix-carburants.gouv.fr/",
       "energy_prices_eu": "https://ec.europa.eu/energy/observatory/reports/",
       "aides_fr": "https://www.service-public.fr/particuliers/vosdroits/F34318"
     }
   },
-
   "energy_prices": {
-    "FR": { "diesel": 1.72, "essence": 1.79, "elec": 0.21, "gnv": 1.45, "h2": 13.5,  "efuel": 4.20 },
-    "BE": { "diesel": 1.78, "essence": 1.83, "elec": 0.30, "gnv": 1.55, "h2": 14.0,  "efuel": 4.40 },
-    "CH": { "diesel": 1.85, "essence": 1.92, "elec": 0.27, "gnv": 1.85, "h2": 15.5,  "efuel": 5.00 },
-    "CA": { "diesel": 1.45, "essence": 1.40, "elec": 0.13, "gnv": 1.25, "h2": 12.0,  "efuel": 4.00 }
+    "FR": {
+      "diesel": 1.72,
+      "essence": 1.79,
+      "elec": 0.21,
+      "gnv": 1.45,
+      "h2": 13.5,
+      "efuel": 4.2
+    },
+    "BE": {
+      "diesel": 1.78,
+      "essence": 1.83,
+      "elec": 0.3,
+      "gnv": 1.55,
+      "h2": 14.0,
+      "efuel": 4.4
+    },
+    "CH": {
+      "diesel": 1.85,
+      "essence": 1.92,
+      "elec": 0.27,
+      "gnv": 1.85,
+      "h2": 15.5,
+      "efuel": 5.0
+    },
+    "CA": {
+      "diesel": 1.45,
+      "essence": 1.4,
+      "elec": 0.13,
+      "gnv": 1.25,
+      "h2": 12.0,
+      "efuel": 4.0
+    },
+    "DE": {
+      "diesel": 1.97,
+      "essence": 2.04,
+      "elec": 0.3,
+      "gnv": 1.45,
+      "h2": 12.0,
+      "efuel": 4.5
+    },
+    "ES": {
+      "diesel": 1.69,
+      "essence": 1.55,
+      "elec": 0.18,
+      "gnv": 1.35,
+      "h2": 11.0,
+      "efuel": 4.0
+    },
+    "IT": {
+      "diesel": 1.98,
+      "essence": 1.94,
+      "elec": 0.28,
+      "gnv": 1.4,
+      "h2": 12.0,
+      "efuel": 4.5
+    },
+    "NL": {
+      "diesel": 2.29,
+      "essence": 2.39,
+      "elec": 0.32,
+      "gnv": 1.55,
+      "h2": 12.0,
+      "efuel": 5.0
+    },
+    "AT": {
+      "diesel": 1.91,
+      "essence": 1.81,
+      "elec": 0.28,
+      "gnv": 1.5,
+      "h2": 12.0,
+      "efuel": 4.5
+    },
+    "PT": {
+      "diesel": 1.95,
+      "essence": 2.01,
+      "elec": 0.22,
+      "gnv": 1.4,
+      "h2": 12.0,
+      "efuel": 4.3
+    },
+    "PL": {
+      "diesel": 1.58,
+      "essence": 1.49,
+      "elec": 0.17,
+      "gnv": 1.2,
+      "h2": 11.0,
+      "efuel": 3.8
+    },
+    "SE": {
+      "diesel": 1.9,
+      "essence": 1.72,
+      "elec": 0.18,
+      "gnv": 1.6,
+      "h2": 13.0,
+      "efuel": 4.5
+    },
+    "DK": {
+      "diesel": 2.18,
+      "essence": 2.34,
+      "elec": 0.35,
+      "gnv": 1.8,
+      "h2": 14.0,
+      "efuel": 5.0
+    },
+    "IE": {
+      "diesel": 1.95,
+      "essence": 1.83,
+      "elec": 0.32,
+      "gnv": 1.6,
+      "h2": 13.0,
+      "efuel": 4.6
+    },
+    "FI": {
+      "diesel": 2.14,
+      "essence": 2.03,
+      "elec": 0.18,
+      "gnv": 1.7,
+      "h2": 13.0,
+      "efuel": 4.8
+    },
+    "LU": {
+      "diesel": 1.82,
+      "essence": 1.82,
+      "elec": 0.2,
+      "gnv": 1.45,
+      "h2": 12.0,
+      "efuel": 4.2
+    }
   },
-
   "aides_b2b": {
-    "FR": { "vul_petit": 4000, "vul_moyen": 6500, "vul_grand": 8600, "camion": 10000, "poids_lourd": 12000 },
-    "BE": { "vul_petit": 2500, "vul_moyen": 3500, "vul_grand": 5000, "camion":  6000, "poids_lourd":  8000 },
-    "CH": { "vul_petit":    0, "vul_moyen":    0, "vul_grand":    0, "camion":     0, "poids_lourd":     0 },
-    "CA": { "vul_petit": 5000, "vul_moyen": 7000, "vul_grand": 7000, "camion":  7000, "poids_lourd":  7000 }
+    "FR": {
+      "vul_petit": 4000,
+      "vul_moyen": 6500,
+      "vul_grand": 8600,
+      "camion": 10000,
+      "poids_lourd": 12000
+    },
+    "BE": {
+      "vul_petit": 2500,
+      "vul_moyen": 3500,
+      "vul_grand": 5000,
+      "camion": 6000,
+      "poids_lourd": 8000
+    },
+    "CH": {
+      "vul_petit": 0,
+      "vul_moyen": 0,
+      "vul_grand": 0,
+      "camion": 0,
+      "poids_lourd": 0
+    },
+    "CA": {
+      "vul_petit": 5000,
+      "vul_moyen": 7000,
+      "vul_grand": 7000,
+      "camion": 7000,
+      "poids_lourd": 7000
+    },
+    "DE": {
+      "vul_petit": 0,
+      "vul_moyen": 0,
+      "vul_grand": 0,
+      "camion": 0,
+      "poids_lourd": 0
+    },
+    "ES": {
+      "vul_petit": 0,
+      "vul_moyen": 0,
+      "vul_grand": 0,
+      "camion": 0,
+      "poids_lourd": 0
+    },
+    "IT": {
+      "vul_petit": 0,
+      "vul_moyen": 0,
+      "vul_grand": 0,
+      "camion": 0,
+      "poids_lourd": 0
+    },
+    "NL": {
+      "vul_petit": 0,
+      "vul_moyen": 0,
+      "vul_grand": 0,
+      "camion": 0,
+      "poids_lourd": 0
+    },
+    "AT": {
+      "vul_petit": 0,
+      "vul_moyen": 0,
+      "vul_grand": 0,
+      "camion": 0,
+      "poids_lourd": 0
+    },
+    "PT": {
+      "vul_petit": 0,
+      "vul_moyen": 0,
+      "vul_grand": 0,
+      "camion": 0,
+      "poids_lourd": 0
+    },
+    "PL": {
+      "vul_petit": 0,
+      "vul_moyen": 0,
+      "vul_grand": 0,
+      "camion": 0,
+      "poids_lourd": 0
+    },
+    "SE": {
+      "vul_petit": 0,
+      "vul_moyen": 0,
+      "vul_grand": 0,
+      "camion": 0,
+      "poids_lourd": 0
+    },
+    "DK": {
+      "vul_petit": 0,
+      "vul_moyen": 0,
+      "vul_grand": 0,
+      "camion": 0,
+      "poids_lourd": 0
+    },
+    "IE": {
+      "vul_petit": 3500,
+      "vul_moyen": 3500,
+      "vul_grand": 3500,
+      "camion": 3500,
+      "poids_lourd": 0
+    },
+    "FI": {
+      "vul_petit": 0,
+      "vul_moyen": 0,
+      "vul_grand": 0,
+      "camion": 0,
+      "poids_lourd": 0
+    },
+    "LU": {
+      "vul_petit": 0,
+      "vul_moyen": 0,
+      "vul_grand": 0,
+      "camion": 0,
+      "poids_lourd": 0
+    }
   },
-
   "aides_particulier": {
-    "FR": { "voiture": 4000, "vae": 400, "trottinette": 0, "moto": 900 },
-    "BE": { "voiture": 2500, "vae": 300, "trottinette": 0, "moto": 500 },
-    "CH": { "voiture":    0, "vae":   0, "trottinette": 0, "moto":   0 },
-    "CA": { "voiture": 5000, "vae": 200, "trottinette": 0, "moto":   0 }
+    "FR": {
+      "voiture": 4000,
+      "vae": 400,
+      "trottinette": 0,
+      "moto": 900
+    },
+    "BE": {
+      "voiture": 2500,
+      "vae": 300,
+      "trottinette": 0,
+      "moto": 500
+    },
+    "CH": {
+      "voiture": 0,
+      "vae": 0,
+      "trottinette": 0,
+      "moto": 0
+    },
+    "CA": {
+      "voiture": 5000,
+      "vae": 200,
+      "trottinette": 0,
+      "moto": 0
+    },
+    "DE": {
+      "voiture": 4000,
+      "vae": 300,
+      "trottinette": 0,
+      "moto": 0
+    },
+    "ES": {
+      "voiture": 7000,
+      "vae": 500,
+      "trottinette": 0,
+      "moto": 0
+    },
+    "IT": {
+      "voiture": 6000,
+      "vae": 200,
+      "trottinette": 0,
+      "moto": 0
+    },
+    "NL": {
+      "voiture": 0,
+      "vae": 250,
+      "trottinette": 0,
+      "moto": 0
+    },
+    "AT": {
+      "voiture": 0,
+      "vae": 200,
+      "trottinette": 0,
+      "moto": 0
+    },
+    "PT": {
+      "voiture": 3000,
+      "vae": 250,
+      "trottinette": 0,
+      "moto": 0
+    },
+    "PL": {
+      "voiture": 4000,
+      "vae": 200,
+      "trottinette": 0,
+      "moto": 0
+    },
+    "SE": {
+      "voiture": 3000,
+      "vae": 200,
+      "trottinette": 0,
+      "moto": 0
+    },
+    "DK": {
+      "voiture": 0,
+      "vae": 300,
+      "trottinette": 0,
+      "moto": 0
+    },
+    "IE": {
+      "voiture": 5000,
+      "vae": 300,
+      "trottinette": 0,
+      "moto": 0
+    },
+    "FI": {
+      "voiture": 2000,
+      "vae": 200,
+      "trottinette": 0,
+      "moto": 0
+    },
+    "LU": {
+      "voiture": 5000,
+      "vae": 300,
+      "trottinette": 0,
+      "moto": 0
+    }
   },
-
   "ref_prices": {
-    "voiture":     { "diesel": 28000, "essence": 24000, "elec": 35000, "phev": 38000, "h2":  70000, "efuel": 32000, "gnv":  27000 },
-    "vul_petit":   { "diesel": 22000, "essence": 20000, "elec": 32000, "phev": 34000, "h2":  60000, "efuel": 24000, "gnv":  23000 },
-    "vul_moyen":   { "diesel": 32000, "essence": 29000, "elec": 45000, "phev":     0, "h2":  75000, "efuel": 34000, "gnv":  33000 },
-    "vul_grand":   { "diesel": 42000, "essence": 38000, "elec": 62000, "phev":     0, "h2":  90000, "efuel": 44000, "gnv":  43000 },
-    "camion":      { "diesel": 70000, "elec":145000, "phev":     0, "h2": 220000, "efuel": 72000, "gnv":  80000 },
-    "poids_lourd": { "diesel":110000, "elec":380000, "phev":     0, "h2": 480000, "efuel":115000, "gnv": 130000 },
-    "vae":         { "elec": 1800 },
-    "trottinette": { "elec":  600 },
-    "moto":        { "diesel": 5500, "elec": 9000 }
+    "voiture": {
+      "diesel": 28000,
+      "essence": 24000,
+      "elec": 35000,
+      "phev": 38000,
+      "h2": 70000,
+      "efuel": 32000,
+      "gnv": 27000
+    },
+    "vul_petit": {
+      "diesel": 22000,
+      "essence": 20000,
+      "elec": 32000,
+      "phev": 34000,
+      "h2": 60000,
+      "efuel": 24000,
+      "gnv": 23000
+    },
+    "vul_moyen": {
+      "diesel": 32000,
+      "essence": 29000,
+      "elec": 45000,
+      "phev": 0,
+      "h2": 75000,
+      "efuel": 34000,
+      "gnv": 33000
+    },
+    "vul_grand": {
+      "diesel": 42000,
+      "essence": 38000,
+      "elec": 62000,
+      "phev": 0,
+      "h2": 90000,
+      "efuel": 44000,
+      "gnv": 43000
+    },
+    "camion": {
+      "diesel": 70000,
+      "elec": 145000,
+      "phev": 0,
+      "h2": 220000,
+      "efuel": 72000,
+      "gnv": 80000
+    },
+    "poids_lourd": {
+      "diesel": 110000,
+      "elec": 380000,
+      "phev": 0,
+      "h2": 480000,
+      "efuel": 115000,
+      "gnv": 130000
+    },
+    "vae": {
+      "elec": 1800
+    },
+    "trottinette": {
+      "elec": 600
+    },
+    "moto": {
+      "diesel": 5500,
+      "elec": 9000
+    }
   }
 }

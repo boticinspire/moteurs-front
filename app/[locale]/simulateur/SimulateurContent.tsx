@@ -20,10 +20,22 @@ const FORM_HTML = `<section style="padding: 0;">
 <div class="form-group">
 <label for="pays">Pays</label>
 <select id="pays">
-<option value="FR">France</option>
-<option value="BE">Belgique</option>
-<option value="CH">Suisse</option>
-<option value="CA">Canada</option>
+<option value="FR">🇫🇷 France</option>
+<option value="BE">🇧🇪 Belgique</option>
+<option value="CH">🇨🇭 Suisse</option>
+<option value="CA">🇨🇦 Canada</option>
+<option value="DE">🇩🇪 Allemagne</option>
+<option value="ES">🇪🇸 Espagne</option>
+<option value="IT">🇮🇹 Italie</option>
+<option value="NL">🇳🇱 Pays-Bas</option>
+<option value="AT">🇦🇹 Autriche</option>
+<option value="PT">🇵🇹 Portugal</option>
+<option value="PL">🇵🇱 Pologne</option>
+<option value="SE">🇸🇪 Suède</option>
+<option value="DK">🇩🇰 Danemark</option>
+<option value="IE">🇮🇪 Irlande</option>
+<option value="FI">🇫🇮 Finlande</option>
+<option value="LU">🇱🇺 Luxembourg</option>
 </select>
 </div>
 <div class="form-group">
