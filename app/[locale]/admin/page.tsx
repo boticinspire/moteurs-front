@@ -367,6 +367,7 @@ export default function AdminPage() {
             <button className="btn btn-primary btn-sm"   onClick={() => appelerRail('/seo/traiter-valides', '🚀 SEO')}>🚀 Publier validés</button>
             <button className="btn btn-secondary btn-sm" onClick={() => lancerSocial()}>📣 Posts sociaux (batch)</button>
             <button className="btn btn-secondary btn-sm" onClick={() => appelerRail('/alerte-gov/lancer', '🏛️ Alertes Gov.')}>🏛️ Alertes Gov.</button>
+            <button className="btn btn-secondary btn-sm" onClick={() => appelerRail('/simulateur/mettre-a-jour', '⛽ Simulateur')}>⛽ Simulateur</button>
           </div>
           {actionMsg && (
             <div style={{ marginTop: 10, padding: '7px 12px', background: 'var(--color-bg)', borderRadius: 6, fontSize: '0.83rem', color: 'var(--color-text-soft)' }}>
