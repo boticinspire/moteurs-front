@@ -193,6 +193,12 @@ export default async function ArticlePage({
             </div>
           )}
 
+          {/* ── Actions : imprimer / partager ── */}
+          <ArticleActions
+            titre={article.titre_provisoire ?? ''}
+            url={`https://moteurs.com/article/${article.slug}`}
+          />
+
           {/* FAQ */}
           {faq.length >= 2 && (
             <div className="article-faq" style={{ marginTop: 48, paddingTop: 32, borderTop: '1px solid var(--color-border)' }}>
@@ -216,11 +222,6 @@ export default async function ArticlePage({
             URL : https://moteurs.com/article/{article.slug}
           </div>
 
-          {/* ── Actions : imprimer / partager ── */}
-          <ArticleActions
-            titre={article.titre_provisoire ?? ''}
-            url={`https://moteurs.com/article/${article.slug}`}
-          />
 
 
           {/* ── Copyright ── */}
