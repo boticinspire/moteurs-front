@@ -160,35 +160,6 @@ export default async function ArticlePage({
             />
           )}
 
-          {/* FAQ */}
-          {faq.length >= 2 && (
-            <div className="article-faq" style={{ marginTop: 48, paddingTop: 32, borderTop: '1px solid var(--color-border)' }}>
-              <h2 style={{ fontSize: '1.2rem', fontWeight: 700, marginBottom: 20 }}>
-                Questions fréquentes
-              </h2>
-              {faq.map((item, i) => (
-                <div key={i} className="faq-item" style={{ marginBottom: 20 }}>
-                  <div style={{ fontWeight: 600, marginBottom: 6 }}>❓ {item.question}</div>
-                  <div style={{ fontSize: '0.9rem', color: 'var(--color-text-soft)', lineHeight: 1.6 }}>
-                    {item.reponse}
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
-
-          {/* ── Copyright impression uniquement ── */}
-          <div className="print-copyright">
-            © {new Date().getFullYear()} Moteurs.com — Tous droits réservés. Article rédigé par la rédaction Moteurs.com.
-            URL : https://moteurs.com/article/{article.slug}
-          </div>
-
-          {/* ── Actions : imprimer / partager ── */}
-          <ArticleActions
-            titre={article.titre_provisoire ?? ''}
-            url={`https://moteurs.com/article/${article.slug}`}
-          />
-
           {/* ── Voir tous les décryptages pour cette cible ── */}
           {article.cible && article.cible !== 'mixte' && (
             <div className="no-print" style={{
@@ -221,6 +192,36 @@ export default async function ArticlePage({
               </a>
             </div>
           )}
+
+          {/* FAQ */}
+          {faq.length >= 2 && (
+            <div className="article-faq" style={{ marginTop: 48, paddingTop: 32, borderTop: '1px solid var(--color-border)' }}>
+              <h2 style={{ fontSize: '1.2rem', fontWeight: 700, marginBottom: 20 }}>
+                Questions fréquentes
+              </h2>
+              {faq.map((item, i) => (
+                <div key={i} className="faq-item" style={{ marginBottom: 20 }}>
+                  <div style={{ fontWeight: 600, marginBottom: 6 }}>❓ {item.question}</div>
+                  <div style={{ fontSize: '0.9rem', color: 'var(--color-text-soft)', lineHeight: 1.6 }}>
+                    {item.reponse}
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+
+          {/* ── Copyright impression uniquement ── */}
+          <div className="print-copyright">
+            © {new Date().getFullYear()} Moteurs.com — Tous droits réservés. Article rédigé par la rédaction Moteurs.com.
+            URL : https://moteurs.com/article/{article.slug}
+          </div>
+
+          {/* ── Actions : imprimer / partager ── */}
+          <ArticleActions
+            titre={article.titre_provisoire ?? ''}
+            url={`https://moteurs.com/article/${article.slug}`}
+          />
+
 
           {/* ── Copyright ── */}
           <div className="no-print" style={{
