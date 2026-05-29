@@ -183,6 +183,37 @@ function CoutContent() {
         </p>
       </header>
 
+      {/* Outils principaux */}
+      <section style={{ marginBottom: 40 }}>
+        <h2 style={h2}>{t('outils_h2')}</h2>
+        <div
+          style={{
+            display: 'grid',
+            gap: 14,
+            gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))',
+          }}
+        >
+          <CarteOutil
+            href="/simulateur"
+            titre={t('outils_card1_title')}
+            description={t('outils_card1_desc')}
+            cta={t('outils_card1_cta')}
+          />
+          <CarteOutil
+            href="/comparer"
+            titre={t('outils_card2_title')}
+            description={t('outils_card2_desc')}
+            cta={t('outils_card2_cta')}
+          />
+          <CarteOutil
+            href="/comparer-trajet"
+            titre={t('outils_card3_title')}
+            description={t('outils_card3_desc')}
+            cta={t('outils_card3_cta')}
+          />
+        </div>
+      </section>
+
       {/* Stat principale */}
       <section style={{ marginBottom: 36 }}>
         <div
@@ -296,36 +327,6 @@ function CoutContent() {
         </div>
       </section>
 
-      {/* Outils principaux */}
-      <section style={{ marginBottom: 40 }}>
-        <h2 style={h2}>{t('outils_h2')}</h2>
-        <div
-          style={{
-            display: 'grid',
-            gap: 14,
-            gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))',
-          }}
-        >
-          <CarteOutil
-            href="/simulateur"
-            titre={t('outils_card1_title')}
-            description={t('outils_card1_desc')}
-            cta={t('outils_card1_cta')}
-          />
-          <CarteOutil
-            href="/comparer"
-            titre={t('outils_card2_title')}
-            description={t('outils_card2_desc')}
-            cta={t('outils_card2_cta')}
-          />
-          <CarteOutil
-            href="/comparer-trajet"
-            titre={t('outils_card3_title')}
-            description={t('outils_card3_desc')}
-            cta={t('outils_card3_cta')}
-          />
-        </div>
-      </section>
 
       {/* Particulier vs B2B */}
       <section style={{ marginBottom: 40 }}>
