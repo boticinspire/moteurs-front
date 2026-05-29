@@ -44,6 +44,24 @@
   --header-h: 68px;
 }
 
+/* =====================================================
+   Dark mode global — activé via html[data-theme="dark"]
+   Posé par le toggle homepage + script anti-FOUC layout.tsx
+   ===================================================== */
+html[data-theme="dark"] {
+  --color-bg: #05070d;
+  --color-bg-alt: #0e1322;
+  --color-bg-card: #0e1322;
+  --color-text: #e6eaf2;
+  --color-text-soft: #a5b0c5;
+  --color-text-muted: #a5b0c5;
+  --color-border: rgba(255,255,255,0.10);
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.30);
+  --shadow-md: 0 4px 16px rgba(0,0,0,0.40);
+  --shadow-lg: 0 12px 40px rgba(0,0,0,0.50);
+  --shadow-xl: 0 24px 64px rgba(0,0,0,0.60);
+}
+
 * {
   box-sizing: border-box;
   margin: 0;

@@ -107,6 +107,8 @@ export default async function LocaleLayout({
   return (
     <html lang={locale as Locale} className={inter.variable}>
       <head>
+        {/* Anti-FOUC : applique data-theme sur <html> avant le rendu */}
+        <script dangerouslySetInnerHTML={{ __html: `try{var t=localStorage.getItem('moteurs-theme');if(t==='dark'||t==='light')document.documentElement.dataset.theme=t;}catch(e){}` }} />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(orgJsonLd) }}

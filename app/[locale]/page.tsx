@@ -52,13 +52,17 @@ export default function HomePage() {
 
   useEffect(() => {
     const stored = typeof window !== 'undefined' ? localStorage.getItem('moteurs-theme') : null
-    if (stored === 'light' || stored === 'dark') setTheme(stored)
-    else setTheme(detectSeasonTheme())
+    const resolved: Theme = (stored === 'light' || stored === 'dark') ? stored : detectSeasonTheme()
+    setTheme(resolved)
+    document.documentElement.dataset.theme = resolved
   }, [])
 
   function applyTheme(t: Theme) {
     setTheme(t)
-    try { localStorage.setItem('moteurs-theme', t) } catch {}
+    try {
+      localStorage.setItem('moteurs-theme', t)
+      document.documentElement.dataset.theme = t
+    } catch {}
   }
 
   return (
