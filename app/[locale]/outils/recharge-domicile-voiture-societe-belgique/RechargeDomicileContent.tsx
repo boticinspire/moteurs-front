@@ -5,8 +5,8 @@ import { Link, usePathname } from '@/i18n/navigation'
 import { useUserContext } from '@/context/UserContextProvider'
 
 // ─────────────────────────────────────────────────────────────────────────────
-// CSS de l'outil — page-scopé sous .m-tool, variables remappées sur les tokens
-// du site (suit automatiquement la bascule clair/sombre via html[data-theme]).
+// CSS de l'outil — page-scopé .m-tool, variables remappées sur les tokens du site
+// (suit la bascule clair/sombre via html[data-theme]).
 // ─────────────────────────────────────────────────────────────────────────────
 const TOOL_CSS = `
 .m-tool{
@@ -39,7 +39,7 @@ html[data-theme="dark"] .m-tool{
 .m-tool .chip.pays{color:var(--text)}
 .m-tool .chip.maj{color:var(--accent)}
 .m-tool h1{font-family:var(--font-display);font-weight:600;font-size:clamp(1.8rem,4.2vw,2.7rem);
-  line-height:1.06;letter-spacing:-.01em;max-width:20ch;margin-bottom:.3em}
+  line-height:1.06;letter-spacing:-.01em;max-width:24ch;margin-bottom:.3em}
 .m-tool .lede{color:var(--text-soft);max-width:64ch;font-size:1.02rem}
 .m-tool .grid{display:grid;grid-template-columns:1fr;gap:24px}
 @media(min-width:920px){.m-tool .grid{grid-template-columns:1.12fr .88fr;align-items:start}}
@@ -121,10 +121,18 @@ html[data-theme="dark"] .m-tool{
 .m-tool .sources h3{font-size:.74rem;letter-spacing:.13em;text-transform:uppercase;color:var(--text-soft);margin-bottom:8px}
 .m-tool .sources a{color:var(--accent)}
 .m-tool .sources ul{list-style:none;padding:0;display:flex;flex-direction:column;gap:4px}
+.m-tool .aside-wrap{margin-top:12px;padding:11px 13px;background:var(--surface-2);border:1px dashed var(--line);border-radius:10px}
+.m-tool .aside-note{font-size:.8rem;color:var(--text-soft);line-height:1.5}
+.m-tool .aside-note b{color:var(--text)}
+.m-tool .inv-head{display:grid;grid-template-columns:1.4fr .8fr .9fr 34px;gap:8px;font-size:.7rem;color:var(--text-faint);text-transform:uppercase;letter-spacing:.04em;margin-bottom:6px}
+.m-tool .inv-row{display:grid;grid-template-columns:1.4fr .8fr .9fr 34px;gap:8px;align-items:center;margin-bottom:8px}
+.m-tool .inv-row select,.m-tool .inv-row input{margin:0;padding:9px 10px}
+.m-tool .inv-del{background:var(--surface-2);border:1px solid var(--line);color:var(--text-soft);border-radius:8px;height:38px;cursor:pointer;font-size:1.15rem;line-height:1;padding:0}
+.m-tool .inv-del:hover{color:var(--warn);border-color:var(--warn)}
 `
 
 // ─────────────────────────────────────────────────────────────────────────────
-// Markup de l'outil (injecté ; les IDs sont pilotés par le script ci-dessous).
+// Markup de l'outil (injecté ; les IDs sont pilotés par runCalculator).
 // ─────────────────────────────────────────────────────────────────────────────
 const TOOL_HTML = `
 <div class="wrap">
@@ -202,33 +210,55 @@ const TOOL_HTML = `
                   <label><input type="radio" name="policy" value="non"><span class="opt">Non</span></label>
                 </div>
               </div>
+              <div class="field">
+                <span class="flabel">Base du remboursement
+                  <span class="hint">« Frais réels » = facture à l'appui (cas où une société de borne / CPO vous facture la consommation, que l'employeur rembourse). « Forfait » = montant fixe par kWh fixé par l'employeur.</span>
+                </span>
+                <div class="seg" id="base">
+                  <label><input type="radio" name="base" value="forfait" checked><span class="opt">Forfait par kWh</span></label>
+                  <label><input type="radio" name="base" value="reel"><span class="opt">Frais réels (facture)</span></label>
+                </div>
+                <p class="note-inline" id="baseNote" style="display:none">Frais réels justifiés : le plafond CREG ne s'applique pas. Veillez à ce que la facture porte <b>uniquement sur l'électricité de la voiture</b> — l'abonnement / les frais de gestion de la borne en sont exclus.</p>
+              </div>
             </fieldset>
           </div>
 
           <div class="field">
-            <span class="flabel">4. Région du domicile &amp; trimestre de consommation</span>
-            <div class="row2">
-              <select id="region" aria-label="Région">
-                <option value="fl">Région flamande</option>
-                <option value="bxl">Région de Bruxelles-Capitale</option>
-                <option value="wal">Région wallonne</option>
-                <option value="unique">Tarif unique (le plus bas)</option>
-              </select>
-              <select id="quarter" aria-label="Trimestre"></select>
+            <span class="flabel">4. Région du domicile</span>
+            <select id="region" aria-label="Région">
+              <option value="fl">Région flamande</option>
+              <option value="bxl">Région de Bruxelles-Capitale</option>
+              <option value="wal">Région wallonne</option>
+              <option value="unique">Tarif unique (le plus bas)</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <span class="flabel">5. Mode de saisie
+              <span class="hint">« Période unique » = un seul trimestre. « Détail par facture » = une ligne par facture CPO (par mois ou par trimestre), chacune comparée au plafond CREG de son trimestre.</span>
+            </span>
+            <div class="seg" id="entryMode">
+              <label><input type="radio" name="emode" value="single" checked><span class="opt">Période unique</span></label>
+              <label><input type="radio" name="emode" value="detail"><span class="opt">Détail par facture (CPO)</span></label>
             </div>
-            <div class="creg">
+          </div>
+
+          <div class="field" id="singleQuarterField">
+            <span class="flabel">Trimestre de consommation</span>
+            <select id="quarter" aria-label="Trimestre"></select>
+            <div class="creg" id="cregReadout">
               <span class="cl">Plafond CREG applicable (montant fixe maximal)</span>
               <span class="cv" id="cregVal">—</span>
             </div>
           </div>
 
-          <div class="field">
-            <span class="flabel">5. Électricité rechargée pour la voiture, sur la période</span>
+          <div class="field" id="kwhField">
+            <span class="flabel">Électricité rechargée pour la voiture, sur la période</span>
             <div class="isuf"><input type="number" id="kwh" min="0" step="1" placeholder="ex. 600" value="600"><span class="suf">kWh</span></div>
           </div>
 
-          <div class="field">
-            <span class="flabel">6. Remboursement par l'employeur</span>
+          <div class="field" id="methodField">
+            <span class="flabel">Remboursement par l'employeur</span>
             <div class="seg" id="method" style="margin-bottom:10px">
               <label><input type="radio" name="meth" value="rate" checked><span class="opt">Tarif c€/kWh</span></label>
               <label><input type="radio" name="meth" value="total"><span class="opt">Montant total €</span></label>
@@ -236,6 +266,22 @@ const TOOL_HTML = `
             <div id="rateWrap" class="isuf"><input type="number" id="rate" min="0" step="0.01" placeholder="ex. 28.22" value="28.22"><span class="suf">c€/kWh</span></div>
             <div id="totalWrap" class="isuf" style="display:none"><input type="number" id="total" min="0" step="0.01" placeholder="ex. 169.32"><span class="suf">€</span></div>
             <button class="mini-link" type="button" id="fillCreg">↧ Utiliser le plafond CREG comme tarif</button>
+          </div>
+
+          <div class="field cond" id="detailBlock">
+            <span class="flabel">Factures (CPO) — détail par période
+              <span class="hint">Saisissez chaque facture payée (par mois ou par trimestre). Chaque ligne est comparée au plafond CREG de son trimestre, et l'ATN est la somme des excédents.</span>
+            </span>
+            <div class="inv-head"><span>Période</span><span>kWh</span><span>€ remboursé</span><span></span></div>
+            <div id="invRows"></div>
+            <button class="mini-link" type="button" id="addInv">+ ajouter une facture</button>
+          </div>
+
+          <div class="field cond" id="subWrap">
+            <span class="flabel">Abonnement / gestion de borne sur la facture
+              <span class="hint">Montant facturé par la société de borne / CPO <b>hors</b> électricité voiture (abonnement, frais de gestion). Saisissez-le ici pour le garder distinct — il n'entre pas dans le remboursement d'électricité.</span>
+            </span>
+            <div class="isuf"><input type="number" id="subFee" min="0" step="0.01" placeholder="ex. 12.00" value="0"><span class="suf">€</span></div>
           </div>
 
           <div class="cond" id="splitBlock">
@@ -318,7 +364,7 @@ const TOOL_HTML = `
 `
 
 // ─────────────────────────────────────────────────────────────────────────────
-// Logique de calcul (port fidèle du script vanilla, scopée au conteneur).
+// Logique de calcul (scopée au conteneur).
 // ─────────────────────────────────────────────────────────────────────────────
 function runCalculator(root: HTMLElement): () => void {
   const CREG: Record<string, { fl: number; bxl: number; wal: number; circ: string; conf: string }> = {
@@ -335,38 +381,39 @@ function runCalculator(root: HTMLElement): () => void {
     '2025-T4': '4e trim. 2025', '2026-T1': '1er trim. 2026', '2026-T2': '2e trim. 2026', '2026-T3': '3e trim. 2026',
   }
   const CONFLABEL: Record<string, string> = { eleve: 'ÉLEVÉ', moyen: 'MOYEN' }
+  const MONTH_NAMES = ['janv.', 'févr.', 'mars', 'avr.', 'mai', 'juin', 'juil.', 'août', 'sept.', 'oct.', 'nov.', 'déc.']
+  const MONTHS: { value: string; label: string; q: string }[] = []
+  ;[2025, 2026].forEach((y) => {
+    const last = y === 2026 ? 9 : 12
+    for (let m = 1; m <= last; m++) {
+      const q = y + '-T' + Math.ceil(m / 3)
+      if (!CREG[q]) continue
+      MONTHS.push({ value: 'M' + y + '-' + String(m).padStart(2, '0'), label: MONTH_NAMES[m - 1] + ' ' + y, q })
+    }
+  })
+  const quarterOf = (period: string) => {
+    if (period.charAt(0) === 'M') { const mo = MONTHS.find((x) => x.value === period); return mo ? mo.q : '2025-T1' }
+    return period
+  }
+
   const $ = (id: string) => root.querySelector('#' + id) as any
   const fmtE = (v: number) => v.toLocaleString('fr-BE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' €'
   const fmtC = (v: number) => v.toLocaleString('fr-BE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' c€/kWh'
+  const fmtK = (v: number) => v.toLocaleString('fr-BE', { maximumFractionDigits: 0 })
   const val = (name: string) => (root.querySelector('input[name="' + name + '"]:checked') as HTMLInputElement).value
   const clampPct = (v: any) => { v = parseFloat(v) || 0; return Math.min(100, Math.max(0, Math.round(v))) }
   const cregFor = (region: string, quarter: string) => {
-    if (quarter.charAt(0) === 'Y') {
-      const year = quarter.slice(1)
-      const ks = Object.keys(CREG).filter((k) => k.indexOf(year + '-') === 0)
-      const avg = (r: string) => ks.reduce((s, k) => s + (CREG[k] as any)[r], 0) / ks.length
-      return region === 'unique' ? Math.min(avg('fl'), avg('bxl'), avg('wal')) : avg(region)
-    }
     const c = CREG[quarter]
     return region === 'unique' ? Math.min(c.fl, c.bxl, c.wal) : (c as any)[region]
   }
+  let _aside = ''
 
-  // init du sélecteur : trimestres + moyennes annuelles
+  // init du select trimestre (mode période unique)
   const q = $('quarter')
-  const ALL_T = ['T1', 'T2', 'T3', 'T4']
-  const years = Array.from(new Set(Object.keys(CREG).map((k) => k.split('-')[0])))
-  const ogQ = document.createElement('optgroup'); ogQ.label = 'Par trimestre'
-  Object.keys(CREG).forEach((k) => { const o = document.createElement('option'); o.value = k; o.textContent = QLABEL[k]; ogQ.appendChild(o) })
-  const ogY = document.createElement('optgroup'); ogY.label = 'Moyenne annuelle'
-  years.forEach((y) => {
-    const ks = Object.keys(CREG).filter((k) => k.indexOf(y + '-') === 0)
-    const partiel = !ALL_T.every((t) => ks.indexOf(y + '-' + t) !== -1)
-    const o = document.createElement('option'); o.value = 'Y' + y
-    o.textContent = 'Moyenne ' + y + (partiel ? ' (trim. publiés)' : '')
-    ogY.appendChild(o)
-  })
-  q.appendChild(ogQ); q.appendChild(ogY)
+  Object.keys(CREG).forEach((k) => { const o = document.createElement('option'); o.value = k; o.textContent = QLABEL[k]; q.appendChild(o) })
   q.value = '2025-T1'
+
+  // tableau de référence CREG
   const tb = $('cregTable')
   Object.keys(CREG).forEach((k) => {
     const c = CREG[k]; const tr = document.createElement('tr')
@@ -375,6 +422,42 @@ function runCalculator(root: HTMLElement): () => void {
     tb.appendChild(tr)
   })
 
+  // ── lignes de factures (mode détail) ──
+  function buildPeriodOptions(sel: HTMLSelectElement) {
+    const ogQ = document.createElement('optgroup'); ogQ.label = 'Trimestres'
+    Object.keys(CREG).forEach((k) => { const o = document.createElement('option'); o.value = k; o.textContent = QLABEL[k]; ogQ.appendChild(o) })
+    const ogM = document.createElement('optgroup'); ogM.label = 'Mois'
+    MONTHS.forEach((mo) => { const o = document.createElement('option'); o.value = mo.value; o.textContent = mo.label; ogM.appendChild(o) })
+    sel.appendChild(ogQ); sel.appendChild(ogM)
+  }
+  const invRows = $('invRows')
+  function addInvRow(period?: string, kwh?: number, eur?: number) {
+    const rowEl = document.createElement('div'); rowEl.className = 'inv-row'
+    const sel = document.createElement('select'); sel.className = 'inv-period'; buildPeriodOptions(sel); sel.value = period || '2025-T1'
+    const inK = document.createElement('input'); inK.type = 'number'; inK.className = 'inv-kwh'; inK.min = '0'; inK.step = '1'; inK.placeholder = 'kWh'; inK.value = kwh != null ? String(kwh) : ''
+    const inE = document.createElement('input'); inE.type = 'number'; inE.className = 'inv-eur'; inE.min = '0'; inE.step = '0.01'; inE.placeholder = '€ remb.'; inE.value = eur != null ? String(eur) : ''
+    const del = document.createElement('button'); del.type = 'button'; del.className = 'inv-del'; del.textContent = '×'; del.setAttribute('aria-label', 'Supprimer la ligne')
+    del.addEventListener('click', () => { rowEl.remove(); compute() })
+    rowEl.appendChild(sel); rowEl.appendChild(inK); rowEl.appendChild(inE); rowEl.appendChild(del)
+    invRows.appendChild(rowEl)
+  }
+  addInvRow('2025-T1', 300, 84)
+  addInvRow('2025-T2', 250, 80)
+  const addBtn = $('addInv')
+  const addHandler = () => { addInvRow(); compute() }
+  addBtn.addEventListener('click', addHandler)
+
+  function gatherDetail() {
+    const lines: { q: string; kwh: number; eur: number }[] = []
+    root.querySelectorAll('.inv-row').forEach((r) => {
+      const period = (r.querySelector('.inv-period') as HTMLSelectElement).value
+      const kwh = Math.max(0, parseFloat((r.querySelector('.inv-kwh') as HTMLInputElement).value) || 0)
+      const eur = Math.max(0, parseFloat((r.querySelector('.inv-eur') as HTMLInputElement).value) || 0)
+      lines.push({ q: quarterOf(period), kwh, eur })
+    })
+    return lines
+  }
+
   function render({ atn, status, statusTxt, rows, steps }: any) {
     $('atnAmount').textContent = fmtE(atn)
     $('atnAmount').style.color = atn > 0 ? 'var(--warn)' : 'var(--accent)'
@@ -382,12 +465,16 @@ function runCalculator(root: HTMLElement): () => void {
     const bd = $('breakdown'); bd.innerHTML = ''
     rows.forEach(([l, v, cls]: any) => { const d = document.createElement('div'); d.className = 'brow'; d.innerHTML = `<span class="bl">${l}</span><span class="bv ${cls || ''}">${v}</span>`; bd.appendChild(d) })
     const t = document.createElement('div'); t.className = 'brow total'; t.innerHTML = `<span class="bl">ATN imposable total</span><span class="bv ${atn > 0 ? 'tax' : 'free'}">${fmtE(atn)}</span>`; bd.appendChild(t)
+    if (_aside) { const a = document.createElement('div'); a.className = 'aside-wrap'; a.innerHTML = _aside; bd.appendChild(a) }
     const ol = $('steps'); ol.innerHTML = ''; steps.forEach((s: string) => { const li = document.createElement('li'); li.innerHTML = s; ol.appendChild(li) })
   }
 
   function compute() {
+    _aside = ''
     const arr = val('arr')
-    const region = $('region').value, quarter = $('quarter').value
+    const region = $('region').value
+    const mode = val('emode')
+    const quarter = $('quarter').value
     const cregMax = cregFor(region, quarter)
     $('cregVal').textContent = fmtC(cregMax)
 
@@ -396,22 +483,37 @@ function runCalculator(root: HTMLElement): () => void {
         atn: 0, status: 'ok', statusTxt: 'Aucun avantage distinct',
         rows: [['Avantage électricité distinct', '0,00 €', 'free']],
         steps: ["L'électricité est facturée <b>au nom de l'employeur</b> : <b>fourniture gratuite</b> (points 3-5).",
-          'Elle est <b>comprise dans l\'avantage forfaitaire de la voiture</b> (art. 36, §2 CIR 92). Pas d\'ATN électricité supplémentaire.',
-          'Seul l\'ATN forfaitaire « voiture » reste imposable — calculé séparément.'],
+          "Elle est <b>comprise dans l'avantage forfaitaire de la voiture</b> (art. 36, §2 CIR 92). Pas d'ATN électricité supplémentaire.",
+          "Seul l'ATN forfaitaire « voiture » reste imposable — calculé séparément."],
       })
     }
 
     const veh = val('veh'), lieu = val('lieu')
-    const kwh = Math.max(0, parseFloat($('kwh').value) || 0)
-    const meth = val('meth')
-    let rate: number, reimb: number
-    if (meth === 'rate') { rate = Math.max(0, parseFloat($('rate').value) || 0); reimb = kwh * rate / 100 }
-    else { reimb = Math.max(0, parseFloat($('total').value) || 0); rate = kwh > 0 ? reimb / kwh * 100 : 0 }
+
+    // rassemble kWh & remboursement selon le mode
+    let kwh = 0, reimb = 0
+    let detail: { q: string; kwh: number; eur: number }[] | null = null
+    if (mode === 'detail') {
+      detail = gatherDetail()
+      kwh = detail.reduce((s, l) => s + l.kwh, 0)
+      reimb = detail.reduce((s, l) => s + l.eur, 0)
+    } else {
+      kwh = Math.max(0, parseFloat($('kwh').value) || 0)
+      const meth = val('meth')
+      if (meth === 'rate') { const rate = Math.max(0, parseFloat($('rate').value) || 0); reimb = kwh * rate / 100 }
+      else { reimb = Math.max(0, parseFloat($('total').value) || 0) }
+    }
+    const rateSingle = kwh > 0 ? reimb / kwh * 100 : 0
 
     let borneAdd = 0, borneStep: string | null = null
     if (val('trf') === 'oui') {
       borneAdd = Math.max(0, parseFloat($('borneVal').value) || 0)
       borneStep = `<b>Transfert de la borne</b> : sa valeur réelle (${fmtE(borneAdd)}) constitue un ATN distinct (points 37-38).`
+    }
+
+    const sub = Math.max(0, parseFloat(($('subFee') || {}).value) || 0)
+    if (sub > 0 && veh === 'societe') {
+      _aside = `<div class="aside-note"><b>Abonnement / gestion de borne : ${fmtE(sub)}</b> — poste distinct du remboursement d'électricité, <b>non compté</b> dans l'ATN ci-dessus. À qualifier selon votre car policy (mise à disposition de la borne, point 16) ; faites confirmer son traitement par votre secrétariat social ou conseiller.</div>`
     }
 
     const exceptionEligible = (veh === 'societe' && lieu === 'domicile')
@@ -420,13 +522,55 @@ function runCalculator(root: HTMLElement): () => void {
     const exceptionApplies = exceptionEligible && comm && policy
 
     if (exceptionApplies) {
+      const base = val('base')
+      if (base === 'reel') {
+        const atn = borneAdd
+        const rows: any[] = [["Frais d'électricité réels remboursés", fmtE(reimb), 'free'], ["Couvert (facture à l'appui)", '− ' + fmtE(reimb), 'free']]
+        if (borneAdd > 0) rows.push(['Transfert de borne', fmtE(borneAdd), 'tax'])
+        const steps = ['Voiture de société + recharge à domicile + borne communicante + « car policy » : <b>l\'exception s\'applique</b> (points 13-21).',
+          'Remboursement basé sur vos <b>frais réels justifiés par facture</b> (point 22) → <b>entièrement couvert</b>, comme une carte carburant. Le plafond CREG ne borne que la méthode <i>forfaitaire</i>.',
+          'Condition : la facture doit porter <b>uniquement sur l\'électricité de la voiture de société</b> (point 14) — hors abonnement / frais de gestion de la borne.',
+          'Seul l\'ATN forfaitaire « voiture » reste dû (calculé séparément).']
+        if (borneStep) steps.push(borneStep)
+        return render({ atn, status: atn > 0 ? 'warn' : 'ok', statusTxt: atn > 0 ? 'Borne imposable' : 'Non imposable', rows, steps })
+      }
+
+      // base forfait
+      if (mode === 'detail') {
+        const byQ: Record<string, { kwh: number; eur: number }> = {}
+        ;(detail as any[]).forEach((l) => { if (!byQ[l.q]) byQ[l.q] = { kwh: 0, eur: 0 }; byQ[l.q].kwh += l.kwh; byQ[l.q].eur += l.eur })
+        const qs = Object.keys(byQ).sort()
+        let coveredTotal = 0, excessTotal = 0
+        const rows: any[] = []
+        qs.forEach((qk) => {
+          const cmax = cregFor(region, qk)
+          const ceiling = byQ[qk].kwh * cmax / 100
+          coveredTotal += Math.min(byQ[qk].eur, ceiling)
+          const exc = Math.max(0, byQ[qk].eur - ceiling)
+          excessTotal += exc
+          rows.push([`${QLABEL[qk]} — ${fmtK(byQ[qk].kwh)} kWh × ${fmtC(cmax)}`, fmtE(exc), exc > 0 ? 'tax' : 'free'])
+        })
+        rows.push(['Total remboursé', fmtE(reimb), ''])
+        rows.push(['Couvert par les plafonds CREG', '− ' + fmtE(coveredTotal), 'free'])
+        if (borneAdd > 0) rows.push(['Transfert de borne', fmtE(borneAdd), 'tax'])
+        const atn = excessTotal + borneAdd
+        const steps = ['Voiture de société + recharge à domicile + borne communicante + « car policy » : <b>l\'exception s\'applique</b> (points 13-21).',
+          'Saisie détaillée par facture : chaque période est comparée au <b>plafond CREG de son propre trimestre</b> (alignement CREG, point 24).',
+          'Par trimestre : excédent = remboursement − (kWh × plafond CREG du trimestre), borné à zéro. L\'ATN est la <b>somme des excédents trimestriels</b>.']
+        if (excessTotal === 0) steps.push('Toutes les périodes sont sous leur plafond → <b>aucun ATN supplémentaire</b> (comme une carte carburant).')
+        if (borneStep) steps.push(borneStep)
+        const statusTxt = atn > 0 ? (excessTotal > 0 ? 'Partiellement imposable' : 'Borne imposable') : 'Non imposable'
+        return render({ atn, status: atn > 0 ? 'warn' : 'ok', statusTxt, rows, steps })
+      }
+
+      // forfait — période unique
       const ceiling = kwh * cregMax / 100
-      if (rate <= cregMax + 1e-9) {
+      if (rateSingle <= cregMax + 1e-9) {
         const atn = borneAdd
         const rows: any[] = [['Électricité remboursée', '0,00 €', 'free']]
         if (borneAdd > 0) rows.push(['Transfert de borne', fmtE(borneAdd), 'tax'])
         const steps = ['Voiture de société + recharge à domicile + borne communicante + « car policy » : <b>l\'exception s\'applique</b> (points 13-21).',
-          `Tarif appliqué (${fmtC(rate)}) <b>≤ plafond CREG</b> (${fmtC(cregMax)}) → remboursement <b>entièrement couvert</b>.`,
+          `Tarif appliqué (${fmtC(rateSingle)}) <b>≤ plafond CREG</b> (${fmtC(cregMax)}) → remboursement <b>entièrement couvert</b>.`,
           'Comme une carte carburant : <b>aucun ATN supplémentaire</b>. Seul l\'ATN forfaitaire « voiture » reste dû.']
         if (borneStep) steps.push(borneStep)
         return render({ atn, status: atn > 0 ? 'warn' : 'ok', statusTxt: atn > 0 ? 'Borne imposable' : 'Non imposable', rows, steps })
@@ -435,13 +579,14 @@ function runCalculator(root: HTMLElement): () => void {
         const rows: any[] = [['Remboursement total', fmtE(reimb), ''], ['Couvert par le plafond CREG', '− ' + fmtE(ceiling), 'free'], ['Excédent hors tolérance', fmtE(excess), 'tax']]
         if (borneAdd > 0) rows.push(['Transfert de borne', fmtE(borneAdd), 'tax'])
         const steps = ['L\'exception s\'applique, <b>mais</b> le tarif forfaitaire dépasse le plafond CREG.',
-          `Tarif ${fmtC(rate)} &gt; plafond ${fmtC(cregMax)}. La tolérance « montant fixe » ne vaut que <b>jusqu'au plafond</b> (point 24).`,
+          `Tarif ${fmtC(rateSingle)} &gt; plafond ${fmtC(cregMax)}. La tolérance « montant fixe » ne vaut que <b>jusqu'au plafond</b> (point 24).`,
           `Part couverte : ${fmtE(ceiling)}. <b>Excédent : ${fmtE(excess)}</b> → imposable, sauf justification de frais réels supérieurs (point 22).`]
         if (borneStep) steps.push(borneStep)
         return render({ atn, status: 'warn', statusTxt: 'Partiellement imposable', rows, steps })
       }
     }
 
+    // exception non applicable → répartition par nature de trajet
     const pProf = clampPct($('pProf').value), pCommute = clampPct($('pCommute').value)
     let pPriv = 100 - pProf - pCommute; if (pPriv < 0) pPriv = 0; $('pPriv').value = pPriv
     const profAmt = reimb * pProf / 100, commuteAmt = reimb * pCommute / 100, privAmt = reimb * pPriv / 100
@@ -465,15 +610,23 @@ function runCalculator(root: HTMLElement): () => void {
   function refreshVisibility() {
     const arr = val('arr'); $('rembBlock').style.display = arr === 'fourn' ? 'none' : 'block'
     const veh = val('veh'), lieu = val('lieu')
+    const mode = val('emode'); const isDetail = mode === 'detail'
     $('publiqueNote').classList.toggle('show', arr === 'remb' && lieu === 'publique')
     const exceptionEligible = (veh === 'societe' && lieu === 'domicile')
     $('condBlock').classList.toggle('show', exceptionEligible)
     const comm = exceptionEligible ? val('comm') === 'oui' : false, policy = exceptionEligible ? val('policy') === 'oui' : false
     const exceptionApplies = exceptionEligible && comm && policy
+    $('singleQuarterField').style.display = isDetail ? 'none' : 'block'
+    $('kwhField').style.display = isDetail ? 'none' : 'block'
+    $('methodField').style.display = isDetail ? 'none' : 'block'
+    $('detailBlock').classList.toggle('show', isDetail)
     $('splitBlock').classList.toggle('show', arr === 'remb' && !exceptionApplies)
     $('commuteOpts').style.display = (clampPct($('pCommute').value) > 0) ? 'block' : 'none'
+    $('subWrap').classList.toggle('show', arr === 'remb' && veh === 'societe')
     $('borneBlock').classList.toggle('show', arr === 'remb' && veh === 'societe')
     $('borneValWrap').classList.toggle('show', val('trf') === 'oui')
+    const baseNote = $('baseNote')
+    if (baseNote) baseNote.style.display = (exceptionEligible && val('base') === 'reel') ? 'block' : 'none'
     $('rateWrap').style.display = val('meth') === 'rate' ? 'block' : 'none'
     $('totalWrap').style.display = val('meth') === 'total' ? 'block' : 'none'
   }
@@ -493,6 +646,7 @@ function runCalculator(root: HTMLElement): () => void {
     root.removeEventListener('input', handler)
     root.removeEventListener('change', handler)
     const fc = root.querySelector('#fillCreg'); if (fc) fc.removeEventListener('click', fillCregHandler)
+    const ab = root.querySelector('#addInv'); if (ab) ab.removeEventListener('click', addHandler)
   }
 }
 
@@ -524,7 +678,7 @@ export default function RechargeDomicileContent() {
         await (navigator as any).share({ title: titre, url })
         return
       }
-    } catch { /* l'utilisateur a annulé le partage natif */ }
+    } catch { /* partage natif annulé */ }
     try {
       await navigator.clipboard.writeText(url)
       setShareMsg('Lien copié — envoyez-le à un ami ✓')
@@ -534,12 +688,10 @@ export default function RechargeDomicileContent() {
     }
   }
 
-  // Placeholder SSR / pré-auth (évite tout mismatch d'hydratation)
   if (!mounted || !isReady) {
     return <div style={{ minHeight: '60vh' }} />
   }
 
-  // Gate : non connecté
   if (!userId) {
     return (
       <section style={{ maxWidth: 560, margin: '0 auto', padding: '64px 22px', textAlign: 'center' }}>
@@ -548,7 +700,7 @@ export default function RechargeDomicileContent() {
           Outil réservé aux membres
         </h1>
         <p style={{ color: 'var(--color-text-muted)', lineHeight: 1.6, marginBottom: 26 }}>
-          Le calculateur ATN « recharge à domicile · voiture de société (BE) » est accessible
+          Le calculateur ATN « recharge électrique payée par l'employeur (BE) » est accessible
           gratuitement aux membres connectés. Connectez-vous ou créez un compte en 30 secondes —
           puis partagez le lien à un collègue ou un ami (il lui suffira d'être connecté pour l'ouvrir).
         </p>
@@ -570,7 +722,6 @@ export default function RechargeDomicileContent() {
     )
   }
 
-  // Connecté : outil + barre de partage
   return (
     <>
       <style dangerouslySetInnerHTML={{ __html: TOOL_CSS }} />
