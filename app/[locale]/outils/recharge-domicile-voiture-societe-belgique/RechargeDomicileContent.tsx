@@ -336,13 +336,31 @@ function runCalculator(root: HTMLElement): () => void {
   const val = (name: string) => (root.querySelector('input[name="' + name + '"]:checked') as HTMLInputElement).value
   const clampPct = (v: any) => { v = parseFloat(v) || 0; return Math.min(100, Math.max(0, Math.round(v))) }
   const cregFor = (region: string, quarter: string) => {
+    if (quarter.charAt(0) === 'Y') {
+      const year = quarter.slice(1)
+      const ks = Object.keys(CREG).filter((k) => k.indexOf(year + '-') === 0)
+      const avg = (r: string) => ks.reduce((s, k) => s + (CREG[k] as any)[r], 0) / ks.length
+      return region === 'unique' ? Math.min(avg('fl'), avg('bxl'), avg('wal')) : avg(region)
+    }
     const c = CREG[quarter]
     return region === 'unique' ? Math.min(c.fl, c.bxl, c.wal) : (c as any)[region]
   }
 
-  // init
+  // init du sélecteur : trimestres + moyennes annuelles
   const q = $('quarter')
-  Object.keys(CREG).forEach((k) => { const o = document.createElement('option'); o.value = k; o.textContent = QLABEL[k]; q.appendChild(o) })
+  const ALL_T = ['T1', 'T2', 'T3', 'T4']
+  const years = Array.from(new Set(Object.keys(CREG).map((k) => k.split('-')[0])))
+  const ogQ = document.createElement('optgroup'); ogQ.label = 'Par trimestre'
+  Object.keys(CREG).forEach((k) => { const o = document.createElement('option'); o.value = k; o.textContent = QLABEL[k]; ogQ.appendChild(o) })
+  const ogY = document.createElement('optgroup'); ogY.label = 'Moyenne annuelle'
+  years.forEach((y) => {
+    const ks = Object.keys(CREG).filter((k) => k.indexOf(y + '-') === 0)
+    const partiel = !ALL_T.every((t) => ks.indexOf(y + '-' + t) !== -1)
+    const o = document.createElement('option'); o.value = 'Y' + y
+    o.textContent = 'Moyenne ' + y + (partiel ? ' (trim. publiés)' : '')
+    ogY.appendChild(o)
+  })
+  q.appendChild(ogQ); q.appendChild(ogY)
   q.value = '2025-T1'
   const tb = $('cregTable')
   Object.keys(CREG).forEach((k) => {
