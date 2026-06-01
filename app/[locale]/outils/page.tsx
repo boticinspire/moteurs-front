@@ -137,6 +137,14 @@ const OUTILS_COMPLEMENTAIRES = [
     cta: 'Calculer',
   },
   {
+    href: '/outils/recharge-domicile-voiture-societe-belgique',
+    icon: '🔌',
+    titre: 'ATN recharge à domicile (BE)',
+    desc: 'Le remboursement employeur de la recharge à domicile d\'une voiture de société est-il imposable ? Barème CREG, circulaire 2024/C/77. Réservé aux membres.',
+    tags: ['Belgique', 'ATN', 'CREG', 'Membres'],
+    cta: 'Calculer l\'ATN',
+  },
+  {
     href: '/outils/convertisseur',
     icon: '⚡',
     titre: 'Convertisseur technique',

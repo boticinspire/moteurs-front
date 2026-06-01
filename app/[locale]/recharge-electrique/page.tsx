@@ -296,6 +296,7 @@ function RechargeContent() {
           <Link href="/simulateur" style={btnSecondaire}>{t('outils_simulateur')}</Link>
           <Link href="/comparer-trajet" style={btnSecondaire}>{t('outils_comparer_trajet')}</Link>
           <Link href="/trajet" style={btnSecondaire}>{t('outils_trajets')}</Link>
+          <Link href="/outils/recharge-domicile-voiture-societe-belgique" style={btnSecondaire}>ATN recharge domicile (BE)</Link>
         </div>
       </section>
     </main>

@@ -191,6 +191,14 @@ export const SEO_MAP: Record<string, SeoMeta> = {
     volume: 5200,
     intent: 'Informationnelle',
   },
+  '/outils/recharge-domicile-voiture-societe-belgique': {
+    title: 'Recharge à domicile voiture de société : montant imposable (Belgique) | Moteurs.com',
+    description: 'Calculez l\'avantage imposable (ATN) du remboursement de la recharge à domicile d\'une voiture de société en Belgique. Barème CREG, circulaire 2024/C/77.',
+    keywords: ['ATN recharge domicile voiture société', 'barème CREG remboursement recharge', 'circulaire 2024/C/77'],
+    primaryKeyword: 'recharge domicile voiture de société imposable Belgique',
+    volume: 1900,
+    intent: 'Informationnelle',
+  },
 }
 
 /** Retourne le metadata SEO pour une route donnée. */
