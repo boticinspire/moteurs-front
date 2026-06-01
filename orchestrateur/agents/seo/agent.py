@@ -12,10 +12,9 @@ import logging
 import re
 from datetime import datetime, timezone
 
-import anthropic
-
 from config import get_settings
 from database import get_supabase
+from safe_agent import get_seo_agent
 
 logger = logging.getLogger(__name__)
 
@@ -257,12 +256,13 @@ def _corriger_meta_via_haiku(article: dict) -> dict | None:
     Appelle Claude Haiku pour raccourcir meta_title et meta_description quand
     ils sont hors plage. Retourne {"meta_title": ..., "meta_description": ...}
     ou None si la correction a échoué.
+    ✅ PROTECTION : SafeAgent wrapper (timeout 5 min, max 5 itérations)
     """
     mt = article.get("meta_title", "") or ""
     md = article.get("meta_description", "") or ""
     try:
         settings = get_settings()
-        client = anthropic.Anthropic(api_key=settings.anthropic_api_key)
+        agent = get_seo_agent(api_key=settings.anthropic_api_key)
 
         prompt = _PROMPT_CORRECTION_META.format(
             titre=(article.get("titre_provisoire") or "")[:200],
@@ -274,12 +274,16 @@ def _corriger_meta_via_haiku(article: dict) -> dict | None:
             len_md=len(md),
         )
 
-        resp = client.messages.create(
-            model="claude-haiku-4-5-20251001",
-            max_tokens=400,
+        result = agent.call(
             messages=[{"role": "user", "content": prompt}],
+            max_tokens=400
         )
-        raw = (resp.content[0].text or "").strip()
+
+        if not result['success']:
+            logger.error(f"[AgentSEO] Erreur Haiku article #{article.get('id')} : {result['error_type']}")
+            return None
+
+        raw = result['content'].strip()
 
         # Tolérer un éventuel fence ```json ... ```
         if raw.startswith("```"):

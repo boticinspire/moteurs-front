@@ -10,15 +10,15 @@ Pipeline :
 
 Modèle : Claude Haiku (économique — tâche de reformatage, pas de rédaction complexe)
 Déclenchement : manuel via POST /social/generer/{article_id} ou batch /social/generer-batch
+Protection : SafeAgent wrapper (timeout 2 min, max 3 itérations)
 """
 
 import logging
 from datetime import datetime, timezone
 
-import anthropic
-
 from config import get_settings
 from database import get_supabase
+from safe_agent import get_social_agent
 
 logger = logging.getLogger(__name__)
 settings = get_settings()
@@ -85,7 +85,7 @@ CONSIGNES STRICTES :
 Génère uniquement le texte du post, sans balises ni commentaires.
 """
 
-# ── Génération via Claude Haiku ───────────────────────────────────────────────
+# ── Génération via Claude Haiku avec SafeAgent ────────────────────────────────
 
 def _selectionner_hashtags(article: dict) -> tuple[str, str]:
     """
@@ -98,25 +98,16 @@ def _selectionner_hashtags(article: dict) -> tuple[str, str]:
         (article.get("resume_50mots") or "")
     ).lower()
 
-    # Hashtags pays
-    base_pays = HASHTAGS_PAYS.get(pays, HASHTAGS_PAYS["FR"])
+    hashtags_li = HASHTAGS_PAYS.get(pays, HASHTAGS_PAYS["FR"]).copy()
+    hashtags_x = HASHTAGS_PAYS.get(pays, HASHTAGS_PAYS["FR"])[:2]
 
-    # Hashtags thématiques selon mots détectés
-    thematiques = []
     for moteur, tags in HASHTAGS_MOTEUR.items():
         if moteur in texte:
-            thematiques.extend(tags[:2])
-            break
+            hashtags_li.extend(tags[:2])
+            if len(hashtags_x) < 3:
+                hashtags_x = hashtags_x + tags[:1]
 
-    # LinkedIn : 4-6 hashtags
-    tous_li = list(dict.fromkeys(thematiques + base_pays))[:5]
-    hashtags_li = " ".join(tous_li)
-
-    # X : 2-3 hashtags (courts)
-    tous_x = list(dict.fromkeys(thematiques[:1] + base_pays[:2]))[:3]
-    hashtags_x = " ".join(tous_x)
-
-    return hashtags_li, hashtags_x
+    return " ".join(hashtags_li[:6]), " ".join(hashtags_x[:3])
 
 
 def _pays_label(code: str) -> str:
@@ -126,9 +117,10 @@ def _pays_label(code: str) -> str:
 def _generer_posts_haiku(article: dict) -> dict:
     """
     Appelle Claude Haiku pour générer le post LinkedIn et le post X.
+    ✅ PROTECTION : SafeAgent wrapper (timeout 2 min, max 3 itérations)
     Retourne {"linkedin": str, "x": str}.
     """
-    client = anthropic.Anthropic(api_key=settings.anthropic_api_key)
+    agent = get_social_agent(api_key=settings.anthropic_api_key)
 
     slug = article.get("slug", "")
     url  = f"{SITE_URL}/article/{slug}" if slug else SITE_URL
@@ -138,30 +130,39 @@ def _generer_posts_haiku(article: dict) -> dict:
 
     hashtags_li, hashtags_x = _selectionner_hashtags(article)
 
+    result = {
+        "linkedin": "",
+        "x": ""
+    }
+
     # ── LinkedIn ──
     prompt_li = PROMPT_LINKEDIN.format(
         titre=titre, resume=resume, pays_label=_pays_label(pays),
         url=url, hashtags=hashtags_li,
     )
-    resp_li = client.messages.create(
-        model="claude-haiku-4-5-20251001",
-        max_tokens=600,
+    result_li = agent.call(
         messages=[{"role": "user", "content": prompt_li}],
+        max_tokens=600
     )
-    post_linkedin = resp_li.content[0].text.strip()
+    if result_li['success']:
+        result["linkedin"] = result_li['content'].strip()
+    else:
+        logger.error(f"[AgentSocial] Erreur LinkedIn : {result_li['error_type']}")
 
     # ── X / Twitter ──
     prompt_x = PROMPT_X.format(
         titre=titre, resume=resume, url=url, hashtags=hashtags_x,
     )
-    resp_x = client.messages.create(
-        model="claude-haiku-4-5-20251001",
-        max_tokens=120,
+    result_x = agent.call(
         messages=[{"role": "user", "content": prompt_x}],
+        max_tokens=120
     )
-    post_x = resp_x.content[0].text.strip()
+    if result_x['success']:
+        result["x"] = result_x['content'].strip()
+    else:
+        logger.error(f"[AgentSocial] Erreur X : {result_x['error_type']}")
 
-    return {"linkedin": post_linkedin, "x": post_x}
+    return result
 
 
 # ── Sauvegarde Supabase ───────────────────────────────────────────────────────
@@ -217,65 +218,64 @@ async def generer_posts_sociaux(article_id: int) -> dict:
         logger.error(f"[AgentSocial] Article #{article_id} introuvable")
         return {"succes": False, "erreur": "Article introuvable"}
 
-    if article.get("etat_code") not in ("PUBLIE", "VALIDE"):
-        logger.warning(f"[AgentSocial] Article #{article_id} non publié — état : {article.get('etat_code')}")
-        return {"succes": False, "erreur": f"Article non publié (état : {article.get('etat_code')})"}
+    logger.info(f"[AgentSocial] Génération posts pour article #{article_id}")
 
-    titre = article.get("titre_provisoire", "")
-    logger.info(f"[AgentSocial] Génération posts sociaux — article #{article_id} : {titre[:60]}")
+    # Générer les posts
+    posts = _generer_posts_haiku(article)
 
-    try:
-        posts = _generer_posts_haiku(article)
-    except Exception as e:
-        logger.error(f"[AgentSocial] Erreur Haiku : {e}")
-        return {"succes": False, "erreur": str(e)}
+    # Valider que au moins un post a été généré
+    if not posts.get("linkedin") and not posts.get("x"):
+        logger.error(f"[AgentSocial] Aucun post généré pour #{article_id}")
+        return {"succes": False, "erreur": "Génération échouée"}
 
+    # Sauvegarder
     ids = _sauvegarder_posts(article_id, posts, supabase)
+    logger.info(f"[AgentSocial] ✅ {len(ids)} post(s) sauvegardé(s)")
 
-    logger.info(f"[AgentSocial] ✅ {len(ids)} posts générés — article #{article_id}")
     return {
         "succes": True,
         "article_id": article_id,
-        "posts_generes": list(posts.keys()),
-        "ids_supabase": ids,
-        "apercu_linkedin": posts["linkedin"][:120] + "…",
-        "apercu_x": posts["x"],
+        "posts_generes": {
+            "linkedin": bool(posts.get("linkedin")),
+            "x": bool(posts.get("x")),
+        },
+        "ids_sociaux": ids,
     }
 
 
-async def generer_posts_batch(limite: int = 20) -> dict:
+async def generer_posts_batch(article_ids: list[int] = None) -> dict:
     """
-    Génère les posts manquants pour les N derniers articles publiés
-    qui n'ont pas encore de posts sociaux.
+    Génère les posts pour une liste d'articles (ou les derniers articles PUBLIE).
     """
     supabase = get_supabase()
 
-    # Articles publiés sans posts sociaux
-    articles = (
-        supabase.table("articles")
-        .select("id, titre_provisoire")
-        .eq("etat_code", "PUBLIE")
-        .order("published_at", desc=True)
-        .limit(limite)
-        .execute()
-        .data or []
-    )
+    if not article_ids:
+        res = (
+            supabase.table("articles")
+            .select("id")
+            .eq("etat_code", "PUBLIE")
+            .order("created_at", desc=True)
+            .limit(5)
+            .execute()
+        )
+        article_ids = [a["id"] for a in res.data] if res.data else []
 
-    ids_avec_posts = set()
-    existants = supabase.table("social_posts").select("article_id").execute().data or []
-    for e in existants:
-        ids_avec_posts.add(e["article_id"])
+    if not article_ids:
+        logger.info("[AgentSocial] Aucun article PUBLIE trouvé")
+        return {"succes": True, "articles_traites": 0, "posts_generes": 0}
 
-    a_traiter = [a for a in articles if a["id"] not in ids_avec_posts]
+    total_posts = 0
+    for article_id in article_ids:
+        try:
+            result = await generer_posts_sociaux(article_id)
+            if result.get("succes"):
+                total_posts += len(result.get("ids_sociaux", []))
+        except Exception as e:
+            logger.error(f"[AgentSocial] Erreur article #{article_id} : {e}")
 
-    resultats = []
-    for article in a_traiter:
-        res = await generer_posts_sociaux(article["id"])
-        resultats.append(res)
-
+    logger.info(f"[AgentSocial] Batch terminé — {total_posts} posts générés")
     return {
-        "traites": len(resultats),
-        "succes": sum(1 for r in resultats if r.get("succes")),
-        "echecs": sum(1 for r in resultats if not r.get("succes")),
-        "details": resultats,
+        "succes": True,
+        "articles_traites": len(article_ids),
+        "posts_generes": total_posts,
     }

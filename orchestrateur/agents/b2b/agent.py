@@ -8,15 +8,16 @@ Pipeline :
   3. Stockage en base (qualification_json + reponse_preparee)
 
 Déclenché de façon non-bloquante après chaque soumission de formulaire B2B.
+Protection : SafeAgent wrapper (timeout 2 min pour Haiku, 5 min pour Sonnet)
 """
 
-import anthropic
 import json
 import logging
 from datetime import datetime, timezone
 
 from config import get_settings
 from database import get_supabase
+from safe_agent import get_social_agent, get_redaction_agent
 
 logger = logging.getLogger(__name__)
 settings = get_settings()
@@ -86,8 +87,9 @@ Réponds UNIQUEMENT avec un JSON valide (pas de markdown, pas de texte autour) :
 async def _qualifier_lead(lead: dict) -> dict | None:
     """
     Étape 1 — Claude Haiku qualifie le lead et retourne un dict structuré.
+    ✅ PROTECTION : SafeAgent wrapper (timeout 2 min, max 3 itérations)
     """
-    client = anthropic.Anthropic(api_key=settings.anthropic_api_key)
+    agent = get_social_agent(api_key=settings.anthropic_api_key)
 
     prompt = PROMPT_QUALIFICATION.format(
         nom=lead.get("nom") or "Non renseigné",
@@ -100,14 +102,18 @@ async def _qualifier_lead(lead: dict) -> dict | None:
         contexte=CONTEXTE_MOTEURS,
     )
 
-    try:
-        message = client.messages.create(
-            model="claude-haiku-4-5-20251001",
-            max_tokens=600,
-            messages=[{"role": "user", "content": prompt}],
-        )
-        texte = message.content[0].text.strip()
+    result = agent.call(
+        messages=[{"role": "user", "content": prompt}],
+        max_tokens=600
+    )
 
+    if not result['success']:
+        logger.error(f"[AgentB2B] Erreur qualification : {result['error_type']}")
+        return None
+
+    texte = result['content'].strip()
+
+    try:
         # Extraire le JSON si entouré de markdown
         if "```" in texte:
             texte = texte.split("```")[1].lstrip("json").strip()
@@ -121,9 +127,6 @@ async def _qualifier_lead(lead: dict) -> dict | None:
 
     except json.JSONDecodeError as e:
         logger.error(f"[AgentB2B] JSON invalide de Haiku : {e} — {texte[:200]}")
-        return None
-    except Exception as e:
-        logger.error(f"[AgentB2B] Erreur qualification Haiku : {e}")
         return None
 
 
@@ -168,8 +171,9 @@ CONSIGNES :
 async def _preparer_reponse(lead: dict, qualification: dict) -> str | None:
     """
     Étape 2 — Claude Sonnet prépare un brouillon de réponse personnalisé.
+    ✅ PROTECTION : SafeAgent wrapper (timeout 5 min, max 5 itérations)
     """
-    client = anthropic.Anthropic(api_key=settings.anthropic_api_key)
+    agent = get_redaction_agent(api_key=settings.anthropic_api_key)
 
     articles = ", ".join(qualification.get("articles_pertinents", [])) or "aucun spécifique"
 
@@ -188,19 +192,18 @@ async def _preparer_reponse(lead: dict, qualification: dict) -> str | None:
         contexte=CONTEXTE_MOTEURS,
     )
 
-    try:
-        message = client.messages.create(
-            model="claude-sonnet-4-6",
-            max_tokens=800,
-            messages=[{"role": "user", "content": prompt}],
-        )
-        reponse = message.content[0].text.strip()
-        logger.info(f"[AgentB2B] Brouillon réponse généré ({len(reponse)} car.)")
-        return reponse
+    result = agent.call(
+        messages=[{"role": "user", "content": prompt}],
+        max_tokens=800
+    )
 
-    except Exception as e:
-        logger.error(f"[AgentB2B] Erreur préparation réponse Sonnet : {e}")
+    if not result['success']:
+        logger.error(f"[AgentB2B] Erreur préparation réponse : {result['error_type']}")
         return None
+
+    reponse = result['content'].strip()
+    logger.info(f"[AgentB2B] Brouillon réponse généré ({len(reponse)} car.)")
+    return reponse
 
 
 # ── Orchestration ─────────────────────────────────────────────────────────────

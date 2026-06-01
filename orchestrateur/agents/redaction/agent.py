@@ -1,4 +1,3 @@
-import anthropic
 import logging
 import re
 import unicodedata
@@ -6,6 +5,7 @@ from datetime import datetime
 
 from config import get_settings
 from database import get_supabase
+from safe_agent import get_veille_agent, get_redaction_agent
 
 logger = logging.getLogger(__name__)
 settings = get_settings()
@@ -127,21 +127,22 @@ async def _classifier_cible(item: dict) -> str:
     """
     Classifier Haiku : particulier / pro / mixte.
     Fallback heuristique mot-clés en cas d'erreur.
+    ✅ PROTECTION : SafeAgent wrapper (timeout 2 min, max 3 itérations)
     """
     titre = (item.get("titre", "") or "")[:200]
     resume = (item.get("resume_ia", "") or "")[:500]
 
-    try:
-        client = anthropic.Anthropic(api_key=settings.anthropic_api_key)
-        message = client.messages.create(
-            model="claude-haiku-4-5-20251001",
-            max_tokens=10,
-            messages=[{
-                "role": "user",
-                "content": PROMPT_CLASSIFIER_CIBLE.format(titre=titre, resume=resume),
-            }],
-        )
-        reponse = message.content[0].text.strip().lower()
+    agent = get_veille_agent(api_key=settings.anthropic_api_key)
+    result = agent.call(
+        messages=[{
+            "role": "user",
+            "content": PROMPT_CLASSIFIER_CIBLE.format(titre=titre, resume=resume),
+        }],
+        max_tokens=10
+    )
+
+    if result['success']:
+        reponse = result['content'].strip().lower()
         for c in CIBLES_VALIDES:
             if c in reponse:
                 logger.info(f"[AgentRédaction] Cible classifiée : {c} (titre={titre[:50]!r})")
@@ -149,8 +150,8 @@ async def _classifier_cible(item: dict) -> str:
         logger.warning(
             f"[AgentRédaction] Classifier réponse inattendue : {reponse!r} → fallback heuristique"
         )
-    except Exception as e:
-        logger.error(f"[AgentRédaction] Erreur classifier Haiku : {e} → fallback heuristique")
+    else:
+        logger.error(f"[AgentRédaction] Erreur classifier : {result['error_type']} → fallback heuristique")
 
     fallback = _detecter_cible_heuristique(item)
     logger.info(f"[AgentRédaction] Cible (heuristique) : {fallback}")
@@ -188,31 +189,31 @@ async def _extraire_faits(contenu_brut: str, langue: str) -> str | None:
     Étape 1 — Claude Haiku extrait les faits clés du contenu scrapé.
     Retourne une liste de faits en texte, ou None si contenu insuffisant.
     Partagé entre toutes les déclinaisons géographiques d'un même signal.
+    ✅ PROTECTION : SafeAgent wrapper (timeout 5 min, max 10 itérations)
     """
-    client = anthropic.Anthropic(api_key=settings.anthropic_api_key)
+    agent = get_veille_agent(api_key=settings.anthropic_api_key)
     contenu_tronque = contenu_brut[:3000]  # Haiku, on limite
 
-    try:
-        message = client.messages.create(
-            model="claude-haiku-4-5-20251001",
-            max_tokens=400,
-            messages=[{
-                "role": "user",
-                "content": PROMPT_EXTRACTION_FAITS.format(
-                    langue=langue,
-                    contenu=contenu_tronque,
-                ),
-            }],
-        )
-        texte = message.content[0].text.strip()
-        if "INSUFFISANT" in texte or not texte.startswith("•"):
-            logger.info("[AgentRédaction] Extraction faits : contenu insuffisant")
-            return None
-        return texte
+    result = agent.call(
+        messages=[{
+            "role": "user",
+            "content": PROMPT_EXTRACTION_FAITS.format(
+                langue=langue,
+                contenu=contenu_tronque,
+            ),
+        }],
+        max_tokens=400
+    )
 
-    except Exception as e:
-        logger.error(f"[AgentRédaction] Erreur extraction faits Haiku : {e}")
+    if not result['success']:
+        logger.error(f"[AgentRédaction] Erreur extraction faits : {result['error_type']}")
         return None
+
+    texte = result['content'].strip()
+    if "INSUFFISANT" in texte or not texte.startswith("•"):
+        logger.info("[AgentRédaction] Extraction faits : contenu insuffisant")
+        return None
+    return texte
 
 
 # ── Étape 2 : rédaction originale par pays cible (Claude Sonnet) ─────────────
@@ -404,6 +405,84 @@ def _detecter_segment(item: dict) -> str:
     return "B2B" if any(m in texte for m in mots_b2b) else "Particulier"
 
 
+# ── Guard anti-doublon (0 token) ──────────────────────────────────────────────
+# Vérifie avant chaque appel Sonnet si un article similaire existe déjà
+# en base pour le même (pays_cible × cible), via deux critères :
+#   1. Même URL source → doublon certain
+#   2. Similarité de Jaccard sur mots-clés du titre ≥ seuil → doublon probable
+# Aucun appel LLM, aucun token consommé.
+
+_STOP_WORDS_FR = {
+    "de", "du", "des", "la", "le", "les", "en", "un", "une", "et", "ou",
+    "pour", "par", "sur", "dans", "au", "aux", "ce", "qui", "que", "avec",
+    "est", "son", "sa", "ses", "l", "d", "a", "on", "il", "ils", "elle",
+    "elles", "nous", "vous", "se", "si", "ne", "pas", "plus", "bien",
+    "tout", "tous", "mais", "car", "donc", "or", "ni", "cet", "cette",
+}
+
+
+def _mots_cles(titre: str) -> set[str]:
+    """Normalise un titre en ensemble de mots significatifs (sans accents, sans stop words)."""
+    norm = unicodedata.normalize("NFKD", titre.lower()).encode("ascii", "ignore").decode()
+    mots = re.findall(r"[a-z][a-z0-9]+", norm)  # min 2 chars, commence par lettre
+    return {m for m in mots if m not in _STOP_WORDS_FR}
+
+
+def _jaccard(a: set, b: set) -> float:
+    """Similarité de Jaccard entre deux ensembles."""
+    if not a or not b:
+        return 0.0
+    return len(a & b) / len(a | b)
+
+
+def _doublon_detecte(
+    supabase,
+    titre_signal: str,
+    url_signal: str,
+    pays_cible: str,
+    cible: str,
+    seuil_titre: float = 0.50,
+) -> tuple[bool, str]:
+    """
+    Vérifie si un article similaire existe déjà pour ce pays+cible.
+    Deux critères (OR) :
+      1. Même URL source déjà utilisée → doublon certain
+      2. Titre trop similaire (Jaccard ≥ seuil) → doublon probable
+    Retourne (True, raison) si doublon détecté, (False, "") sinon.
+    Coût : 0 token — SQL + Python pur.
+    """
+    try:
+        existants = (
+            supabase.table("articles")
+            .select("titre_provisoire, sources_json")
+            .eq("pays_cible", pays_cible)
+            .eq("cible", cible)
+            .execute()
+            .data
+        )
+    except Exception as e:
+        logger.error(f"[Guard] Erreur lecture articles ({pays_cible}/{cible}) : {e}")
+        return False, ""  # En cas d'erreur, on laisse passer
+
+    mots_signal = _mots_cles(titre_signal)
+
+    for art in existants:
+        # Critère 1 : même URL source
+        sources = art.get("sources_json") or {}
+        if url_signal and sources.get("url_origine") == url_signal:
+            return True, f"URL source identique ({url_signal[:70]})"
+
+        # Critère 2 : titre trop similaire
+        score = _jaccard(mots_signal, _mots_cles(art.get("titre_provisoire", "")))
+        if score >= seuil_titre:
+            return True, (
+                f"Titre similaire (Jaccard={score:.2f}) : "
+                f"'{art['titre_provisoire'][:60]}'"
+            )
+
+    return False, ""
+
+
 async def generer_article(
     item: dict,
     source: dict,
@@ -416,8 +495,9 @@ async def generer_article(
     Les faits extraits sont partagés (calculés une seule fois en amont).
     cible : "particulier" ou "pro" (jamais "mixte" — celui-là explose en 2 appels en amont).
     Retourne le dict de l'article, ou None en cas d'échec.
+    ✅ PROTECTION : SafeAgent wrapper (timeout 5 min, max 5 itérations)
     """
-    client = anthropic.Anthropic(api_key=settings.anthropic_api_key)
+    agent = get_redaction_agent(api_key=settings.anthropic_api_key)
     cible = cible if cible in ("particulier", "pro") else "pro"
     segment = "B2B" if cible == "pro" else "Particulier"
     public = (
@@ -452,36 +532,27 @@ async def generer_article(
             public_cible=public,
         )
 
-    try:
-        message = client.messages.create(
-            model="claude-sonnet-4-6",
-            max_tokens=2800,
-            tools=[TOOL_ARTICLE],
-            tool_choice={"type": "any"},
-            messages=[{"role": "user", "content": prompt}],
-        )
+    result = agent.call(
+        messages=[{"role": "user", "content": prompt}],
+        tools=[TOOL_ARTICLE],
+        max_tokens=2800
+    )
 
-        tool_block = next(
-            (b for b in message.content if b.type == "tool_use"),
-            None,
-        )
-        if not tool_block:
-            logger.warning(f"[AgentRédaction] Aucun tool_use dans la réponse Sonnet ({pays_cible})")
-            return None
-
-        data = tool_block.input
-        data["_segment_detecte"] = segment
-        data["_faits_extraits"] = faits_extraits
-        data["_pays_cible"] = pays_cible
-        data["_cible"] = cible
-        return data
-
-    except anthropic.APIError as e:
-        logger.error(f"[AgentRédaction] Erreur API Anthropic Sonnet ({pays_cible}) : {e}")
+    if not result['success']:
+        logger.error(f"[AgentRédaction] Erreur agent Sonnet ({pays_cible}) : {result['error_type']}")
         return None
-    except Exception as e:
-        logger.error(f"[AgentRédaction] Erreur inattendue ({pays_cible}) : {e}")
+
+    tool_use = result.get('tool_use')
+    if not tool_use:
+        logger.warning(f"[AgentRédaction] Aucun tool_use dans la réponse Sonnet ({pays_cible})")
         return None
+
+    data = tool_use.input
+    data["_segment_detecte"] = segment
+    data["_faits_extraits"] = faits_extraits
+    data["_pays_cible"] = pays_cible
+    data["_cible"] = cible
+    return data
 
 
 async def generer_declinaisons(item: dict, source: dict) -> list[dict]:
@@ -525,8 +596,19 @@ async def generer_declinaisons(item: dict, source: dict) -> list[dict]:
     # ── Étape 2 : rédaction originale par (pays × cible) ──
     articles = []
     total_attendu = len(pays_cibles) * len(cibles_a_generer)
+    supabase = get_supabase()
+    titre_signal = item.get("titre", "")
+    url_signal = item.get("url_origine", "")
+
     for pays in pays_cibles:
         for c in cibles_a_generer:
+            # ── Guard anti-doublon (0 token) ──────────────────────────────
+            doublon, raison = _doublon_detecte(supabase, titre_signal, url_signal, pays, c)
+            if doublon:
+                logger.info(f"[Guard] Skip {pays}/{c} — {raison}")
+                continue
+            # ──────────────────────────────────────────────────────────────
+
             logger.info(
                 f"[AgentRédaction] Génération {pays}/{c} : {item.get('titre', '')[:50]}"
             )

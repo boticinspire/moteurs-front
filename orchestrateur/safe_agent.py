@@ -151,15 +151,20 @@ class SafeAgent:
                     f"Max iterations ({self.max_iterations}) atteint"
                 )
 
-        # Extraire le texte final
+        # Extraire le texte final et/ou tool_use
         final_text = ""
+        tool_use_block = None
         for block in response.content:
             if hasattr(block, 'text'):
                 final_text += block.text
+            if hasattr(block, 'type') and block.type == "tool_use":
+                tool_use_block = block
 
         return {
             'success': True,
             'content': final_text,
+            'tool_use': tool_use_block,
+            'response': response,
             'iterations': self.iteration_count,
             'stop_reason': response.stop_reason,
             'error_type': None
