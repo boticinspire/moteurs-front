@@ -32,6 +32,7 @@ import {
 export interface UserContextValue {
   context: UserContext
   isReady: boolean
+  isBootstrapped: boolean  // true after getSession() resolves (session definitively known)
   userId: string | null
   userEmail: string | null
 
@@ -63,6 +64,7 @@ export default function UserContextProvider({ children }: { children: ReactNode 
   const [context, setContextState] = useState<UserContext>({})
   const [isReady, setIsReady] = useState(false)
   const [userId, setUserId] = useState<string | null>(null)
+  const [isBootstrapped, setIsBootstrapped] = useState(false)
   const [userEmail, setUserEmail] = useState<string | null>(null)
 
   const userIdRef = useRef<string | null>(null)
@@ -176,6 +178,7 @@ export default function UserContextProvider({ children }: { children: ReactNode 
         const { data: { session } } = await supabase.auth.getSession()
         if (flag.v) return
         await hydrateFromSession(session, flag)
+        if (!flag.v) setIsBootstrapped(true)
       } catch (e) {
         console.warn('[auth] bootstrap failed:', e)
       }
@@ -238,6 +241,7 @@ export default function UserContextProvider({ children }: { children: ReactNode 
   const value: UserContextValue = {
     context,
     isReady,
+    isBootstrapped,
     userId,
     userEmail,
     updateVoiture,

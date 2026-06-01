@@ -1811,7 +1811,7 @@ function runCalculator(root: HTMLElement): () => void {
 // Composant : gate auth + barre de partage + outil.
 // ─────────────────────────────────────────────────────────────────────────────
 export default function RechargeDomicileContent() {
-  const { isReady, userId } = useUserContext()
+  const { isReady, isBootstrapped, userId } = useUserContext()
   const pathname = usePathname()
   const locale = useLocale()
   const [mounted, setMounted] = useState(false)
@@ -1858,7 +1858,7 @@ export default function RechargeDomicileContent() {
     }
   }
 
-  if (!mounted || !isReady) {
+  if (!mounted || !isReady || !isBootstrapped) {
     return <div style={{ minHeight: '60vh' }} />
   }
 
