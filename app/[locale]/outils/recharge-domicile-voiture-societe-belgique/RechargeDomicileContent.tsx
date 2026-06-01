@@ -142,8 +142,8 @@ const TOOL_HTML = `
       <span class="chip">2 sources min. par chiffre</span>
       <span class="chip">Réservé aux membres · partageable</span>
     </div>
-    <h1>Recharge à domicile d'une voiture de société : quel montant est imposable&nbsp;?</h1>
-    <p class="lede">Simulez le traitement fiscal du <b>remboursement par l'employeur des frais d'électricité</b> pour la recharge à domicile, dans le chef du travailleur ou du dirigeant — selon la circulaire <b>2024/C/77</b> et le barème CREG trimestriel.</p>
+    <h1>Recharge électrique payée par l'employeur : quel montant est imposable&nbsp;? (Belgique)</h1>
+    <p class="lede">Calculez l'<b>avantage de toute nature (ATN)</b> lié à l'électricité <b>fournie ou remboursée par l'employeur</b> pour recharger un véhicule — <b>voiture de société ou voiture privée du travailleur</b>, <b>à domicile ou en borne publique</b>. Calcul selon la circulaire <b>2024/C/77</b> ; le <b>barème CREG</b> trimestriel ne s'applique qu'à la recharge <b>à domicile d'une voiture de société</b>.</p>
   </header>
 
   <div class="grid">
@@ -153,7 +153,7 @@ const TOOL_HTML = `
 
         <div class="field">
           <span class="flabel">1. Nature de l'arrangement
-            <span class="hint">« Fourniture gratuite » = électricité facturée au nom de l'employeur. « Remboursement » = facturée au nom du travailleur, puis remboursée (points 3-7).</span>
+            <span class="hint">« Fourniture gratuite » = électricité facturée au nom de l'employeur — <b>y compris une carte/un badge de recharge fourni par l'employeur, même sur borne publique</b> (comme une carte carburant) : aucun ATN distinct. « Remboursement » = le travailleur paie puis est remboursé (points 3-7).</span>
           </span>
           <div class="seg" id="arrangement">
             <label><input type="radio" name="arr" value="remb" checked><span class="opt">Remboursement</span></label>
@@ -171,10 +171,15 @@ const TOOL_HTML = `
           </div>
 
           <div class="field">
-            <span class="flabel">3. Lieu de recharge</span>
+            <span class="flabel">3. Lieu de recharge
+              <span class="hint">Sur borne publique avec une carte au nom de l'employeur, choisissez plutôt « Fourniture gratuite » ci-dessus : pas d'ATN. Cette section « Remboursement » vise le cas où le travailleur paie lui-même.</span>
+            </span>
             <div class="seg" id="lieu">
               <label><input type="radio" name="lieu" value="domicile" checked><span class="opt">À domicile</span></label>
               <label><input type="radio" name="lieu" value="publique"><span class="opt">Borne publique</span></label>
+            </div>
+            <div class="cond note-inline" id="publiqueNote" style="border-left-color:var(--warn)">
+              <b>Borne publique payée par le travailleur.</b> Le barème CREG ne s'applique pas (il ne vise que la recharge à domicile). Le remboursement est ici évalué selon la nature des trajets ci-dessous ; certains conseillers le traitent toutefois comme un ATN intégralement imposable. À valider avec votre conseiller fiscal.
             </div>
           </div>
 
@@ -460,6 +465,7 @@ function runCalculator(root: HTMLElement): () => void {
   function refreshVisibility() {
     const arr = val('arr'); $('rembBlock').style.display = arr === 'fourn' ? 'none' : 'block'
     const veh = val('veh'), lieu = val('lieu')
+    $('publiqueNote').classList.toggle('show', arr === 'remb' && lieu === 'publique')
     const exceptionEligible = (veh === 'societe' && lieu === 'domicile')
     $('condBlock').classList.toggle('show', exceptionEligible)
     const comm = exceptionEligible ? val('comm') === 'oui' : false, policy = exceptionEligible ? val('policy') === 'oui' : false
