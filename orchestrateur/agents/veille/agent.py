@@ -1,4 +1,3 @@
-import anthropic
 import logging
 import re
 from datetime import datetime
@@ -6,6 +5,7 @@ from datetime import datetime
 from config import get_settings
 from database import get_supabase
 from agents.veille.scraper import scrape_source
+from safe_agent import get_veille_agent
 
 logger = logging.getLogger(__name__)
 settings = get_settings()
@@ -37,9 +37,12 @@ Réponds UNIQUEMENT en JSON avec ce format :
 
 
 async def analyser_avec_claude(contenu: dict, source: dict) -> dict:
-    """Envoie le contenu à Claude pour analyse et scoring."""
+    """
+    Envoie le contenu à Claude pour analyse et scoring.
+    ✅ PROTECTION : SafeAgent wrapper (timeout 10 min, max 10 itérations)
+    """
     import json
-    client = anthropic.Anthropic(api_key=settings.anthropic_api_key)
+    agent = get_veille_agent(api_key=settings.anthropic_api_key)
 
     prompt = PROMPT_ANALYSE.format(
         source_nom=source["nom"],
@@ -48,27 +51,25 @@ async def analyser_avec_claude(contenu: dict, source: dict) -> dict:
         contenu=contenu["contenu_brut"][:4000],
     )
 
+    result = agent.call(
+        messages=[{"role": "user", "content": prompt}],
+        max_tokens=512
+    )
+
+    if not result['success']:
+        logger.error(f"[AgentVeille] Erreur agent : {result['error_type']} — {result['content']}")
+        return {"pertinent": False, "pertinence_score": 0.0}
+
+    texte = result['content'].strip()
     try:
-        message = client.messages.create(
-            model="claude-haiku-4-5-20251001",
-            max_tokens=512,
-            messages=[{"role": "user", "content": prompt}],
-        )
-        texte = message.content[0].text.strip()
         # Extraction robuste : Claude ajoute parfois du texte autour du JSON
         match = re.search(r'\{.*\}', texte, re.DOTALL)
         if not match:
             logger.warning("[AgentVeille] Réponse Claude sans JSON détectable")
             return {"pertinent": False, "pertinence_score": 0.0}
         return json.loads(match.group())
-    except anthropic.BadRequestError as e:
-        logger.error(f"[AgentVeille] Crédits Anthropic insuffisants : {e}")
-        return {"pertinent": False, "pertinence_score": 0.0, "erreur": "credits"}
-    except anthropic.APIError as e:
-        logger.error(f"[AgentVeille] Erreur API Anthropic : {e}")
-        return {"pertinent": False, "pertinence_score": 0.0}
-    except Exception as e:
-        logger.error(f"[AgentVeille] Erreur inattendue Claude : {e}")
+    except json.JSONDecodeError as e:
+        logger.error(f"[AgentVeille] Erreur parsing JSON : {e}")
         return {"pertinent": False, "pertinence_score": 0.0}
 
 

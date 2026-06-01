@@ -11,6 +11,7 @@ Pipeline :
   5. Scheduler : 1x/jour à 06h30 Paris (avant le cycle Veille de 07h)
 
 Modèle : Claude Haiku pour l'analyse du changement (résumé du delta)
+Protection : SafeAgent wrapper — timeout 5 min, max 5 itérations
 """
 
 import hashlib
@@ -19,11 +20,11 @@ import re
 from datetime import datetime, timezone
 from typing import Optional
 
-import anthropic
 import httpx
 
 from config import get_settings
 from database import get_supabase
+from safe_agent import get_alerte_gov_agent
 
 logger = logging.getLogger(__name__)
 settings = get_settings()
@@ -136,14 +137,15 @@ def _empreinte(texte: str) -> str:
     return hashlib.sha256(normalise.encode()).hexdigest()
 
 
-# ── Analyse du delta via Claude Haiku ────────────────────────────────────────
+# ── Analyse du delta via Claude Haiku avec SafeAgent ─────────────────────────
 
 def _analyser_delta(source: dict, ancien_texte: str, nouveau_texte: str) -> str:
     """
     Demande à Claude Haiku de résumer les changements entre deux versions de texte.
     Retourne un résumé court (2-4 phrases) du delta détecté.
+    ✅ PROTECTION : SafeAgent wrapper (timeout 5 min, max 5 itérations)
     """
-    client = anthropic.Anthropic(api_key=settings.anthropic_api_key)
+    agent = get_alerte_gov_agent(api_key=settings.anthropic_api_key)
 
     prompt = f"""Tu analyses deux versions d'une page officielle sur les aides aux véhicules propres.
 
@@ -158,16 +160,18 @@ VERSION ACTUELLE (extrait) :
 
 Identifie les changements significatifs : montants modifiés, conditions nouvelles, suppression ou création d'aides, nouvelles dates. Résume en 2-4 phrases courtes et factuelles. Si le changement semble mineur (style, navigation), indique "Changement non substantiel". Réponds en français."""
 
-    try:
-        resp = client.messages.create(
-            model="claude-haiku-4-5-20251001",
-            max_tokens=200,
-            messages=[{"role": "user", "content": prompt}],
+    result = agent.call(
+        messages=[{"role": "user", "content": prompt}],
+        max_tokens=200
+    )
+
+    if result['success']:
+        return result['content'].strip()
+    else:
+        logger.error(
+            f"[AlerteGov] Erreur agent analyse delta : {result['error_type']} — {result['content']}"
         )
-        return resp.content[0].text.strip()
-    except Exception as e:
-        logger.error(f"[AlerteGov] Erreur Haiku analyse delta : {e}")
-        return "Analyse du changement indisponible."
+        return "Analyse du changement indisponible (timeout ou erreur API)."
 
 
 # ── Gestion Supabase ──────────────────────────────────────────────────────────
