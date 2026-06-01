@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useRef, useState } from 'react'
+import { useLocale } from 'next-intl'
 import { Link, usePathname } from '@/i18n/navigation'
 import { useUserContext } from '@/context/UserContextProvider'
 
@@ -364,6 +365,1162 @@ const TOOL_HTML = `
 `
 
 // ─────────────────────────────────────────────────────────────────────────────
+// HTML markup — versions localisées (EN / NL / DE)
+// Extraites des fichiers de traduction D:\Moteurs.com\Design\atn
+// ─────────────────────────────────────────────────────────────────────────────
+const TOOL_HTML_EN = `
+  <div class="wrap">
+
+    <nav class="crumb" aria-label="Breadcrumb">
+      <a href="https://moteurs.com/">Home</a><span>›</span>
+      <a href="https://moteurs.com/outils">Tools</a><span>›</span>
+      <a href="https://moteurs.com/recharge-electrique">Charging</a><span>›</span>
+      Home charging · company car (BE)
+    </nav>
+
+    <header class="head">
+      <div class="meta-row">
+        <span class="chip pays">🇧🇪 Belgium</span>
+        <span class="chip maj">Updated June 1, 2026</span>
+        <span class="chip">2 sources min. per figure</span>
+        <span class="chip">Free · no registration</span>
+      </div>
+      <h1>Home charging of a company car: what amount is taxable&nbsp;?</h1>
+      <p class="lede">Simulate the tax treatment of the <b>employer reimbursement of electricity costs</b> for home charging, for the employee or executive — based on circular <b>2024/C/77</b> and the quarterly CREG rate schedule.</p>
+    </header>
+
+    <div class="grid">
+      <!-- ============== FORMULAIRE ============== -->
+      <section class="card" aria-label="Your details">
+        <div class="card-h"><h2>Your details</h2><p>The calculation updates in real time.</p></div>
+        <div class="card-b">
+
+          <div class="field">
+            <span class="flabel">1. Type of arrangement
+              <span class="hint">"Free supply" = electricity invoiced in the employer's name. "Reimbursement" = invoiced in the employee's name, then reimbursed (points 3-7).</span>
+            </span>
+            <div class="seg" id="arrangement">
+              <label><input type="radio" name="arr" value="remb" checked><span class="opt">Reimbursement</span></label>
+              <label><input type="radio" name="arr" value="fourn"><span class="opt">Free supply</span></label>
+            </div>
+          </div>
+
+          <div id="rembBlock">
+            <div class="field">
+              <span class="flabel">2. Vehicle charged</span>
+              <div class="seg" id="vehicule">
+                <label><input type="radio" name="veh" value="societe" checked><span class="opt">Company car (elec./hybrid)</span></label>
+                <label><input type="radio" name="veh" value="privee"><span class="opt">Private vehicle</span></label>
+              </div>
+            </div>
+
+            <div class="field">
+              <span class="flabel">3. Charging location</span>
+              <div class="seg" id="lieu">
+                <label><input type="radio" name="lieu" value="domicile" checked><span class="opt">At home</span></label>
+                <label><input type="radio" name="lieu" value="publique"><span class="opt">Public charging station</span></label>
+              </div>
+            </div>
+
+            <div class="cond" id="condBlock">
+              <fieldset>
+                <legend>Conditions for the exemption (points 14-21)</legend>
+                <div class="field" style="margin-top:8px">
+                  <span class="flabel">Charging station / charger equipped with a communication system transmitting consumption data to the employer&nbsp;?
+                    <span class="hint">Employer-owned charger or private charger — as long as it communicates consumption in a verifiable way.</span>
+                  </span>
+                  <div class="seg" id="comm">
+                    <label><input type="radio" name="comm" value="oui" checked><span class="opt">Yes</span></label>
+                    <label><input type="radio" name="comm" value="non"><span class="opt">No</span></label>
+                  </div>
+                </div>
+                <div class="field">
+                  <span class="flabel">Does the car policy provide for reimbursement of charged electricity&nbsp;?</span>
+                  <div class="seg" id="policy">
+                    <label><input type="radio" name="policy" value="oui" checked><span class="opt">Yes</span></label>
+                    <label><input type="radio" name="policy" value="non"><span class="opt">No</span></label>
+                  </div>
+                </div>
+                <div class="field">
+                  <span class="flabel">Reimbursement basis
+                    <span class="hint">"Actual costs" = supported by invoice (case where a charging station provider invoices the consumption, which the employer reimburses). "Flat rate" = fixed amount per kWh set by the employer.</span>
+                  </span>
+                  <div class="seg" id="base">
+                    <label><input type="radio" name="base" value="forfait" checked><span class="opt">Flat rate per kWh</span></label>
+                    <label><input type="radio" name="base" value="reel"><span class="opt">Actual costs (invoice)</span></label>
+                  </div>
+                  <p class="note-inline" id="baseNote" style="display:none">Actual costs supported by evidence: the CREG ceiling does not apply. Make sure the invoice covers <b>only the electricity for the vehicle</b> — the subscription / charger management fees are excluded.</p>
+                </div>
+              </fieldset>
+            </div>
+
+            <div class="field">
+              <span class="flabel">4. Home region &amp; consumption quarter</span>
+              <div class="row2">
+                <select id="region" aria-label="Region">
+                  <option value="fl">Flemish Region</option>
+                  <option value="bxl">Brussels-Capital Region</option>
+                  <option value="wal">Walloon Region</option>
+                  <option value="unique">Flat rate (lowest)</option>
+                </select>
+                <select id="quarter" aria-label="Quarter"></select>
+              </div>
+              <div class="creg">
+                <span class="cl">Applicable CREG ceiling (maximum fixed amount)</span>
+                <span class="cv" id="cregVal">—</span>
+              </div>
+            </div>
+
+            <div class="field">
+              <span class="flabel">5. Electricity charged for the vehicle, over the period</span>
+              <div class="isuf"><input type="number" id="kwh" min="0" step="1" placeholder="e.g. 600" value="600"><span class="suf">kWh</span></div>
+            </div>
+
+            <div class="field">
+              <span class="flabel">6. Employer reimbursement</span>
+              <div class="seg" id="method" style="margin-bottom:10px">
+                <label><input type="radio" name="meth" value="rate" checked><span class="opt">Rate c€/kWh</span></label>
+                <label><input type="radio" name="meth" value="total"><span class="opt">Total amount €</span></label>
+              </div>
+              <div id="rateWrap" class="isuf"><input type="number" id="rate" min="0" step="0.01" placeholder="e.g. 28.22" value="28.22"><span class="suf">c€/kWh</span></div>
+              <div id="totalWrap" class="isuf" style="display:none"><input type="number" id="total" min="0" step="0.01" placeholder="e.g. 169.32"><span class="suf">€</span></div>
+              <button class="mini-link" type="button" id="fillCreg">↧ Use CREG ceiling as rate</button>
+            </div>
+
+            <div class="field cond" id="subWrap">
+              <span class="flabel">7. Subscription / charger management on the invoice
+                <span class="hint">Amount invoiced by the charging station provider <b>excluding</b> vehicle electricity (subscription, management fees / CPO). Enter it here to keep it separate — it is not included in the electricity reimbursement.</span>
+              </span>
+              <div class="isuf"><input type="number" id="subFee" min="0" step="0.01" placeholder="e.g. 12.00" value="0"><span class="suf">€</span></div>
+            </div>
+
+            <div class="cond" id="splitBlock">
+              <fieldset>
+                <legend>Breakdown by journey type</legend>
+                <p class="note-inline" style="margin-top:0">When the exemption does not apply, taxation depends on the nature of the trip (points 9-12). Indicate the share of each use (%).</p>
+                <div class="field" style="margin-top:14px">
+                  <div class="row2">
+                    <div class="isuf"><label class="hint" style="margin-bottom:4px;display:block">Professional</label><input type="number" id="pProf" min="0" max="100" step="1" value="0"><span class="suf" style="top:auto;bottom:11px;transform:none">%</span></div>
+                    <div class="isuf"><label class="hint" style="margin-bottom:4px;display:block">Home ↔ work</label><input type="number" id="pCommute" min="0" max="100" step="1" value="0"><span class="suf" style="top:auto;bottom:11px;transform:none">%</span></div>
+                  </div>
+                  <div class="isuf" style="margin-top:10px"><label class="hint" style="margin-bottom:4px;display:block">Private</label><input type="number" id="pPriv" min="0" max="100" step="1" value="100" readonly style="opacity:.7"><span class="suf" style="top:auto;bottom:11px;transform:none">%</span></div>
+                </div>
+                <div class="field" id="commuteOpts">
+                  <span class="flabel">Employee's professional expenses</span>
+                  <div class="seg" id="expense">
+                    <label><input type="radio" name="exp" value="forfait" checked><span class="opt">Standard flat rate</span></label>
+                    <label><input type="radio" name="exp" value="reels"><span class="opt">Actual (supported by evidence)</span></label>
+                  </div>
+                  <div class="isuf" style="margin-top:12px"><label class="hint" style="margin-bottom:4px;display:block">Annual "commuting expenses" exemption available
+                    <span class="hint">€490 for tax year 2025 (base €250) — amount indexed each year, overall ceiling for all employer contributions.</span></label>
+                    <input type="number" id="exoneration" min="0" step="1" value="490"><span class="suf">€</span></div>
+                </div>
+              </fieldset>
+            </div>
+
+            <div class="cond" id="borneBlock">
+              <fieldset>
+                <legend>Charger transfer (points 37-38)</legend>
+                <div class="field" style="margin-top:8px">
+                  <span class="flabel">At the end of the provision period, is the charging station installed by the employer transferred to you free of charge&nbsp;?</span>
+                  <div class="seg" id="transfert">
+                    <label><input type="radio" name="trf" value="non" checked><span class="opt">No</span></label>
+                    <label><input type="radio" name="trf" value="oui"><span class="opt">Yes</span></label>
+                  </div>
+                  <div class="cond isuf" id="borneValWrap" style="margin-top:12px"><label class="hint" style="margin-bottom:4px;display:block">Fair market value of the charger at the time of transfer</label><input type="number" id="borneVal" min="0" step="1" value="0"><span class="suf">€</span></div>
+                </div>
+              </fieldset>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============== RÉSULTAT ============== -->
+      <section class="card" aria-label="Result" aria-live="polite">
+        <div class="sticky"><div class="card-b">
+          <div class="r-label">Taxable benefit in kind</div>
+          <div class="r-amount" id="atnAmount">0.00 €</div>
+          <span class="badge ok" id="statusBadge"><span class="bd"></span> Not taxable</span>
+          <div class="bdown" id="breakdown"></div>
+          <div class="explain"><h3>How this amount is calculated</h3><ol id="steps"></ol></div>
+        </div></div>
+      </section>
+    </div>
+
+    <!-- ============== BARÈME CREG ============== -->
+    <section class="ref">
+      <h2>CREG rate schedule — maximum fixed amount per kWh</h2>
+      <p class="lede">Non-taxable reimbursement ceiling, by region and by quarter. Confidence level shown per row.</p>
+      <div class="tscroll">
+        <table>
+          <thead><tr><th>Quarter</th><th>Flanders</th><th>Brussels-Cap.</th><th>Wallonia</th><th>Source</th><th>Confidence</th></tr></thead>
+          <tbody id="cregTable"></tbody>
+        </table>
+      </div>
+      <p class="ann">Values in euro cents / kWh. <b>HIGH</b> = amount taken from an official circular (Fisconet). <b>MEDIUM</b> = amount communicated by social secretariats based on the CREG rate, pending confirmation of official publication.</p>
+    </section>
+
+    <div class="disc">
+      <b>Warning.</b> Estimation tool for informational purposes only, based on circular 2024/C/77 and its addenda — applicable country: <b>Belgium</b>. It does not constitute tax advice, an administrative decision, or personalised financial advice. The definitive qualification (proof of the employer's own expenses, justification of actual costs, meter accuracy, indexed exemption ceiling, etc.) depends on the specific facts of each case. In case of doubt: social secretariat, tax adviser or FPS Finance.
+    </div>
+
+    <section class="sources">
+      <h3>Official sources</h3>
+      <ul>
+        <li>FPS Finance — Circular 2024/C/77 of 05.12.2024 (Fisconet)</li>
+        <li>Addenda: 2025/C/14 (Q2 2025) · 2025/C/38 (Q3 2025, permanent application) · 2025/C/60 (Q4 2025) · 2025/C/72 (Q1 2026) · 2026/C/44 (Q2 2026)</li>
+        <li>CREG rate: <a href="https://www.creg.be/fr/consommateurs/prix-et-tarifs/tarif-creg-pour-le-remboursement-de-la-recharge-a-domicile-des" target="_blank" rel="noopener">creg.be</a></li>
+      </ul>
+    </section>
+
+  </div>
+`
+
+const TOOL_HTML_NL = `
+  <div class="wrap">
+
+    <nav class="crumb" aria-label="Broodkruimel">
+      <a href="https://moteurs.com/">Startpagina</a><span>›</span>
+      <a href="https://moteurs.com/outils">Tools</a><span>›</span>
+      <a href="https://moteurs.com/recharge-electrique">Opladen</a><span>›</span>
+      Thuisladen · bedrijfswagen (BE)
+    </nav>
+
+    <header class="head">
+      <div class="meta-row">
+        <span class="chip pays">🇧🇪 België</span>
+        <span class="chip maj">Bijgewerkt op 1 juni 2026</span>
+        <span class="chip">2 bronnen min. per cijfer</span>
+        <span class="chip">Gratis · zonder registratie</span>
+      </div>
+      <h1>Thuisladen van een bedrijfswagen: welk bedrag is belastbaar&nbsp;?</h1>
+      <p class="lede">Simuleer de fiscale behandeling van de <b>terugbetaling door de werkgever van de elektriciteitskosten</b> voor thuisladen, in hoofde van de werknemer of de bedrijfsleider — volgens circulaire <b>2024/C/77</b> en het kwartaallijkse CREG-tarief.</p>
+    </header>
+
+    <div class="grid">
+      <!-- ============== FORMULAIRE ============== -->
+      <section class="card" aria-label="Uw gegevens">
+        <div class="card-h"><h2>Uw gegevens</h2><p>De berekening wordt in realtime bijgewerkt.</p></div>
+        <div class="card-b">
+
+          <div class="field">
+            <span class="flabel">1. Aard van de regeling
+              <span class="hint">« Gratis verstrekking » = elektriciteit gefactureerd op naam van de werkgever. « Terugbetaling » = gefactureerd op naam van de werknemer, daarna terugbetaald (punten 3-7).</span>
+            </span>
+            <div class="seg" id="arrangement">
+              <label><input type="radio" name="arr" value="remb" checked><span class="opt">Terugbetaling</span></label>
+              <label><input type="radio" name="arr" value="fourn"><span class="opt">Gratis verstrekking</span></label>
+            </div>
+          </div>
+
+          <div id="rembBlock">
+            <div class="field">
+              <span class="flabel">2. Opgeladen voertuig</span>
+              <div class="seg" id="vehicule">
+                <label><input type="radio" name="veh" value="societe" checked><span class="opt">Bedrijfswagen (elec./hybr.)</span></label>
+                <label><input type="radio" name="veh" value="privee"><span class="opt">Privéwagen</span></label>
+              </div>
+            </div>
+
+            <div class="field">
+              <span class="flabel">3. Laadlocatie</span>
+              <div class="seg" id="lieu">
+                <label><input type="radio" name="lieu" value="domicile" checked><span class="opt">Thuis</span></label>
+                <label><input type="radio" name="lieu" value="publique"><span class="opt">Openbare laadpaal</span></label>
+              </div>
+            </div>
+
+            <div class="cond" id="condBlock">
+              <fieldset>
+                <legend>Voorwaarden voor de uitzondering (punten 14-21)</legend>
+                <div class="field" style="margin-top:8px">
+                  <span class="flabel">Laadpaal / lader uitgerust met een communicatiesysteem dat het verbruik doorgeeft aan de werkgever&nbsp;?
+                    <span class="hint">Laadpaal van de werkgever of privélaadpaal — zolang het verbruik op controleerbare wijze wordt doorgegeven.</span>
+                  </span>
+                  <div class="seg" id="comm">
+                    <label><input type="radio" name="comm" value="oui" checked><span class="opt">Ja</span></label>
+                    <label><input type="radio" name="comm" value="non"><span class="opt">Nee</span></label>
+                  </div>
+                </div>
+                <div class="field">
+                  <span class="flabel">Voorziet de « car policy » in de terugbetaling van de opgeladen elektriciteit&nbsp;?</span>
+                  <div class="seg" id="policy">
+                    <label><input type="radio" name="policy" value="oui" checked><span class="opt">Ja</span></label>
+                    <label><input type="radio" name="policy" value="non"><span class="opt">Nee</span></label>
+                  </div>
+                </div>
+                <div class="field">
+                  <span class="flabel">Basis van de terugbetaling
+                    <span class="hint">« Werkelijke kosten » = op basis van factuur (geval waarbij een laadpaalbedrijf het verbruik aan u factureert, dat de werkgever terugbetaalt). « Forfait » = vast bedrag per kWh bepaald door de werkgever.</span>
+                  </span>
+                  <div class="seg" id="base">
+                    <label><input type="radio" name="base" value="forfait" checked><span class="opt">Forfait per kWh</span></label>
+                    <label><input type="radio" name="base" value="reel"><span class="opt">Werkelijke kosten (factuur)</span></label>
+                  </div>
+                  <p class="note-inline" id="baseNote" style="display:none">Bewezen werkelijke kosten: het CREG-plafond is niet van toepassing. Zorg ervoor dat de factuur <b>uitsluitend betrekking heeft op de elektriciteit van de wagen</b> — het abonnement / de beheerskosten van de laadpaal zijn hiervan uitgesloten.</p>
+                </div>
+              </fieldset>
+            </div>
+
+            <div class="field">
+              <span class="flabel">4. Gewest van de woonplaats &amp; kwartaal van verbruik</span>
+              <div class="row2">
+                <select id="region" aria-label="Gewest">
+                  <option value="fl">Vlaams Gewest</option>
+                  <option value="bxl">Brussels Hoofdstedelijk Gewest</option>
+                  <option value="wal">Waals Gewest</option>
+                  <option value="unique">Uniek tarief (laagste)</option>
+                </select>
+                <select id="quarter" aria-label="Kwartaal"></select>
+              </div>
+              <div class="creg">
+                <span class="cl">Toepasselijk CREG-plafond (maximaal vast bedrag)</span>
+                <span class="cv" id="cregVal">—</span>
+              </div>
+            </div>
+
+            <div class="field">
+              <span class="flabel">5. Opgeladen elektriciteit voor de wagen, over de periode</span>
+              <div class="isuf"><input type="number" id="kwh" min="0" step="1" placeholder="bv. 600" value="600"><span class="suf">kWh</span></div>
+            </div>
+
+            <div class="field">
+              <span class="flabel">6. Terugbetaling door de werkgever</span>
+              <div class="seg" id="method" style="margin-bottom:10px">
+                <label><input type="radio" name="meth" value="rate" checked><span class="opt">Tarief c€/kWh</span></label>
+                <label><input type="radio" name="meth" value="total"><span class="opt">Totaalbedrag €</span></label>
+              </div>
+              <div id="rateWrap" class="isuf"><input type="number" id="rate" min="0" step="0.01" placeholder="bv. 28.22" value="28.22"><span class="suf">c€/kWh</span></div>
+              <div id="totalWrap" class="isuf" style="display:none"><input type="number" id="total" min="0" step="0.01" placeholder="bv. 169.32"><span class="suf">€</span></div>
+              <button class="mini-link" type="button" id="fillCreg">↧ CREG-plafond als tarief gebruiken</button>
+            </div>
+
+            <div class="field cond" id="subWrap">
+              <span class="flabel">7. Abonnement / laadpaalbeheer op de factuur
+                <span class="hint">Bedrag gefactureerd door het laadpaalbedrijf <b>buiten</b> de elektriciteit van de wagen (abonnement, beheerskosten / CPO). Vul dit hier in om het afzonderlijk te houden — het maakt geen deel uit van de elektriciteitterugbetaling.</span>
+              </span>
+              <div class="isuf"><input type="number" id="subFee" min="0" step="0.01" placeholder="bv. 12.00" value="0"><span class="suf">€</span></div>
+            </div>
+
+            <div class="cond" id="splitBlock">
+              <fieldset>
+                <legend>Verdeling per type traject</legend>
+                <p class="note-inline" style="margin-top:0">Wanneer de uitzondering niet van toepassing is, hangt de belasting af van de aard van de verplaatsing (punten 9-12). Geef het aandeel van elk gebruik aan (%).</p>
+                <div class="field" style="margin-top:14px">
+                  <div class="row2">
+                    <div class="isuf"><label class="hint" style="margin-bottom:4px;display:block">Professioneel</label><input type="number" id="pProf" min="0" max="100" step="1" value="0"><span class="suf" style="top:auto;bottom:11px;transform:none">%</span></div>
+                    <div class="isuf"><label class="hint" style="margin-bottom:4px;display:block">Woon-werkverkeer</label><input type="number" id="pCommute" min="0" max="100" step="1" value="0"><span class="suf" style="top:auto;bottom:11px;transform:none">%</span></div>
+                  </div>
+                  <div class="isuf" style="margin-top:10px"><label class="hint" style="margin-bottom:4px;display:block">Privé</label><input type="number" id="pPriv" min="0" max="100" step="1" value="100" readonly style="opacity:.7"><span class="suf" style="top:auto;bottom:11px;transform:none">%</span></div>
+                </div>
+                <div class="field" id="commuteOpts">
+                  <span class="flabel">Beroepskosten van de werknemer</span>
+                  <div class="seg" id="expense">
+                    <label><input type="radio" name="exp" value="forfait" checked><span class="opt">Forfaitaire kosten</span></label>
+                    <label><input type="radio" name="exp" value="reels"><span class="opt">Werkelijke kosten (bewezen)</span></label>
+                  </div>
+                  <div class="isuf" style="margin-top:12px"><label class="hint" style="margin-bottom:4px;display:block">Beschikbare jaarlijkse vrijstelling « reiskosten »
+                    <span class="hint">490 € voor aanslagjaar 2025 (basis 250 €) — jaarlijks geïndexeerd bedrag, globaal plafond van alle tussenkomsten van de werkgever.</span></label>
+                    <input type="number" id="exoneration" min="0" step="1" value="490"><span class="suf">€</span></div>
+                </div>
+              </fieldset>
+            </div>
+
+            <div class="cond" id="borneBlock">
+              <fieldset>
+                <legend>Overdracht van de laadpaal (punten 37-38)</legend>
+                <div class="field" style="margin-top:8px">
+                  <span class="flabel">Wordt de door de werkgever geïnstalleerde laadpaal u aan het einde van de terbeschikkingstelling gratis overgedragen&nbsp;?</span>
+                  <div class="seg" id="transfert">
+                    <label><input type="radio" name="trf" value="non" checked><span class="opt">Nee</span></label>
+                    <label><input type="radio" name="trf" value="oui"><span class="opt">Ja</span></label>
+                  </div>
+                  <div class="cond isuf" id="borneValWrap" style="margin-top:12px"><label class="hint" style="margin-bottom:4px;display:block">Werkelijke waarde van de laadpaal op het moment van overdracht</label><input type="number" id="borneVal" min="0" step="1" value="0"><span class="suf">€</span></div>
+                </div>
+              </fieldset>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============== RÉSULTAT ============== -->
+      <section class="card" aria-label="Resultaat" aria-live="polite">
+        <div class="sticky"><div class="card-b">
+          <div class="r-label">Belastbaar voordeel van alle aard</div>
+          <div class="r-amount" id="atnAmount">0,00 €</div>
+          <span class="badge ok" id="statusBadge"><span class="bd"></span> Niet belastbaar</span>
+          <div class="bdown" id="breakdown"></div>
+          <div class="explain"><h3>Hoe dit bedrag wordt berekend</h3><ol id="steps"></ol></div>
+        </div></div>
+      </section>
+    </div>
+
+    <!-- ============== BARÈME CREG ============== -->
+    <section class="ref">
+      <h2>CREG-tarief — maximaal vast bedrag per kWh</h2>
+      <p class="lede">Plafond voor niet-belastbare terugbetaling, per gewest en per kwartaal. Betrouwbaarheidsniveau per rij.</p>
+      <div class="tscroll">
+        <table>
+          <thead><tr><th>Kwartaal</th><th>Vlaanderen</th><th>Brussel-Hfdst.</th><th>Wallonië</th><th>Bron</th><th>Betrouwbaarheid</th></tr></thead>
+          <tbody id="cregTable"></tbody>
+        </table>
+      </div>
+      <p class="ann">Waarden in eurocent / kWh. <b>HOOG</b> = bedrag opgenomen in een officiële circulaire (Fisconet). <b>GEMIDDELD</b> = bedrag meegedeeld door de sociale secretariaten op basis van het CREG-tarief, in afwachting van bevestiging van de officiële publicatie.</p>
+    </section>
+
+    <div class="disc">
+      <b>Waarschuwing.</b> Schattingsinstrument ter informatie op basis van circulaire 2024/C/77 en haar addenda — toepasselijk land: <b>België</b>. Het vormt noch een fiscaal advies, noch een beslissing van de administratie, noch een gepersonaliseerd financieel advies. De definitieve kwalificatie (bewijs van eigen kosten van de werkgever, rechtvaardiging van werkelijke kosten, nauwkeurigheid van de teller, geïndexeerd vrijstellingsplafond, enz.) hangt af van de feiten eigen aan elk dossier. Bij twijfel: sociaal secretariaat, fiscaal adviseur of FOD Financiën.
+    </div>
+
+    <section class="sources">
+      <h3>Officiële bronnen</h3>
+      <ul>
+        <li>FOD Financiën — Circulaire 2024/C/77 van 05.12.2024 (Fisconet)</li>
+        <li>Addenda: 2025/C/14 (K2 2025) · 2025/C/38 (K3 2025, permanente toepassing) · 2025/C/60 (K4 2025) · 2025/C/72 (K1 2026) · 2026/C/44 (K2 2026)</li>
+        <li>CREG-tarief: <a href="https://www.creg.be/fr/consommateurs/prix-et-tarifs/tarif-creg-pour-le-remboursement-de-la-recharge-a-domicile-des" target="_blank" rel="noopener">creg.be</a></li>
+      </ul>
+    </section>
+
+  </div>
+`
+
+const TOOL_HTML_DE = `
+  <div class="wrap">
+
+    <nav class="crumb" aria-label="Brotkrumen-Navigation">
+      <a href="https://moteurs.com/">Startseite</a><span>›</span>
+      <a href="https://moteurs.com/outils">Tools</a><span>›</span>
+      <a href="https://moteurs.com/recharge-electrique">Aufladen</a><span>›</span>
+      Heimladen · Firmenwagen (BE)
+    </nav>
+
+    <header class="head">
+      <div class="meta-row">
+        <span class="chip pays">🇧🇪 Belgien</span>
+        <span class="chip maj">Aktualisiert am 1. Juni 2026</span>
+        <span class="chip">2 Quellen min. pro Zahl</span>
+        <span class="chip">Kostenlos · ohne Anmeldung</span>
+      </div>
+      <h1>Heimladen eines Firmenwagens: welcher Betrag ist steuerpflichtig&nbsp;?</h1>
+      <p class="lede">Simulieren Sie die steuerliche Behandlung der <b>Erstattung der Stromkosten durch den Arbeitgeber</b> für das Heimladen, für den Arbeitnehmer oder Geschäftsführer — gemäß Rundschreiben <b>2024/C/77</b> und dem quartalsweisen CREG-Tarif.</p>
+    </header>
+
+    <div class="grid">
+      <!-- ============== FORMULAIRE ============== -->
+      <section class="card" aria-label="Ihre Angaben">
+        <div class="card-h"><h2>Ihre Angaben</h2><p>Die Berechnung wird in Echtzeit aktualisiert.</p></div>
+        <div class="card-b">
+
+          <div class="field">
+            <span class="flabel">1. Art der Vereinbarung
+              <span class="hint">„Kostenlose Bereitstellung" = Strom auf den Namen des Arbeitgebers in Rechnung gestellt. „Erstattung" = auf den Namen des Arbeitnehmers in Rechnung gestellt und anschließend erstattet (Punkte 3-7).</span>
+            </span>
+            <div class="seg" id="arrangement">
+              <label><input type="radio" name="arr" value="remb" checked><span class="opt">Erstattung</span></label>
+              <label><input type="radio" name="arr" value="fourn"><span class="opt">Kostenlose Bereitstellung</span></label>
+            </div>
+          </div>
+
+          <div id="rembBlock">
+            <div class="field">
+              <span class="flabel">2. Aufgeladenes Fahrzeug</span>
+              <div class="seg" id="vehicule">
+                <label><input type="radio" name="veh" value="societe" checked><span class="opt">Firmenwagen (Elektro/Hybrid)</span></label>
+                <label><input type="radio" name="veh" value="privee"><span class="opt">Privatfahrzeug</span></label>
+              </div>
+            </div>
+
+            <div class="field">
+              <span class="flabel">3. Ladeort</span>
+              <div class="seg" id="lieu">
+                <label><input type="radio" name="lieu" value="domicile" checked><span class="opt">Zuhause</span></label>
+                <label><input type="radio" name="lieu" value="publique"><span class="opt">Öffentliche Ladestation</span></label>
+              </div>
+            </div>
+
+            <div class="cond" id="condBlock">
+              <fieldset>
+                <legend>Voraussetzungen der Ausnahme (Punkte 14-21)</legend>
+                <div class="field" style="margin-top:8px">
+                  <span class="flabel">Ladestation / Ladegerät ausgestattet mit einem Kommunikationssystem, das den Verbrauch an den Arbeitgeber übermittelt&nbsp;?
+                    <span class="hint">Ladestation des Arbeitgebers oder private Ladestation — sofern sie den Verbrauch nachweisbar übermittelt.</span>
+                  </span>
+                  <div class="seg" id="comm">
+                    <label><input type="radio" name="comm" value="oui" checked><span class="opt">Ja</span></label>
+                    <label><input type="radio" name="comm" value="non"><span class="opt">Nein</span></label>
+                  </div>
+                </div>
+                <div class="field">
+                  <span class="flabel">Sieht die car policy die Erstattung des aufgeladenen Stroms vor&nbsp;?</span>
+                  <div class="seg" id="policy">
+                    <label><input type="radio" name="policy" value="oui" checked><span class="opt">Ja</span></label>
+                    <label><input type="radio" name="policy" value="non"><span class="opt">Nein</span></label>
+                  </div>
+                </div>
+                <div class="field">
+                  <span class="flabel">Grundlage der Erstattung
+                    <span class="hint">„Tatsächliche Kosten" = belegter Rechnungsnachweis (Fall, in dem eine Ladestation-Gesellschaft Ihnen den Verbrauch in Rechnung stellt, den der Arbeitgeber erstattet). „Pauschale" = fester Betrag pro kWh, vom Arbeitgeber festgelegt.</span>
+                  </span>
+                  <div class="seg" id="base">
+                    <label><input type="radio" name="base" value="forfait" checked><span class="opt">Pauschale pro kWh</span></label>
+                    <label><input type="radio" name="base" value="reel"><span class="opt">Tatsächliche Kosten (Rechnung)</span></label>
+                  </div>
+                  <p class="note-inline" id="baseNote" style="display:none">Belegte tatsächliche Kosten: die CREG-Obergrenze gilt nicht. Achten Sie darauf, dass die Rechnung <b>ausschließlich den Strom für das Fahrzeug</b> ausweist — Abonnement / Verwaltungsgebühren der Ladestation sind ausgeschlossen.</p>
+                </div>
+              </fieldset>
+            </div>
+
+            <div class="field">
+              <span class="flabel">4. Region des Wohnsitzes &amp; Verbrauchsquartal</span>
+              <div class="row2">
+                <select id="region" aria-label="Region">
+                  <option value="fl">Flämische Region</option>
+                  <option value="bxl">Region Brüssel-Hauptstadt</option>
+                  <option value="wal">Wallonische Region</option>
+                  <option value="unique">Einheitstarif (niedrigster)</option>
+                </select>
+                <select id="quarter" aria-label="Quartal"></select>
+              </div>
+              <div class="creg">
+                <span class="cl">Anwendbare CREG-Obergrenze (maximaler Festbetrag)</span>
+                <span class="cv" id="cregVal">—</span>
+              </div>
+            </div>
+
+            <div class="field">
+              <span class="flabel">5. Für das Fahrzeug aufgeladener Strom im Zeitraum</span>
+              <div class="isuf"><input type="number" id="kwh" min="0" step="1" placeholder="z.B. 600" value="600"><span class="suf">kWh</span></div>
+            </div>
+
+            <div class="field">
+              <span class="flabel">6. Erstattung durch den Arbeitgeber</span>
+              <div class="seg" id="method" style="margin-bottom:10px">
+                <label><input type="radio" name="meth" value="rate" checked><span class="opt">Tarif c€/kWh</span></label>
+                <label><input type="radio" name="meth" value="total"><span class="opt">Gesamtbetrag €</span></label>
+              </div>
+              <div id="rateWrap" class="isuf"><input type="number" id="rate" min="0" step="0.01" placeholder="z.B. 28.22" value="28.22"><span class="suf">c€/kWh</span></div>
+              <div id="totalWrap" class="isuf" style="display:none"><input type="number" id="total" min="0" step="0.01" placeholder="z.B. 169.32"><span class="suf">€</span></div>
+              <button class="mini-link" type="button" id="fillCreg">↧ CREG-Obergrenze als Tarif verwenden</button>
+            </div>
+
+            <div class="field cond" id="subWrap">
+              <span class="flabel">7. Abonnement / Ladestationsverwaltung auf der Rechnung
+                <span class="hint">Von der Ladestation-Gesellschaft in Rechnung gestellter Betrag <b>ohne</b> Fahrzeugstrom (Abonnement, Verwaltungs- / CPO-Gebühren). Tragen Sie diesen hier ein, um ihn separat zu halten — er geht nicht in die Stromerstattung ein.</span>
+              </span>
+              <div class="isuf"><input type="number" id="subFee" min="0" step="0.01" placeholder="z.B. 12.00" value="0"><span class="suf">€</span></div>
+            </div>
+
+            <div class="cond" id="splitBlock">
+              <fieldset>
+                <legend>Aufteilung nach Fahrtenart</legend>
+                <p class="note-inline" style="margin-top:0">Wenn die Ausnahme nicht gilt, hängt die Besteuerung von der Art der Fahrt ab (Punkte 9-12). Geben Sie den Anteil jeder Nutzung an (%).</p>
+                <div class="field" style="margin-top:14px">
+                  <div class="row2">
+                    <div class="isuf"><label class="hint" style="margin-bottom:4px;display:block">Beruflich</label><input type="number" id="pProf" min="0" max="100" step="1" value="0"><span class="suf" style="top:auto;bottom:11px;transform:none">%</span></div>
+                    <div class="isuf"><label class="hint" style="margin-bottom:4px;display:block">Wohnung ↔ Arbeit</label><input type="number" id="pCommute" min="0" max="100" step="1" value="0"><span class="suf" style="top:auto;bottom:11px;transform:none">%</span></div>
+                  </div>
+                  <div class="isuf" style="margin-top:10px"><label class="hint" style="margin-bottom:4px;display:block">Privat</label><input type="number" id="pPriv" min="0" max="100" step="1" value="100" readonly style="opacity:.7"><span class="suf" style="top:auto;bottom:11px;transform:none">%</span></div>
+                </div>
+                <div class="field" id="commuteOpts">
+                  <span class="flabel">Berufskosten des Arbeitnehmers</span>
+                  <div class="seg" id="expense">
+                    <label><input type="radio" name="exp" value="forfait" checked><span class="opt">Pauschale Kosten</span></label>
+                    <label><input type="radio" name="exp" value="reels"><span class="opt">Tatsächliche Kosten (belegt)</span></label>
+                  </div>
+                  <div class="isuf" style="margin-top:12px"><label class="hint" style="margin-bottom:4px;display:block">Verfügbare jährliche Steuerbefreiung „Fahrtkosten"
+                    <span class="hint">490 € für das Steuerjahr 2025 (Basis 250 €) — jährlich indexierter Betrag, globale Obergrenze aller Arbeitgeberbeiträge.</span></label>
+                    <input type="number" id="exoneration" min="0" step="1" value="490"><span class="suf">€</span></div>
+                </div>
+              </fieldset>
+            </div>
+
+            <div class="cond" id="borneBlock">
+              <fieldset>
+                <legend>Übertragung der Ladestation (Punkte 37-38)</legend>
+                <div class="field" style="margin-top:8px">
+                  <span class="flabel">Wird Ihnen die vom Arbeitgeber installierte Ladestation am Ende der Bereitstellung kostenlos übertragen&nbsp;?</span>
+                  <div class="seg" id="transfert">
+                    <label><input type="radio" name="trf" value="non" checked><span class="opt">Nein</span></label>
+                    <label><input type="radio" name="trf" value="oui"><span class="opt">Ja</span></label>
+                  </div>
+                  <div class="cond isuf" id="borneValWrap" style="margin-top:12px"><label class="hint" style="margin-bottom:4px;display:block">Tatsächlicher Wert der Ladestation zum Zeitpunkt der Übertragung</label><input type="number" id="borneVal" min="0" step="1" value="0"><span class="suf">€</span></div>
+                </div>
+              </fieldset>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============== RÉSULTAT ============== -->
+      <section class="card" aria-label="Ergebnis" aria-live="polite">
+        <div class="sticky"><div class="card-b">
+          <div class="r-label">Steuerpflichtiger geldwerter Vorteil</div>
+          <div class="r-amount" id="atnAmount">0,00 €</div>
+          <span class="badge ok" id="statusBadge"><span class="bd"></span> Nicht steuerpflichtig</span>
+          <div class="bdown" id="breakdown"></div>
+          <div class="explain"><h3>Wie dieser Betrag ermittelt wird</h3><ol id="steps"></ol></div>
+        </div></div>
+      </section>
+    </div>
+
+    <!-- ============== BARÈME CREG ============== -->
+    <section class="ref">
+      <h2>CREG-Tarif — maximaler Festbetrag pro kWh</h2>
+      <p class="lede">Nicht steuerpflichtige Erstattungsobergrenze, nach Region und Quartal. Vertrauensniveau pro Zeile.</p>
+      <div class="tscroll">
+        <table>
+          <thead><tr><th>Quartal</th><th>Flandern</th><th>Brüssel-Hpst.</th><th>Wallonien</th><th>Quelle</th><th>Vertrauen</th></tr></thead>
+          <tbody id="cregTable"></tbody>
+        </table>
+      </div>
+      <p class="ann">Werte in Eurocent / kWh. <b>HOCH</b> = Betrag aus einem offiziellen Rundschreiben (Fisconet). <b>MITTEL</b> = Betrag, der von Sozialsekretariaten auf Basis des CREG-Tarifs mitgeteilt wurde, ausstehende Bestätigung der offiziellen Veröffentlichung.</p>
+    </section>
+
+    <div class="disc">
+      <b>Hinweis.</b> Schätzungstool zu Informationszwecken auf Grundlage des Rundschreibens 2024/C/77 und seiner Nachträge — anwendbares Land: <b>Belgien</b>. Es stellt weder einen Steuerratschlag, noch eine Verwaltungsentscheidung, noch eine personalisierte Finanzberatung dar. Die endgültige Qualifikation (Nachweis der eigenen Kosten des Arbeitgebers, Begründung der tatsächlichen Kosten, Zählergenauigkeit, indexierte Befreiungsobergrenze usw.) hängt von den Umständen des Einzelfalls ab. Im Zweifelsfall: Sozialsekretariat, Steuerberater oder Belgisches Finanzministerium (SPF Finances).
+    </div>
+
+    <section class="sources">
+      <h3>Offizielle Quellen</h3>
+      <ul>
+        <li>Belgisches Finanzministerium (SPF Finances) — Rundschreiben 2024/C/77 vom 05.12.2024 (Fisconet)</li>
+        <li>Nachträge: 2025/C/14 (Q2 2025) · 2025/C/38 (Q3 2025, dauerhafte Anwendung) · 2025/C/60 (Q4 2025) · 2025/C/72 (Q1 2026) · 2026/C/44 (Q2 2026)</li>
+        <li>CREG-Tarif: <a href="https://www.creg.be/fr/consommateurs/prix-et-tarifs/tarif-creg-pour-le-remboursement-de-la-recharge-a-domicile-des" target="_blank" rel="noopener">creg.be</a></li>
+      </ul>
+    </section>
+
+  </div>
+`
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Scripts calculateur — versions localisées (injectés dynamiquement post-mount)
+// ─────────────────────────────────────────────────────────────────────────────
+const TOOL_SCRIPT_EN = `
+"use strict";
+/* CREG ceilings (euro cents/kWh) — conf: confidence, circ: source */
+const CREG={
+  "2025-T1":{fl:28.22,bxl:32.94,wal:32.56,circ:"2024/C/77",conf:"eleve"},
+  "2025-T2":{fl:31.94,bxl:35.85,wal:36.17,circ:"2025/C/14",conf:"eleve"},
+  "2025-T3":{fl:34.56,bxl:37.87,wal:38.43,circ:"2025/C/38",conf:"eleve"},
+  "2025-T4":{fl:30.70,bxl:33.56,wal:34.57,circ:"2025/C/60",conf:"eleve"},
+  "2026-T1":{fl:31.32,bxl:34.26,wal:35.23,circ:"2025/C/72",conf:"moyen"},
+  "2026-T2":{fl:31.91,bxl:35.55,wal:36.36,circ:"2026/C/44",conf:"eleve"},
+  "2026-T3":{fl:32.22,bxl:37.19,wal:37.83,circ:"addendum",conf:"moyen"}
+};
+const QLABEL={"2025-T1":"Q1 2025","2025-T2":"Q2 2025","2025-T3":"Q3 2025","2025-T4":"Q4 2025","2026-T1":"Q1 2026","2026-T2":"Q2 2026","2026-T3":"Q3 2026"};
+const CONFLABEL={eleve:"HIGH",moyen:"MEDIUM"};
+const $=id=>document.getElementById(id);
+let _aside="";
+const fmtE=v=>v.toLocaleString('en-GB',{minimumFractionDigits:2,maximumFractionDigits:2})+" €";
+const fmtC=v=>v.toLocaleString('en-GB',{minimumFractionDigits:2,maximumFractionDigits:2})+" c€/kWh";
+
+(function init(){
+  const q=$("quarter");
+  Object.keys(CREG).forEach(k=>{const o=document.createElement('option');o.value=k;o.textContent=QLABEL[k];q.appendChild(o);});
+  q.value="2025-T1";
+  const tb=$("cregTable");
+  Object.keys(CREG).forEach(k=>{const c=CREG[k];const tr=document.createElement('tr');
+    tr.innerHTML=\`<td>\${QLABEL[k]}</td><td>\${c.fl.toFixed(2)}</td><td>\${c.bxl.toFixed(2)}</td><td>\${c.wal.toFixed(2)}</td>\`+
+      \`<td class="src-soft">\${c.circ}</td><td><span class="conf \${c.conf}">\${CONFLABEL[c.conf]}</span></td>\`;
+    tb.appendChild(tr);});
+})();
+
+function cregFor(region,quarter){const c=CREG[quarter];return region==="unique"?Math.min(c.fl,c.bxl,c.wal):c[region];}
+const val=name=>document.querySelector(\`input[name="\${name}"]:checked\`).value;
+
+function compute(){
+  _aside="";
+  const arr=val("arr");
+  const region=$("region").value,quarter=$("quarter").value;
+  const cregMax=cregFor(region,quarter);
+  $("cregVal").textContent=fmtC(cregMax);
+
+  if(arr==="fourn"){
+    return render({atn:0,status:"ok",statusTxt:"No separate benefit",
+      rows:[["Separate electricity benefit","0.00 €","free"]],
+      steps:["Electricity is invoiced <b>in the employer's name</b>: <b>free supply</b> (points 3-5).",
+        "It is <b>included in the flat-rate benefit in kind for the vehicle</b> (Art. 36, §2 ITC 92). No additional electricity BIK.",
+        "Only the flat-rate BIK for the 'vehicle' remains taxable — calculated separately."]});
+  }
+
+  const veh=val("veh"),lieu=val("lieu");
+  const kwh=Math.max(0,parseFloat($("kwh").value)||0);
+  const meth=val("meth");
+  let rate,reimb;
+  if(meth==="rate"){rate=Math.max(0,parseFloat($("rate").value)||0);reimb=kwh*rate/100;}
+  else{reimb=Math.max(0,parseFloat($("total").value)||0);rate=kwh>0?reimb/kwh*100:0;}
+
+  let borneAdd=0,borneStep=null;
+  if(val("trf")==="oui"){borneAdd=Math.max(0,parseFloat($("borneVal").value)||0);
+    borneStep=\`<b>Charger transfer</b>: its fair market value (\${fmtE(borneAdd)}) constitutes a separate BIK (points 37-38).\`;}
+
+  const sub=Math.max(0,parseFloat(($("subFee")||{}).value)||0);
+  if(sub>0&&veh==="societe") _aside=\`<div class="aside-note"><b>Subscription / charger management: \${fmtE(sub)}</b> — a separate line item from the electricity reimbursement, <b>not counted</b> in the BIK above. To be qualified according to your car policy (provision of the charger, point 16); have its treatment confirmed by your social secretariat or adviser.</div>\`;
+
+  const exceptionEligible=(veh==="societe"&&lieu==="domicile");
+  const comm=exceptionEligible?val("comm")==="oui":false;
+  const policy=exceptionEligible?val("policy")==="oui":false;
+  const exceptionApplies=exceptionEligible&&comm&&policy;
+
+  if(exceptionApplies){
+    const base=val("base");
+    if(base==="reel"){
+      const atn=borneAdd;
+      const rows=[["Actual electricity costs reimbursed",fmtE(reimb),"free"],["Covered (supported by invoice)","− "+fmtE(reimb),"free"]];
+      if(borneAdd>0)rows.push(["Charger transfer",fmtE(borneAdd),"tax"]);
+      const steps=["Company car + home charging + communicating charger + car policy: <b>the exemption applies</b> (points 13-21).",
+        "Reimbursement based on your <b>actual costs supported by invoice</b> (point 22) → <b>fully covered</b>, like a fuel card. The CREG ceiling only limits the <i>flat-rate</i> method.",
+        "Condition: the invoice must cover <b>only the electricity for the company car</b> (point 14) — excluding subscription / charger management fees.",
+        "Only the flat-rate BIK for the 'vehicle' remains due (calculated separately)."];
+      if(borneStep)steps.push(borneStep);
+      return render({atn,status:atn>0?"warn":"ok",statusTxt:atn>0?"Charger taxable":"Not taxable",rows,steps});
+    }
+    const ceiling=kwh*cregMax/100;
+    if(rate<=cregMax+1e-9){
+      let atn=borneAdd;
+      const rows=[["Electricity reimbursed","0.00 €","free"]];
+      if(borneAdd>0)rows.push(["Charger transfer",fmtE(borneAdd),"tax"]);
+      const steps=["Company car + home charging + communicating charger + car policy: <b>the exemption applies</b> (points 13-21).",
+        \`Rate applied (\${fmtC(rate)}) <b>≤ CREG ceiling</b> (\${fmtC(cregMax)}) → reimbursement <b>fully covered</b>.\`,
+        "Like a fuel card: <b>no additional BIK</b>. Only the flat-rate BIK for the 'vehicle' remains due."];
+      if(borneStep)steps.push(borneStep);
+      return render({atn,status:atn>0?"warn":"ok",statusTxt:atn>0?"Charger taxable":"Not taxable",rows,steps});
+    }else{
+      const excess=reimb-ceiling,atn=excess+borneAdd;
+      const rows=[["Total reimbursement",fmtE(reimb),""],["Covered by CREG ceiling","− "+fmtE(ceiling),"free"],["Excess beyond tolerance",fmtE(excess),"tax"]];
+      if(borneAdd>0)rows.push(["Charger transfer",fmtE(borneAdd),"tax"]);
+      const steps=["The exemption applies, <b>but</b> the flat rate exceeds the CREG ceiling.",
+        \`Rate \${fmtC(rate)} &gt; ceiling \${fmtC(cregMax)}. The "fixed amount" tolerance only applies <b>up to the ceiling</b> (point 24).\`,
+        \`Covered portion: \${fmtE(ceiling)}. <b>Excess: \${fmtE(excess)}</b> → taxable, unless actual higher costs can be justified (point 22).\`];
+      if(borneStep)steps.push(borneStep);
+      return render({atn,status:"warn",statusTxt:"Partially taxable",rows,steps});
+    }
+  }
+
+  const pProf=clampPct($("pProf").value),pCommute=clampPct($("pCommute").value);
+  let pPriv=100-pProf-pCommute;if(pPriv<0)pPriv=0;$("pPriv").value=pPriv;
+  const profAmt=reimb*pProf/100,commuteAmt=reimb*pCommute/100,privAmt=reimb*pPriv/100;
+  const expType=val("exp"),exo=Math.max(0,parseFloat($("exoneration").value)||0);
+  let commuteTax=commuteAmt,commuteNote;
+  if(expType==="forfait"){commuteTax=Math.max(0,commuteAmt-exo);commuteNote=\`exempt up to \${fmtE(exo)} (standard flat rate expenses)\`;}
+  else{commuteNote="actual costs: no €490 exemption applies";}
+  const atn=commuteTax+privAmt+borneAdd;
+
+  const why=veh==="privee"?"Employee's <b>private</b> vehicle":lieu==="publique"?"Charging at a <b>public charging station</b>":"Home charging <b>without all conditions</b> of the exemption";
+  const rows=[["Professional journeys ("+pProf+"%)","0.00 €","free"],["Home ↔ work ("+pCommute+"%)",fmtE(commuteTax),"tax"],["Private journeys ("+pPriv+"%)",fmtE(privAmt),"tax"]];
+  if(borneAdd>0)rows.push(["Charger transfer",fmtE(borneAdd),"tax"]);
+  const steps=[\`\${why} → the exemption does not apply; the <b>nature of the journey</b> governs (points 9-12).\`,
+    \`<b>Professional</b> (\${fmtE(profAmt)}): employer's own expenses → <b>not taxable</b>, subject to dual proof (point 10).\`,
+    \`<b>Home-work</b> (\${fmtE(commuteAmt)}): taxable BIK, \${commuteNote} → <b>\${fmtE(commuteTax)}</b> (point 11).\`,
+    \`<b>Private</b> (\${fmtE(privAmt)}): fully taxable (point 12).\`];
+  if(borneStep)steps.push(borneStep);
+  return render({atn,status:atn>0?"warn":"ok",statusTxt:atn>0?"Taxable":"Not taxable",rows,steps});
+}
+function clampPct(v){v=parseFloat(v)||0;return Math.min(100,Math.max(0,Math.round(v)));}
+
+function render({atn,status,statusTxt,rows,steps}){
+  $("atnAmount").textContent=fmtE(atn);
+  $("atnAmount").style.color=atn>0?"var(--warn)":"var(--accent)";
+  const b=$("statusBadge");b.className="badge "+(status==="warn"?"warn":"ok");b.innerHTML='<span class="bd"></span> '+statusTxt;
+  const bd=$("breakdown");bd.innerHTML="";
+  rows.forEach(([l,v,cls])=>{const d=document.createElement('div');d.className="brow";d.innerHTML=\`<span class="bl">\${l}</span><span class="bv \${cls||''}">\${v}</span>\`;bd.appendChild(d);});
+  const t=document.createElement('div');t.className="brow total";t.innerHTML=\`<span class="bl">Total taxable BIK</span><span class="bv \${atn>0?'tax':'free'}">\${fmtE(atn)}</span>\`;bd.appendChild(t);
+  if(_aside){const a=document.createElement('div');a.className="aside-wrap";a.innerHTML=_aside;bd.appendChild(a);}
+  const ol=$("steps");ol.innerHTML="";steps.forEach(s=>{const li=document.createElement('li');li.innerHTML=s;ol.appendChild(li);});
+}
+
+function refreshVisibility(){
+  const arr=val("arr");$("rembBlock").style.display=arr==="fourn"?"none":"block";
+  const veh=val("veh"),lieu=val("lieu");
+  const exceptionEligible=(veh==="societe"&&lieu==="domicile");
+  $("condBlock").classList.toggle("show",exceptionEligible);
+  const comm=exceptionEligible?val("comm")==="oui":false,policy=exceptionEligible?val("policy")==="oui":false;
+  const exceptionApplies=exceptionEligible&&comm&&policy;
+  $("splitBlock").classList.toggle("show",arr==="remb"&&!exceptionApplies);
+  $("commuteOpts").style.display=(clampPct($("pCommute").value)>0)?"block":"none";
+  $("borneBlock").classList.toggle("show",arr==="remb"&&veh==="societe");
+  $("subWrap").classList.toggle("show",arr==="remb"&&veh==="societe");
+  $("borneValWrap").classList.toggle("show",val("trf")==="oui");
+  const baseNote=document.getElementById("baseNote");
+  if(baseNote) baseNote.style.display=(exceptionEligible&&val("base")==="reel")?"block":"none";
+  $("rateWrap").style.display=val("meth")==="rate"?"block":"none";
+  $("totalWrap").style.display=val("meth")==="total"?"block":"none";
+}
+document.addEventListener("input",()=>{refreshVisibility();compute();});
+document.addEventListener("change",()=>{refreshVisibility();compute();});
+$("fillCreg").addEventListener("click",()=>{const m=cregFor($("region").value,$("quarter").value);
+  document.querySelector('input[name="meth"][value="rate"]').checked=true;$("rate").value=m.toFixed(2);refreshVisibility();compute();});
+refreshVisibility();compute();
+`
+
+const TOOL_SCRIPT_NL = `
+"use strict";
+/* Plafonds CREG (centimes €/kWh) — conf: confiance, circ: source */
+const CREG={
+  "2025-T1":{fl:28.22,bxl:32.94,wal:32.56,circ:"2024/C/77",conf:"eleve"},
+  "2025-T2":{fl:31.94,bxl:35.85,wal:36.17,circ:"2025/C/14",conf:"eleve"},
+  "2025-T3":{fl:34.56,bxl:37.87,wal:38.43,circ:"2025/C/38",conf:"eleve"},
+  "2025-T4":{fl:30.70,bxl:33.56,wal:34.57,circ:"2025/C/60",conf:"eleve"},
+  "2026-T1":{fl:31.32,bxl:34.26,wal:35.23,circ:"2025/C/72",conf:"moyen"},
+  "2026-T2":{fl:31.91,bxl:35.55,wal:36.36,circ:"2026/C/44",conf:"eleve"},
+  "2026-T3":{fl:32.22,bxl:37.19,wal:37.83,circ:"addendum",conf:"moyen"}
+};
+const QLABEL={"2025-T1":"K1 2025","2025-T2":"K2 2025","2025-T3":"K3 2025","2025-T4":"K4 2025","2026-T1":"K1 2026","2026-T2":"K2 2026","2026-T3":"K3 2026"};
+const CONFLABEL={eleve:"HOOG",moyen:"GEMIDDELD"};
+const $=id=>document.getElementById(id);
+let _aside="";
+const fmtE=v=>v.toLocaleString('nl-BE',{minimumFractionDigits:2,maximumFractionDigits:2})+" €";
+const fmtC=v=>v.toLocaleString('nl-BE',{minimumFractionDigits:2,maximumFractionDigits:2})+" c€/kWh";
+
+(function init(){
+  const q=$("quarter");
+  Object.keys(CREG).forEach(k=>{const o=document.createElement('option');o.value=k;o.textContent=QLABEL[k];q.appendChild(o);});
+  q.value="2025-T1";
+  const tb=$("cregTable");
+  Object.keys(CREG).forEach(k=>{const c=CREG[k];const tr=document.createElement('tr');
+    tr.innerHTML=\`<td>\${QLABEL[k]}</td><td>\${c.fl.toFixed(2)}</td><td>\${c.bxl.toFixed(2)}</td><td>\${c.wal.toFixed(2)}</td>\`+
+      \`<td class="src-soft">\${c.circ}</td><td><span class="conf \${c.conf}">\${CONFLABEL[c.conf]}</span></td>\`;
+    tb.appendChild(tr);});
+})();
+
+function cregFor(region,quarter){const c=CREG[quarter];return region==="unique"?Math.min(c.fl,c.bxl,c.wal):c[region];}
+const val=name=>document.querySelector(\`input[name="\${name}"]:checked\`).value;
+
+function compute(){
+  _aside="";
+  const arr=val("arr");
+  const region=$("region").value,quarter=$("quarter").value;
+  const cregMax=cregFor(region,quarter);
+  $("cregVal").textContent=fmtC(cregMax);
+
+  if(arr==="fourn"){
+    return render({atn:0,status:"ok",statusTxt:"Geen afzonderlijk voordeel",
+      rows:[["Afzonderlijk elektriciteitsvoordeel","0,00 €","free"]],
+      steps:["De elektriciteit wordt gefactureerd <b>op naam van de werkgever</b>: <b>gratis verstrekking</b> (punten 3-5).",
+        "Ze is <b>inbegrepen in het forfaitaire voordeel van de wagen</b> (art. 36, §2 WIB 92). Geen bijkomend VAA elektriciteit.",
+        "Alleen het forfaitaire VAA « wagen » blijft belastbaar — afzonderlijk berekend."]});
+  }
+
+  const veh=val("veh"),lieu=val("lieu");
+  const kwh=Math.max(0,parseFloat($("kwh").value)||0);
+  const meth=val("meth");
+  let rate,reimb;
+  if(meth==="rate"){rate=Math.max(0,parseFloat($("rate").value)||0);reimb=kwh*rate/100;}
+  else{reimb=Math.max(0,parseFloat($("total").value)||0);rate=kwh>0?reimb/kwh*100:0;}
+
+  let borneAdd=0,borneStep=null;
+  if(val("trf")==="oui"){borneAdd=Math.max(0,parseFloat($("borneVal").value)||0);
+    borneStep=\`<b>Overdracht van de laadpaal</b>: de werkelijke waarde ervan (\${fmtE(borneAdd)}) vormt een afzonderlijk VAA (punten 37-38).\`;}
+
+  const sub=Math.max(0,parseFloat(($("subFee")||{}).value)||0);
+  if(sub>0&&veh==="societe") _aside=\`<div class="aside-note"><b>Abonnement / laadpaalbeheer: \${fmtE(sub)}</b> — afzonderlijke post van de elektriciteitterugbetaling, <b>niet meegerekend</b> in het bovenstaande VAA. Te kwalificeren volgens uw car policy (terbeschikkingstelling van de laadpaal, punt 16); laat de behandeling ervan bevestigen door uw sociaal secretariaat of adviseur.</div>\`;
+
+  const exceptionEligible=(veh==="societe"&&lieu==="domicile");
+  const comm=exceptionEligible?val("comm")==="oui":false;
+  const policy=exceptionEligible?val("policy")==="oui":false;
+  const exceptionApplies=exceptionEligible&&comm&&policy;
+
+  if(exceptionApplies){
+    const base=val("base");
+    if(base==="reel"){
+      const atn=borneAdd;
+      const rows=[["Terugbetaalde werkelijke elektriciteitskosten",fmtE(reimb),"free"],["Gedekt (op basis van factuur","− "+fmtE(reimb),"free"]];
+      if(borneAdd>0)rows.push(["Overdracht laadpaal",fmtE(borneAdd),"tax"]);
+      const steps=["Bedrijfswagen + thuisladen + communicerende laadpaal + « car policy »: <b>de uitzondering is van toepassing</b> (punten 13-21).",
+        "Terugbetaling op basis van uw <b>werkelijke kosten bewezen door factuur</b> (punt 22) → <b>volledig gedekt</b>, zoals een brandstofkaart. Het CREG-plafond geldt alleen voor de <i>forfaitaire</i> methode.",
+        "Voorwaarde: de factuur moet <b>uitsluitend betrekking hebben op de elektriciteit van de bedrijfswagen</b> (punt 14) — exclusief abonnement / beheerskosten van de laadpaal.",
+        "Alleen het forfaitaire VAA « wagen » blijft verschuldigd (afzonderlijk berekend)."];
+      if(borneStep)steps.push(borneStep);
+      return render({atn,status:atn>0?"warn":"ok",statusTxt:atn>0?"Laadpaal belastbaar":"Niet belastbaar",rows,steps});
+    }
+    const ceiling=kwh*cregMax/100;
+    if(rate<=cregMax+1e-9){
+      let atn=borneAdd;
+      const rows=[["Terugbetaalde elektriciteit","0,00 €","free"]];
+      if(borneAdd>0)rows.push(["Overdracht laadpaal",fmtE(borneAdd),"tax"]);
+      const steps=["Bedrijfswagen + thuisladen + communicerende laadpaal + « car policy »: <b>de uitzondering is van toepassing</b> (punten 13-21).",
+        \`Toegepast tarief (\${fmtC(rate)}) <b>≤ CREG-plafond</b> (\${fmtC(cregMax)}) → terugbetaling <b>volledig gedekt</b>.\`,
+        "Zoals een brandstofkaart: <b>geen bijkomend VAA</b>. Alleen het forfaitaire VAA « wagen » blijft verschuldigd."];
+      if(borneStep)steps.push(borneStep);
+      return render({atn,status:atn>0?"warn":"ok",statusTxt:atn>0?"Laadpaal belastbaar":"Niet belastbaar",rows,steps});
+    }else{
+      const excess=reimb-ceiling,atn=excess+borneAdd;
+      const rows=[["Totale terugbetaling",fmtE(reimb),""],["Gedekt door het CREG-plafond","− "+fmtE(ceiling),"free"],["Overschot buiten tolerantie",fmtE(excess),"tax"]];
+      if(borneAdd>0)rows.push(["Overdracht laadpaal",fmtE(borneAdd),"tax"]);
+      const steps=["De uitzondering is van toepassing, <b>maar</b> het forfaitaire tarief overschrijdt het CREG-plafond.",
+        \`Tarief \${fmtC(rate)} &gt; plafond \${fmtC(cregMax)}. De tolerantie « vast bedrag » geldt alleen <b>tot het plafond</b> (punt 24).\`,
+        \`Gedekt deel: \${fmtE(ceiling)}. <b>Overschot: \${fmtE(excess)}</b> → belastbaar, tenzij hogere werkelijke kosten worden bewezen (punt 22).\`];
+      if(borneStep)steps.push(borneStep);
+      return render({atn,status:"warn",statusTxt:"Gedeeltelijk belastbaar",rows,steps});
+    }
+  }
+
+  const pProf=clampPct($("pProf").value),pCommute=clampPct($("pCommute").value);
+  let pPriv=100-pProf-pCommute;if(pPriv<0)pPriv=0;$("pPriv").value=pPriv;
+  const profAmt=reimb*pProf/100,commuteAmt=reimb*pCommute/100,privAmt=reimb*pPriv/100;
+  const expType=val("exp"),exo=Math.max(0,parseFloat($("exoneration").value)||0);
+  let commuteTax=commuteAmt,commuteNote;
+  if(expType==="forfait"){commuteTax=Math.max(0,commuteAmt-exo);commuteNote=\`vrijgesteld tot \${fmtE(exo)} (forfaitaire kosten)\`;}
+  else{commuteNote="werkelijke kosten: geen vrijstelling van 490 €";}
+  const atn=commuteTax+privAmt+borneAdd;
+
+  const why=veh==="privee"?"<b>Privé</b>wagen van de werknemer":lieu==="publique"?"Opladen aan een <b>openbare laadpaal</b>":"Thuisladen <b>zonder alle voorwaarden</b> van de uitzondering";
+  const rows=[["Professionele trajecten ("+pProf+"%)","0,00 €","free"],["Woon-werkverkeer ("+pCommute+"%)",fmtE(commuteTax),"tax"],["Privétrajekten ("+pPriv+"%)",fmtE(privAmt),"tax"]];
+  if(borneAdd>0)rows.push(["Overdracht laadpaal",fmtE(borneAdd),"tax"]);
+  const steps=[\`\${why} → de uitzondering is niet van toepassing; men volgt de <b>aard van de verplaatsing</b> (punten 9-12).\`,
+    \`<b>Professioneel</b> (\${fmtE(profAmt)}): eigen kosten van de werkgever → <b>niet belastbaar</b>, mits dubbel bewijs (punt 10).\`,
+    \`<b>Woon-werk</b> (\${fmtE(commuteAmt)}): belastbaar VAA, \${commuteNote} → <b>\${fmtE(commuteTax)}</b> (punt 11).\`,
+    \`<b>Privé</b> (\${fmtE(privAmt)}): volledig belastbaar (punt 12).\`];
+  if(borneStep)steps.push(borneStep);
+  return render({atn,status:atn>0?"warn":"ok",statusTxt:atn>0?"Belastbaar":"Niet belastbaar",rows,steps});
+}
+function clampPct(v){v=parseFloat(v)||0;return Math.min(100,Math.max(0,Math.round(v)));}
+
+function render({atn,status,statusTxt,rows,steps}){
+  $("atnAmount").textContent=fmtE(atn);
+  $("atnAmount").style.color=atn>0?"var(--warn)":"var(--accent)";
+  const b=$("statusBadge");b.className="badge "+(status==="warn"?"warn":"ok");b.innerHTML='<span class="bd"></span> '+statusTxt;
+  const bd=$("breakdown");bd.innerHTML="";
+  rows.forEach(([l,v,cls])=>{const d=document.createElement('div');d.className="brow";d.innerHTML=\`<span class="bl">\${l}</span><span class="bv \${cls||''}">\${v}</span>\`;bd.appendChild(d);});
+  const t=document.createElement('div');t.className="brow total";t.innerHTML=\`<span class="bl">Totaal belastbaar VAA</span><span class="bv \${atn>0?'tax':'free'}">\${fmtE(atn)}</span>\`;bd.appendChild(t);
+  if(_aside){const a=document.createElement('div');a.className="aside-wrap";a.innerHTML=_aside;bd.appendChild(a);}
+  const ol=$("steps");ol.innerHTML="";steps.forEach(s=>{const li=document.createElement('li');li.innerHTML=s;ol.appendChild(li);});
+}
+
+function refreshVisibility(){
+  const arr=val("arr");$("rembBlock").style.display=arr==="fourn"?"none":"block";
+  const veh=val("veh"),lieu=val("lieu");
+  const exceptionEligible=(veh==="societe"&&lieu==="domicile");
+  $("condBlock").classList.toggle("show",exceptionEligible);
+  const comm=exceptionEligible?val("comm")==="oui":false,policy=exceptionEligible?val("policy")==="oui":false;
+  const exceptionApplies=exceptionEligible&&comm&&policy;
+  $("splitBlock").classList.toggle("show",arr==="remb"&&!exceptionApplies);
+  $("commuteOpts").style.display=(clampPct($("pCommute").value)>0)?"block":"none";
+  $("borneBlock").classList.toggle("show",arr==="remb"&&veh==="societe");
+  $("subWrap").classList.toggle("show",arr==="remb"&&veh==="societe");
+  $("borneValWrap").classList.toggle("show",val("trf")==="oui");
+  const baseNote=document.getElementById("baseNote");
+  if(baseNote) baseNote.style.display=(exceptionEligible&&val("base")==="reel")?"block":"none";
+  $("rateWrap").style.display=val("meth")==="rate"?"block":"none";
+  $("totalWrap").style.display=val("meth")==="total"?"block":"none";
+}
+document.addEventListener("input",()=>{refreshVisibility();compute();});
+document.addEventListener("change",()=>{refreshVisibility();compute();});
+$("fillCreg").addEventListener("click",()=>{const m=cregFor($("region").value,$("quarter").value);
+  document.querySelector('input[name="meth"][value="rate"]').checked=true;$("rate").value=m.toFixed(2);refreshVisibility();compute();});
+refreshVisibility();compute();
+`
+
+const TOOL_SCRIPT_DE = `
+"use strict";
+/* Plafonds CREG (centimes €/kWh) — conf: confiance, circ: source */
+const CREG={
+  "2025-T1":{fl:28.22,bxl:32.94,wal:32.56,circ:"2024/C/77",conf:"eleve"},
+  "2025-T2":{fl:31.94,bxl:35.85,wal:36.17,circ:"2025/C/14",conf:"eleve"},
+  "2025-T3":{fl:34.56,bxl:37.87,wal:38.43,circ:"2025/C/38",conf:"eleve"},
+  "2025-T4":{fl:30.70,bxl:33.56,wal:34.57,circ:"2025/C/60",conf:"eleve"},
+  "2026-T1":{fl:31.32,bxl:34.26,wal:35.23,circ:"2025/C/72",conf:"moyen"},
+  "2026-T2":{fl:31.91,bxl:35.55,wal:36.36,circ:"2026/C/44",conf:"eleve"},
+  "2026-T3":{fl:32.22,bxl:37.19,wal:37.83,circ:"addendum",conf:"moyen"}
+};
+const QLABEL={"2025-T1":"Q1 2025","2025-T2":"Q2 2025","2025-T3":"Q3 2025","2025-T4":"Q4 2025","2026-T1":"Q1 2026","2026-T2":"Q2 2026","2026-T3":"Q3 2026"};
+const CONFLABEL={eleve:"HOCH",moyen:"MITTEL"};
+const $=id=>document.getElementById(id);
+let _aside="";
+const fmtE=v=>v.toLocaleString('de-DE',{minimumFractionDigits:2,maximumFractionDigits:2})+" €";
+const fmtC=v=>v.toLocaleString('de-DE',{minimumFractionDigits:2,maximumFractionDigits:2})+" c€/kWh";
+
+(function init(){
+  const q=$("quarter");
+  Object.keys(CREG).forEach(k=>{const o=document.createElement('option');o.value=k;o.textContent=QLABEL[k];q.appendChild(o);});
+  q.value="2025-T1";
+  const tb=$("cregTable");
+  Object.keys(CREG).forEach(k=>{const c=CREG[k];const tr=document.createElement('tr');
+    tr.innerHTML=\`<td>\${QLABEL[k]}</td><td>\${c.fl.toFixed(2)}</td><td>\${c.bxl.toFixed(2)}</td><td>\${c.wal.toFixed(2)}</td>\`+
+      \`<td class="src-soft">\${c.circ}</td><td><span class="conf \${c.conf}">\${CONFLABEL[c.conf]}</span></td>\`;
+    tb.appendChild(tr);});
+})();
+
+function cregFor(region,quarter){const c=CREG[quarter];return region==="unique"?Math.min(c.fl,c.bxl,c.wal):c[region];}
+const val=name=>document.querySelector(\`input[name="\${name}"]:checked\`).value;
+
+function compute(){
+  _aside="";
+  const arr=val("arr");
+  const region=$("region").value,quarter=$("quarter").value;
+  const cregMax=cregFor(region,quarter);
+  $("cregVal").textContent=fmtC(cregMax);
+
+  if(arr==="fourn"){
+    return render({atn:0,status:"ok",statusTxt:"Kein gesonderter Vorteil",
+      rows:[["Gesonderter Stromvorteil","0,00 €","free"]],
+      steps:["Der Strom wird <b>auf den Namen des Arbeitgebers</b> in Rechnung gestellt: <b>kostenlose Bereitstellung</b> (Punkte 3-5).",
+        "Er ist <b>im pauschalen Vorteil des Fahrzeugs enthalten</b> (Art. 36, §2 EStGB). Kein zusätzlicher GWV für Strom.",
+        "Nur der pauschale GWV „Fahrzeug" bleibt steuerpflichtig — wird separat berechnet."]});
+  }
+
+  const veh=val("veh"),lieu=val("lieu");
+  const kwh=Math.max(0,parseFloat($("kwh").value)||0);
+  const meth=val("meth");
+  let rate,reimb;
+  if(meth==="rate"){rate=Math.max(0,parseFloat($("rate").value)||0);reimb=kwh*rate/100;}
+  else{reimb=Math.max(0,parseFloat($("total").value)||0);rate=kwh>0?reimb/kwh*100:0;}
+
+  let borneAdd=0,borneStep=null;
+  if(val("trf")==="oui"){borneAdd=Math.max(0,parseFloat($("borneVal").value)||0);
+    borneStep=\`<b>Übertragung der Ladestation</b>: ihr tatsächlicher Wert (\${fmtE(borneAdd)}) stellt einen gesonderten GWV dar (Punkte 37-38).\`;}
+
+  const sub=Math.max(0,parseFloat(($("subFee")||{}).value)||0);
+  if(sub>0&&veh==="societe") _aside=\`<div class="aside-note"><b>Abonnement / Ladestationsverwaltung: \${fmtE(sub)}</b> — gesonderter Posten der Stromerstattung, <b>nicht berücksichtigt</b> im obigen GWV. Gemäß Ihrer car policy zu qualifizieren (Bereitstellung der Ladestation, Punkt 16); lassen Sie die steuerliche Behandlung durch Ihr Sozialsekretariat oder Ihren Steuerberater bestätigen.</div>\`;
+
+  const exceptionEligible=(veh==="societe"&&lieu==="domicile");
+  const comm=exceptionEligible?val("comm")==="oui":false;
+  const policy=exceptionEligible?val("policy")==="oui":false;
+  const exceptionApplies=exceptionEligible&&comm&&policy;
+
+  if(exceptionApplies){
+    const base=val("base");
+    if(base==="reel"){
+      const atn=borneAdd;
+      const rows=[["Erstattete tatsächliche Stromkosten",fmtE(reimb),"free"],["Gedeckt (Rechnungsnachweis)","− "+fmtE(reimb),"free"]];
+      if(borneAdd>0)rows.push(["Übertragung der Ladestation",fmtE(borneAdd),"tax"]);
+      const steps=["Firmenwagen + Heimladen + kommunizierende Ladestation + car policy: <b>die Ausnahme gilt</b> (Punkte 13-21).",
+        "Erstattung auf Basis Ihrer <b>durch Rechnung belegten tatsächlichen Kosten</b> (Punkt 22) → <b>vollständig gedeckt</b>, wie eine Tankkarte. Die CREG-Obergrenze begrenzt nur die <i>Pauschalmethode</i>.",
+        "Voraussetzung: Die Rechnung muss <b>ausschließlich den Strom für den Firmenwagen</b> ausweisen (Punkt 14) — ohne Abonnement / Verwaltungsgebühren der Ladestation.",
+        "Nur der pauschale GWV „Fahrzeug" bleibt geschuldet (wird separat berechnet)."];
+      if(borneStep)steps.push(borneStep);
+      return render({atn,status:atn>0?"warn":"ok",statusTxt:atn>0?"Ladestation steuerpflichtig":"Nicht steuerpflichtig",rows,steps});
+    }
+    const ceiling=kwh*cregMax/100;
+    if(rate<=cregMax+1e-9){
+      let atn=borneAdd;
+      const rows=[["Erstatteter Strom","0,00 €","free"]];
+      if(borneAdd>0)rows.push(["Übertragung der Ladestation",fmtE(borneAdd),"tax"]);
+      const steps=["Firmenwagen + Heimladen + kommunizierende Ladestation + car policy: <b>die Ausnahme gilt</b> (Punkte 13-21).",
+        \`Angewendeter Tarif (\${fmtC(rate)}) <b>≤ CREG-Obergrenze</b> (\${fmtC(cregMax)}) → Erstattung <b>vollständig gedeckt</b>.\`,
+        "Wie eine Tankkarte: <b>kein zusätzlicher GWV</b>. Nur der pauschale GWV „Fahrzeug" bleibt geschuldet."];
+      if(borneStep)steps.push(borneStep);
+      return render({atn,status:atn>0?"warn":"ok",statusTxt:atn>0?"Ladestation steuerpflichtig":"Nicht steuerpflichtig",rows,steps});
+    }else{
+      const excess=reimb-ceiling,atn=excess+borneAdd;
+      const rows=[["Gesamterstattung",fmtE(reimb),""],["Gedeckt durch CREG-Obergrenze","− "+fmtE(ceiling),"free"],["Überschuss außerhalb der Toleranz",fmtE(excess),"tax"]];
+      if(borneAdd>0)rows.push(["Übertragung der Ladestation",fmtE(borneAdd),"tax"]);
+      const steps=["Die Ausnahme gilt, <b>aber</b> der Pauschaltarif übersteigt die CREG-Obergrenze.",
+        \`Tarif \${fmtC(rate)} &gt; Obergrenze \${fmtC(cregMax)}. Die Toleranz „Festbetrag" gilt nur <b>bis zur Obergrenze</b> (Punkt 24).\`,
+        \`Gedeckter Anteil: \${fmtE(ceiling)}. <b>Überschuss: \${fmtE(excess)}</b> → steuerpflichtig, außer Nachweis höherer tatsächlicher Kosten (Punkt 22).\`];
+      if(borneStep)steps.push(borneStep);
+      return render({atn,status:"warn",statusTxt:"Teilweise steuerpflichtig",rows,steps});
+    }
+  }
+
+  const pProf=clampPct($("pProf").value),pCommute=clampPct($("pCommute").value);
+  let pPriv=100-pProf-pCommute;if(pPriv<0)pPriv=0;$("pPriv").value=pPriv;
+  const profAmt=reimb*pProf/100,commuteAmt=reimb*pCommute/100,privAmt=reimb*pPriv/100;
+  const expType=val("exp"),exo=Math.max(0,parseFloat($("exoneration").value)||0);
+  let commuteTax=commuteAmt,commuteNote;
+  if(expType==="forfait"){commuteTax=Math.max(0,commuteAmt-exo);commuteNote=\`befreit bis \${fmtE(exo)} (Pauschale Kosten)\`;}
+  else{commuteNote="tatsächliche Kosten: keine Befreiung von 490 €";}
+  const atn=commuteTax+privAmt+borneAdd;
+
+  const why=veh==="privee"?"<b>Privat</b>fahrzeug des Arbeitnehmers":lieu==="publique"?"Laden an einer <b>öffentlichen Ladestation</b>":"Heimladen <b>ohne alle Voraussetzungen</b> der Ausnahme";
+  const rows=[["Berufliche Fahrten ("+pProf+"%)","0,00 €","free"],["Wohnung ↔ Arbeit ("+pCommute+"%)",fmtE(commuteTax),"tax"],["Private Fahrten ("+pPriv+"%)",fmtE(privAmt),"tax"]];
+  if(borneAdd>0)rows.push(["Übertragung der Ladestation",fmtE(borneAdd),"tax"]);
+  const steps=[\`\${why} → die Ausnahme gilt nicht; es wird die <b>Art der Fahrt</b> berücksichtigt (Punkte 9-12).\`,
+    \`<b>Beruflich</b> (\${fmtE(profAmt)}): eigene Kosten des Arbeitgebers → <b>nicht steuerpflichtig</b>, vorbehaltlich doppelten Nachweises (Punkt 10).\`,
+    \`<b>Wohnung-Arbeit</b> (\${fmtE(commuteAmt)}): steuerpflichtiger GWV, \${commuteNote} → <b>\${fmtE(commuteTax)}</b> (Punkt 11).\`,
+    \`<b>Privat</b> (\${fmtE(privAmt)}): vollständig steuerpflichtig (Punkt 12).\`];
+  if(borneStep)steps.push(borneStep);
+  return render({atn,status:atn>0?"warn":"ok",statusTxt:atn>0?"Steuerpflichtig":"Nicht steuerpflichtig",rows,steps});
+}
+function clampPct(v){v=parseFloat(v)||0;return Math.min(100,Math.max(0,Math.round(v)));}
+
+function render({atn,status,statusTxt,rows,steps}){
+  $("atnAmount").textContent=fmtE(atn);
+  $("atnAmount").style.color=atn>0?"var(--warn)":"var(--accent)";
+  const b=$("statusBadge");b.className="badge "+(status==="warn"?"warn":"ok");b.innerHTML='<span class="bd"></span> '+statusTxt;
+  const bd=$("breakdown");bd.innerHTML="";
+  rows.forEach(([l,v,cls])=>{const d=document.createElement('div');d.className="brow";d.innerHTML=\`<span class="bl">\${l}</span><span class="bv \${cls||''}">\${v}</span>\`;bd.appendChild(d);});
+  const t=document.createElement('div');t.className="brow total";t.innerHTML=\`<span class="bl">Gesamter steuerpflichtiger GWV</span><span class="bv \${atn>0?'tax':'free'}">\${fmtE(atn)}</span>\`;bd.appendChild(t);
+  if(_aside){const a=document.createElement('div');a.className="aside-wrap";a.innerHTML=_aside;bd.appendChild(a);}
+  const ol=$("steps");ol.innerHTML="";steps.forEach(s=>{const li=document.createElement('li');li.innerHTML=s;ol.appendChild(li);});
+}
+
+function refreshVisibility(){
+  const arr=val("arr");$("rembBlock").style.display=arr==="fourn"?"none":"block";
+  const veh=val("veh"),lieu=val("lieu");
+  const exceptionEligible=(veh==="societe"&&lieu==="domicile");
+  $("condBlock").classList.toggle("show",exceptionEligible);
+  const comm=exceptionEligible?val("comm")==="oui":false,policy=exceptionEligible?val("policy")==="oui":false;
+  const exceptionApplies=exceptionEligible&&comm&&policy;
+  $("splitBlock").classList.toggle("show",arr==="remb"&&!exceptionApplies);
+  $("commuteOpts").style.display=(clampPct($("pCommute").value)>0)?"block":"none";
+  $("borneBlock").classList.toggle("show",arr==="remb"&&veh==="societe");
+  $("subWrap").classList.toggle("show",arr==="remb"&&veh==="societe");
+  $("borneValWrap").classList.toggle("show",val("trf")==="oui");
+  const baseNote=document.getElementById("baseNote");
+  if(baseNote) baseNote.style.display=(exceptionEligible&&val("base")==="reel")?"block":"none";
+  $("rateWrap").style.display=val("meth")==="rate"?"block":"none";
+  $("totalWrap").style.display=val("meth")==="total"?"block":"none";
+}
+document.addEventListener("input",()=>{refreshVisibility();compute();});
+document.addEventListener("change",()=>{refreshVisibility();compute();});
+$("fillCreg").addEventListener("click",()=>{const m=cregFor($("region").value,$("quarter").value);
+  document.querySelector('input[name="meth"][value="rate"]').checked=true;$("rate").value=m.toFixed(2);refreshVisibility();compute();});
+refreshVisibility();compute();
+`
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Textes UI par locale (auth gate + share button)
+// ─────────────────────────────────────────────────────────────────────────────
+const AUTH_STRINGS: Record<string, { title: string; desc: string; cta: string; back: string; shareBtn: string; shareCopied: string }> = {
+  fr: {
+    title: 'Outil réservé aux membres',
+    desc: "Le calculateur ATN \u00ab recharge électrique payée par l'employeur (BE) \u00bb est accessible gratuitement aux membres connectés. Connectez-vous ou créez un compte en 30 secondes \u2014 puis partagez le lien à un collègue ou un ami (il lui suffira d'être connecté pour l'ouvrir).",
+    cta: "Se connecter / s'inscrire \u2192",
+    back: '\u2190 Tous les outils',
+    shareBtn: '\ud83d\udd17 Partager à un ami',
+    shareCopied: 'Lien copié \u2014 envoyez-le à un ami \u2713',
+  },
+  en: {
+    title: 'Members-only tool',
+    desc: 'The BIK calculator \u201cemployer-paid home charging (BE)\u201d is free for logged-in members. Sign in or create an account in 30 seconds \u2014 then share the link with a colleague or friend (they only need to be logged in to open it).',
+    cta: 'Sign in / create account \u2192',
+    back: '\u2190 All tools',
+    shareBtn: '\ud83d\udd17 Share with a friend',
+    shareCopied: 'Link copied \u2014 send it to a friend \u2713',
+  },
+  nl: {
+    title: 'Enkel voor leden',
+    desc: "De VAV-calculator \u00ab door de werkgever betaald thuisladen (BE) \u00bb is gratis voor ingelogde leden. Meld u aan of maak in 30 seconden een account aan \u2014 deel dan de link met een collega of vriend (hij hoeft alleen maar ingelogd te zijn om hem te openen).",
+    cta: 'Aanmelden / account aanmaken \u2192',
+    back: '\u2190 Alle tools',
+    shareBtn: '\ud83d\udd17 Delen met een vriend',
+    shareCopied: 'Link gekopieerd \u2014 stuur het naar een vriend \u2713',
+  },
+  de: {
+    title: 'Nur für Mitglieder',
+    desc: 'Der SV-Rechner \u201evom Arbeitgeber bezahltes Heimladen (BE)\u201c ist kostenlos für eingeloggte Mitglieder. Melden Sie sich an oder erstellen Sie in 30 Sekunden ein Konto \u2014 teilen Sie dann den Link mit einem Kollegen oder Freund (er muss nur eingeloggt sein, um ihn zu öffnen).',
+    cta: 'Anmelden / Konto erstellen \u2192',
+    back: '\u2190 Alle Tools',
+    shareBtn: '\ud83d\udd17 Mit einem Freund teilen',
+    shareCopied: 'Link kopiert \u2014 senden Sie ihn an einen Freund \u2713',
+  },
+}
+
+const TOOL_HTML_MAP: Record<string, string> = {
+  fr: TOOL_HTML,
+  en: TOOL_HTML_EN,
+  nl: TOOL_HTML_NL,
+  de: TOOL_HTML_DE,
+}
+
+const TOOL_SCRIPT_MAP: Record<string, string> = {
+  en: TOOL_SCRIPT_EN,
+  nl: TOOL_SCRIPT_NL,
+  de: TOOL_SCRIPT_DE,
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
 // Logique de calcul (scopée au conteneur).
 // ─────────────────────────────────────────────────────────────────────────────
 function runCalculator(root: HTMLElement): () => void {
@@ -656,9 +1813,11 @@ function runCalculator(root: HTMLElement): () => void {
 export default function RechargeDomicileContent() {
   const { isReady, userId } = useUserContext()
   const pathname = usePathname()
+  const locale = useLocale()
   const [mounted, setMounted] = useState(false)
   const [shareMsg, setShareMsg] = useState('')
   const rootRef = useRef<HTMLDivElement>(null)
+  const s = AUTH_STRINGS[locale] || AUTH_STRINGS['fr']
 
   useEffect(() => { setMounted(true) }, [])
 
@@ -666,9 +1825,20 @@ export default function RechargeDomicileContent() {
     if (!mounted || !userId) return
     const root = rootRef.current
     if (!root) return
-    const cleanup = runCalculator(root)
-    return cleanup
-  }, [mounted, userId])
+
+    if (locale === 'fr') {
+      const cleanup = runCalculator(root)
+      return cleanup
+    }
+
+    // EN / NL / DE : le script calculateur est injecté après que le markup
+    // soit dans le DOM (via dangerouslySetInnerHTML → toolHtml).
+    const scriptContent = TOOL_SCRIPT_MAP[locale]
+    if (!scriptContent) return
+    const el = document.createElement('script')
+    el.textContent = scriptContent
+    document.body.appendChild(el)
+  }, [mounted, userId, locale])
 
   async function handleShare() {
     const url = typeof window !== 'undefined' ? window.location.href : 'https://moteurs.com/outils/recharge-domicile-voiture-societe-belgique'
@@ -681,7 +1851,7 @@ export default function RechargeDomicileContent() {
     } catch { /* partage natif annulé */ }
     try {
       await navigator.clipboard.writeText(url)
-      setShareMsg('Lien copié — envoyez-le à un ami ✓')
+      setShareMsg(s.shareCopied)
       setTimeout(() => setShareMsg(''), 3500)
     } catch {
       setShareMsg(url)
@@ -697,12 +1867,10 @@ export default function RechargeDomicileContent() {
       <section style={{ maxWidth: 560, margin: '0 auto', padding: '64px 22px', textAlign: 'center' }}>
         <div style={{ fontSize: '2.6rem', marginBottom: 14 }}>🔒</div>
         <h1 style={{ fontSize: '1.6rem', fontWeight: 700, marginBottom: 12, color: 'var(--color-text)' }}>
-          Outil réservé aux membres
+          {s.title}
         </h1>
         <p style={{ color: 'var(--color-text-muted)', lineHeight: 1.6, marginBottom: 26 }}>
-          Le calculateur ATN « recharge électrique payée par l'employeur (BE) » est accessible
-          gratuitement aux membres connectés. Connectez-vous ou créez un compte en 30 secondes —
-          puis partagez le lien à un collègue ou un ami (il lui suffira d'être connecté pour l'ouvrir).
+          {s.desc}
         </p>
         <Link
           href={`/espace-membres?next=${encodeURIComponent(pathname)}`}
@@ -711,16 +1879,18 @@ export default function RechargeDomicileContent() {
             fontWeight: 700, padding: '12px 26px', borderRadius: 10, textDecoration: 'none',
           }}
         >
-          Se connecter / s'inscrire →
+          {s.cta}
         </Link>
         <div style={{ marginTop: 18 }}>
           <Link href="/outils" style={{ color: 'var(--color-text-muted)', fontSize: '0.88rem' }}>
-            ← Tous les outils
+            {s.back}
           </Link>
         </div>
       </section>
     )
   }
+
+  const toolHtml = TOOL_HTML_MAP[locale] || TOOL_HTML
 
   return (
     <>
@@ -741,10 +1911,10 @@ export default function RechargeDomicileContent() {
             fontWeight: 700, fontSize: '0.88rem', padding: '9px 18px', borderRadius: 999,
           }}
         >
-          🔗 Partager à un ami
+          {s.shareBtn}
         </button>
       </div>
-      <main className="m-tool" ref={rootRef} dangerouslySetInnerHTML={{ __html: TOOL_HTML }} />
+      <main className="m-tool" ref={rootRef} dangerouslySetInnerHTML={{ __html: toolHtml }} />
     </>
   )
 }
