@@ -178,9 +178,10 @@ export default function UserContextProvider({ children }: { children: ReactNode 
         const { data: { session } } = await supabase.auth.getSession()
         if (flag.v) return
         await hydrateFromSession(session, flag)
-        if (!flag.v) setIsBootstrapped(true)
       } catch (e) {
         console.warn('[auth] bootstrap failed:', e)
+      } finally {
+        if (!flag.v) setIsBootstrapped(true)
       }
     })()
 
