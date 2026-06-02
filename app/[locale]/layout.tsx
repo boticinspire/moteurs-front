@@ -8,7 +8,6 @@ import '../globals.css'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 import CookieBanner from '@/components/CookieBanner'
-import Providers from '@/components/Providers'
 import TranslationBannerGate from '@/components/TranslationBannerGate'
 import { routing, type Locale } from '@/i18n/routing'
 
@@ -116,13 +115,11 @@ export default async function LocaleLayout({
       </head>
       <body>
         <NextIntlClientProvider>
-          <Providers>
-            <Header />
-            <TranslationBannerGate />
-            {children}
-            <Footer />
-            <CookieBanner />
-          </Providers>
+          <Header />
+          <TranslationBannerGate />
+          {children}
+          <Footer />
+          <CookieBanner />
         </NextIntlClientProvider>
       </body>
     </html>

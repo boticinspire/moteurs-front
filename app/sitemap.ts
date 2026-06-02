@@ -39,7 +39,8 @@ const TCO_SEGMENTS = [
 const PAGES_STATIQUES: { url: string; priority: number; changeFreq: MetadataRoute.Sitemap[0]['changeFrequency'] }[] = [
   { url: '/',              priority: 1.0,  changeFreq: 'weekly'  },
   { url: '/articles',      priority: 0.9,  changeFreq: 'daily'   },
-  { url: '/outils',        priority: 0.85, changeFreq: 'weekly'  },
+  { url: '/outils',              priority: 0.85, changeFreq: 'weekly'  },
+  { url: '/outils/tco-poids-lourds', priority: 0.85, changeFreq: 'monthly' },
   { url: '/assistance',    priority: 0.85, changeFreq: 'weekly'  },
   { url: '/simulateur',    priority: 0.85, changeFreq: 'monthly' },
   { url: '/comparer',      priority: 0.85, changeFreq: 'monthly' },

@@ -191,6 +191,14 @@ export const SEO_MAP: Record<string, SeoMeta> = {
     volume: 5200,
     intent: 'Informationnelle',
   },
+  '/outils/tco-poids-lourds': {
+    title: 'Calculateur TCO Poids Lourds Europe 2025 — Tracteur, Porteur, Électrique | Moteurs.com',
+    description: 'Calculez le coût total de possession de votre poids lourd : capital, énergie, AdBlue, maintenance, conducteur, péages. Benchmarks IRU/ACEA — Diesel, GNV, HVO, Électrique.',
+    keywords: ['TCO poids lourd', 'coût total possession camion', 'calculateur TCO transport', 'coût km tracteur diesel'],
+    primaryKeyword: 'calculateur TCO poids lourd Europe',
+    volume: 3200,
+    intent: 'Commerciale',
+  },
   '/outils/recharge-domicile-voiture-societe-belgique': {
     title: 'Recharge à domicile voiture de société : montant imposable (Belgique) | Moteurs.com',
     description: 'Calculez l\'avantage imposable (ATN) du remboursement de la recharge à domicile d\'une voiture de société en Belgique. Barème CREG, circulaire 2024/C/77.',

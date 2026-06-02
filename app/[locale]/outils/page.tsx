@@ -52,6 +52,15 @@ const OUTILS_PHARES = [
     badge: null,
   },
   {
+    href: '/outils/tco-poids-lourds',
+    icon: '🚛',
+    titre: 'TCO Poids Lourds',
+    desc: 'Coût total de possession complet pour tracteurs 44t, porteurs 19t et porteurs électriques. Capital, AdBlue, maintenance, conducteur, péages, downtime — benchmarks IRU/ACEA 2025.',
+    tags: ['Diesel', 'GNV', 'HVO', 'Électrique', 'EU'],
+    cta: 'Calculer mon TCO PL',
+    badge: 'Nouveau',
+  },
+  {
     href: '/outils/amende-pv',
     icon: '⚖️',
     titre: 'Calculateur PV & Amendes',
