@@ -5,14 +5,14 @@
  * - "electrique", "sans-peage", "famille", "camping-car", "le-moins-cher"  → thématiques
  * - "depuis-[ville]"                                                       → origine alternative
  *
- * SSG : ~15 routes × ~5-8 variantes ≈ 60-90 pages générées au build.
+ * ISR : généré à la première visite, mis en cache 24h.
+ * Pas de generateStaticParams → ~534 pages en moins au build (-10 min).
  */
 
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { Link } from '@/i18n/navigation'
 import {
-  allTrajetVariantParams,
   getTrajetBySlug,
   getVarianteInfo,
   toRoute,
@@ -29,11 +29,9 @@ import FAQTrajet from '../../_components/FAQTrajet'
 
 const ANNEE = new Date().getFullYear()
 
-// ─── Generate static params ───────────────────────────────────────────────────
-
-export async function generateStaticParams() {
-  return allTrajetVariantParams()
-}
+// ─── ISR — généré à la première visite, mis en cache 24 h ───────────────────
+export const revalidate = 86400
+export const dynamicParams = true
 
 // ─── Metadata ──────────────────────────────────────────────────────────────────
 

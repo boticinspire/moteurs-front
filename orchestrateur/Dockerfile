@@ -15,14 +15,12 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     fonts-liberation \
     && rm -rf /var/lib/apt/lists/*
 
-# ── Dépendances Python ────────────────────────────────────────────────────────
+# ── Dépendances Python + Chromium (couches stables — cachées tant que requirements.txt ne change pas) ──
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
+RUN playwright install chromium --with-deps
 
-# ── Chromium via Playwright (après pip pour utiliser la version installée) ────
-RUN playwright install chromium
-
-# ── Code source ───────────────────────────────────────────────────────────────
+# ── Code source (change à chaque commit) ─────────────────────────────────────
 COPY . .
 
 EXPOSE 8000

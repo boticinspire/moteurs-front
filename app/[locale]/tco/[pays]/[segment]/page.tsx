@@ -61,13 +61,10 @@ const SEGMENT_PROFIL: Record<Segment, Profil> = {
 // km/an par défaut selon profil
 const KM_DEFAULT: Record<Profil, number> = { B2B: 25000, Particulier: 15000 }
 
-// ─── Génération statique ──────────────────────────────────────────────────────
-
-export async function generateStaticParams() {
-  const segments = Object.keys(SEGMENT_SLUG_MAP)
-  const pays     = Object.keys(PAYS_MAP)
-  return pays.flatMap(p => segments.map(s => ({ pays: p, segment: s })))
-}
+// ─── ISR — généré à la première visite, mis en cache 24 h ───────────────────
+// Suppression de generateStaticParams : 16 pays × 9 segments × 6 locales = 864 pages en moins au build.
+export const revalidate = 86400
+export const dynamicParams = true
 
 // ─── Calcul TCO au build ──────────────────────────────────────────────────────
 
