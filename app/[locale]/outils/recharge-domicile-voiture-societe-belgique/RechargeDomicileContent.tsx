@@ -1858,8 +1858,22 @@ export default function RechargeDomicileContent() {
     }
   }
 
-  if (!mounted || !isReady || !isBootstrapped) {
+  if (!mounted || !isReady) {
     return <div style={{ minHeight: '60vh' }} />
+  }
+
+  if (!isBootstrapped) {
+    return (
+      <div style={{ minHeight: '60vh', display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column', gap: 16 }}>
+        <div style={{
+          width: 36, height: 36, borderRadius: '50%',
+          border: '3px solid var(--color-border)', borderTopColor: 'var(--color-primary)',
+          animation: 'spin 0.7s linear infinite',
+        }} />
+        <style>{`@keyframes spin { to { transform: rotate(360deg) } }`}</style>
+        <span style={{ color: 'var(--color-text-muted)', fontSize: '0.88rem' }}>Chargement…</span>
+      </div>
+    )
   }
 
   if (!userId) {
