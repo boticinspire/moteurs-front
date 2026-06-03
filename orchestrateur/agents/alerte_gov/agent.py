@@ -43,21 +43,21 @@ SOURCES_GOV = [
     {
         "pays": "FR",
         "nom": "Aides aux entreprises VUL — bpifrance",
-        "url": "https://www.bpifrance.fr/nos-solutions/financement/aides-a-linnovation",
+        "url": "https://bigmedia.bpifrance.fr/nos-dossiers/achat-et-location-de-voitures-electriques-en-entreprise-quelles-aides-0",
         "selecteur_texte": "main",
         "mots_cles_alerte": ["véhicule", "électrique", "aide", "subvention", "vul"],
     },
     {
         "pays": "FR",
         "nom": "ZFE-m — ecologie.gouv.fr",
-        "url": "https://www.ecologie.gouv.fr/zones-faibles-emissions-mobilite-zfe-m",
+        "url": "https://www.ecologie.gouv.fr/politiques-publiques/zones-faibles-emissions-zfe",
         "selecteur_texte": "article",
         "mots_cles_alerte": ["zone", "emission", "crit'air", "interdiction", "calendrier"],
     },
     {
         "pays": "FR",
         "nom": "Suramortissement — impots.gouv.fr",
-        "url": "https://www.impots.gouv.fr/professionnel/suramortissement",
+        "url": "https://bofip.impots.gouv.fr/bofip/10079-PGP.html/identifiant=BOI-BIC-BASE-100-20-20240417",
         "selecteur_texte": "main",
         "mots_cles_alerte": ["suramortissement", "40%", "taux", "plafond", "véhicule"],
     },
@@ -65,7 +65,7 @@ SOURCES_GOV = [
     {
         "pays": "BE",
         "nom": "Déductibilité véhicules — fisconet.be",
-        "url": "https://finances.belgium.be/fr/entreprises/impots_sur_les_revenus/deductions/vehicules",
+        "url": "https://finances.belgium.be/fr/entreprises/impot_des_societes/avantages_toute_nature/voitures_de_societe",
         "selecteur_texte": "main",
         "mots_cles_alerte": ["déductibilité", "100%", "2027", "2028", "2029", "taux", "voiture"],
     },

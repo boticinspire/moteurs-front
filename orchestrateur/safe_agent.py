@@ -123,13 +123,17 @@ class SafeAgent:
     ) -> dict:
         """Exécute l'appel Anthropic avec protections."""
 
-        response = self.client.messages.create(
-            model=self.model,
-            max_tokens=max_tokens,
-            messages=messages,
-            tools=tools or [],
-            system=system,
-        )
+        kwargs = {
+            "model": self.model,
+            "max_tokens": max_tokens,
+            "messages": messages,
+        }
+        if system is not None:
+            kwargs["system"] = system
+        if tools:
+            kwargs["tools"] = tools
+
+        response = self.client.messages.create(**kwargs)
 
         # Si tool_use et boucle agentic
         if response.stop_reason == "tool_use":

@@ -28,7 +28,7 @@ async def generer_batch(limite: int = Query(default=20, ge=1, le=100)):
     Génère les posts manquants pour les N derniers articles publiés
     qui n'ont pas encore de posts sociaux.
     """
-    return await generer_posts_batch(limite)
+    return await generer_posts_batch(limite=limite)
 
 
 @router.get("/")

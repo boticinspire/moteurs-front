@@ -243,7 +243,7 @@ async def generer_posts_sociaux(article_id: int) -> dict:
     }
 
 
-async def generer_posts_batch(article_ids: list[int] = None) -> dict:
+async def generer_posts_batch(article_ids: list[int] = None, limite: int = 20) -> dict:
     """
     Génère les posts pour une liste d'articles (ou les derniers articles PUBLIE).
     """
@@ -255,7 +255,7 @@ async def generer_posts_batch(article_ids: list[int] = None) -> dict:
             .select("id")
             .eq("etat_code", "PUBLIE")
             .order("created_at", desc=True)
-            .limit(5)
+            .limit(limite)
             .execute()
         )
         article_ids = [a["id"] for a in res.data] if res.data else []
