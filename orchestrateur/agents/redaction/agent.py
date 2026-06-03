@@ -746,5 +746,11 @@ async def run_redaction_batch(limit: int = 3) -> dict:
             logger.error(f"[AgentRédaction] Erreur item #{item.get('id')}: {e}")
             continue
 
-    logger.info(f"[AgentRédaction] Batch terminé : {total_articles} article(s) généré(s) sur {len(items)} item(s)")
+    # Résumé coût du batch — surveiller dans Railway pour détecter une dérive
+    # Chaque appel Sonnet loggue déjà "tokens — in=X out=Y" ; ce log donne le total déclinaisons
+    logger.info(
+        f"[AgentRédaction] Batch terminé : {total_articles} article(s) généré(s) "
+        f"sur {len(items)} item(s). "
+        f"Consultez les lignes '[redaction] tokens' ci-dessus pour le détail coûts."
+    )
     return {"articles_generes": total_articles, "items_traites": len(items)}

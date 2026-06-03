@@ -164,6 +164,16 @@ class SafeAgent:
             if hasattr(block, 'type') and block.type == "tool_use":
                 tool_use_block = block
 
+        # Log token usage — visible dans Railway logs pour surveiller les coûts
+        usage = getattr(response, 'usage', None)
+        input_tokens = getattr(usage, 'input_tokens', 0) if usage else 0
+        output_tokens = getattr(usage, 'output_tokens', 0) if usage else 0
+        if usage:
+            logger.info(
+                f"[{self.name}] tokens — in={input_tokens} out={output_tokens} "
+                f"total={input_tokens + output_tokens}"
+            )
+
         return {
             'success': True,
             'content': final_text,
@@ -171,7 +181,8 @@ class SafeAgent:
             'response': response,
             'iterations': self.iteration_count,
             'stop_reason': response.stop_reason,
-            'error_type': None
+            'error_type': None,
+            'tokens': {'input': input_tokens, 'output': output_tokens},
         }
 
 
