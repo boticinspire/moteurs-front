@@ -4,7 +4,7 @@ from contextlib import asynccontextmanager
 
 from config import get_settings
 from agents.veille.scheduler import start_scheduler, stop_scheduler
-from routes import veille, articles, leads, simulateur, seo, social, alerte_gov, depannage, recharge
+from routes import veille, articles, leads, simulateur, seo, social, alerte_gov, depannage, recharge, comparer_modeles
 
 settings = get_settings()
 
@@ -43,6 +43,7 @@ app.include_router(social.router,     prefix="/social",     tags=["Agent Social"
 app.include_router(alerte_gov.router, prefix="/alerte-gov", tags=["Agent Alerte Gov."])
 app.include_router(depannage.router,  prefix="/depannage",  tags=["Assistant Dépannage"])
 app.include_router(recharge.router,   prefix="/recharge",   tags=["Agent Recharge"])
+app.include_router(comparer_modeles.router, prefix="/comparer-modeles", tags=["Comparateur Modèles"])
 
 
 @app.get("/")
