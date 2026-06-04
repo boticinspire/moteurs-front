@@ -63,6 +63,14 @@ export const SEO_MAP: Record<string, SeoMeta> = {
     volume: 21000,
     intent: 'Informationnelle',
   },
+  '/outils/comparer-modeles': {
+    title: 'Comparateur de modèles voiture — Électrique, Diesel, Hybride | Moteurs.com',
+    description: 'Comparez jusqu\'à 5 véhicules de même motorisation côte à côte : autonomie, prix, consommation, points forts & faiblesses. Analyse IA 2024–2025.',
+    keywords: ['comparateur voiture électrique', 'comparer modèles voiture', 'meilleure voiture électrique 2025'],
+    primaryKeyword: 'comparateur modèles voiture',
+    volume: 8500,
+    intent: 'Commerciale',
+  },
   '/outils/cartes-recharge': {
     title: 'Meilleure carte recharge voiture électrique 2026 — Comparatif | Moteurs.com',
     description: 'Comparez Chargemap, Freshmile, IONITY, Fastned, Electra : tarifs par pays, plans abonnement, roaming. Trouvez la carte la moins chère.',
