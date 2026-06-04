@@ -1,14 +1,15 @@
 """
 Circuit-breaker wrapper pour agents Claude — Moteurs.com
 Prévient les boucles infinies et limite la conso API.
+
+FIX 2026-06-04 : suppression du signal.SIGALRM (interdit hors main thread).
+Remplacement par httpx.Timeout thread-safe + catch anthropic.APITimeoutError.
 """
 
-import time
-import signal
 import logging
-from contextlib import contextmanager
 from typing import Optional
 
+import httpx
 import anthropic
 
 logger = logging.getLogger(__name__)
@@ -24,20 +25,6 @@ class AgentMaxIterationsError(Exception):
     pass
 
 
-@contextmanager
-def timeout(seconds: int):
-    """Context manager pour timeout Unix."""
-    def handler(signum, frame):
-        raise AgentTimeoutError(f"Timeout après {seconds}s")
-
-    signal.signal(signal.SIGALRM, handler)
-    signal.alarm(seconds)
-    try:
-        yield
-    finally:
-        signal.alarm(0)
-
-
 class SafeAgent:
     """Wrapper sécurisé pour appels Anthropic."""
 
@@ -49,7 +36,18 @@ class SafeAgent:
         timeout_seconds: int = 300,
         model: str = "claude-opus-4-6"
     ):
-        self.client = anthropic.Anthropic(api_key=api_key)
+        # ✅ httpx.Timeout — thread-safe, pas de signal.alarm()
+        self.client = anthropic.Anthropic(
+            api_key=api_key,
+            http_client=httpx.Client(
+                timeout=httpx.Timeout(
+                    connect=10.0,
+                    read=float(timeout_seconds),
+                    write=30.0,
+                    pool=10.0,
+                )
+            )
+        )
         self.name = name
         self.max_iterations = max_iterations
         self.timeout_seconds = timeout_seconds
@@ -79,8 +77,7 @@ class SafeAgent:
         self.tool_call_history = {}
 
         try:
-            with timeout(self.timeout_seconds):
-                return self._execute(messages, tools, system, max_tokens)
+            return self._execute(messages, tools, system, max_tokens)
         except AgentTimeoutError as e:
             logger.error(f"[{self.name}] TIMEOUT: {e}")
             return {
@@ -95,6 +92,15 @@ class SafeAgent:
                 'success': False,
                 'content': str(e),
                 'error_type': 'max_iterations',
+                'iterations': self.iteration_count
+            }
+        except (httpx.TimeoutException, anthropic.APITimeoutError) as e:
+            # ✅ Timeout réseau/API capturé proprement (remplace signal.alarm)
+            logger.error(f"[{self.name}] TIMEOUT réseau : {e}")
+            return {
+                'success': False,
+                'content': str(e),
+                'error_type': 'timeout',
                 'iterations': self.iteration_count
             }
         except anthropic.APIError as e:
