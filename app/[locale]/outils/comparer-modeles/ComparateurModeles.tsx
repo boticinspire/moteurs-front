@@ -42,7 +42,11 @@ interface ComparaisonResult {
     meilleur_espace: string
     conclusion: string
   }
+  cached?: boolean
+  cache_age_days?: number | null
 }
+
+const RAILWAY_URL = 'https://orchestrateur-production.up.railway.app'
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Données statiques
@@ -304,10 +308,11 @@ export default function ComparateurModeles() {
     setResult(null)
 
     const controller = new AbortController()
-    const timer = setTimeout(() => controller.abort(), 30000) // 30 s filet de sécurité
+    const timer = setTimeout(() => controller.abort(), 60000) // 60 s — Railway sans limite Vercel
 
     try {
-      const res = await fetch('/api/comparer-modeles', {
+      // Appel direct Railway (bypass Vercel Hobby 10 s)
+      const res = await fetch(`${RAILWAY_URL}/comparer-modeles/comparer`, {
         method: 'POST',
         headers: { 'content-type': 'application/json' },
         body: JSON.stringify({ modeles: filledModeles, motorisation }),
@@ -315,20 +320,19 @@ export default function ComparateurModeles() {
       })
       clearTimeout(timer)
 
-      // Réponse non-JSON (ex: 504 HTML de Vercel) — évite "Unexpected token <"
       const contentType = res.headers.get('content-type') ?? ''
       if (!contentType.includes('application/json')) {
         throw new Error(`Erreur serveur (${res.status}) — réessayez dans quelques instants.`)
       }
 
       const data = await res.json()
-      if (!res.ok) throw new Error(data.error ?? `Erreur ${res.status}`)
+      if (!res.ok) throw new Error(data.detail ?? data.error ?? `Erreur ${res.status}`)
       setResult(data)
       setTimeout(() => resultsRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100)
     } catch (e) {
       clearTimeout(timer)
       if (e instanceof Error && e.name === 'AbortError') {
-        setError('Délai dépassé (30 s) — réessayez avec moins de modèles ou dans quelques instants.')
+        setError('Délai dépassé (60 s) — réessayez dans quelques instants.')
       } else {
         setError(e instanceof Error ? e.message : 'Erreur inconnue')
       }
@@ -516,7 +520,16 @@ export default function ComparateurModeles() {
 
             {/* Synthèse */}
             <div className="cm-synthese">
-              <h2>📊 Synthèse comparative — {result.motorisation}</h2>
+              <h2>📊 Synthèse comparative — {result.motorisation}
+                {result.cached && (
+                  <span style={{ fontSize: '.72rem', fontWeight: 700, marginLeft: 12,
+                    padding: '3px 10px', borderRadius: 20, background: 'var(--green-soft)',
+                    color: 'var(--green)', border: '1px solid rgba(16,185,129,.25)',
+                    verticalAlign: 'middle', letterSpacing: '.04em' }}>
+                    ⚡ Cache{result.cache_age_days != null ? ` · ${result.cache_age_days}j` : ''}
+                  </span>
+                )}
+              </h2>
               <div className="cm-badges">
                 {result.synthese.meilleur_rapport_qp && (
                   <span className="cm-badge winner">🏆 Meilleur rapport Q/P · {result.synthese.meilleur_rapport_qp}</span>
