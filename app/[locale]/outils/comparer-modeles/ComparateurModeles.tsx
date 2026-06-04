@@ -303,18 +303,35 @@ export default function ComparateurModeles() {
     setError(null)
     setResult(null)
 
+    const controller = new AbortController()
+    const timer = setTimeout(() => controller.abort(), 30000) // 30 s filet de sécurité
+
     try {
       const res = await fetch('/api/comparer-modeles', {
         method: 'POST',
         headers: { 'content-type': 'application/json' },
         body: JSON.stringify({ modeles: filledModeles, motorisation }),
+        signal: controller.signal,
       })
+      clearTimeout(timer)
+
+      // Réponse non-JSON (ex: 504 HTML de Vercel) — évite "Unexpected token <"
+      const contentType = res.headers.get('content-type') ?? ''
+      if (!contentType.includes('application/json')) {
+        throw new Error(`Erreur serveur (${res.status}) — réessayez dans quelques instants.`)
+      }
+
       const data = await res.json()
       if (!res.ok) throw new Error(data.error ?? `Erreur ${res.status}`)
       setResult(data)
       setTimeout(() => resultsRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100)
     } catch (e) {
-      setError(e instanceof Error ? e.message : 'Erreur inconnue')
+      clearTimeout(timer)
+      if (e instanceof Error && e.name === 'AbortError') {
+        setError('Délai dépassé (30 s) — réessayez avec moins de modèles ou dans quelques instants.')
+      } else {
+        setError(e instanceof Error ? e.message : 'Erreur inconnue')
+      }
     } finally {
       setLoading(false)
     }

@@ -104,6 +104,8 @@ export async function POST(req: NextRequest) {
         'anthropic-version': '2023-06-01',
         'content-type': 'application/json',
       },
+      // Abort avant que Vercel Hobby coupe à 10 s — garantit une réponse JSON propre
+      signal: AbortSignal.timeout(8500),
       body: JSON.stringify({
         model: MODEL,
         max_tokens: 2048,
@@ -142,6 +144,12 @@ export async function POST(req: NextRequest) {
     return NextResponse.json(result)
   } catch (err) {
     const msg = err instanceof Error ? err.message : String(err)
+    if (err instanceof Error && err.name === 'AbortError') {
+      return NextResponse.json(
+        { error: `Délai dépassé — Claude Haiku n'a pas répondu à temps. Réessayez avec moins de modèles.` },
+        { status: 504 }
+      )
+    }
     console.error('[/api/comparer-modeles] erreur', msg)
     return NextResponse.json({ error: `Erreur serveur: ${msg}` }, { status: 500 })
   }
