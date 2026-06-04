@@ -25,6 +25,7 @@ import {
   mergeContexts,
   isSinistreExpiringSoon,
   getSupabaseClient,
+  readSessionFromStorage,
 } from '@/lib/user-context'
 
 // Interface publique du contexte
@@ -175,8 +176,16 @@ export default function UserContextProvider({ children }: { children: ReactNode 
           }
         }
 
-        const { data: { session } } = await supabase.auth.getSession()
+        // getSession() peut staller indéfiniment sur navigator.locks (cf.
+        // CLAUDE.md) → on le borne à 2,5 s puis on retombe sur la session
+        // lue dans localStorage, pour ne jamais bloquer le rendu (spinner).
+        const STALL = Symbol('stall')
+        const raced = await Promise.race([
+          supabase.auth.getSession().then(r => r.data.session).catch(() => null),
+          new Promise<typeof STALL>(resolve => setTimeout(() => resolve(STALL), 2500)),
+        ])
         if (flag.v) return
+        const session = raced === STALL ? readSessionFromStorage() : raced
         await hydrateFromSession(session, flag)
       } catch (e) {
         console.warn('[auth] bootstrap failed:', e)

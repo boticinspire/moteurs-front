@@ -159,6 +159,30 @@ export function clearContextLocal(): void {
   localStorage.removeItem(LS_KEY)
 }
 
+// ─── Session locale (fallback anti-stall) ──────────────────────────────────────
+
+/**
+ * Lit la session directement depuis localStorage (clé storageKey supabase),
+ * sans passer par supabase.auth.getSession() — qui peut staller indéfiniment
+ * sur navigator.locks (cf. CLAUDE.md). Utilisé comme repli quand getSession()
+ * dépasse son délai au bootstrap, pour ne jamais bloquer le rendu.
+ */
+export function readSessionFromStorage(): { user: { id: string; email: string | null } } | null {
+  try {
+    if (typeof window === 'undefined') return null
+    const raw = window.localStorage.getItem('sb-moteurs-auth')
+    if (!raw) return null
+    const parsed = JSON.parse(raw)
+    // supabase-js v2 peut stocker soit l'objet session brut, soit { currentSession }
+    const session = parsed?.currentSession ?? parsed
+    const user = session?.user
+    if (!user?.id) return null
+    return { user: { id: user.id, email: user.email ?? null } }
+  } catch {
+    return null
+  }
+}
+
 // ─── Supabase remote ──────────────────────────────────────────────────────────
 
 export async function loadContextRemote(userId: string): Promise<UserContext | null> {
