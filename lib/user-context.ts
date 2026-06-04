@@ -188,12 +188,19 @@ export function readSessionFromStorage(): { user: { id: string; email: string | 
 export async function loadContextRemote(userId: string): Promise<UserContext | null> {
   try {
     const supabase = getSupabaseClient()
-    const { data, error } = await supabase
-      .from('user_context')
-      .select('voiture, conducteur, assurance, preferences, trajet, sinistre')
-      .eq('user_id', userId)
-      .maybeSingle()
-
+    // Le SDK Supabase v2 peut staller indéfiniment sur navigator.locks (cf. CLAUDE.md).
+    // On borne l'appel à 3,5 s pour ne jamais bloquer le bootstrap.
+    const result = await Promise.race([
+      supabase
+        .from('user_context')
+        .select('voiture, conducteur, assurance, preferences, trajet, sinistre')
+        .eq('user_id', userId)
+        .maybeSingle(),
+      new Promise<{ data: null; error: null }>(resolve =>
+        setTimeout(() => resolve({ data: null, error: null }), 3500)
+      ),
+    ])
+    const { data, error } = result
     if (error || !data) return null
     return data as UserContext
   } catch {
