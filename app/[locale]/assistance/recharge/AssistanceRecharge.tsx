@@ -15,7 +15,7 @@ type Etape = 1 | 2 | 3
 // ── Styles ────────────────────────────────────────────────────────────────────
 
 const cardStyle: React.CSSProperties = {
-  background: 'white',
+  background: 'var(--color-bg-card)',
   border: '1.5px solid var(--color-border)',
   borderRadius: 16,
   padding: '28px 28px 24px',

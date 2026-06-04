@@ -69,7 +69,7 @@ export default function PageAssistanceRecharge() {
             { icon: '💶', titre: 'Borne amortie en < 2 ans', desc: 'Une wallbox à 1 200 € après aide s\'amortit en 18 à 24 mois pour un conducteur faisant 15 000 km/an, grâce à l\'écart de prix domicile vs public.' },
           ].map(item => (
             <div key={item.titre} style={{
-              background: 'white', borderRadius: 12,
+              background: 'var(--color-bg-card)', borderRadius: 12,
               border: '1px solid var(--color-border)', padding: '20px 18px',
             }}>
               <div style={{ fontSize: '1.6rem', marginBottom: 10 }}>{item.icon}</div>
