@@ -6,7 +6,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 
 const ANTHROPIC_URL = 'https://api.anthropic.com/v1/messages'
-const MODEL = 'claude-sonnet-4-6'
+const MODEL = 'claude-haiku-4-5-20251001'
 
 function buildPrompt(motorisation: string, modeles: string[]): string {
   return `Tu es un expert automobile reconnu. Compare les ${modeles.length} véhicule(s) suivant(s), tous de motorisation "${motorisation}" :
@@ -66,6 +66,9 @@ Règles strictes :
 - Sois factuel, équilibré, sans favoritisme de marque`
 }
 
+// Vercel : allonge le timeout à 60s (plan Pro) ; sur Hobby la limite est 10s
+export const maxDuration = 60
+
 export async function POST(req: NextRequest) {
   const ANTHROPIC_KEY = process.env.ANTHROPIC_API_KEY ?? ''
   if (!ANTHROPIC_KEY) {
@@ -103,7 +106,7 @@ export async function POST(req: NextRequest) {
       },
       body: JSON.stringify({
         model: MODEL,
-        max_tokens: 4096,
+        max_tokens: 2048,
         messages: [{ role: 'user', content: buildPrompt(motorisation, modeles) }],
       }),
     })
