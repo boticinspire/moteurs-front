@@ -199,6 +199,22 @@ export const SEO_MAP: Record<string, SeoMeta> = {
     volume: 5200,
     intent: 'Informationnelle',
   },
+  '/outils/calculateur-charge': {
+    title: 'Calculateur de charge VE — Temps, coût et comparatif bornes | Moteurs.com',
+    description: 'Calculez le temps de charge exact de votre véhicule électrique et son coût selon votre borne (7,4 kW, 11 kW, 22 kW, DC) et votre tarif réseau. Comparatif toutes bornes inclus.',
+    keywords: ['calculateur charge voiture électrique', 'temps recharge VE', 'coût recharge électrique', 'comparatif bornes recharge'],
+    primaryKeyword: 'calculateur temps charge voiture électrique',
+    volume: 2800,
+    intent: 'Transactionnelle',
+  },
+  '/outils/tco-particulier': {
+    title: 'Simulateur TCO Particulier — Électrique vs Thermique 2026 | Moteurs.com',
+    description: 'Calculez le coût total de possession réel d\'une voiture électrique vs essence ou diesel sur 10 ans : achat, énergie, entretien, dépréciation et aides fiscales FR/BE/CH.',
+    keywords: ['TCO voiture électrique particulier', 'coût revient voiture électrique', 'rentabilité voiture électrique', 'comparatif électrique thermique coût'],
+    primaryKeyword: 'simulateur TCO voiture électrique particulier',
+    volume: 4100,
+    intent: 'Commerciale',
+  },
   '/outils/tco-poids-lourds': {
     title: 'Calculateur TCO Poids Lourds Europe 2025 — Tracteur, Porteur, Électrique | Moteurs.com',
     description: 'Calculez le coût total de possession de votre poids lourd : capital, énergie, AdBlue, maintenance, conducteur, péages. Benchmarks IRU/ACEA — Diesel, GNV, HVO, Électrique.',

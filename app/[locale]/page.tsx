@@ -5,6 +5,7 @@ import { Link, useRouter } from '@/i18n/navigation'
 import { useTranslations } from 'next-intl'
 import NewsletterForm from '@/components/NewsletterForm'
 import villesData from '@/data/villes.json'
+import SearchBox from '@/components/SearchBox'
 
 type Theme = 'light' | 'dark'
 
@@ -146,6 +147,8 @@ export default function HomePage() {
             {t('hero_lead_a')}{' '}
             {t('hero_lead_b')} <em>{t('hero_lead_em')}</em> {t('hero_lead_c')}
           </p>
+
+          <SearchBox theme={theme} />
 
           <div className="v2-profile-tabs" role="tablist">
             <button role="tab" aria-selected={activeTab === 'trip'} className={activeTab === 'trip' ? 'active' : ''} onClick={() => setActiveTab('trip')}>
