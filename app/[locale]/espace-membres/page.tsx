@@ -18,6 +18,26 @@ type Profil = {
   cible_preferee: '' | 'particulier' | 'pro'
 }
 
+type Installateur = {
+  id:      string
+  nom:     string
+  formule: 'abonnement' | 'cpl'
+}
+
+type LeadItem = {
+  id:                 string
+  type_projet:        string
+  puissance_kw:       number | null
+  pays:               string
+  code_postal:        string
+  nom_contact:        string
+  email_contact:      string
+  telephone_contact:  string | null
+  message:            string | null
+  statut:             string
+  created_at:         string
+}
+
 type Alerte = {
   id?: number
   pays: string[]
@@ -107,6 +127,11 @@ export default function EspaceMembresPage() {
   // ── Liste des constats sauvegardés ──
   const [constatsList,   setConstatsList]   = useState<ConstatMembreItem[]>([])
   const [constatsLoaded, setConstatsLoaded] = useState(false)
+
+  // Espace pro installateur
+  const [installateur, setInstallateur] = useState<Installateur | null>(null)
+  const [leadsItems,   setLeadsItems]   = useState<LeadItem[]>([])
+  const [leadsLoaded,  setLeadsLoaded]  = useState(false)
   const chargerConstats = async () => {
     if (!userId) return
     const list = await listConstats(userId)
@@ -173,6 +198,19 @@ export default function EspaceMembresPage() {
       : ''
     const arts = await pgFetch(`articles?select=slug,titre_provisoire,resume_50mots,published_at,cible&etat_code=eq.PUBLIE&pays_cible=eq.${paysUser}${cibleFilter}&order=published_at.desc&limit=5`)
     if (arts) setArticles(arts)
+    // Espace pro : vérifier si cet email est un installateur partenaire
+    if (userEmail) {
+      const emailEnc = encodeURIComponent(userEmail)
+      const instRows = await pgFetch(`installateurs?email=eq.${emailEnc}&actif=eq.true&select=id,nom,formule`)
+      if (instRows.length > 0) {
+        const inst = instRows[0]
+        setInstallateur({ id: inst.id, nom: inst.nom, formule: inst.formule ?? 'abonnement' })
+        // Leads adressés à cet installateur (RLS vérifie le JWT)
+        const leadsData = await pgFetch(`leads_installateurs?installateur_ids=cs.%7B${inst.id}%7D&order=created_at.desc&limit=50`)
+        setLeadsItems(leadsData)
+      }
+      setLeadsLoaded(true)
+    }
     console.log('[chargerDonnees] DONE')
   }
 
@@ -197,6 +235,27 @@ export default function EspaceMembresPage() {
       const parsed = JSON.parse(raw)
       return parsed?.access_token || parsed?.currentSession?.access_token || null
     } catch { return null }
+  }
+
+  async function mettreAJourStatutLead(leadId: string, statut: string) {
+    const token = getAccessToken()
+    if (!token) return
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_SUPABASE_URL}/rest/v1/leads_installateurs?id=eq.${leadId}`,
+      {
+        method:  'PATCH',
+        headers: {
+          'apikey':        process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+          'Authorization': `Bearer ${token}`,
+          'Content-Type':  'application/json',
+          'Prefer':        'return=minimal',
+        },
+        body: JSON.stringify({ statut }),
+      }
+    )
+    if (res.ok) {
+      setLeadsItems(prev => prev.map(l => l.id === leadId ? { ...l, statut } : l))
+    }
   }
 
   async function sauvegarderProfil() {
@@ -481,6 +540,111 @@ export default function EspaceMembresPage() {
               💡 L&apos;email du conducteur est récupéré de votre compte ({userEmail || '—'}).
             </p>
           </div>
+
+          {/* ── Espace pro : Mes leads (visible si installateur partenaire) ── */}
+          {leadsLoaded && installateur && (
+            <div className="dash-card dash-card-full">
+              <h2>⚡ Mes leads — {installateur.nom}</h2>
+              <p style={{ fontSize: '0.82rem', color: 'var(--color-text-soft)', marginBottom: 16 }}>
+                Leads reçus via Moteurs.com · Formule&nbsp;
+                <strong>{installateur.formule === 'cpl' ? 'Paiement au lead' : 'Abonnement mensuel'}</strong>
+              </p>
+
+              {/* Résumé mois en cours */}
+              {(() => {
+                const now = new Date()
+                const debutMois = new Date(now.getFullYear(), now.getMonth(), 1).toISOString()
+                const leadsMonth = leadsItems.filter(l => l.created_at >= debutMois)
+                const convertis = leadsMonth.filter(l => l.statut === 'CONVERTI').length
+                return leadsMonth.length > 0 ? (
+                  <div style={{ display: 'flex', gap: 16, marginBottom: 20, flexWrap: 'wrap' }}>
+                    {[
+                      { label: 'Leads ce mois', val: leadsMonth.length, color: 'var(--color-primary)' },
+                      { label: 'Convertis',     val: convertis,          color: '#10b981' },
+                      { label: 'Taux convers.', val: leadsMonth.length ? `${Math.round(convertis/leadsMonth.length*100)} %` : '—', color: '#f59e0b' },
+                    ].map(m => (
+                      <div key={m.label} style={{ background: 'var(--color-bg-alt)', border: '1px solid var(--color-border)', borderRadius: 10, padding: '10px 18px', textAlign: 'center', minWidth: 110 }}>
+                        <div style={{ fontSize: '1.4rem', fontWeight: 800, color: m.color }}>{m.val}</div>
+                        <div style={{ fontSize: '0.75rem', color: 'var(--color-text-soft)', marginTop: 2 }}>{m.label}</div>
+                      </div>
+                    ))}
+                  </div>
+                ) : null
+              })()}
+
+              {leadsItems.length === 0 ? (
+                <p style={{ fontSize: '0.85rem', color: 'var(--color-text-soft)', margin: 0 }}>
+                  Aucun lead reçu pour l&apos;instant. Votre profil est actif — les prochaines demandes correspondant à votre zone vous seront transmises automatiquement.
+                </p>
+              ) : (
+                <div style={{ display: 'grid', gap: 10 }}>
+                  {leadsItems.map(lead => {
+                    const typeLabel: Record<string, string> = {
+                      borne_maison:     '🏠 Borne domicile',
+                      borne_entreprise: '🏢 Borne entreprise',
+                      panneaux:         '☀️ Panneaux solaires',
+                      batterie:         '🔋 Batterie stockage',
+                      audit:            '📋 Audit énergétique',
+                    }
+                    const statutColor: Record<string, string> = {
+                      NOUVEAU:  '#f59e0b',
+                      TRANSMIS: '#3b82f6',
+                      CONVERTI: '#10b981',
+                      PERDU:    '#ef4444',
+                    }
+                    return (
+                      <div key={lead.id} style={{ background: 'var(--color-bg-alt)', borderRadius: 10, padding: '14px 16px', border: '1px solid var(--color-border)' }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 12, flexWrap: 'wrap' }}>
+                          <div style={{ flex: 1, minWidth: 200 }}>
+                            <div style={{ fontWeight: 700, fontSize: '0.9rem', marginBottom: 4 }}>
+                              {typeLabel[lead.type_projet] ?? lead.type_projet}
+                              {lead.puissance_kw ? ` · ${lead.puissance_kw} kW` : ''}
+                            </div>
+                            <div style={{ fontSize: '0.8rem', color: 'var(--color-text-soft)', lineHeight: 1.6 }}>
+                              📍 {lead.code_postal} ({lead.pays}) · {new Date(lead.created_at).toLocaleDateString('fr-FR')}
+                            </div>
+                            <div style={{ fontSize: '0.8rem', marginTop: 4 }}>
+                              👤 {lead.nom_contact}
+                              {lead.telephone_contact ? ` · 📞 ${lead.telephone_contact}` : ''}
+                            </div>
+                            <div style={{ fontSize: '0.8rem', color: 'var(--color-primary)' }}>
+                              ✉️ {lead.email_contact}
+                            </div>
+                            {lead.message && (
+                              <div style={{ fontSize: '0.78rem', color: 'var(--color-text-soft)', marginTop: 6, fontStyle: 'italic' }}>
+                                &ldquo;{lead.message}&rdquo;
+                              </div>
+                            )}
+                          </div>
+                          <div style={{ display: 'flex', flexDirection: 'column', gap: 6, alignItems: 'flex-end' }}>
+                            <span style={{ fontSize: '0.75rem', fontWeight: 700, padding: '3px 10px', borderRadius: 999, background: `${statutColor[lead.statut] ?? '#64748b'}22`, color: statutColor[lead.statut] ?? '#64748b' }}>
+                              {lead.statut}
+                            </span>
+                            {lead.statut !== 'CONVERTI' && lead.statut !== 'PERDU' && (
+                              <div style={{ display: 'flex', gap: 6 }}>
+                                <button
+                                  onClick={() => mettreAJourStatutLead(lead.id, 'CONVERTI')}
+                                  style={{ fontSize: '0.75rem', padding: '4px 10px', borderRadius: 6, border: 'none', background: '#10b981', color: '#fff', cursor: 'pointer', fontWeight: 700 }}
+                                >
+                                  ✓ Converti
+                                </button>
+                                <button
+                                  onClick={() => mettreAJourStatutLead(lead.id, 'PERDU')}
+                                  style={{ fontSize: '0.75rem', padding: '4px 10px', borderRadius: 6, border: '1px solid rgba(239,68,68,0.4)', background: 'rgba(239,68,68,0.06)', color: '#ef4444', cursor: 'pointer', fontWeight: 600 }}
+                                >
+                                  ✕ Perdu
+                                </button>
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    )
+                  })}
+                </div>
+              )}
+            </div>
+          )}
 
           {/* ── Mes constats sauvegardés ───────────────────────────────────── */}
           <div className="dash-card dash-card-full">

@@ -5,6 +5,7 @@ import { useLocale, useTranslations } from 'next-intl'
 import FaqAccordion from '@/components/FaqAccordion'
 import { useUserContext } from '@/context/UserContextProvider'
 import { routing } from '@/i18n/routing'
+import LeadInstallateur from '@/components/LeadInstallateur'
 
 // HTML statique du formulaire — reste en FR pour cette vague ; les ids sont
 // utilises par simulateur.js externe.
@@ -178,6 +179,10 @@ export default function SimulateurContent() {
           <strong>{t('disclaimer').split(' — ')[0]} —</strong>
           {' ' + t('disclaimer').split(' — ').slice(1).join(' — ')}
         </div>
+      </div>
+
+      <div className="container" style={{ paddingTop: 40, paddingBottom: 16 }}>
+        <LeadInstallateur typeProjet="borne_maison" variant="default" />
       </div>
 
       <div className="container" style={{ paddingBottom: 80, paddingTop: 24 }}>

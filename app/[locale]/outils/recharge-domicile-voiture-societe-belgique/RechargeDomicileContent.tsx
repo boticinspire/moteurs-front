@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from 'react'
 import { useLocale } from 'next-intl'
 import { Link, usePathname } from '@/i18n/navigation'
 import { useUserContext } from '@/context/UserContextProvider'
+import LeadInstallateur from '@/components/LeadInstallateur'
 
 // ─────────────────────────────────────────────────────────────────────────────
 // CSS de l'outil — page-scopé .m-tool, variables remappées sur les tokens du site
@@ -1927,6 +1928,15 @@ export default function RechargeDomicileContent() {
         >
           {s.shareBtn}
         </button>
+      </div>
+      <div style={{ maxWidth: 1080, margin: '0 auto', padding: '32px 22px 0' }}>
+        <LeadInstallateur
+          typeProjet="borne_maison"
+          titre="Faites installer votre borne par un pro certifié IRVE"
+          description="Vous avez calculé votre ATN — passez à l'étape suivante : obtenez des devis d'installateurs certifiés en Belgique."
+          cta="Comparer les devis gratuits →"
+          variant="compact"
+        />
       </div>
       <main className="m-tool" ref={rootRef} dangerouslySetInnerHTML={{ __html: toolHtml }} />
     </>

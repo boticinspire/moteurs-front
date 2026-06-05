@@ -11,6 +11,7 @@ import { Link } from '@/i18n/navigation'
 import FaqAccordion from '@/components/FaqAccordion'
 import { ENERGY_PRICES_FALLBACK } from '@/lib/tco'
 import { routing } from '@/i18n/routing'
+import LeadInstallateur from '@/components/LeadInstallateur'
 
 const ANNEE = new Date().getFullYear()
 
@@ -298,6 +299,11 @@ function RechargeContent() {
           <Link href="/trajet" style={btnSecondaire}>{t('outils_trajets')}</Link>
           <Link href="/outils/recharge-domicile-voiture-societe-belgique" style={btnSecondaire}>ATN recharge domicile (BE)</Link>
         </div>
+      </section>
+
+      {/* CTA installateur */}
+      <section style={{ marginTop: 48, padding: '0 0 8px' }}>
+        <LeadInstallateur typeProjet="borne_entreprise" variant="default" />
       </section>
     </main>
   )
