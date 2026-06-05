@@ -78,6 +78,7 @@ const PAGES_STATIQUES: { url: string; priority: number; changeFreq: MetadataRout
   { url: '/outils/comparer-modeles',        priority: 0.8,  changeFreq: 'weekly'  },
   { url: '/outils/cartes-recharge',        priority: 0.85, changeFreq: 'weekly'  },
   { url: '/outils/documents-europe',       priority: 0.75, changeFreq: 'monthly' },
+  { url: '/outils/simulateur-borne-recharge', priority: 0.82, changeFreq: 'monthly' },
   { url: '/outils/recharge-domicile-voiture-societe-belgique', priority: 0.7, changeFreq: 'monthly' },
   { url: '/outils/amende-pv',               priority: 0.85, changeFreq: 'monthly'  },
   { url: '/a-propos',       priority: 0.4, changeFreq: 'yearly' },

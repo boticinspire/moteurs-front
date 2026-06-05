@@ -207,6 +207,14 @@ export const SEO_MAP: Record<string, SeoMeta> = {
     volume: 3200,
     intent: 'Commerciale',
   },
+  '/outils/simulateur-borne-recharge': {
+    title: 'Simulateur budget borne de recharge IRVE | Moteurs.com',
+    description: "Estimez le coût complet d'installation d'une borne de recharge (IRVE) : matériel, câblage, main d'œuvre, TVA. BE, FR, CH, LU. Outil pré-devis pour particuliers et entreprises.",
+    keywords: ['budget borne recharge domicile', 'coût installation borne IRVE', 'devis borne recharge'],
+    primaryKeyword: 'simulateur budget borne de recharge installation',
+    volume: 2200,
+    intent: 'Transactionnelle',
+  },
   '/outils/recharge-domicile-voiture-societe-belgique': {
     title: 'Recharge à domicile voiture de société : montant imposable (Belgique) | Moteurs.com',
     description: 'Calculez l\'avantage imposable (ATN) du remboursement de la recharge à domicile d\'une voiture de société en Belgique. Barème CREG, circulaire 2024/C/77.',
