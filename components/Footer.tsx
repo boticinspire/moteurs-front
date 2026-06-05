@@ -55,4 +55,9 @@ export default function Footer() {
           </div>
         </div>
         <div className="footer-bottom">
-          <p>{t('copyri
+          <p>{t('copyright')}</p>
+        </div>
+      </div>
+    </footer>
+  )
+}
