@@ -12,8 +12,10 @@
 
 import { NextRequest, NextResponse } from 'next/server'
 
-const SUPABASE_URL      = process.env.NEXT_PUBLIC_SUPABASE_URL ?? ''
-const SUPABASE_ANON_KEY = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ?? ''
+const SUPABASE_URL           = process.env.NEXT_PUBLIC_SUPABASE_URL ?? ''
+const SUPABASE_ANON_KEY      = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ?? ''
+// Service role key pour les écritures serveur (bypass RLS) — jamais exposée au browser
+const SUPABASE_SERVICE_KEY   = process.env.SUPABASE_SERVICE_ROLE_KEY ?? ''
 
 // Mapping type_projet → spécialité attendue dans installateurs.specialites
 const SPECIALITE_MAP: Record<string, string> = {
@@ -47,7 +49,7 @@ interface Installateur {
 }
 
 export async function POST(req: NextRequest) {
-  if (!SUPABASE_URL || !SUPABASE_ANON_KEY) {
+  if (!SUPABASE_URL || (!SUPABASE_ANON_KEY && !SUPABASE_SERVICE_KEY)) {
     return NextResponse.json({ error: 'Supabase non configuré' }, { status: 500 })
   }
 
@@ -127,8 +129,8 @@ export async function POST(req: NextRequest) {
   const insertRes = await fetch(`${SUPABASE_URL}/rest/v1/leads_installateurs`, {
     method: 'POST',
     headers: {
-      'apikey':        SUPABASE_ANON_KEY,
-      'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+      'apikey':        SUPABASE_SERVICE_KEY || SUPABASE_ANON_KEY,
+      'Authorization': `Bearer ${SUPABASE_SERVICE_KEY || SUPABASE_ANON_KEY}`,
       'Content-Type':  'application/json',
       'Prefer':        'return=minimal',
     },
@@ -159,10 +161,4 @@ export async function POST(req: NextRequest) {
     }).catch((e) => console.error('[leads-installateurs] notif email error:', e))
   }
 
-  // ── 5. Réponse ─────────────────────────────────────────────────────────────
-  return NextResponse.json({
-    success:              true,
-    lead_id:              leadId,
-    installateurs_count:  matched.length,
-  })
-}
+  // ── 5. Réponse ───────────────────────────────────────────────────────────
