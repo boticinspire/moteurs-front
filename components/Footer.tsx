@@ -49,14 +49,10 @@ export default function Footer() {
             <h3>{t('section_legal')}</h3>
             <ul>
               <li><Link href="/mentions-legales">{t('link_mentions')}</Link></li>
+              <li><Link href="/cgu">{t('link_cgu')}</Link></li>
               <li><Link href="/a-propos">{t('link_about')}</Link></li>
             </ul>
           </div>
         </div>
         <div className="footer-bottom">
-          <p>{t('copyright')}</p>
-        </div>
-      </div>
-    </footer>
-  )
-}
+          <p>{t('copyri

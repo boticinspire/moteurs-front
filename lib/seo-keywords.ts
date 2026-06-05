@@ -258,7 +258,8 @@ export function getStaticMetadata(route: string) {
   const m = SEO_MAP[route]
   if (!m) return {}
   return {
-    title: m.title,
+    // absolute: contourne le title template du layout (évite la duplication "— Moteurs.com")
+    title: { absolute: m.title },
     description: m.description,
     keywords: [m.primaryKeyword, ...m.keywords].join(', '),
     openGraph: { title: m.title, description: m.description },

@@ -45,10 +45,12 @@
     "nav_articles": "Décryptages",
     "nav_recharge": "Recharge",
     "nav_vacances": "Vacances",
-    "nav_tco": "TCO",
+    "nav_tco": "Coût voiture",
     "nav_depannage": "Dépannage",
-    "nav_documents": "Documents",
+    "nav_documents": "Papiers auto",
     "nav_outils": "Outils",
+    "nav_b2b": "PME & Flottes",
+    "nav_particulier": "Particuliers",
     "cta_my_space": "Mon espace",
     "cta_simulator": "Simulateur",
     "cta_simulator_tco": "Simulateur TCO",
@@ -75,7 +77,8 @@
     "link_outils": "Tous les calculateurs",
     "link_mentions": "Mentions légales",
     "link_about": "À propos",
-    "copyright": "© 2026 Moteurs.com — Média indépendant de la transition énergétique des transports routiers"
+    "copyright": "© 2026 Moteurs.com — Média indépendant de la transition énergétique des transports routiers",
+    "link_cgu": "CGU"
   },
   "LanguageSwitcher": {
     "label": "Langue",
@@ -985,7 +988,44 @@
     },
     "viewMore": {
       "particulier": "Tous nos décryptages particuliers",
-      "pro": "Tous nos décryptages pros"
+      "pro": "Tous nos décryptages pro"
     }
+  },
+  "CGU": {
+    "title": "Conditions Générales d'Utilisation",
+    "meta_description": "Conditions générales d'utilisation de moteurs.com — accès au site, outils de calcul, propriété intellectuelle, données personnelles et droit applicable.",
+    "last_updated": "Dernière mise à jour : 5 juin 2026",
+    "s1_title": "1. Présentation du site",
+    "s1_body": "Le site moteurs.com (ci-après « le Site ») est édité par Moteurs.com SAS, société immatriculée en Belgique, joignable à l'adresse : contact@moteurs.com. Le Site propose des outils de calcul du coût total de possession (TCO), du coût de trajet par motorisation, ainsi que des articles d'information sur l'automobile, la recharge électrique, les péages et les ZFE.",
+    "s2_title": "2. Acceptation des conditions",
+    "s2_body": "L'accès et l'utilisation du Site impliquent l'acceptation pleine et entière des présentes CGU. Si vous n'acceptez pas ces conditions, veuillez cesser d'utiliser le Site.",
+    "s3_title": "3. Accès au Site",
+    "s3_body": "Le Site est accessible gratuitement à tout utilisateur disposant d'un accès internet. Les frais d'accès et d'équipement restent à la charge de l'utilisateur. Moteurs.com SAS se réserve le droit de modifier, suspendre ou interrompre l'accès au Site à tout moment, notamment pour des raisons de maintenance, sans obligation de préavis.",
+    "s4_title": "4. Utilisation des outils de calcul",
+    "s4_body": "Les simulateurs et calculateurs mis à disposition (TCO, coût de trajet, recharge, etc.) fournissent des estimations à titre indicatif. Les résultats sont calculés sur la base des données saisies par l'utilisateur et des paramètres disponibles à la date de la simulation. Moteurs.com SAS ne saurait être tenue responsable des décisions prises sur la base de ces estimations.",
+    "s5_title": "5. Propriété intellectuelle",
+    "s5_body": "L'ensemble des contenus présents sur le Site (textes, articles, graphiques, outils, code, données) sont la propriété exclusive de Moteurs.com SAS ou de ses partenaires, et sont protégés par le droit de la propriété intellectuelle. Toute reproduction, représentation, modification ou exploitation, partielle ou totale, sans autorisation écrite préalable est strictement interdite, y compris :",
+    "s5_li1": "L'extraction automatisée de données (scraping, crawling, etc.)",
+    "s5_li2": "La réutilisation des données de calcul à des fins commerciales",
+    "s5_li3": "La reproduction des articles ou contenus éditoriaux",
+    "s6_title": "6. Interdiction du scraping et de l'extraction automatisée",
+    "s6_body": "Il est expressément interdit d'utiliser des robots, scripts, outils ou procédés automatisés pour accéder, collecter, extraire ou indexer les données, résultats ou contenus du Site sans autorisation écrite préalable. Toute violation de cette interdiction pourra faire l'objet de poursuites judiciaires et engagera la responsabilité civile et pénale de l'auteur, conformément aux dispositions applicables en Belgique, France et en droit européen (directive 96/9/CE sur les bases de données).",
+    "s7_title": "7. Données personnelles",
+    "s7_body": "Moteurs.com SAS collecte et traite des données personnelles dans le cadre de l'utilisation du Site, conformément au Règlement Général sur la Protection des Données (RGPD – Règlement UE 2016/679). Les données collectées (adresse email, données de simulation, données de navigation) sont utilisées exclusivement pour :",
+    "s7_li1": "La fourniture des services du Site",
+    "s7_li2": "L'amélioration de l'expérience utilisateur",
+    "s7_li3": "L'envoi de communications si l'utilisateur y a consenti",
+    "s7_rights": "Conformément au RGPD, vous disposez d'un droit d'accès, de rectification, d'effacement et de portabilité de vos données. Pour exercer ces droits, contactez : contact@moteurs.com",
+    "s8_title": "8. Cookies",
+    "s8_body": "Le Site utilise des cookies techniques nécessaires à son fonctionnement, ainsi que des cookies analytiques permettant de mesurer l'audience. L'utilisateur peut paramétrer son navigateur pour refuser les cookies, ce qui peut toutefois affecter certaines fonctionnalités.",
+    "s9_title": "9. Liens hypertextes",
+    "s9_body": "Le Site peut contenir des liens vers des sites tiers. Moteurs.com SAS n'exerce aucun contrôle sur ces sites et décline toute responsabilité quant à leur contenu ou leur politique de confidentialité.",
+    "s10_title": "10. Limitation de responsabilité",
+    "s10_body": "Moteurs.com SAS s'efforce d'assurer l'exactitude des informations diffusées sur le Site, mais ne peut garantir leur exhaustivité ou leur mise à jour en temps réel, notamment concernant les prix des carburants, les péages, les aides gouvernementales et les ZFE. La responsabilité de Moteurs.com SAS ne pourra être engagée en cas d'interruption du service, de perte de données, ou de dommages résultant de l'utilisation du Site.",
+    "s11_title": "11. Droit applicable et juridiction",
+    "s11_body": "Les présentes CGU sont régies par le droit belge. En cas de litige, et à défaut de résolution amiable, les tribunaux compétents de Belgique seront seuls compétents.",
+    "s12_title": "12. Modification des CGU",
+    "s12_body": "Moteurs.com SAS se réserve le droit de modifier les présentes CGU à tout moment. Les modifications prennent effet dès leur publication sur le Site. Il appartient à l'utilisateur de les consulter régulièrement.",
+    "footer_line": "moteurs.com · contact@moteurs.com · Belgique"
   }
 }

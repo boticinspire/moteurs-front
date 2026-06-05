@@ -45,15 +45,17 @@
     "nav_articles": "Insights",
     "nav_recharge": "Charging",
     "nav_vacances": "Holidays",
-    "nav_tco": "TCO",
+    "nav_tco": "Car cost",
     "nav_depannage": "Breakdown",
-    "nav_documents": "Documents",
+    "nav_documents": "Car docs",
     "nav_outils": "Tools",
     "cta_my_space": "My account",
     "cta_simulator": "Simulator",
     "cta_simulator_tco": "TCO Simulator",
     "language_label": "Language",
-    "language_change": "Change language"
+    "language_change": "Change language",
+    "nav_b2b": "Business & Fleets",
+    "nav_particulier": "Private owners"
   },
   "Footer": {
     "tagline": "The editorial media on the energy transition of road transport.",
@@ -75,7 +77,8 @@
     "link_outils": "All Calculators",
     "link_mentions": "Legal Notice",
     "link_about": "About",
-    "copyright": "© 2026 Moteurs.com — Independent media on the energy transition of road transport"
+    "copyright": "© 2026 Moteurs.com — Independent media on the energy transition of road transport",
+    "link_cgu": "Terms of Use"
   },
   "LanguageSwitcher": {
     "label": "Language",
@@ -987,5 +990,42 @@
       "particulier": "All consumer briefings",
       "pro": "All business briefings"
     }
+  },
+  "CGU": {
+    "title": "Terms of Use",
+    "meta_description": "Terms of use for moteurs.com — site access, calculation tools, intellectual property, personal data and applicable law.",
+    "last_updated": "Last updated: 5 June 2026",
+    "s1_title": "1. About the Site",
+    "s1_body": "The website moteurs.com (hereinafter \"the Site\") is published by Moteurs.com SAS, a company registered in Belgium, reachable at: contact@moteurs.com. The Site offers tools for calculating total cost of ownership (TCO), trip cost by powertrain, and articles on automotive, EV charging, tolls and low-emission zones.",
+    "s2_title": "2. Acceptance of Terms",
+    "s2_body": "Accessing and using the Site implies full acceptance of these Terms of Use. If you do not accept these terms, please stop using the Site.",
+    "s3_title": "3. Access to the Site",
+    "s3_body": "The Site is freely accessible to any user with internet access. Access and equipment costs remain the responsibility of the user. Moteurs.com SAS reserves the right to modify, suspend or interrupt access to the Site at any time, including for maintenance, without prior notice.",
+    "s4_title": "4. Use of Calculation Tools",
+    "s4_body": "The simulators and calculators provided (TCO, trip cost, charging, etc.) give indicative estimates only. Results are calculated based on user-entered data and parameters available at the time of simulation. Moteurs.com SAS cannot be held responsible for decisions made based on these estimates.",
+    "s5_title": "5. Intellectual Property",
+    "s5_body": "All content on the Site (texts, articles, graphics, tools, code, data) is the exclusive property of Moteurs.com SAS or its partners, and is protected by intellectual property law. Any reproduction, representation, modification or exploitation, in whole or in part, without prior written authorisation is strictly prohibited, including:",
+    "s5_li1": "Automated data extraction (scraping, crawling, etc.)",
+    "s5_li2": "Reuse of calculation data for commercial purposes",
+    "s5_li3": "Reproduction of articles or editorial content",
+    "s6_title": "6. Prohibition of Scraping and Automated Extraction",
+    "s6_body": "It is expressly forbidden to use robots, scripts, tools or automated processes to access, collect, extract or index data, results or content from the Site without prior written authorisation. Any violation may result in legal proceedings and civil and criminal liability, in accordance with applicable law in Belgium, France and European law (Directive 96/9/EC on databases).",
+    "s7_title": "7. Personal Data",
+    "s7_body": "Moteurs.com SAS collects and processes personal data in the context of Site use, in accordance with the General Data Protection Regulation (GDPR – EU Regulation 2016/679). Collected data (email address, simulation data, navigation data) is used exclusively for:",
+    "s7_li1": "Provision of Site services",
+    "s7_li2": "Improving user experience",
+    "s7_li3": "Sending communications if the user has consented",
+    "s7_rights": "In accordance with GDPR, you have the right of access, rectification, erasure and portability of your data. To exercise these rights, contact: contact@moteurs.com",
+    "s8_title": "8. Cookies",
+    "s8_body": "The Site uses technical cookies necessary for its operation, as well as analytical cookies to measure audience. Users can configure their browser to refuse cookies, which may however affect certain features.",
+    "s9_title": "9. Hyperlinks",
+    "s9_body": "The Site may contain links to third-party sites. Moteurs.com SAS has no control over these sites and accepts no responsibility for their content or privacy policy.",
+    "s10_title": "10. Limitation of Liability",
+    "s10_body": "Moteurs.com SAS strives to ensure the accuracy of information published on the Site, but cannot guarantee completeness or real-time updates, particularly regarding fuel prices, tolls, government subsidies and low-emission zones. Moteurs.com SAS cannot be held liable for service interruptions, data loss, or damage resulting from use of the Site.",
+    "s11_title": "11. Governing Law and Jurisdiction",
+    "s11_body": "These Terms of Use are governed by Belgian law. In the event of a dispute, and failing amicable resolution, the competent courts of Belgium shall have sole jurisdiction.",
+    "s12_title": "12. Amendments",
+    "s12_body": "Moteurs.com SAS reserves the right to amend these Terms of Use at any time. Amendments take effect upon publication on the Site. Users are responsible for consulting them regularly.",
+    "footer_line": "moteurs.com · contact@moteurs.com · Belgium"
   }
 }

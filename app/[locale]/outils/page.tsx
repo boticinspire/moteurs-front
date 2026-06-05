@@ -1,8 +1,9 @@
 import type { Metadata } from 'next'
 import { Link } from '@/i18n/navigation'
 export const metadata: Metadata = {
-  title: 'Calculateurs & Outils gratuits — Moteurs.com',
+  title: 'Calculateurs & Outils gratuits',
   description: 'Tous les outils pour maîtriser le coût de votre voiture : comparateur trajet vacances, simulateur TCO, carte grise, immatriculation, convertisseur technique.',
+  alternates: { canonical: 'https://moteurs.com/outils' },
 }
 
 const OUTILS_PHARES = [
@@ -307,8 +308,4 @@ export default function OutilsPage() {
               </Link>
             ))}
           </div>
-        </div>
-      </section>
-    </>
-  )
-}
+   

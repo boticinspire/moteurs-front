@@ -147,6 +147,14 @@ export default async function B2BPage() {
 </tbody>
 </table>
 </div>
+<div style="margin:18px 0 0; padding:14px 18px; background:rgba(21,168,119,0.08); border:1px solid rgba(21,168,119,0.25); border-radius:10px; display:flex; align-items:center; gap:14px; flex-wrap:wrap;">
+  <span style="font-size:1.4rem;">🔌</span>
+  <div style="flex:1; min-width:200px;">
+    <strong style="font-size:.92rem;">Voiture de société + recharge à domicile (BE)</strong><br/>
+    <span style="font-size:.82rem; color:var(--color-text-soft);">Le remboursement employeur de l'électricité est-il imposable ? Calculez l'ATN exact selon la circulaire 2024/C/77 et le barème CREG.</span>
+  </div>
+  <a href="/outils/recharge-domicile-voiture-societe-belgique" style="white-space:nowrap; padding:9px 18px; background:var(--color-primary); color:#fff; font-weight:700; font-size:.88rem; border-radius:8px; text-decoration:none;">Calculer l'ATN →</a>
+</div>
 <h3 style="font-size:1.25rem; margin:32px 0 14px; color:var(--color-bg-dark);">🇨🇭 Suisse · 🇨🇦 Canada</h3>
 <div class="cards-grid">
 <div class="card">
@@ -263,26 +271,4 @@ export default async function B2BPage() {
 <textarea id="lead-message" placeholder="Ex : 12 Sprinter diesel en Île-de-France, contrainte ZFE à partir de 2026, budget max 45 k€ par véhicule…" rows="4" style="width:100%; padding:10px 14px; border:1px solid var(--color-border); border-radius:8px; font-family:inherit; font-size:0.9rem; resize:vertical; background:var(--color-bg); color:var(--color-text);"></textarea>
 </div>
 <div id="lead-status" style="display:none; padding:12px 16px; border-radius:8px; font-size:0.9rem;"></div>
-<button class="btn btn-primary btn-lg" id="btn-submit-lead" style="align-self:flex-start;" type="submit">
-          Envoyer ma demande →
-        </button>
-<p style="font-size:0.75rem; color:var(--color-text-soft);">
-          Vos données ne sont utilisées que pour vous répondre. Aucune revente, aucun démarchage tiers.
-        </p>
-</form>
-</div>
-</div>
-</section>
-
-<!-- ===== DISCLAIMER B2B ===== -->
-<section style="padding-top:0;">
-<div class="container">
-<div class="disclaimer">
-<strong>Disclaimer B2B —</strong> Les montants des aides indiqués sont fournis à titre indicatif et susceptibles d'évoluer. Vérifiez votre éligibilité auprès de votre concessionnaire ou de l'ADEME (ou organisme équivalent dans votre pays) avant tout engagement. Moteurs.com n'est pas conseiller financier.
-    </div>
-</div>
-</section>` }} />
-    <DerniersDecryptages cible="pro" />
-    </>
-  )
-}
+<button class="btn btn-prim

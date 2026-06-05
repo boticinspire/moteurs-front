@@ -140,46 +140,4 @@ export async function POST(req: NextRequest) {
     }
  
     // Nettoyer si Claude ajoute des backticks
-    const cleaned = text.replace(/^```json\s*/i, '').replace(/```\s*$/i, '').trim()
-    let raw
-    try {
-      raw = JSON.parse(cleaned)
-    } catch {
-      console.error('[/api/scan-voyant] JSON invalide:', cleaned.slice(0, 300))
-      return NextResponse.json(
-        { error: `Réponse non analysable de Claude: ${cleaned.slice(0, 100)}` },
-        { status: 502 }
-      )
-    }
- 
-    const urgence = (['stop', 'attention', 'info'] as const).includes(raw.urgence)
-      ? raw.urgence as 'stop' | 'attention' | 'info'
-      : 'attention'
- 
-    const confiance = (['haute', 'moyenne', 'faible'] as const).includes(raw.confiance)
-      ? raw.confiance as 'haute' | 'moyenne' | 'faible'
-      : 'moyenne'
- 
-    const result = {
-      voyant_nom:  raw.voyant_nom ?? 'Voyant non identifié',
-      description: raw.description ?? '',
-      urgence,
-      peut_rouler: urgence !== 'stop',
-      actions:     (raw.actions ?? []).slice(0, 4) as string[],
-      article_lien: null as null,
-      confiance,
-    }
- 
-    // ── Sauvegarder en cache (fire & forget) ──────────────────────────────
-    saveScanToCache(imageHash, result).catch(e =>
-      console.error('[/api/scan-voyant] Erreur cache save', e)
-    )
- 
-    return NextResponse.json(result)
- 
-  } catch (err) {
-    const msg = err instanceof Error ? err.message : String(err)
-    console.error('[/api/scan-voyant] erreur', msg)
-    return NextResponse.json({ error: `Erreur serveur: ${msg}` }, { status: 500 })
-  }
-}
+    const cleaned = t

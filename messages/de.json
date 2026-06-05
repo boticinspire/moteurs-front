@@ -45,15 +45,17 @@
     "nav_articles": "Analysen",
     "nav_recharge": "Laden",
     "nav_vacances": "Urlaub",
-    "nav_tco": "TCO",
+    "nav_tco": "Autokosten",
     "nav_depannage": "Panne",
-    "nav_documents": "Dokumente",
+    "nav_documents": "Kfz-Dokumente",
     "nav_outils": "Tools",
     "cta_my_space": "Mein Konto",
     "cta_simulator": "Simulator",
     "cta_simulator_tco": "TCO-Simulator",
     "language_label": "Sprache",
-    "language_change": "Sprache ändern"
+    "language_change": "Sprache ändern",
+    "nav_b2b": "KMU & Flotten",
+    "nav_particulier": "Privatpersonen"
   },
   "Footer": {
     "tagline": "Das redaktionelle Medium zur Energiewende des Straßenverkehrs.",
@@ -75,7 +77,8 @@
     "link_outils": "Alle Rechner",
     "link_mentions": "Impressum",
     "link_about": "Über uns",
-    "copyright": "© 2026 Moteurs.com — Unabhängiges Medium zur Energiewende des Straßenverkehrs"
+    "copyright": "© 2026 Moteurs.com — Unabhängiges Medium zur Energiewende des Straßenverkehrs",
+    "link_cgu": "Nutzungsbedingungen"
   },
   "LanguageSwitcher": {
     "label": "Sprache",
@@ -987,5 +990,42 @@
       "particulier": "Alle Analysen für Privatpersonen",
       "pro": "Alle Analysen für Unternehmen"
     }
+  },
+  "CGU": {
+    "title": "Nutzungsbedingungen",
+    "meta_description": "Nutzungsbedingungen von moteurs.com — Zugang, Berechnungstools, geistiges Eigentum, personenbezogene Daten und anwendbares Recht.",
+    "last_updated": "Zuletzt aktualisiert: 5. Juni 2026",
+    "s1_title": "1. Über die Website",
+    "s1_body": "Die Website moteurs.com wird von Moteurs.com SAS, einer in Belgien eingetragenen Gesellschaft, betrieben. Kontakt: contact@moteurs.com. Die Website bietet Berechnungstools für Gesamtbetriebskosten (TCO), Reisekosten nach Antriebsart sowie Artikel zu Automobil, Elektroladen, Maut und Umweltzonen.",
+    "s2_title": "2. Annahme der Bedingungen",
+    "s2_body": "Der Zugang zur und die Nutzung der Website setzt die vollständige Annahme dieser Nutzungsbedingungen voraus. Wenn Sie diese Bedingungen nicht akzeptieren, stellen Sie bitte die Nutzung der Website ein.",
+    "s3_title": "3. Zugang zur Website",
+    "s3_body": "Die Website ist für jeden Nutzer mit Internetzugang kostenlos zugänglich. Zugangs- und Gerätekosten trägt der Nutzer. Moteurs.com SAS behält sich vor, den Zugang jederzeit zu ändern, auszusetzen oder zu unterbrechen, auch für Wartungszwecke, ohne vorherige Ankündigung.",
+    "s4_title": "4. Nutzung der Berechnungstools",
+    "s4_body": "Die bereitgestellten Simulatoren und Rechner (TCO, Reisekosten, Laden usw.) liefern unverbindliche Schätzungen. Ergebnisse basieren auf den vom Nutzer eingegebenen Daten. Moteurs.com SAS haftet nicht für Entscheidungen, die auf diesen Schätzungen beruhen.",
+    "s5_title": "5. Geistiges Eigentum",
+    "s5_body": "Alle Inhalte der Website (Texte, Artikel, Grafiken, Tools, Code, Daten) sind ausschließliches Eigentum von Moteurs.com SAS und durch das geistige Eigentumsrecht geschützt. Jede Vervielfältigung ohne vorherige schriftliche Genehmigung ist verboten, einschließlich:",
+    "s5_li1": "Automatisierte Datenextraktion (Scraping, Crawling usw.)",
+    "s5_li2": "Wiederverwendung von Berechnungsdaten zu kommerziellen Zwecken",
+    "s5_li3": "Vervielfältigung von Artikeln oder redaktionellen Inhalten",
+    "s6_title": "6. Verbot von Scraping und automatisierter Extraktion",
+    "s6_body": "Es ist ausdrücklich verboten, Bots, Skripte oder automatisierte Prozesse zu verwenden, um ohne vorherige schriftliche Genehmigung auf Daten, Ergebnisse oder Inhalte der Website zuzugreifen. Verstöße können zu rechtlichen Schritten führen.",
+    "s7_title": "7. Personenbezogene Daten",
+    "s7_body": "Moteurs.com SAS verarbeitet personenbezogene Daten gemäß der DSGVO (EU-Verordnung 2016/679). Die erhobenen Daten werden ausschließlich verwendet für:",
+    "s7_li1": "Bereitstellung der Website-Dienste",
+    "s7_li2": "Verbesserung der Nutzererfahrung",
+    "s7_li3": "Versand von Mitteilungen bei entsprechender Einwilligung",
+    "s7_rights": "Gemäß DSGVO haben Sie das Recht auf Auskunft, Berichtigung, Löschung und Datenübertragbarkeit. Kontakt: contact@moteurs.com",
+    "s8_title": "8. Cookies",
+    "s8_body": "Die Website verwendet technisch notwendige Cookies sowie Analyse-Cookies zur Reichweitenmessung. Nutzer können ihren Browser so konfigurieren, dass Cookies abgelehnt werden, was jedoch bestimmte Funktionen beeinträchtigen kann.",
+    "s9_title": "9. Hyperlinks",
+    "s9_body": "Die Website kann Links zu Drittseiten enthalten. Moteurs.com SAS übernimmt keine Verantwortung für deren Inhalte oder Datenschutzrichtlinien.",
+    "s10_title": "10. Haftungsbeschränkung",
+    "s10_body": "Moteurs.com SAS bemüht sich um die Richtigkeit der Informationen, kann jedoch keine Vollständigkeit oder Aktualität garantieren. Moteurs.com SAS haftet nicht für Dienstunterbrechungen, Datenverluste oder Schäden aus der Nutzung der Website.",
+    "s11_title": "11. Anwendbares Recht und Gerichtsstand",
+    "s11_body": "Diese Nutzungsbedingungen unterliegen belgischem Recht. Im Streitfall sind die zuständigen Gerichte Belgiens ausschließlich zuständig.",
+    "s12_title": "12. Änderungen",
+    "s12_body": "Moteurs.com SAS behält sich vor, diese Nutzungsbedingungen jederzeit zu ändern. Änderungen treten mit Veröffentlichung in Kraft.",
+    "footer_line": "moteurs.com · contact@moteurs.com · Belgien"
   }
 }

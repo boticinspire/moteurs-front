@@ -2,9 +2,10 @@ import type { Metadata } from 'next'
 import AssistanceHub from './AssistanceHub'
 
 export const metadata: Metadata = {
-  title: 'Hub Assistance Auto — Coûts, Recharge, Vacances, Achat | Moteurs.com',
+  title: 'Hub Assistance Auto — Coûts, Recharge, Vacances, Achat',
   description:
     'Votre assistant automobile intelligent : coût mensuel réel, stratégie de recharge VE, budget vacances, aide à l\'achat, démarches administratives. Posez votre question, on vous guide.',
+  alternates: { canonical: 'https://moteurs.com/assistance' },
   openGraph: {
     title: 'Assistant Moteurs.com — Votre copilote pour la voiture',
     description: 'Coûts, recharge, vacances, achat, panne, administratif — 6 modules d\'assistance automobile gratuits.',
@@ -100,8 +101,4 @@ export default function PageAssistance() {
           <a href="/comparer" className="btn btn-secondary">📊 Comparateur TCO</a>
           <a href="/simulateur" className="btn btn-secondary">🧮 Simulateur TCO</a>
           <a href="/outils" className="btn btn-secondary">⚡ Tous les outils</a>
-        </div>
-      </section>
-    </main>
-  )
-}
+     

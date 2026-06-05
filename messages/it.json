@@ -45,15 +45,17 @@
     "nav_articles": "Analisi",
     "nav_recharge": "Ricarica",
     "nav_vacances": "Vacanze",
-    "nav_tco": "TCO",
+    "nav_tco": "Costo auto",
     "nav_depannage": "Guasti",
-    "nav_documents": "Documenti",
+    "nav_documents": "Documenti auto",
     "nav_outils": "Strumenti",
     "cta_my_space": "Il mio account",
     "cta_simulator": "Simulatore",
     "cta_simulator_tco": "Simulatore TCO",
     "language_label": "Lingua",
-    "language_change": "Cambia lingua"
+    "language_change": "Cambia lingua",
+    "nav_b2b": "Aziende & Flotte",
+    "nav_particulier": "Privati"
   },
   "Footer": {
     "tagline": "Il media editoriale sulla transizione energetica del trasporto su strada.",
@@ -75,7 +77,8 @@
     "link_outils": "Tutti i calcolatori",
     "link_mentions": "Note legali",
     "link_about": "Chi siamo",
-    "copyright": "© 2026 Moteurs.com — Media indipendente sulla transizione energetica del trasporto su strada"
+    "copyright": "© 2026 Moteurs.com — Media indipendente sulla transizione energetica del trasporto su strada",
+    "link_cgu": "Condizioni d'uso"
   },
   "LanguageSwitcher": {
     "label": "Lingua",
@@ -987,5 +990,42 @@
       "particulier": "Tutti gli approfondimenti per i privati",
       "pro": "Tutti gli approfondimenti per le aziende"
     }
+  },
+  "CGU": {
+    "title": "Condizioni Generali di Utilizzo",
+    "meta_description": "Condizioni generali di utilizzo di moteurs.com — accesso al sito, strumenti di calcolo, proprietà intellettuale, dati personali e legge applicabile.",
+    "last_updated": "Ultimo aggiornamento: 5 giugno 2026",
+    "s1_title": "1. Presentazione del sito",
+    "s1_body": "Il sito moteurs.com è pubblicato da Moteurs.com SAS, società registrata in Belgio. Contatto: contact@moteurs.com. Il sito offre strumenti di calcolo TCO, costo del tragitto e articoli su automotive, ricarica elettrica e ZTL.",
+    "s2_title": "2. Accettazione delle condizioni",
+    "s2_body": "L'accesso e l'utilizzo del sito implicano la piena accettazione delle presenti CGU. In caso contrario, smettere di utilizzare il sito.",
+    "s3_title": "3. Accesso al sito",
+    "s3_body": "Il sito è accessibile gratuitamente. Moteurs.com SAS si riserva il diritto di modificare, sospendere o interrompere l'accesso in qualsiasi momento senza preavviso.",
+    "s4_title": "4. Utilizzo degli strumenti di calcolo",
+    "s4_body": "I simulatori e i calcolatori forniscono stime indicative. Moteurs.com SAS non è responsabile delle decisioni prese sulla base di tali stime.",
+    "s5_title": "5. Proprietà intellettuale",
+    "s5_body": "Tutti i contenuti del sito sono di proprietà esclusiva di Moteurs.com SAS. Qualsiasi riproduzione senza previa autorizzazione scritta è vietata, incluso:",
+    "s5_li1": "Estrazione automatizzata di dati (scraping, crawling, ecc.)",
+    "s5_li2": "Riutilizzo dei dati di calcolo per scopi commerciali",
+    "s5_li3": "Riproduzione di articoli o contenuti editoriali",
+    "s6_title": "6. Divieto di scraping ed estrazione automatizzata",
+    "s6_body": "È espressamente vietato utilizzare robot, script o processi automatizzati per accedere, raccogliere o indicizzare dati del sito senza previa autorizzazione scritta. Qualsiasi violazione potrà comportare procedimenti legali.",
+    "s7_title": "7. Dati personali",
+    "s7_body": "Moteurs.com SAS tratta i dati personali in conformità con il GDPR (Regolamento UE 2016/679). I dati raccolti sono utilizzati esclusivamente per:",
+    "s7_li1": "Fornitura dei servizi del sito",
+    "s7_li2": "Miglioramento dell'esperienza utente",
+    "s7_li3": "Invio di comunicazioni previo consenso dell'utente",
+    "s7_rights": "In conformità con il GDPR, dispone del diritto di accesso, rettifica, cancellazione e portabilità dei dati. Contatto: contact@moteurs.com",
+    "s8_title": "8. Cookie",
+    "s8_body": "Il sito utilizza cookie tecnici necessari al suo funzionamento e cookie analitici. L'utente può configurare il browser per rifiutare i cookie.",
+    "s9_title": "9. Hyperlink",
+    "s9_body": "Il sito può contenere link a siti di terze parti. Moteurs.com SAS declina ogni responsabilità per i loro contenuti.",
+    "s10_title": "10. Limitazione di responsabilità",
+    "s10_body": "Moteurs.com SAS non può garantire la completezza o l'aggiornamento in tempo reale delle informazioni. Non è responsabile per interruzioni del servizio o danni derivanti dall'utilizzo del sito.",
+    "s11_title": "11. Diritto applicabile e giurisdizione",
+    "s11_body": "Le presenti CGU sono disciplinate dal diritto belga. In caso di controversia, i tribunali competenti del Belgio avranno giurisdizione esclusiva.",
+    "s12_title": "12. Modifiche",
+    "s12_body": "Moteurs.com SAS si riserva il diritto di modificare le presenti CGU in qualsiasi momento. Le modifiche entrano in vigore con la loro pubblicazione.",
+    "footer_line": "moteurs.com · contact@moteurs.com · Belgio"
   }
 }

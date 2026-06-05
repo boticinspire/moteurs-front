@@ -370,8 +370,21 @@ export default function EspaceMembresPage() {
     }))
   }
 
-  // Avant mount client -> placeholder vide (HTML SSR identique au 1er render client)
-  if (!mounted) return <div style={{ minHeight: '60vh' }} />
+  // Avant mount client : afficher la structure du formulaire en SSR pour les crawlers
+  // (disabled -> aucune interaction possible, pas de mismatch d'hydratation)
+  if (!mounted) return (
+    <div className="membre-wrapper">
+      <div className="login-card">
+        <div className="logo-sm">Moteurs<span>.com</span></div>
+        <h1>Votre espace personnel</h1>
+        <p>Alertes sur mesure, articles selon votre profil, simulateur sauvegardé.</p>
+        <input className="login-input" type="email" placeholder="votre@email.pro" disabled />
+        <button className="btn-login" disabled>Recevoir le lien de connexion →</button>
+        <div className="login-divider">Connexion sans mot de passe — lien valable 1h</div>
+        <p style={{ fontSize: '0.75rem', color: 'var(--color-text-soft)' }}>Vos données ne sont jamais revendues.</p>
+      </div>
+    </div>
+  )
 
   // ── VUE LOGIN ──
   if (!userId) return (

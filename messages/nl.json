@@ -45,15 +45,17 @@
     "nav_articles": "Analyses",
     "nav_recharge": "Laden",
     "nav_vacances": "Vakantie",
-    "nav_tco": "TCO",
+    "nav_tco": "Autokosten",
     "nav_depannage": "Pech",
-    "nav_documents": "Documenten",
+    "nav_documents": "Autopapieren",
     "nav_outils": "Tools",
     "cta_my_space": "Mijn account",
     "cta_simulator": "Simulator",
     "cta_simulator_tco": "TCO-simulator",
     "language_label": "Taal",
-    "language_change": "Taal wijzigen"
+    "language_change": "Taal wijzigen",
+    "nav_b2b": "KMO & Vloot",
+    "nav_particulier": "Particulieren"
   },
   "Footer": {
     "tagline": "Het redactionele medium over de energietransitie van het wegvervoer.",
@@ -75,7 +77,8 @@
     "link_outils": "Alle calculators",
     "link_mentions": "Wettelijke vermeldingen",
     "link_about": "Over ons",
-    "copyright": "© 2026 Moteurs.com — Onafhankelijk medium over de energietransitie van het wegvervoer"
+    "copyright": "© 2026 Moteurs.com — Onafhankelijk medium over de energietransitie van het wegvervoer",
+    "link_cgu": "Gebruiksvoorwaarden"
   },
   "LanguageSwitcher": {
     "label": "Taal",
@@ -987,5 +990,42 @@
       "particulier": "Alle particuliere analyses",
       "pro": "Alle zakelijke analyses"
     }
+  },
+  "CGU": {
+    "title": "Algemene Gebruiksvoorwaarden",
+    "meta_description": "Algemene gebruiksvoorwaarden van moteurs.com — toegang tot de site, berekeningstools, intellectueel eigendom, persoonsgegevens en toepasselijk recht.",
+    "last_updated": "Laatste update: 5 juni 2026",
+    "s1_title": "1. Over de website",
+    "s1_body": "De website moteurs.com wordt gepubliceerd door Moteurs.com SAS, een in België geregistreerde vennootschap. Contact: contact@moteurs.com. De website biedt berekeningstools voor TCO, reiskosten per aandrijving en artikelen over automotive, elektrisch laden en lage-emissiezones.",
+    "s2_title": "2. Aanvaarding van de voorwaarden",
+    "s2_body": "Toegang tot en gebruik van de website impliceert volledige aanvaarding van deze gebruiksvoorwaarden. Als u deze voorwaarden niet aanvaardt, stopt u met het gebruik van de website.",
+    "s3_title": "3. Toegang tot de website",
+    "s3_body": "De website is gratis toegankelijk. Moteurs.com SAS behoudt zich het recht voor de toegang op elk moment te wijzigen, opschorten of onderbreken zonder voorafgaande kennisgeving.",
+    "s4_title": "4. Gebruik van berekeningstools",
+    "s4_body": "De simulatoren en calculatoren bieden indicatieve schattingen. Moteurs.com SAS is niet aansprakelijk voor beslissingen op basis van deze schattingen.",
+    "s5_title": "5. Intellectueel eigendom",
+    "s5_body": "Alle inhoud van de website is exclusief eigendom van Moteurs.com SAS. Elke reproductie zonder voorafgaande schriftelijke toestemming is verboden, inclusief:",
+    "s5_li1": "Geautomatiseerde gegevensextractie (scraping, crawling, enz.)",
+    "s5_li2": "Hergebruik van berekeningsgegevens voor commerciële doeleinden",
+    "s5_li3": "Reproductie van artikelen of redactionele inhoud",
+    "s6_title": "6. Verbod op scraping en geautomatiseerde extractie",
+    "s6_body": "Het is uitdrukkelijk verboden robots, scripts of geautomatiseerde processen te gebruiken om zonder voorafgaande schriftelijke toestemming gegevens van de website te verzamelen of te indexeren. Overtredingen kunnen leiden tot gerechtelijke stappen.",
+    "s7_title": "7. Persoonsgegevens",
+    "s7_body": "Moteurs.com SAS verwerkt persoonsgegevens conform de AVG (EU-verordening 2016/679). Verzamelde gegevens worden uitsluitend gebruikt voor:",
+    "s7_li1": "Verlening van websitediensten",
+    "s7_li2": "Verbetering van de gebruikerservaring",
+    "s7_li3": "Verzenden van communicaties indien de gebruiker daarmee heeft ingestemd",
+    "s7_rights": "Conform de AVG heeft u het recht op inzage, rectificatie, verwijdering en overdraagbaarheid van uw gegevens. Contact: contact@moteurs.com",
+    "s8_title": "8. Cookies",
+    "s8_body": "De website gebruikt technische cookies en analytische cookies. Gebruikers kunnen hun browser configureren om cookies te weigeren, wat bepaalde functionaliteiten kan beïnvloeden.",
+    "s9_title": "9. Hyperlinks",
+    "s9_body": "De website kan links naar sites van derden bevatten. Moteurs.com SAS aanvaardt geen verantwoordelijkheid voor hun inhoud.",
+    "s10_title": "10. Beperking van aansprakelijkheid",
+    "s10_body": "Moteurs.com SAS streeft naar nauwkeurige informatie maar kan volledigheid of real-time updates niet garanderen. Moteurs.com SAS is niet aansprakelijk voor onderbrekingen of schade door gebruik van de website.",
+    "s11_title": "11. Toepasselijk recht en bevoegde rechtbank",
+    "s11_body": "Deze gebruiksvoorwaarden worden beheerst door Belgisch recht. Bij een geschil zijn de bevoegde rechtbanken van België uitsluitend bevoegd.",
+    "s12_title": "12. Wijzigingen",
+    "s12_body": "Moteurs.com SAS behoudt zich het recht voor deze voorwaarden op elk moment te wijzigen. Wijzigingen treden in werking bij publicatie.",
+    "footer_line": "moteurs.com · contact@moteurs.com · België"
   }
 }

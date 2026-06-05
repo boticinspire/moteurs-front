@@ -5,13 +5,14 @@ import { Link, usePathname } from '@/i18n/navigation'
 import { useTranslations } from 'next-intl'
 import LanguageSwitcher from './LanguageSwitcher'
 
-type NavHref = '/' | '/articles' | '/recharge-electrique' | '/vacances-voiture' | '/cout-voiture' | '/depannage' | '/documents-auto' | '/outils'
+type NavHref = '/' | '/articles' | '/recharge-electrique' | '/vacances-voiture' | '/cout-voiture' | '/depannage' | '/documents-auto' | '/outils' | '/b2b' | '/particulier'
 
 export default function Header() {
   const t = useTranslations('Header')
   const path = usePathname()
   const [open, setOpen] = useState(false)
 
+  // Liens principaux (desktop + mobile)
   const navLinks: { href: NavHref; label: string; urgent?: boolean }[] = [
     { href: '/',                     label: t('nav_home') },
     { href: '/articles',             label: t('nav_articles') },
@@ -21,6 +22,12 @@ export default function Header() {
     { href: '/depannage',            label: t('nav_depannage'), urgent: true },
     { href: '/documents-auto',       label: t('nav_documents') },
     { href: '/outils',               label: t('nav_outils') },
+  ]
+
+  // Liens audience — visibles dans le menu mobile et en petite taille desktop
+  const audienceLinks: { href: NavHref; label: string }[] = [
+    { href: '/b2b',         label: t('nav_b2b') },
+    { href: '/particulier', label: t('nav_particulier') },
   ]
 
   useEffect(() => { setOpen(false) }, [path])
@@ -104,6 +111,25 @@ export default function Header() {
 
           <div className="header-cta" style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
             <LanguageSwitcher variant="desktop" />
+            {/* Liens audience visibles sur desktop (discrets, taille réduite) */}
+            {audienceLinks.map(({ href, label }) => (
+              <Link
+                key={href}
+                href={href}
+                className={path === href ? 'active' : ''}
+                style={{
+                  fontSize: '0.78rem', fontWeight: 600,
+                  padding: '3px 9px', borderRadius: '6px',
+                  background: 'var(--color-bg-alt)',
+                  border: '1px solid var(--color-border)',
+                  color: 'var(--color-text-soft)',
+                  textDecoration: 'none',
+                  whiteSpace: 'nowrap',
+                }}
+              >
+                {label}
+              </Link>
+            ))}
             <Link href="/espace-membres" className="btn btn-secondary btn-sm" style={{ fontWeight: 600 }}>
               {t('cta_my_space')}
             </Link>
@@ -159,6 +185,22 @@ export default function Header() {
           </nav>
 
           <LanguageSwitcher variant="mobile" />
+
+          {/* Section audience mobile */}
+          <div style={{ padding: '8px 12px 4px', borderTop: '1px solid rgba(255,255,255,0.08)' }}>
+            <div style={{ fontSize: '0.7rem', fontWeight: 700, letterSpacing: '0.06em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.35)', padding: '4px 16px 8px' }}>
+              Votre profil
+            </div>
+            {audienceLinks.map(({ href, label }) => (
+              <Link
+                key={href}
+                href={href}
+                className={`mobile-nav-link${path === href ? ' active' : ''}`}
+              >
+                {label}
+              </Link>
+            ))}
+          </div>
 
           <div className="mobile-nav-cta">
             <Link href="/espace-membres" className="btn btn-secondary" style={{ textAlign: 'center' }}>
