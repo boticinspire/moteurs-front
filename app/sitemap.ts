@@ -85,14 +85,14 @@ const PAGES_STATIQUES: { url: string; priority: number; changeFreq: MetadataRout
   { url: '/mentions-legales', priority: 0.3, changeFreq: 'yearly' },
 ]
 
-async function fetchArticlesSlugs(): Promise<{ slug: string; updated_at: string }[]> {
+async function fetchArticlesSlugs(): Promise<{ slug: string; published_at: string }[]> {
   const supabaseUrl  = process.env.NEXT_PUBLIC_SUPABASE_URL
   const supabaseKey  = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
   if (!supabaseUrl || !supabaseKey) return []
 
   try {
     const res = await fetch(
-      `${supabaseUrl}/rest/v1/articles?select=slug,updated_at&statut=eq.PUBLIE&order=updated_at.desc`,
+      `${supabaseUrl}/rest/v1/articles?select=slug,published_at&etat_code=eq.PUBLIE&order=published_at.desc`,
       {
         headers: {
           apikey: supabaseKey,
@@ -102,7 +102,7 @@ async function fetchArticlesSlugs(): Promise<{ slug: string; updated_at: string 
       }
     )
     if (!res.ok) return []
-    const data: { slug: string; updated_at: string }[] = await res.json()
+    const data: { slug: string; published_at: string }[] = await res.json()
     return data
   } catch {
     return []
@@ -173,7 +173,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const [articles, cartes] = await Promise.all([fetchArticlesSlugs(), fetchCartesIds()])
   const articleEntries: MetadataRoute.Sitemap = articles.map(a => ({
     url: `${BASE}/article/${a.slug}`,
-    lastModified: new Date(a.updated_at).toISOString(),
+    lastModified: new Date(a.published_at).toISOString(),
     changeFrequency: 'weekly' as const,
     priority: 0.85,
   }))

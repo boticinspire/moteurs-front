@@ -161,4 +161,10 @@ export async function POST(req: NextRequest) {
     }).catch((e) => console.error('[leads-installateurs] notif email error:', e))
   }
 
-  // ── 5. Réponse ───────────────────────────────────────────────────────────
+  // ── 5. Réponse ─────────────────────────────────────────────────────────────
+  return NextResponse.json({
+    success:              true,
+    lead_id:              leadId,
+    installateurs_count:  matched.length,
+  })
+}
