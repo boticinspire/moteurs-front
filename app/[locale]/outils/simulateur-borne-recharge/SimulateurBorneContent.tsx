@@ -336,6 +336,12 @@ html[data-theme="dark"] .m-tool{
   font:inherit;font-size:.9rem;font-weight:600;cursor:pointer;color:var(--text-soft);
   transition:all .15s;text-decoration:none;margin-top:12px}
 .m-tool .restart:hover{border-color:var(--accent);color:var(--accent)}
+/* cta-next */
+.m-tool .cta-next{background:linear-gradient(135deg,var(--accent-soft),rgba(239,108,26,.15));border:1.5px solid rgba(239,108,26,.30);border-radius:16px;padding:28px 24px;margin-top:24px;text-align:center}
+.m-tool .cn-icon{font-size:2.2rem;margin-bottom:10px}
+.m-tool .cta-next h3{font-size:1rem;color:var(--text-soft);font-weight:600;line-height:1.5;margin-bottom:18px;max-width:56ch;margin-left:auto;margin-right:auto}
+.m-tool .btn-cta{display:inline-block;padding:14px 28px;background:var(--accent);color:#fff;border-radius:11px;font-weight:700;font-size:.97rem;text-decoration:none;transition:background .15s;line-height:1.4}
+.m-tool .btn-cta:hover{background:var(--accent-deep);color:#fff}
 `
 
 // ─── WIZARD STEPS = 8 ────────────────────────────────────────────────────────
@@ -697,6 +703,27 @@ function Results({ config, onRestart }: { config: Config; onRestart: () => void 
         Les prix réels peuvent varier selon l’accessibilité du chantier, les tarifs régionaux et les caractéristiques techniques définitivement constatées lors de la visite de l’électricien.
         Faites toujours établir au minimum <b>2 devis par un électricien agréé IRVE</b> avant de vous engager.
       </div>
+
+      {/* ─── CTA — outil suivant ────────────────────────────────────── */}
+      {(() => {
+        const isEnt = config.typeLieu === 'entreprise'
+        const midTvac = Math.round((tvacLow + tvacHigh) / 2)
+        const params = `cout=${midTvac}&pays=${config.pays}`
+        const href = isEnt ? `/outils/dpi-borne-belgique?${params}` : `/outils/smart-charging-roi?${params}`
+        const btnLabel = isEnt
+          ? "Calculez votre réduction d'impôt immédiate (DPI 2026) →"
+          : 'Calculez votre retour sur investissement solaire →'
+        const title = isEnt
+          ? `Sur ${fmt(midTvac)} € TVAC investis — combien récupérez-vous via la DPI énergie 2026 ?`
+          : `Votre borne à ${fmt(midTvac)} € — en combien de temps la rentabilisez-vous avec le Smart Charging ?`
+        return (
+          <div className="cta-next" style={{ marginBottom: 22 }}>
+            <div className="cn-icon">{isEnt ? '💼' : '☀️'}</div>
+            <h3>{title}</h3>
+            <Link href={href} className="btn-cta">{btnLabel}</Link>
+          </div>
+        )
+      })()}
 
       <button type="button" className="restart" onClick={onRestart}>
         ↺ Refaire une simulation

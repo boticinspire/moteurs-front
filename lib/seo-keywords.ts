@@ -223,6 +223,22 @@ export const SEO_MAP: Record<string, SeoMeta> = {
     volume: 1900,
     intent: 'Informationnelle',
   },
+  '/outils/smart-charging-roi': {
+    title: 'Retour sur investissement borne — Smart Charging & Solaire | Moteurs.com',
+    description: "Simulez en 4 étapes l'économie réelle du Smart Charging : autoconsommation solaire optimisée, tarifs dynamiques Spot/Belpex, coût au kilomètre et temps de retour sur investissement de votre borne.",
+    keywords: ['rentabilité borne recharge solaire', 'tarif dynamique voiture électrique', 'smart charging ROI'],
+    primaryKeyword: 'retour sur investissement borne recharge électrique',
+    volume: 800,
+    intent: 'Transactionnelle',
+  },
+  '/outils/dpi-borne-belgique': {
+    title: 'DPI Borne de recharge 2026 — Gain Fiscal Belgique (Indépendant / PME) | Moteurs.com',
+    description: "Calculez votre réduction d'impôt réelle via la Déduction pour Investissement (DPI) environnementale pour une borne de recharge connectée en Belgique — indépendant, PME ou grande entreprise.",
+    keywords: ['DPI borne recharge Belgique', 'déduction investissement borne IRVE', 'avantage fiscal borne électrique Belgique'],
+    primaryKeyword: 'DPI déduction investissement borne recharge Belgique 2026',
+    volume: 600,
+    intent: 'Transactionnelle',
+  },
 }
 
 /** Retourne le metadata SEO pour une route donnée. */
