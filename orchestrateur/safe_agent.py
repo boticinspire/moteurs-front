@@ -4,6 +4,11 @@ Prévient les boucles infinies et limite la conso API.
 
 FIX 2026-06-04 : suppression du signal.SIGALRM (interdit hors main thread).
 Remplacement par httpx.Timeout thread-safe + catch anthropic.APITimeoutError.
+
+OPTIM 2026-06-05 : prompt caching activé (anthropic-beta: prompt-caching-2024-07-31)
+- system prompt mis en cache automatiquement si passé en str → converti en liste cache_control
+- modèle par défaut changé : claude-opus-4-6 → claude-sonnet-4-6
+- log cache_ratio ajouté dans Railway logs
 """
 
 import logging
@@ -26,7 +31,7 @@ class AgentMaxIterationsError(Exception):
 
 
 class SafeAgent:
-    """Wrapper sécurisé pour appels Anthropic."""
+    """Wrapper sécurisé pour appels Anthropic avec prompt caching."""
 
     def __init__(
         self,
@@ -34,11 +39,13 @@ class SafeAgent:
         name: str,
         max_iterations: int = 5,
         timeout_seconds: int = 300,
-        model: str = "claude-opus-4-6"
+        model: str = "claude-sonnet-4-6"  # ← était claude-opus-4-6
     ):
         # ✅ httpx.Timeout — thread-safe, pas de signal.alarm()
         self.client = anthropic.Anthropic(
             api_key=api_key,
+            # ✅ Header prompt caching activé pour tous les agents
+            default_headers={"anthropic-beta": "prompt-caching-2024-07-31"},
             http_client=httpx.Client(
                 timeout=httpx.Timeout(
                     connect=10.0,
@@ -120,6 +127,20 @@ class SafeAgent:
                 'iterations': self.iteration_count
             }
 
+    def _build_system_with_cache(self, system: str) -> list:
+        """
+        Convertit un system prompt str en liste avec cache_control ephemeral.
+        Le contenu statique est mis en cache côté Anthropic (TTL 5 min, renouvelé à chaque hit).
+        Gain : ~90 % de réduction sur les tokens d'entrée après le 1er appel.
+        """
+        return [
+            {
+                "type": "text",
+                "text": system,
+                "cache_control": {"type": "ephemeral"},
+            }
+        ]
+
     def _execute(
         self,
         messages: list,
@@ -127,15 +148,22 @@ class SafeAgent:
         system: Optional[str],
         max_tokens: int
     ) -> dict:
-        """Exécute l'appel Anthropic avec protections."""
+        """Exécute l'appel Anthropic avec protections et prompt caching."""
 
         kwargs = {
             "model": self.model,
             "max_tokens": max_tokens,
             "messages": messages,
         }
+
+        # ✅ Prompt caching : system str → liste avec cache_control
         if system is not None:
-            kwargs["system"] = system
+            if isinstance(system, str):
+                kwargs["system"] = self._build_system_with_cache(system)
+            else:
+                # Déjà une liste (cache_control déjà posé manuellement) — on laisse
+                kwargs["system"] = system
+
         if tools:
             kwargs["tools"] = tools
 
@@ -170,13 +198,19 @@ class SafeAgent:
             if hasattr(block, 'type') and block.type == "tool_use":
                 tool_use_block = block
 
-        # Log token usage — visible dans Railway logs pour surveiller les coûts
+        # ✅ Log token usage étendu — cache_ratio visible dans Railway logs
         usage = getattr(response, 'usage', None)
         input_tokens = getattr(usage, 'input_tokens', 0) if usage else 0
         output_tokens = getattr(usage, 'output_tokens', 0) if usage else 0
+        cache_read = getattr(usage, 'cache_read_input_tokens', 0) if usage else 0
+        cache_create = getattr(usage, 'cache_creation_input_tokens', 0) if usage else 0
+        cache_ratio = cache_read / max(cache_read + input_tokens, 1)
+
         if usage:
             logger.info(
                 f"[{self.name}] tokens — in={input_tokens} out={output_tokens} "
+                f"cache_read={cache_read} cache_create={cache_create} "
+                f"cache_ratio={cache_ratio:.0%} "
                 f"total={input_tokens + output_tokens}"
             )
 
@@ -188,12 +222,17 @@ class SafeAgent:
             'iterations': self.iteration_count,
             'stop_reason': response.stop_reason,
             'error_type': None,
-            'tokens': {'input': input_tokens, 'output': output_tokens},
+            'tokens': {
+                'input': input_tokens,
+                'output': output_tokens,
+                'cache_read': cache_read,
+                'cache_create': cache_create,
+            },
         }
 
 
 # ============================================================================
-# Instances par agent
+# Instances par agent — modèles inchangés sauf défaut SafeAgent
 # ============================================================================
 
 def get_veille_agent(api_key: str) -> SafeAgent:
