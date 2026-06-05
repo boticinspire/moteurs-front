@@ -1,4 +1,4 @@
-**
+/**
  * Moteurs.com — Scan voyant par photo
  * 1. Hash l'image → lookup cache Supabase (0 token si déjà vu)
  * 2. Si miss → appelle Claude Haiku Vision (avec prompt caching)
