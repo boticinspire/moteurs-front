@@ -1,6 +1,12 @@
 import type { Metadata } from 'next'
 import ComparateurCartes from './ComparateurCartes'
 import FaqAccordion from '@/components/FaqAccordion'
+import { setRequestLocale } from 'next-intl/server'
+import { routing } from '@/i18n/routing'
+
+export function generateStaticParams() {
+  return routing.locales.map((locale) => ({ locale }))
+}
 
 export const metadata: Metadata = {
   title: 'Comparateur cartes de recharge VE 2026 — France, Belgique, Europe | Moteurs.com',
@@ -40,7 +46,13 @@ const FAQ_CARTES = [
   },
 ]
 
-export default function PageCartesRecharge() {
+export default async function PageCartesRecharge({
+  params,
+}: {
+  params: Promise<{ locale: string }>
+}) {
+  const { locale } = await params
+  setRequestLocale(locale)
   return (
     <main className="container" style={{ paddingTop: 40, paddingBottom: 64 }}>
 

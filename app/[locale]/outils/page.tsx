@@ -1,213 +1,237 @@
 import type { Metadata } from 'next'
+import { getTranslations, setRequestLocale } from 'next-intl/server'
 import { Link } from '@/i18n/navigation'
-export const metadata: Metadata = {
-  title: 'Calculateurs & Outils gratuits — Moteurs.com',
-  description: 'Tous les outils pour maîtriser le coût de votre voiture : comparateur trajet vacances, simulateur TCO, carte grise, immatriculation, convertisseur technique.',
+import { routing } from '@/i18n/routing'
+import { buildAlternates } from '@/lib/seo-utils'
+
+export function generateStaticParams() {
+  return routing.locales.map((locale) => ({ locale }))
 }
 
-const OUTILS_PHARES = [
-  {
-    href: '/outils/cartes-recharge',
-    icon: '⚡',
-    titre: 'Comparateur cartes de recharge',
-    desc: '14 cartes FR & BE comparées : Chargemap, Freshmile, Electra, IONITY, Lidl… Calculez votre coût mensuel réel selon votre profil — AC/DC, voyages EU, flotte.',
-    tags: ['14 cartes', 'Roaming EU', 'Flotte Pro', 'FR & BE'],
-    cta: 'Trouver ma carte',
-    badge: 'Nouveau',
-  },
-  {
-    href: '/assistant-vacances',
-    icon: '🏖️',
-    titre: 'Assistant Vacances Auto',
-    desc: 'Budget total voyage, itinéraire économique, stratégie recharge VE, alertes trafic, bagages — votre copilote économique complet en 3 étapes.',
-    tags: ['Budget hébergement', 'Trafic', 'Recharge VE', 'Bagages'],
-    cta: 'Planifier mon voyage',
-    badge: 'Nouveau',
-  },
-  {
-    href: '/assistance/couts',
-    icon: '💰',
-    titre: 'Assistance Coûts',
-    desc: 'Votre voiture vous coûte combien par mois vraiment ? Financement, carburant, assurance, entretien, dépréciation — plus le comparatif VE.',
-    tags: ['Coût mensuel réel', '€/km', 'Comparatif VE', 'Aides'],
-    cta: 'Calculer mon coût réel',
-    badge: null,
-  },
-  {
-    href: '/comparer-trajet',
-    icon: '📊',
-    titre: 'Comparateur trajet vacances',
-    desc: 'Comparez diesel, essence, électrique et hybride sur 25 trajets populaires — péages, énergie et location de véhicule inclus.',
-    tags: ['25 trajets', 'Péages', 'Location'],
-    cta: 'Comparer les motorisations',
-    badge: null,
-  },
-  {
-    href: '/simulateur',
-    icon: '🧮',
-    titre: 'Simulateur TCO complet',
-    desc: 'Calculez le coût total de possession sur mesure : km/an, durée, profil de conduite, hiver, charge utile — toutes motorisations.',
-    tags: ['Voiture', 'VUL', 'Camion', 'VAE'],
-    cta: 'Lancer le simulateur',
-    badge: null,
-  },
-  {
-    href: '/outils/tco-poids-lourds',
-    icon: '🚛',
-    titre: 'TCO Poids Lourds',
-    desc: 'Coût total de possession complet pour tracteurs 44t, porteurs 19t et porteurs électriques. Capital, AdBlue, maintenance, conducteur, péages, downtime — benchmarks IRU/ACEA 2025.',
-    tags: ['Diesel', 'GNV', 'HVO', 'Électrique', 'EU'],
-    cta: 'Calculer mon TCO PL',
-    badge: 'Nouveau',
-  },
-  {
-    href: '/outils/amende-pv',
-    icon: '⚖️',
-    titre: 'Calculateur PV & Amendes',
-    desc: 'Combien va coûter votre PV ? Excès de vitesse, stationnement, alcool, ZFE — barèmes officiels 2026 pour 10 pays. Amende exacte, points retirés, risque de suspension.',
-    tags: ['FR', 'BE', 'CH', 'CA', 'DE', 'ES', 'IT', 'NL'],
-    cta: 'Calculer mon amende',
-    badge: 'Nouveau',
-  },
-  {
-    href: '/comparer',
-    icon: '📊',
-    titre: 'Comparateur TCO motorisations',
-    desc: 'Visualisez côte à côte le TCO sur 3 à 5 ans : diesel, essence, électrique, hydrogène, GNV. Badge gagnant automatique.',
-    tags: ['FR', 'BE', 'CH', 'CA'],
-    cta: 'Comparer les motorisations',
-    badge: null,
-  },
-]
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>
+}): Promise<Metadata> {
+  const { locale } = await params
+  const t = await getTranslations({ locale, namespace: 'Outils' })
+  return {
+    title: t('meta_title'),
+    description: t('meta_desc'),
+    alternates: buildAlternates(locale, '/outils'),
+  }
+}
 
-const OUTILS_COMPLEMENTAIRES = [
-  {
-    href: '/checklist-depart',
-    icon: '✅',
-    titre: 'Check-list départ vacances',
-    desc: 'Checklist interactive sur-mesure avant de prendre la route : véhicule, documents, sécurité, bébé, VE, animaux. Estimation fatigue + pauses intelligentes.',
-    tags: ['Famille', 'Bébé', 'VE', 'Étranger'],
-    cta: 'Générer ma checklist',
-  },
-  {
-    href: '/tco',
-    icon: '📈',
-    titre: 'Comparatifs TCO par profil',
-    desc: 'TCO pré-calculés par segment et pays — artisan, flotte, particulier. Référence rapide sans paramétrage.',
-    tags: ['B2B', 'Particuliers', 'Multi-pays'],
-    cta: 'Voir les comparatifs',
-  },
-  {
-    href: '/assistance/admin',
-    icon: '📋',
-    titre: 'Assistance Administrative',
-    desc: "Carte grise, Crit'Air ZFE, bonus écologique, prime à la conversion — toutes vos démarches en un calcul.",
-    tags: ["Carte grise", "ZFE", "Bonus"],
-    cta: 'Calculer',
-  },
-  {
-    href: '/assistance/panne',
-    icon: '🚨',
-    titre: 'Assistance Panne',
-    desc: 'Protocole urgence personnalisé : panne sèche, crevaison, accident, surchauffe. Spécificités VE + contacts par pays.',
-    tags: ['Urgence', 'VE', 'Contacts'],
-    cta: 'Guide urgence',
-  },
-  {
-    href: '/assistance/achat',
-    icon: '🚗',
-    titre: 'Assistance Achat',
-    desc: 'Quelle motorisation selon votre budget, usage et km ? Recommandation personnalisée + modèles + aides.',
-    tags: ['VE', 'Hybride', 'Aides'],
-    cta: 'Trouver mon véhicule',
-  },
-  {
-    href: '/assistance/recharge',
-    icon: '⚡',
-    titre: 'Assistance Recharge VE',
-    desc: 'Coût annuel recharge (domicile vs public), borne à installer, autonomie réelle été/hiver, réseaux par pays.',
-    tags: ['Borne', 'Autonomie', 'Aides'],
-    cta: 'Calculer',
-  },
-  {
-    href: '/outils/immatriculation-france',
-    icon: '🇫🇷',
-    titre: 'Carte grise — France',
-    desc: 'Estimez vos frais d\'immatriculation : taxe régionale, malus CO₂ 2026, exonération VE.',
-    tags: ['13 régions', 'Malus CO₂', 'VE exonérés'],
-    cta: 'Calculer',
-  },
-  {
-    href: '/outils/immatriculation-belgique',
-    icon: '🇧🇪',
-    titre: 'Frais d\'immatriculation — Belgique',
-    desc: 'Calculez la TMC selon votre région : Wallonie, Bruxelles ou Flandre.',
-    tags: ['Wallonie', 'Bruxelles', 'Flandre'],
-    cta: 'Calculer',
-  },
-  {
-    href: '/outils/recharge-domicile-voiture-societe-belgique',
-    icon: '🔌',
-    titre: 'ATN recharge à domicile (BE)',
-    desc: 'Le remboursement employeur de la recharge à domicile d\'une voiture de société est-il imposable ? Barème CREG, circulaire 2024/C/77. Réservé aux membres.',
-    tags: ['Belgique', 'ATN', 'CREG', 'Membres'],
-    cta: 'Calculer l\'ATN',
-  },
-  {
-    href: '/outils/simulateur-borne-recharge',
-    icon: '🔌',
-    titre: 'Simulateur budget borne de recharge',
-    desc: "Estimez le coût complet d'installation de votre borne IRVE : matériel, câblage, main d'œuvre, TVA. BE, FR, CH, LU.",
-    tags: ['BE', 'FR', 'CH', 'LU', 'Membres'],
-    cta: 'Estimer mon budget',
-  },
-  {
-    href: '/outils/smart-charging-roi',
-    icon: '☀️',
-    titre: 'ROI borne — Smart Charging & Solaire',
-    desc: "Coût réel au km, scénario optimisé solaire + tarif dynamique Belpex, temps de retour sur investissement de votre borne.",
-    tags: ['Solaire', 'Tarif Spot', 'ROI', 'Membres'],
-    cta: 'Calculer mon retour',
-  },
-  {
-    href: '/outils/dpi-borne-belgique',
-    icon: '💼',
-    titre: 'DPI Borne — Gain fiscal 2026 (BE)',
-    desc: "Calculez votre réduction d'impôt réelle via la Déduction pour Investissement environnementale — indépendant, PME ou grande entreprise.",
-    tags: ['Belgique', 'DPI', 'Fiscalité', 'Membres'],
-    cta: 'Calculer mon gain fiscal',
-  },
-  {
-    href: '/outils/convertisseur',
-    icon: '⚡',
-    titre: 'Convertisseur technique',
-    desc: 'kW ↔ ch, Nm ↔ lb-ft, autonomie batterie selon poids et consommation.',
-    tags: ['Technique', 'Ingénieurs'],
-    cta: 'Convertir',
-  },
-  {
-    href: '/outils/documents-europe',
-    icon: '🇪🇺',
-    titre: 'Documents & équipements en Europe',
-    desc: 'Quels papiers et équipements emporter dans 22 pays européens : permis, vignettes, gilet, triangle… Tableau imprimable A4 pour la boîte à gants.',
-    tags: ['22 pays', 'Vignettes', 'Imprimable', 'Vacances'],
-    cta: 'Voir le tableau',
-  },
-]
+export default async function OutilsPage({
+  params,
+}: {
+  params: Promise<{ locale: string }>
+}) {
+  const { locale } = await params
+  setRequestLocale(locale)
+  const t = await getTranslations('Outils')
 
-export default function OutilsPage() {
+  const OUTILS_PHARES = [
+    {
+      href: '/outils/cartes-recharge',
+      icon: '⚡',
+      titre: t('cartes_titre'),
+      desc: t('cartes_desc'),
+      tags: [t('cartes_tag1'), t('cartes_tag2'), t('cartes_tag3'), 'FR & BE'],
+      cta: t('cartes_cta'),
+      badge: t('badge_new'),
+    },
+    {
+      href: '/assistant-vacances',
+      icon: '🏖️',
+      titre: t('vacances_titre'),
+      desc: t('vacances_desc'),
+      tags: [t('vacances_tag1'), t('vacances_tag2'), t('vacances_tag3'), t('vacances_tag4')],
+      cta: t('vacances_cta'),
+      badge: t('badge_new'),
+    },
+    {
+      href: '/assistance/couts',
+      icon: '💰',
+      titre: t('couts_titre'),
+      desc: t('couts_desc'),
+      tags: [t('couts_tag1'), '€/km', t('couts_tag2'), t('couts_tag3')],
+      cta: t('couts_cta'),
+      badge: null,
+    },
+    {
+      href: '/comparer-trajet',
+      icon: '📊',
+      titre: t('trajet_titre'),
+      desc: t('trajet_desc'),
+      tags: [t('trajet_tag1'), t('trajet_tag2'), t('trajet_tag3')],
+      cta: t('trajet_cta'),
+      badge: null,
+    },
+    {
+      href: '/simulateur',
+      icon: '🧮',
+      titre: t('simulateur_titre'),
+      desc: t('simulateur_desc'),
+      tags: [t('simulateur_tag1'), t('simulateur_tag2'), t('simulateur_tag3'), t('simulateur_tag4')],
+      cta: t('simulateur_cta'),
+      badge: null,
+    },
+    {
+      href: '/outils/tco-poids-lourds',
+      icon: '🚛',
+      titre: t('pl_titre'),
+      desc: t('pl_desc'),
+      tags: [t('pl_tag1'), t('pl_tag2'), t('pl_tag3'), t('pl_tag4'), 'EU'],
+      cta: t('pl_cta'),
+      badge: t('badge_new'),
+    },
+    {
+      href: '/outils/amende-pv',
+      icon: '⚖️',
+      titre: t('amende_titre'),
+      desc: t('amende_desc'),
+      tags: ['FR', 'BE', 'CH', 'CA', 'DE', 'ES', 'IT', 'NL'],
+      cta: t('amende_cta'),
+      badge: t('badge_new'),
+    },
+    {
+      href: '/comparer',
+      icon: '📊',
+      titre: t('comparer_titre'),
+      desc: t('comparer_desc'),
+      tags: ['FR', 'BE', 'CH', 'CA'],
+      cta: t('comparer_cta'),
+      badge: null,
+    },
+  ]
+
+  const OUTILS_COMPLEMENTAIRES = [
+    {
+      href: '/checklist-depart',
+      icon: '✅',
+      titre: t('checklist_titre'),
+      desc: t('checklist_desc'),
+      tags: [t('checklist_tag1'), t('checklist_tag2'), t('checklist_tag3'), t('checklist_tag4')],
+      cta: t('checklist_cta'),
+    },
+    {
+      href: '/tco',
+      icon: '📈',
+      titre: t('tco_profil_titre'),
+      desc: t('tco_profil_desc'),
+      tags: [t('tco_profil_tag1'), t('tco_profil_tag2'), t('tco_profil_tag3')],
+      cta: t('tco_profil_cta'),
+    },
+    {
+      href: '/assistance/admin',
+      icon: '📋',
+      titre: t('admin_titre'),
+      desc: t('admin_desc'),
+      tags: [t('admin_tag1'), t('admin_tag2'), t('admin_tag3')],
+      cta: t('admin_cta'),
+    },
+    {
+      href: '/assistance/panne',
+      icon: '🚨',
+      titre: t('panne_titre'),
+      desc: t('panne_desc'),
+      tags: [t('panne_tag1'), t('panne_tag2'), t('panne_tag3')],
+      cta: t('panne_cta'),
+    },
+    {
+      href: '/assistance/achat',
+      icon: '🚗',
+      titre: t('achat_titre'),
+      desc: t('achat_desc'),
+      tags: [t('achat_tag1'), t('achat_tag2'), t('achat_tag3')],
+      cta: t('achat_cta'),
+    },
+    {
+      href: '/assistance/recharge',
+      icon: '⚡',
+      titre: t('recharge_veh_titre'),
+      desc: t('recharge_veh_desc'),
+      tags: [t('recharge_veh_tag1'), t('recharge_veh_tag2'), t('recharge_veh_tag3')],
+      cta: t('recharge_veh_cta'),
+    },
+    {
+      href: '/outils/immatriculation-france',
+      icon: '🇫🇷',
+      titre: t('immat_fr_titre'),
+      desc: t('immat_fr_desc'),
+      tags: [t('immat_fr_tag1'), t('immat_fr_tag2'), t('immat_fr_tag3')],
+      cta: t('immat_fr_cta'),
+    },
+    {
+      href: '/outils/immatriculation-belgique',
+      icon: '🇧🇪',
+      titre: t('immat_be_titre'),
+      desc: t('immat_be_desc'),
+      tags: [t('immat_be_tag1'), t('immat_be_tag2'), t('immat_be_tag3')],
+      cta: t('immat_be_cta'),
+    },
+    {
+      href: '/outils/recharge-domicile-voiture-societe-belgique',
+      icon: '🔌',
+      titre: t('atn_titre'),
+      desc: t('atn_desc'),
+      tags: [t('atn_tag1'), t('atn_tag2'), t('atn_tag3'), t('atn_tag4')],
+      cta: t('atn_cta'),
+    },
+    {
+      href: '/outils/simulateur-borne-recharge',
+      icon: '🔌',
+      titre: t('borne_budget_titre'),
+      desc: t('borne_budget_desc'),
+      tags: [t('borne_budget_tag1'), t('borne_budget_tag2'), t('borne_budget_tag3'), t('borne_budget_tag4')],
+      cta: t('borne_budget_cta'),
+    },
+    {
+      href: '/outils/smart-charging-roi',
+      icon: '☀️',
+      titre: t('smart_titre'),
+      desc: t('smart_desc'),
+      tags: [t('smart_tag1'), t('smart_tag2'), t('smart_tag3'), t('smart_tag4')],
+      cta: t('smart_cta'),
+    },
+    {
+      href: '/outils/dpi-borne-belgique',
+      icon: '💼',
+      titre: t('dpi_titre'),
+      desc: t('dpi_desc'),
+      tags: [t('dpi_tag1'), t('dpi_tag2'), t('dpi_tag3'), t('dpi_tag4')],
+      cta: t('dpi_cta'),
+    },
+    {
+      href: '/outils/convertisseur',
+      icon: '⚡',
+      titre: t('convertisseur_titre'),
+      desc: t('convertisseur_desc'),
+      tags: [t('convertisseur_tag1'), t('convertisseur_tag2')],
+      cta: t('convertisseur_cta'),
+    },
+    {
+      href: '/outils/documents-europe',
+      icon: '🇪🇺',
+      titre: t('docs_titre'),
+      desc: t('docs_desc'),
+      tags: [t('docs_tag1'), t('docs_tag2'), t('docs_tag3'), t('docs_tag4')],
+      cta: t('docs_cta'),
+    },
+  ]
+
   return (
     <>
       {/* ── Hero ── */}
       <section className="page-hero">
         <div className="container">
           <div style={{ fontSize: '0.82rem', color: 'var(--color-primary)', fontWeight: 600, marginBottom: 10, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
-            Tous gratuits · Mis à jour 2026
+            {t('hero_chip')}
           </div>
-          <h1>Calculateurs & Outils</h1>
+          <h1>{t('hero_h1')}</h1>
           <p style={{ maxWidth: 540, margin: '0 auto' }}>
-            Des outils concrets pour savoir exactement ce que vous coûte votre voiture —
-            et combien vous pouvez économiser en changeant de motorisation.
+            {t('hero_lead')}
           </p>
         </div>
       </section>
@@ -216,7 +240,7 @@ export default function OutilsPage() {
       <section style={{ padding: '48px 0 0' }}>
         <div className="container">
           <h2 style={{ fontSize: '1.1rem', fontWeight: 700, marginBottom: 20, color: 'var(--color-text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
-            Les essentiels
+            {t('section_essentials')}
           </h2>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: 20, marginBottom: 48 }}>
             {OUTILS_PHARES.map((o) => (
@@ -249,13 +273,13 @@ export default function OutilsPage() {
                     </p>
                   </div>
                   <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
-                    {o.tags.map((t) => (
-                      <span key={t} style={{
+                    {o.tags.map((tag) => (
+                      <span key={tag} style={{
                         fontSize: '0.72rem', fontWeight: 600, padding: '3px 8px',
                         background: 'rgba(122,240,194,0.12)', color: 'var(--color-primary)',
                         border: '1px solid rgba(122,240,194,0.25)',
                         borderRadius: 4,
-                      }}>{t}</span>
+                      }}>{tag}</span>
                     ))}
                   </div>
                   <div style={{ marginTop: 'auto', paddingTop: 8 }}>
@@ -270,7 +294,7 @@ export default function OutilsPage() {
 
           {/* ── Outils complémentaires ── */}
           <h2 style={{ fontSize: '1.1rem', fontWeight: 700, marginBottom: 20, color: 'var(--color-text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
-            Outils complémentaires
+            {t('section_complementary')}
           </h2>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))', gap: 16, marginBottom: 64 }}>
             {OUTILS_COMPLEMENTAIRES.map((o) => (
@@ -292,12 +316,12 @@ export default function OutilsPage() {
                     </p>
                   </div>
                   <div style={{ display: 'flex', gap: 5, flexWrap: 'wrap' }}>
-                    {o.tags.map((t) => (
-                      <span key={t} style={{
+                    {o.tags.map((tag) => (
+                      <span key={tag} style={{
                         fontSize: '0.7rem', fontWeight: 600, padding: '2px 7px',
                         background: 'rgba(255,255,255,0.05)', color: 'var(--color-text-muted)',
                         border: '1px solid var(--color-border)', borderRadius: 4,
-                      }}>{t}</span>
+                      }}>{tag}</span>
                     ))}
                   </div>
                   <span style={{ fontSize: '0.84rem', fontWeight: 600, color: 'var(--color-primary)', marginTop: 4 }}>

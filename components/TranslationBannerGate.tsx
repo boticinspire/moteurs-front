@@ -27,6 +27,7 @@ const TRANSLATED_ROUTES = new Set<string>([
   '/documents-auto',
   '/assistant-depannage',
   '/assistant-depannage/voyants',
+  '/outils',
   '/outils/recharge-domicile-voiture-societe-belgique',
 ])
 
