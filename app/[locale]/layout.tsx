@@ -80,7 +80,6 @@ export default async function LocaleLayout({
     url: 'https://moteurs.com',
     logo: 'https://moteurs.com/logo.png',
     description: t('org_description'),
-    inLanguage: locale,
     knowsAbout: [
       'Transition energetique des transports routiers',
       'Cout Total de Possession (TCO) automobile',
@@ -100,7 +99,15 @@ export default async function LocaleLayout({
       { '@type': 'Country', name: 'Suisse' },
       { '@type': 'Country', name: 'Canada' },
     ],
-    sameAs: [],
+    // sameAs: ['https://...'], // à compléter quand les profils officiels seront créés
+  }
+
+  const websiteJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'WebSite',
+    name: 'Moteurs.com',
+    url: 'https://moteurs.com',
+    inLanguage: locale,
   }
 
   return (
@@ -111,6 +118,10 @@ export default async function LocaleLayout({
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(orgJsonLd) }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteJsonLd) }}
         />
       </head>
       <body>
