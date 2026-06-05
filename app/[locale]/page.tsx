@@ -5,7 +5,6 @@ import { Link, useRouter } from '@/i18n/navigation'
 import { useTranslations } from 'next-intl'
 import NewsletterForm from '@/components/NewsletterForm'
 import villesData from '@/data/villes.json'
-import SearchBox from '@/components/SearchBox'
 
 type Theme = 'light' | 'dark'
 
@@ -20,12 +19,18 @@ export default function HomePage() {
   const t = useTranslations('Home')
   const router = useRouter()
   const [theme, setTheme] = useState<Theme>('light')
-  const [activeTab, setActiveTab] = useState<'trip' | 'tco' | 'fleet'>('trip')
+  const [activeTab, setActiveTab] = useState<'trip' | 'tco' | 'fleet' | 'search'>('trip')
   const [depart, setDepart] = useState('Paris')
   const [destination, setDestination] = useState('Nice')
   const [allerRetour, setAllerRetour] = useState<'yes' | 'no'>('yes')
   const [personnes, setPersonnes] = useState('2 adults')
   const [pays, setPays] = useState<'FR' | 'BE' | 'CH' | 'CA'>('FR')
+
+  // ── Search IA ──
+  const [searchQuery, setSearchQuery] = useState('')
+  const [searchLoading, setSearchLoading] = useState(false)
+  const [searchResult, setSearchResult] = useState<{ answer: string; url: string; label: string } | null>(null)
+  const [searchError, setSearchError] = useState<string | null>(null)
 
   const paysLabel: Record<'FR' | 'BE' | 'CH' | 'CA', string> = {
     FR: 'France',
@@ -34,10 +39,31 @@ export default function HomePage() {
     CA: 'Canada',
   }
 
-  function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     if (activeTab === 'tco') { router.push('/comparer'); return }
     if (activeTab === 'fleet') { router.push('/b2b'); return }
+    if (activeTab === 'search') {
+      if (!searchQuery.trim() || searchLoading) return
+      setSearchLoading(true)
+      setSearchResult(null)
+      setSearchError(null)
+      try {
+        const res = await fetch('/api/search', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ question: searchQuery.trim() }),
+        })
+        const data = await res.json()
+        if (!res.ok) throw new Error(data.error ?? 'Erreur')
+        setSearchResult(data)
+      } catch {
+        setSearchError('Impossible de traiter votre question. Réessayez.')
+      } finally {
+        setSearchLoading(false)
+      }
+      return
+    }
     // Trip : passe les valeurs via sessionStorage
     try {
       sessionStorage.setItem('home-trajet', JSON.stringify({
@@ -148,8 +174,6 @@ export default function HomePage() {
             {t('hero_lead_b')} <em>{t('hero_lead_em')}</em> {t('hero_lead_c')}
           </p>
 
-          <SearchBox theme={theme} />
-
           <div className="v2-profile-tabs" role="tablist">
             <button role="tab" aria-selected={activeTab === 'trip'} className={activeTab === 'trip' ? 'active' : ''} onClick={() => setActiveTab('trip')}>
               <svg className="v2-ic"><use href={theme === 'light' ? '#i-umbrella' : '#i-route'} /></svg>
@@ -160,6 +184,10 @@ export default function HomePage() {
             </button>
             <button role="tab" aria-selected={activeTab === 'fleet'} className={activeTab === 'fleet' ? 'active' : ''} onClick={() => setActiveTab('fleet')}>
               <svg className="v2-ic"><use href="#i-briefcase" /></svg>{t('tab_fleet')}
+            </button>
+            <button role="tab" aria-selected={activeTab === 'search'} className={activeTab === 'search' ? 'active' : ''} onClick={() => { setActiveTab('search'); setSearchResult(null); setSearchError(null); }}>
+              <svg className="v2-ic" viewBox="0 0 24 24" stroke="currentColor" fill="none" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+              Question
             </button>
           </div>
 
@@ -224,18 +252,35 @@ export default function HomePage() {
                   </div>
                 </div>
               )}
-              <div className="field">
-                <label htmlFor="v2-sel-pays"><svg className="v2-ic"><use href="#i-globe" /></svg>{t('form_country')}</label>
-                <select id="v2-sel-pays" value={pays} onChange={(e) => setPays(e.target.value as 'FR' | 'BE' | 'CH' | 'CA')}>
-                  <option value="FR">{paysLabel.FR}</option>
-                  <option value="BE">{paysLabel.BE}</option>
-                  <option value="CH">{paysLabel.CH}</option>
-                  <option value="CA">{paysLabel.CA}</option>
-                </select>
-              </div>
+              {activeTab === 'search' && (
+                <div className="field" style={{ flex: 4 }}>
+                  <label>
+                    <svg className="v2-ic" viewBox="0 0 24 24" stroke="currentColor" fill="none" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+                    Votre question
+                  </label>
+                  <input
+                    type="text"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    placeholder="ex: combien coûte Paris-Nice en électrique ?"
+                    autoFocus
+                  />
+                </div>
+              )}
+              {activeTab !== 'search' && (
+                <div className="field">
+                  <label htmlFor="v2-sel-pays"><svg className="v2-ic"><use href="#i-globe" /></svg>{t('form_country')}</label>
+                  <select id="v2-sel-pays" value={pays} onChange={(e) => setPays(e.target.value as 'FR' | 'BE' | 'CH' | 'CA')}>
+                    <option value="FR">{paysLabel.FR}</option>
+                    <option value="BE">{paysLabel.BE}</option>
+                    <option value="CH">{paysLabel.CH}</option>
+                    <option value="CA">{paysLabel.CA}</option>
+                  </select>
+                </div>
+              )}
               <div className="go">
-                <button type="submit">
-                  {activeTab === 'tco' ? t('cta_calculate') : activeTab === 'fleet' ? t('cta_discover') : t('cta_compare')}
+                <button type="submit" disabled={activeTab === 'search' && (searchLoading || !searchQuery.trim())}>
+                  {activeTab === 'tco' ? t('cta_calculate') : activeTab === 'fleet' ? t('cta_discover') : activeTab === 'search' ? (searchLoading ? 'Analyse…' : 'Demander') : t('cta_compare')}
                   <svg className="v2-ic"><use href="#i-arrow-right" /></svg>
                 </button>
               </div>
@@ -252,6 +297,44 @@ export default function HomePage() {
               ))}
             </datalist>
           </div>
+
+          {/* ===== Résultat search IA ===== */}
+          {activeTab === 'search' && (searchResult || searchError) && (
+            <div style={{ marginTop: '12px' }}>
+              {searchError && (
+                <p style={{ margin: 0, padding: '0 4px', fontSize: '.85rem', color: '#dc2626' }}>{searchError}</p>
+              )}
+              {searchResult && (
+                <div style={{
+                  display: 'flex', alignItems: 'center', gap: '16px', flexWrap: 'wrap',
+                  background: 'var(--v2-tool-bg)', border: '1px solid var(--v2-line-strong)',
+                  borderRadius: '18px', padding: '16px 20px',
+                  backdropFilter: 'blur(16px) saturate(160%)',
+                  animation: 'v2srch .35s ease',
+                }}>
+                  <p style={{ flex: 1, margin: 0, fontSize: '.95rem', color: 'var(--v2-text-strong)', fontWeight: 500, lineHeight: 1.45 }}>
+                    {searchResult.answer}
+                  </p>
+                  <button
+                    type="button"
+                    onClick={() => router.push(searchResult.url as Parameters<typeof router.push>[0])}
+                    style={{
+                      flexShrink: 0, padding: '10px 20px', borderRadius: '12px',
+                      font: 'inherit', fontSize: '.88rem', fontWeight: 700,
+                      cursor: 'pointer', border: 'none', whiteSpace: 'nowrap',
+                      background: theme === 'light'
+                        ? 'linear-gradient(135deg,#ef6c1a,#c95211)'
+                        : 'linear-gradient(135deg,#5b8def,#3b82f6)',
+                      color: '#fff',
+                    }}
+                  >
+                    {searchResult.label} →
+                  </button>
+                </div>
+              )}
+            </div>
+          )}
+          <style>{`@keyframes v2srch{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}`}</style>
 
           {/* ===== Live result ===== */}
           <div className="v2-live">
