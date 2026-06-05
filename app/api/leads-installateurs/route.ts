@@ -105,7 +105,12 @@ export async function POST(req: NextRequest) {
   const installateurIds = matched.map((i) => i.id)
 
   // ── 3. Insertion du lead ───────────────────────────────────────────────────
+  // UUID généré côté serveur pour éviter d'avoir besoin de return=representation
+  // (qui déclenche un SELECT soumis à la RLS leads_select_own → 401 pour l'anon)
+  const leadId = crypto.randomUUID()
+
   const leadPayload = {
+    id:                 leadId,
     type_projet:        body.type_projet,
     puissance_kw:       body.puissance_kw ?? null,
     pays:               body.pays,
@@ -125,19 +130,16 @@ export async function POST(req: NextRequest) {
       'apikey':        SUPABASE_ANON_KEY,
       'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
       'Content-Type':  'application/json',
-      'Prefer':        'return=representation',
+      'Prefer':        'return=minimal',
     },
     body: JSON.stringify(leadPayload),
   })
 
   if (!insertRes.ok) {
     const err = await insertRes.text()
-    console.error('[leads-installateurs] INSERT error:', err)
+    console.error('[leads-installateurs] INSERT error:', insertRes.status, err)
     return NextResponse.json({ error: 'Erreur lors de l\'enregistrement du lead' }, { status: 500 })
   }
-
-  const [insertedLead] = await insertRes.json()
-  const leadId: string = insertedLead?.id ?? 'unknown'
 
   // ── 4. Notification email — fire & forget ─────────────────────────────────
   // Appel à la Supabase Edge Function `notif-lead-installateur`
