@@ -263,6 +263,10 @@ CONSIGNES RÉDACTIONNELLES :
 7. Pas de titre répété dans le corps de l'article
 8. N'invente pas de chiffres — si tu n'as pas l'info, dis "selon les estimations" ou pose la \
 question dans la FAQ
+9. N'invente PAS le nom d'une aide publique (prime, bonus, subvention, programme) — ne cite \
+un dispositif spécifique QUE si son nom exact figure dans les faits extraits ou le contexte \
+réglementaire ci-dessus. Pour toute aide non citée : formulation générique ("des aides \
+régionales peuvent exister") + renvoi vers le site officiel.
 """
 
 
@@ -322,9 +326,13 @@ CONSIGNES RÉDACTIONNELLES :
 7. Pas de titre répété dans le corps de l'article
 8. N'invente pas de chiffres — si tu n'as pas l'info, dis « selon les estimations » ou pose
    la question dans la FAQ
-9. CTA naturel vers les outils Moteurs.com : /simulateur (TCO perso),
-   /comparer-trajet (coût d'un trajet), /espace-membres (alertes aides personnalisées).
-   ⚠️ JAMAIS de CTA vers un formulaire commercial ou une démo B2B.
+9. N'invente PAS le nom d'une aide publique (prime, bonus, subvention, programme) — ne cite
+   un dispositif spécifique QUE si son nom exact figure dans les faits extraits ou le contexte
+   réglementaire ci-dessus. Pour toute aide non citée : formulation générique
+   (« des aides régionales peuvent exister ») + renvoi vers le site officiel.
+10. CTA naturel vers les outils Moteurs.com : /simulateur (TCO perso),
+    /comparer-trajet (coût d'un trajet), /espace-membres (alertes aides personnalisées).
+    ⚠️ JAMAIS de CTA vers un formulaire commercial ou une démo B2B.
 """
 
 # Schéma tool_use — Claude encode le JSON, pas de problème d'échappement HTML
