@@ -117,6 +117,25 @@ async def run_veille_source(source: dict) -> int:
         # 3. Analyse + stockage de chaque item
         nouveaux = 0
         for contenu in items:
+            # ── Guard URL doublon (0 token) — skip avant tout appel Claude ──
+            url = contenu.get("url_origine", "")
+            if url:
+                try:
+                    deja_vu = (
+                        supabase.table("veille_items")
+                        .select("id")
+                        .eq("url_origine", url)
+                        .limit(1)
+                        .execute()
+                        .data
+                    )
+                    if deja_vu:
+                        logger.debug(f"[AgentVeille] URL déjà connue, skip : {url[:70]}")
+                        continue
+                except Exception:
+                    pass  # En cas d'erreur DB, on laisse passer pour ne pas bloquer
+            # ─────────────────────────────────────────────────────────────────
+
             analyse = await analyser_avec_claude(contenu, source)
             if not analyse.get("pertinent"):
                 logger.debug(

@@ -72,12 +72,14 @@ CONTEXTES_PAYS = {
 
 # Pays cibles générés selon la provenance du signal
 PAYS_DECLINATIONS: dict[str, list[str]] = {
-    "FR": ["FR", "BE", "CH", "CA"],
-    "EU": ["FR", "BE", "CH", "CA", "LU"],
-    "BE": ["BE", "FR", "CH", "LU"],
-    "CH": ["CH", "FR", "BE"],
+    # Réduit pour maîtriser les coûts Sonnet (−50% appels)
+    # Priorité aux marchés FR + BE ; CH/CA/LU en manuel via ?limit=10
+    "FR": ["FR", "BE"],
+    "EU": ["FR", "BE", "CH"],
+    "BE": ["BE", "FR"],
+    "CH": ["CH", "FR"],
     "CA": ["CA", "FR"],
-    "DE": ["FR", "BE", "CH", "LU"],
+    "DE": ["FR", "BE"],
 }
 
 
@@ -457,6 +459,8 @@ def _doublon_detecte(
             .select("titre_provisoire, sources_json")
             .eq("pays_cible", pays_cible)
             .eq("cible", cible)
+            .order("created_at", desc=True)
+            .limit(300)  # Optimisation : 300 derniers suffisent pour détecter les doublons
             .execute()
             .data
         )
@@ -632,6 +636,19 @@ async def run_redaction_item(item: dict, source: dict) -> int:
 
     articles_data = await generer_declinaisons(item, source)
     if not articles_data:
+        # Fix bug : marquer TRAITE même si aucun article généré (doublons détectés)
+        # Sans ce fix, l'item reste NOUVEAU indéfiniment et bloque la queue
+        try:
+            supabase.table("veille_items").update({
+                "statut": "TRAITE",
+                "article_id": None,
+            }).eq("id", item["id"]).execute()
+            logger.info(
+                f"[AgentRédaction] Item #{item['id']} marqué TRAITE "
+                f"(aucun article — tout en doublon)"
+            )
+        except Exception as e:
+            logger.error(f"[AgentRédaction] Erreur TRAITE (no article) : {e}")
         return 0
 
     crees = 0
