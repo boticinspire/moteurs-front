@@ -1,5 +1,32 @@
 import type { MetadataRoute } from 'next'
 
+// Robots IA — politique « droits voisins » (décidée 07/06/2026) :
+//  • BLOQUÉ : robots d'ENTRAÎNEMENT (aspiration de contenu pour entraîner des modèles).
+//  • AUTORISÉ : robots de CITATION live (réponses d'assistants IA qui lient nos articles
+//    = trafic + reconnaissance presse).
+const AI_TRAINING_BOTS = [
+  'Google-Extended',
+  'GPTBot',
+  'CCBot',
+  'ClaudeBot',
+  'anthropic-ai',
+  'Claude-Web',
+  'Applebot-Extended',
+  'Bytespider',
+  'meta-externalagent',
+  'Meta-ExternalAgent',
+  'FacebookBot',
+  'Amazonbot',
+  'cohere-ai',
+  'Diffbot',
+  'AI2Bot',
+  'Timpibot',
+  'omgilibot',
+  'ImagesiftBot',
+  'PanguBot',
+  'Webzio-Extended',
+]
+
 export default function robots(): MetadataRoute.Robots {
   return {
     rules: [
@@ -31,6 +58,15 @@ export default function robots(): MetadataRoute.Robots {
       { userAgent: 'Googlebot', allow: '/', crawlDelay: 0 },
       { userAgent: 'Bingbot', allow: '/', crawlDelay: 0 },
       { userAgent: 'Slurp', allow: '/', crawlDelay: 2 },
+
+      // Robots de CITATION IA explicitement autorisés (visibilité presse)
+      { userAgent: 'OAI-SearchBot', allow: '/' },
+      { userAgent: 'ChatGPT-User', allow: '/' },
+      { userAgent: 'PerplexityBot', allow: '/' },
+      { userAgent: 'Perplexity-User', allow: '/' },
+      { userAgent: 'DuckAssistBot', allow: '/' },
+
+      // SEO scrapers bloqués
       { userAgent: 'AhrefsBot', disallow: '/' },
       { userAgent: 'SemrushBot', disallow: '/' },
       { userAgent: 'MJ12bot', disallow: '/' },
@@ -38,13 +74,11 @@ export default function robots(): MetadataRoute.Robots {
       { userAgent: 'BLEXBot', disallow: '/' },
       { userAgent: 'DataForSeoBot', disallow: '/' },
       { userAgent: 'PetalBot', disallow: '/' },
-      { userAgent: 'GPTBot', disallow: '/' },
-      { userAgent: 'ChatGPT-User', disallow: '/' },
-      { userAgent: 'CCBot', disallow: '/' },
-      { userAgent: 'anthropic-ai', disallow: '/' },
-      { userAgent: 'Claude-Web', disallow: '/' },
+
+      // Robots d'ENTRAÎNEMENT IA bloqués (opt-out droits voisins)
+      ...AI_TRAINING_BOTS.map((ua) => ({ userAgent: ua, disallow: '/' })),
     ],
-    sitemap: 'https://moteurs.com/sitemap.xml',
+    sitemap: ['https://moteurs.com/sitemap.xml', 'https://moteurs.com/api/sitemap-news'],
     host: 'https://moteurs.com',
   }
 }

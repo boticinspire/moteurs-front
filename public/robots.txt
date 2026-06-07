@@ -1,12 +1,126 @@
 # robots.txt — moteurs.com
-# Généré automatiquement — ne pas éditer manuellement
-# Le fichier canonique est app/robots.ts (Next.js)
+# IMPORTANT : ce fichier statique (public/) est servi PAR PRIORITE sur app/robots.ts.
+# Politique robots IA (07/06/2026) : entrainement bloque (opt-out droits voisins),
+# citation live autorisee.
 
 User-agent: *
 Allow: /
-Disallow: /admin
+Disallow: /simulateur
 Disallow: /espace-membres
 Disallow: /desinscription
+Disallow: /api/
+Disallow: /api-internal/
+Disallow: /admin/
+Disallow: /wp-admin/
+Disallow: /_next/
+Disallow: /static/chunks/
+Disallow: /cdn-cgi/
+Crawl-delay: 10
+
+User-agent: Googlebot
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
+# Robots de CITATION IA autorises (visibilite presse)
+User-agent: OAI-SearchBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: Perplexity-User
+Allow: /
+
+User-agent: DuckAssistBot
+Allow: /
+
+# SEO scrapers bloques
+User-agent: AhrefsBot
+Disallow: /
+
+User-agent: SemrushBot
+Disallow: /
+
+User-agent: MJ12bot
+Disallow: /
+
+User-agent: DotBot
+Disallow: /
+
+User-agent: BLEXBot
+Disallow: /
+
+User-agent: DataForSeoBot
+Disallow: /
+
+User-agent: PetalBot
+Disallow: /
+
+# Robots d'ENTRAINEMENT IA bloques (opt-out droits voisins)
+User-agent: Google-Extended
+Disallow: /
+
+User-agent: GPTBot
+Disallow: /
+
+User-agent: CCBot
+Disallow: /
+
+User-agent: ClaudeBot
+Disallow: /
+
+User-agent: anthropic-ai
+Disallow: /
+
+User-agent: Claude-Web
+Disallow: /
+
+User-agent: Applebot-Extended
+Disallow: /
+
+User-agent: Bytespider
+Disallow: /
+
+User-agent: meta-externalagent
+Disallow: /
+
+User-agent: Meta-ExternalAgent
+Disallow: /
+
+User-agent: FacebookBot
+Disallow: /
+
+User-agent: Amazonbot
+Disallow: /
+
+User-agent: cohere-ai
+Disallow: /
+
+User-agent: Diffbot
+Disallow: /
+
+User-agent: AI2Bot
+Disallow: /
+
+User-agent: Timpibot
+Disallow: /
+
+User-agent: omgilibot
+Disallow: /
+
+User-agent: ImagesiftBot
+Disallow: /
+
+User-agent: PanguBot
+Disallow: /
+
+User-agent: Webzio-Extended
+Disallow: /
 
 # Sitemaps
 Sitemap: https://moteurs.com/sitemap.xml

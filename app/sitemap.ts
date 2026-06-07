@@ -83,6 +83,8 @@ const PAGES_STATIQUES: { url: string; priority: number; changeFreq: MetadataRout
   { url: '/outils/amende-pv',               priority: 0.85, changeFreq: 'monthly'  },
   { url: '/a-propos',       priority: 0.4, changeFreq: 'yearly' },
   { url: '/mentions-legales', priority: 0.3, changeFreq: 'yearly' },
+  { url: '/presse',         priority: 0.5, changeFreq: 'monthly' },
+  { url: '/charte-editoriale', priority: 0.4, changeFreq: 'yearly' },
 ]
 
 async function fetchArticlesSlugs(): Promise<{ slug: string; published_at: string }[]> {

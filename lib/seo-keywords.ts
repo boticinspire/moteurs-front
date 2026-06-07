@@ -255,6 +255,22 @@ export const SEO_MAP: Record<string, SeoMeta> = {
     volume: 600,
     intent: 'Transactionnelle',
   },
+  '/presse': {
+    title: 'Espace presse — Moteurs.com, média de la transition énergétique des transports',
+    description: 'Kit média, chiffres clés, communiqués et contact journalistes. Moteurs.com, média de référence sur la transition énergétique des transports routiers (France, Belgique, Suisse, Canada).',
+    keywords: ['espace presse Moteurs.com', 'kit média Moteurs.com', 'contact presse transition énergétique'],
+    primaryKeyword: 'Moteurs.com presse',
+    volume: 0,
+    intent: 'Informationnelle',
+  },
+  '/charte-editoriale': {
+    title: 'Charte éditoriale & déontologie — Moteurs.com',
+    description: 'Notre méthode journalistique : triangulation des sources, niveaux de confiance, indépendance, politique de corrections et de transparence. La déontologie éditoriale de Moteurs.com.',
+    keywords: ['charte éditoriale Moteurs.com', 'déontologie Moteurs.com', 'politique de corrections'],
+    primaryKeyword: 'charte éditoriale Moteurs.com',
+    volume: 0,
+    intent: 'Informationnelle',
+  },
 }
 
 /** Retourne le metadata SEO pour une route donnée. */

@@ -3,6 +3,7 @@ import type { Metadata } from 'next'
 import { supabase, FLAGS, CONF_CLASS, CONF_LABEL, CIBLE_LABEL, CIBLE_COLOR, type Article } from '@/lib/supabase'
 import Flag from '@/components/Flag'
 import ArticleActions from './ArticleActions'
+import { buildNewsArticleJsonLd, buildFaqJsonLd, stripJsonLd } from '@/lib/articleSchema'
 
 // ISR : revalidation toutes les heures
 export const revalidate = 3600
@@ -87,9 +88,37 @@ export default async function ArticlePage({
     ],
   }
 
+  // ── JSON-LD NewsArticle (presse) ──
+  // Remplace le JSON-LD "Article" générique injecté par l'Agent SEO dans contenu_html.
+  const a = article as unknown as {
+    slug: string; titre_provisoire: string; meta_title?: string | null
+    meta_description?: string | null; resume_50mots?: string | null
+    pays_cible?: string | null; published_at?: string | null
+    etat_updated_at?: string | null
+    sources_json?: { source_nom?: string | null; url_origine?: string | null; pays_source?: string | null; langue?: string | null } | null
+  }
+  const newsJsonLd = buildNewsArticleJsonLd({
+    slug: a.slug,
+    titre: a.titre_provisoire,
+    meta_title: a.meta_title,
+    description: a.meta_description,
+    resume: a.resume_50mots,
+    pays_cible: a.pays_cible,
+    published_at: a.published_at,
+    updated_at: a.etat_updated_at,
+    sources_json: a.sources_json,
+    type: 'AnalysisNewsArticle',
+  })
+  const faqJsonLd = buildFaqJsonLd(faq)
+
+  // Corps nettoyé de tout JSON-LD legacy (anti-doublon de @type Article)
+  const corpsHtml = article.contenu_html ? stripJsonLd(article.contenu_html) : ''
+
   return (
     <article>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(newsJsonLd) }} />
+      {faqJsonLd && <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }} />}
 
       {/* ── En-tête sombre ── */}
       <header className="page-hero">
@@ -128,15 +157,15 @@ export default async function ArticlePage({
             marginTop: 14, marginBottom: 4,
             fontSize: '0.8rem', color: 'rgba(255,255,255,0.6)',
           }}>
-            <span style={{
+            <a href="/a-propos" style={{
               display: 'inline-flex', alignItems: 'center', gap: 6,
               background: 'rgba(255,255,255,0.08)', borderRadius: 20,
               padding: '4px 13px', border: '1px solid rgba(255,255,255,0.15)',
-              color: 'rgba(255,255,255,0.85)', fontWeight: 600,
+              color: 'rgba(255,255,255,0.85)', fontWeight: 600, textDecoration: 'none',
             }}>
               ✍️ La Rédaction Moteurs.com
-            </span>
-            <span>· Triangulation systématique · Sources officielles · Niveaux de confiance affichés</span>
+            </a>
+            <span>· <a href="/charte-editoriale" style={{ color: 'rgba(255,255,255,0.78)', textDecoration: 'underline' }}>Triangulation systématique</a> · Sources officielles · Niveaux de confiance affichés</span>
           </div>
 
           {article.resume_50mots && (
@@ -153,10 +182,10 @@ export default async function ArticlePage({
         <div className="article-content" style={{ maxWidth: 780, margin: '0 auto' }}>
 
           {/* Corps de l'article */}
-          {article.contenu_html && (
+          {corpsHtml && (
             <div
               className="article-body"
-              dangerouslySetInnerHTML={{ __html: article.contenu_html }}
+              dangerouslySetInnerHTML={{ __html: corpsHtml }}
             />
           )}
 
@@ -215,6 +244,24 @@ export default async function ArticlePage({
               ))}
             </div>
           )}
+
+          {/* ── Transparence IA (AI Act art. 50) ── */}
+          <div className="no-print" style={{
+            marginTop: 40,
+            padding: '14px 18px',
+            background: 'var(--color-bg-alt)',
+            border: '1px solid var(--color-border)',
+            borderLeft: '3px solid var(--color-primary)',
+            borderRadius: 8,
+            fontSize: '0.8rem',
+            color: 'var(--color-text-soft)',
+            lineHeight: 1.6,
+          }}>
+            🤖 <strong>Transparence</strong> — Cet article a été produit avec l&apos;assistance
+            d&apos;outils d&apos;intelligence artificielle, puis vérifié et validé par la rédaction
+            avant publication. La responsabilité éditoriale incombe au directeur de la publication.{' '}
+            <a href="/charte-editoriale" style={{ color: 'var(--color-primary)' }}>Notre charte &amp; déontologie</a>.
+          </div>
 
           {/* ── Copyright impression uniquement ── */}
           <div className="print-copyright">

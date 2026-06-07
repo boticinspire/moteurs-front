@@ -51,6 +51,8 @@ export default function Footer() {
               <li><Link href="/mentions-legales">{t('link_mentions')}</Link></li>
               <li><Link href="/cgu">{t('link_cgu')}</Link></li>
               <li><Link href="/a-propos">{t('link_about')}</Link></li>
+              <li><Link href="/charte-editoriale">Charte éditoriale</Link></li>
+              <li><Link href="/presse">Espace presse</Link></li>
             </ul>
           </div>
         </div>
