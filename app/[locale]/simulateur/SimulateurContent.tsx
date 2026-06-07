@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect } from 'react'
+import { useEffect, useRef } from 'react'
 import { useLocale, useTranslations } from 'next-intl'
 import FaqAccordion from '@/components/FaqAccordion'
 import { useUserContext } from '@/context/UserContextProvider'
@@ -110,16 +110,36 @@ export default function SimulateurContent() {
   const t = useTranslations('Simulateur')
   const locale = useLocale()
   const { context, isReady } = useUserContext()
+  const formRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     const script = document.createElement('script')
     // Version forcee pour invalider le cache CDN/navigateur (anti "Calcul en cours" fige)
-    script.src = '/simulateur.js?v=20260607'
+    script.src = '/simulateur.js?v=20260607b'
     script.async = true
     document.body.appendChild(script)
     return () => {
       if (document.body.contains(script)) document.body.removeChild(script)
     }
+  }, [])
+
+  // Auto-réparation : si un re-render React (ex : fin du bootstrap auth) ré-injecte
+  // le HTML statique du formulaire, la zone résultats revient à « Calcul en cours… »
+  // et les listeners vanille sont perdus. On surveille le conteneur et on relance
+  // l'init du simulateur dès qu'on détecte cette réinitialisation.
+  useEffect(() => {
+    const el = formRef.current
+    if (!el) return
+    const w = window as unknown as { MoteursSimulateur?: { reinit: () => void } }
+    const heal = () => {
+      const rc = el.querySelector('#results-content')
+      if (rc && /Calcul en cours/.test(rc.textContent || '') && w.MoteursSimulateur) {
+        w.MoteursSimulateur.reinit()
+      }
+    }
+    const obs = new MutationObserver(heal)
+    obs.observe(el, { childList: true, subtree: true })
+    return () => obs.disconnect()
   }, [])
 
   useEffect(() => {
@@ -173,7 +193,7 @@ export default function SimulateurContent() {
         </div>
       )}
 
-      <div dangerouslySetInnerHTML={{ __html: FORM_HTML }} />
+      <div ref={formRef} dangerouslySetInnerHTML={{ __html: FORM_HTML }} />
 
       <div className="container" style={{ paddingTop: 24 }}>
         <div className="disclaimer">

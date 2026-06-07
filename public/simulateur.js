@@ -621,4 +621,25 @@
 
     recompute();
   } // fin _initSimulateur
+
+  // ---------- API publique : ré-init auto-réparante ----------
+  // Le formulaire est rendu via React (dangerouslySetInnerHTML). Quand un
+  // re-render (ex : fin du bootstrap auth) ré-injecte le HTML statique, la
+  // zone résultats revient à "Calcul en cours…" et nos listeners (sur les
+  // anciens nœuds) sont perdus. React n'exécute pas à nouveau le script ;
+  // c'est le composant qui appelle reinit() pour relancer le calcul sur les
+  // nœuds neufs. Le garde "Calcul en cours" évite tout double-binding.
+  window.MoteursSimulateur = {
+    reinit: function () {
+      var rc = document.getElementById("results-content");
+      if (!rc) return;
+      if (!/Calcul en cours/.test(rc.textContent || "")) return; // déjà initialisé
+      try {
+        _initSimulateur();
+      } catch (e) {
+        rc.innerHTML = "<p style='color:#dc2626;padding:16px;'>Erreur d'initialisation : " + (e && e.message ? e.message : String(e)) + "</p>";
+        console.error("[Simulateur] reinit error:", e);
+      }
+    }
+  };
 })();
