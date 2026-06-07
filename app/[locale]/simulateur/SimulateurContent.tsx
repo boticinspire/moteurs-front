@@ -113,7 +113,8 @@ export default function SimulateurContent() {
 
   useEffect(() => {
     const script = document.createElement('script')
-    script.src = '/simulateur.js'
+    // Version forcee pour invalider le cache CDN/navigateur (anti "Calcul en cours" fige)
+    script.src = '/simulateur.js?v=20260607'
     script.async = true
     document.body.appendChild(script)
     return () => {
