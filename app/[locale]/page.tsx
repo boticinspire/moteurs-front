@@ -19,7 +19,7 @@ export default function HomePage() {
   const t = useTranslations('Home')
   const router = useRouter()
   const [theme, setTheme] = useState<Theme>('light')
-  const [activeTab, setActiveTab] = useState<'trip' | 'tco' | 'fleet' | 'search'>('trip')
+  const [activeTab, setActiveTab] = useState<'trip' | 'tco' | 'fleet'>('trip')
   const [depart, setDepart] = useState('Paris')
   const [destination, setDestination] = useState('Nice')
   const [allerRetour, setAllerRetour] = useState<'yes' | 'no'>('yes')
@@ -39,31 +39,10 @@ export default function HomePage() {
     CA: 'Canada',
   }
 
-  async function handleSubmit(e: React.FormEvent) {
+  function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     if (activeTab === 'tco') { router.push('/comparer'); return }
     if (activeTab === 'fleet') { router.push('/b2b'); return }
-    if (activeTab === 'search') {
-      if (!searchQuery.trim() || searchLoading) return
-      setSearchLoading(true)
-      setSearchResult(null)
-      setSearchError(null)
-      try {
-        const res = await fetch('/api/search', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ question: searchQuery.trim() }),
-        })
-        const data = await res.json()
-        if (!res.ok) throw new Error(data.error ?? 'Erreur')
-        setSearchResult(data)
-      } catch {
-        setSearchError('Impossible de traiter votre question. Réessayez.')
-      } finally {
-        setSearchLoading(false)
-      }
-      return
-    }
     // Trip : passe les valeurs via sessionStorage
     try {
       sessionStorage.setItem('home-trajet', JSON.stringify({
@@ -75,6 +54,28 @@ export default function HomePage() {
       }))
     } catch {}
     router.push('/comparer-trajet')
+  }
+
+  async function handleSearchSubmit(e: React.FormEvent) {
+    e.preventDefault()
+    if (!searchQuery.trim() || searchLoading) return
+    setSearchLoading(true)
+    setSearchResult(null)
+    setSearchError(null)
+    try {
+      const res = await fetch('/api/search', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ question: searchQuery.trim() }),
+      })
+      const data = await res.json()
+      if (!res.ok) throw new Error(data.error ?? 'Erreur')
+      setSearchResult(data)
+    } catch {
+      setSearchError('Impossible de traiter votre question. Réessayez.')
+    } finally {
+      setSearchLoading(false)
+    }
   }
 
   useEffect(() => {
@@ -136,26 +137,77 @@ export default function HomePage() {
           <div className="v2-orb o4" />
         </div>
         <div className="v2-container">
-          <div className="v2-hero-eyebrow">
-            {theme === 'light' ? (
-              <>
-                <span className="chip">
-                  <svg className="v2-ic" style={{ width: 11, height: 11, color: '#fff' }}><use href="#i-sun" /></svg>
-                  &nbsp;{t('chip_summer_label')}
-                </span>
-                <span>{t('chip_summer_subtitle')}</span>
-                <span className="sep">·</span>
-                <span className="v2-mono" style={{ fontSize: '.72rem' }}>{t('chip_summer_meta')}</span>
-              </>
-            ) : (
-              <>
-                <span className="chip">{t('chip_live_label')}</span>
-                <span>{t('chip_live_subtitle')}</span>
-                <span className="sep">·</span>
-                <span className="v2-mono" style={{ fontSize: '.72rem' }}>{t('chip_live_meta')}</span>
-              </>
-            )}
-          </div>
+          {/* ===== Search IA ===== */}
+          <form onSubmit={handleSearchSubmit} style={{
+            display: 'flex', alignItems: 'center', gap: 0,
+            background: 'var(--v2-tool-bg)', border: '1.5px solid var(--v2-line-strong)',
+            borderRadius: '14px', padding: '5px 5px 5px 16px',
+            backdropFilter: 'blur(16px) saturate(160%)',
+            marginBottom: '12px', maxWidth: '620px',
+          }}>
+            <svg style={{ width: 15, height: 15, flexShrink: 0, stroke: 'var(--v2-muted)', fill: 'none', strokeWidth: 1.8, strokeLinecap: 'round', strokeLinejoin: 'round' }} viewBox="0 0 24 24">
+              <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+            </svg>
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="Votre question — Paris-Nice en électrique, voyant rouge, bonus…"
+              style={{
+                flex: 1, background: 'transparent', border: 'none', outline: 'none',
+                font: 'inherit', fontSize: '.92rem', color: 'var(--v2-text-strong)',
+                padding: '9px 12px', minWidth: 0,
+              }}
+            />
+            <button
+              type="submit"
+              disabled={searchLoading || !searchQuery.trim()}
+              style={{
+                flexShrink: 0, padding: '9px 18px', borderRadius: '10px',
+                font: 'inherit', fontSize: '.84rem', fontWeight: 700,
+                cursor: 'pointer', border: 'none', whiteSpace: 'nowrap',
+                background: theme === 'light'
+                  ? 'linear-gradient(135deg,#ef6c1a,#c95211)'
+                  : 'linear-gradient(135deg,#5b8def,#3b82f6)',
+                color: '#fff',
+                opacity: (searchLoading || !searchQuery.trim()) ? 0.55 : 1,
+              }}
+            >
+              {searchLoading ? 'Analyse…' : 'Chercher'}
+            </button>
+          </form>
+          {searchError && (
+            <p style={{ margin: '0 0 20px 4px', fontSize: '.83rem', color: '#dc2626' }}>{searchError}</p>
+          )}
+          {searchResult && (
+            <div style={{
+              display: 'flex', alignItems: 'center', gap: '14px', flexWrap: 'wrap',
+              background: 'var(--v2-tool-bg)', border: '1px solid var(--v2-line-strong)',
+              borderRadius: '12px', padding: '14px 18px', marginBottom: '20px',
+              backdropFilter: 'blur(12px)', animation: 'v2srch .3s ease',
+              maxWidth: '620px',
+            }}>
+              <p style={{ flex: 1, margin: 0, fontSize: '.92rem', color: 'var(--v2-text-strong)', fontWeight: 500, lineHeight: 1.45 }}>
+                {searchResult.answer}
+              </p>
+              <button
+                type="button"
+                onClick={() => router.push(searchResult.url as Parameters<typeof router.push>[0])}
+                style={{
+                  flexShrink: 0, padding: '8px 16px', borderRadius: '9px',
+                  font: 'inherit', fontSize: '.84rem', fontWeight: 700,
+                  cursor: 'pointer', border: 'none', whiteSpace: 'nowrap',
+                  background: theme === 'light'
+                    ? 'linear-gradient(135deg,#ef6c1a,#c95211)'
+                    : 'linear-gradient(135deg,#5b8def,#3b82f6)',
+                  color: '#fff',
+                }}
+              >
+                {searchResult.label} →
+              </button>
+            </div>
+          )}
+          <style>{`@keyframes v2srch{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}`}</style>
 
           {theme === 'light' ? (
             <h1>
@@ -184,10 +236,6 @@ export default function HomePage() {
             </button>
             <button role="tab" aria-selected={activeTab === 'fleet'} className={activeTab === 'fleet' ? 'active' : ''} onClick={() => setActiveTab('fleet')}>
               <svg className="v2-ic"><use href="#i-briefcase" /></svg>{t('tab_fleet')}
-            </button>
-            <button role="tab" aria-selected={activeTab === 'search'} className={activeTab === 'search' ? 'active' : ''} onClick={() => { setActiveTab('search'); setSearchResult(null); setSearchError(null); }}>
-              <svg className="v2-ic" viewBox="0 0 24 24" stroke="currentColor" fill="none" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
-              Question
             </button>
           </div>
 
@@ -252,35 +300,18 @@ export default function HomePage() {
                   </div>
                 </div>
               )}
-              {activeTab === 'search' && (
-                <div className="field" style={{ flex: 4 }}>
-                  <label>
-                    <svg className="v2-ic" viewBox="0 0 24 24" stroke="currentColor" fill="none" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
-                    Votre question
-                  </label>
-                  <input
-                    type="text"
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    placeholder="ex: combien coûte Paris-Nice en électrique ?"
-                    autoFocus
-                  />
-                </div>
-              )}
-              {activeTab !== 'search' && (
-                <div className="field">
-                  <label htmlFor="v2-sel-pays"><svg className="v2-ic"><use href="#i-globe" /></svg>{t('form_country')}</label>
-                  <select id="v2-sel-pays" value={pays} onChange={(e) => setPays(e.target.value as 'FR' | 'BE' | 'CH' | 'CA')}>
-                    <option value="FR">{paysLabel.FR}</option>
-                    <option value="BE">{paysLabel.BE}</option>
-                    <option value="CH">{paysLabel.CH}</option>
-                    <option value="CA">{paysLabel.CA}</option>
-                  </select>
-                </div>
-              )}
+              <div className="field">
+                <label htmlFor="v2-sel-pays"><svg className="v2-ic"><use href="#i-globe" /></svg>{t('form_country')}</label>
+                <select id="v2-sel-pays" value={pays} onChange={(e) => setPays(e.target.value as 'FR' | 'BE' | 'CH' | 'CA')}>
+                  <option value="FR">{paysLabel.FR}</option>
+                  <option value="BE">{paysLabel.BE}</option>
+                  <option value="CH">{paysLabel.CH}</option>
+                  <option value="CA">{paysLabel.CA}</option>
+                </select>
+              </div>
               <div className="go">
-                <button type="submit" disabled={activeTab === 'search' && (searchLoading || !searchQuery.trim())}>
-                  {activeTab === 'tco' ? t('cta_calculate') : activeTab === 'fleet' ? t('cta_discover') : activeTab === 'search' ? (searchLoading ? 'Analyse…' : 'Demander') : t('cta_compare')}
+                <button type="submit">
+                  {activeTab === 'tco' ? t('cta_calculate') : activeTab === 'fleet' ? t('cta_discover') : t('cta_compare')}
                   <svg className="v2-ic"><use href="#i-arrow-right" /></svg>
                 </button>
               </div>
@@ -297,44 +328,6 @@ export default function HomePage() {
               ))}
             </datalist>
           </div>
-
-          {/* ===== Résultat search IA ===== */}
-          {activeTab === 'search' && (searchResult || searchError) && (
-            <div style={{ marginTop: '12px' }}>
-              {searchError && (
-                <p style={{ margin: 0, padding: '0 4px', fontSize: '.85rem', color: '#dc2626' }}>{searchError}</p>
-              )}
-              {searchResult && (
-                <div style={{
-                  display: 'flex', alignItems: 'center', gap: '16px', flexWrap: 'wrap',
-                  background: 'var(--v2-tool-bg)', border: '1px solid var(--v2-line-strong)',
-                  borderRadius: '18px', padding: '16px 20px',
-                  backdropFilter: 'blur(16px) saturate(160%)',
-                  animation: 'v2srch .35s ease',
-                }}>
-                  <p style={{ flex: 1, margin: 0, fontSize: '.95rem', color: 'var(--v2-text-strong)', fontWeight: 500, lineHeight: 1.45 }}>
-                    {searchResult.answer}
-                  </p>
-                  <button
-                    type="button"
-                    onClick={() => router.push(searchResult.url as Parameters<typeof router.push>[0])}
-                    style={{
-                      flexShrink: 0, padding: '10px 20px', borderRadius: '12px',
-                      font: 'inherit', fontSize: '.88rem', fontWeight: 700,
-                      cursor: 'pointer', border: 'none', whiteSpace: 'nowrap',
-                      background: theme === 'light'
-                        ? 'linear-gradient(135deg,#ef6c1a,#c95211)'
-                        : 'linear-gradient(135deg,#5b8def,#3b82f6)',
-                      color: '#fff',
-                    }}
-                  >
-                    {searchResult.label} →
-                  </button>
-                </div>
-              )}
-            </div>
-          )}
-          <style>{`@keyframes v2srch{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}`}</style>
 
           {/* ===== Live result ===== */}
           <div className="v2-live">
