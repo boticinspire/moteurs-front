@@ -245,6 +245,9 @@ export default function DocumentsEuropeContent() {
   const selectDefault = () => setSelectedCodes(new Set(COMMON_CODES))
   const selectAll = () => setSelectedCodes(new Set(COUNTRIES.map(c => c.code)))
 
+  // Déterminer la plage de pays pour adapter le layout
+  const countryRange = selectedCodes.size <= 3 ? 'few' : selectedCodes.size <= 7 ? 'medium' : 'many'
+
   return (
     <>
       <style dangerouslySetInnerHTML={{ __html: PAGE_CSS }} />
@@ -292,7 +295,7 @@ export default function DocumentsEuropeContent() {
         </div>
       </section>
 
-      <section className="docs-europe-tool" style={{ padding: '32px 0 60px' }}>
+      <section className="docs-europe-tool" data-country-range={countryRange} style={{ padding: '32px 0 60px' }}>
         <div className="container">
 
           {/* COUNTRY SELECTOR */}
@@ -1072,6 +1075,17 @@ const PAGE_CSS = `
     line-height: 1.15 !important;
     border-bottom: 0.5px solid #e6eaf2 !important;
   }
+  /* ===== TABLE ADAPTIVE PADDING BY COUNTRY COUNT ===== */
+  .docs-europe-tool[data-country-range="few"] .infographic-table thead th {
+    padding: 5px 4px !important;
+    font-size: 6pt !important;
+  }
+  .docs-europe-tool[data-country-range="few"] .infographic-table tbody td {
+    padding: 4px 5px !important; font-size: 6.5pt !important;
+  }
+  .docs-europe-tool[data-country-range="medium"] .infographic-table tbody td {
+    padding: 3px 4px !important; font-size: 6pt !important;
+  }
   .docs-europe-tool .infographic-table tbody td.equip-cell {
     font-size: 5.5pt !important;
     padding-left: 6px !important; padding-right: 6px !important;
@@ -1105,6 +1119,16 @@ const PAGE_CSS = `
   .docs-europe-tool .gallery-grid {
     grid-template-columns: repeat(8, 1fr) !important;
     gap: 4px !important;
+  }
+  /* ===== ADAPTIVE LAYOUT BY COUNTRY COUNT ===== */
+  .docs-europe-tool[data-country-range="few"] .gallery-grid {
+    grid-template-columns: repeat(4, 1fr) !important;
+  }
+  .docs-europe-tool[data-country-range="medium"] .gallery-grid {
+    grid-template-columns: repeat(6, 1fr) !important;
+  }
+  .docs-europe-tool[data-country-range="many"] .gallery-grid {
+    grid-template-columns: repeat(8, 1fr) !important;
   }
   .docs-europe-tool .gallery-item h4 { font-size: 5.5pt !important; margin: 1px 0 0 !important; line-height: 1.1; }
   .docs-europe-tool .gallery-item p { display: none !important; }
