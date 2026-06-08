@@ -100,7 +100,7 @@ async function fetchArticlesSlugs(): Promise<{ slug: string; published_at: strin
           apikey: supabaseKey,
           Authorization: `Bearer ${supabaseKey}`,
         },
-        next: { revalidate: 3600 },
+        next: { revalidate: 86400 },
       }
     )
     if (!res.ok) return []
@@ -122,7 +122,7 @@ async function fetchCartesIds(): Promise<{ id: string; updated_at: string }[]> {
       'https://orchestrateur-production.up.railway.app/recharge/cartes',
       {
         headers: { Accept: 'application/json' },
-        next: { revalidate: 3600 },
+        next: { revalidate: 86400 },
       }
     )
     if (!res.ok) return []

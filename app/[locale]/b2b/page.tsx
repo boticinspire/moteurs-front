@@ -2,7 +2,7 @@
 import { getStaticMetadata } from '@/lib/seo-keywords'
 import DerniersDecryptages from '@/components/DerniersDecryptages'
 
-export const revalidate = 1800
+export const revalidate = 86400
 
 
 export const metadata = getStaticMetadata('/b2b')

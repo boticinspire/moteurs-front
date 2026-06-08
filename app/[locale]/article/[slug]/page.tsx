@@ -6,7 +6,7 @@ import ArticleActions from './ArticleActions'
 import { buildNewsArticleJsonLd, buildFaqJsonLd, stripJsonLd } from '@/lib/articleSchema'
 
 // ISR : revalidation toutes les heures
-export const revalidate = 3600
+export const revalidate = 86400
 
 // Pré-génère les slugs de tous les articles publiés au build
 export async function generateStaticParams() {

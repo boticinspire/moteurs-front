@@ -9,7 +9,7 @@
 import { notFound } from 'next/navigation'
 import type { Metadata } from 'next'
 import { Link } from '@/i18n/navigation'
-export const revalidate = 3600
+export const revalidate = 86400
 
 const RAILWAY = 'https://orchestrateur-production.up.railway.app'
 
