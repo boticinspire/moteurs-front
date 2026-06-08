@@ -73,15 +73,15 @@ SOURCES_GOV = [
     {
         "pays": "CH",
         "nom": "Aides cantonales — energieschweiz.ch",
-        "url": "https://www.energieschweiz.ch/elektromobilitaet/elektrofahrzeuge/foerderprogramme/",
+        "url": "https://www.suisseenergie.ch/mobilite/electromobilite/",
         "selecteur_texte": "main",
         "mots_cles_alerte": ["förderung", "subvention", "prime", "aide", "canton"],
     },
     # ── Canada ──
     {
         "pays": "CA",
-        "nom": "Programme iVZEV — tc.canada.ca",
-        "url": "https://tc.canada.ca/fr/transport-terrestre/vehicules/technologies-nouvelles-avancees/mesures-incitatives-achat-vehicules-zero-emission",
+        "nom": "Programme PAVE — tc.canada.ca",
+        "url": "https://tc.canada.ca/fr/transport-routier/technologies-novatrices/vehicules-electriques/programme-abordabilite-vehicules-electriques",
         "selecteur_texte": "main",
         "mots_cles_alerte": ["incitatif", "rabais", "5000", "2500", "admissible", "programme"],
     },
