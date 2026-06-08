@@ -14,6 +14,11 @@ settings = get_settings()
 SEGMENTS = {"B2B": 1, "Particulier": 2}
 
 # ── Contextes réglementaires par pays cible ───────────────────────────────────
+# ⚠️ MAINTENANCE CRITIQUE : ces chaînes sont injectées telles quelles dans le prompt
+# et traitées par le modèle comme SOURCE DE VÉRITÉ. Toute aide / montant / date faux
+# ici se propage à TOUS les articles du pays. À auditer et dater régulièrement.
+# Ne jamais inscrire un nom de dispositif non vérifié (ex. l'ancienne fausse « prime
+# PIVERT » en BE a contaminé 248 articles avant correction le 08/06/2026).
 
 CONTEXTES_PAYS = {
     "FR": {
@@ -29,13 +34,13 @@ CONTEXTES_PAYS = {
     "BE": {
         "nom": "Belgique",
         "contexte_reglementaire": """\
-• Déductibilité fiscale 100 % pour véhicules zéro émission achetés jusqu'en 2027
-• Avantage ATN fortement réduit pour voitures de société électriques
-• Wallonie : prime PIVERT jusqu'à 4 500 € pour véhicule électrique neuf
-• Bruxelles : prime régionale jusqu'à 4 000 € pour véhicule électrique
-• Flandre : prime Ecoscore progressive selon émissions
-• LEZ (Low Emission Zones) à Bruxelles, Anvers et Gand — extension prévue
-• Obligation d'infrastructure de recharge en entreprise dès 2030""",
+• Voitures de société : déductibilité fiscale avantageuse (jusqu'à 100 %) pour les modèles zéro émission, dégressive dans le temps ; les véhicules thermiques perdent progressivement leurs avantages fiscaux
+• Avantage de toute nature (ATN) fortement réduit pour les voitures de société électriques
+• AUCUNE prime régionale à l'achat pour les particuliers en 2026 : la prime flamande a pris fin en 2025 ; la Wallonie et Bruxelles n'accordent pas de prime d'achat aux particuliers. ⚠️ Il n'existe PAS de « prime PIVERT » pour les véhicules électriques — PIVERT est un ancien plan wallon de voiries, à ne jamais citer comme aide VE
+• Wallonie et Bruxelles : taxe de mise en circulation (TMC) et taxe de circulation annuelle plafonnées au minimum légal pour un véhicule 100 % électrique
+• Flandre : fin des exonérations TMC / taxe de circulation pour les VE neufs immatriculés à partir du 1er janvier 2026 (les immatriculations antérieures conservent l'exonération)
+• LEZ (zones de basses émissions) à Bruxelles, Anvers et Gand — extension prévue
+• Des aides locales (communes) peuvent exister : à vérifier au cas par cas auprès de la commune, sans citer de montant non vérifié""",
     },
     "CH": {
         "nom": "Suisse",
@@ -50,7 +55,7 @@ CONTEXTES_PAYS = {
     "CA": {
         "nom": "Canada",
         "contexte_reglementaire": """\
-• Programme fédéral iVZEV : jusqu'à 5 000 CAD pour VE < 55 000 CAD, 2 500 CAD pour PHEV
+• Programme fédéral PAVE (Programme d'abordabilité des véhicules électriques), lancé en février 2026 : jusqu'à 5 000 CAD pour un VE, 2 500 CAD pour un PHEV (l'ancien iVZEV est clos depuis le 31 mars 2025)
 • Québec — Roulez vert : jusqu'à 8 000 CAD (cumulable avec fédéral)
 • Colombie-Britannique — CleanBC : jusqu'à 4 000 CAD de rabais
 • Ontario : programme supprimé en 2018, pression politique pour réintroduction
