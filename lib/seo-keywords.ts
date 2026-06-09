@@ -263,6 +263,14 @@ export const SEO_MAP: Record<string, SeoMeta> = {
     volume: 0,
     intent: 'Informationnelle',
   },
+  '/dessins': {
+    title: 'Dessins & humour — la transition énergétique en images | Moteurs.com',
+    description: "La galerie de dessins de Moteurs.com : le coup de crayon humoristique de l'actu auto (voiture électrique, ZFE, recharge) et les illustrations de nos décryptages.",
+    keywords: ['dessin de presse voiture électrique', 'humour mobilité', 'illustration transition énergétique'],
+    primaryKeyword: 'dessin humour voiture électrique',
+    volume: 0,
+    intent: 'Informationnelle',
+  },
   '/charte-editoriale': {
     title: 'Charte éditoriale & déontologie — Moteurs.com',
     description: 'Notre méthode journalistique : triangulation des sources, niveaux de confiance, indépendance, politique de corrections et de transparence. La déontologie éditoriale de Moteurs.com.',

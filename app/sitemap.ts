@@ -83,6 +83,7 @@ const PAGES_STATIQUES: { url: string; priority: number; changeFreq: MetadataRout
   { url: '/outils/amende-pv',               priority: 0.85, changeFreq: 'monthly'  },
   { url: '/a-propos',       priority: 0.4, changeFreq: 'yearly' },
   { url: '/mentions-legales', priority: 0.3, changeFreq: 'yearly' },
+  { url: '/dessins',        priority: 0.6, changeFreq: 'weekly' },
   { url: '/presse',         priority: 0.5, changeFreq: 'monthly' },
   { url: '/charte-editoriale', priority: 0.4, changeFreq: 'yearly' },
 ]
@@ -135,6 +136,26 @@ async function fetchCartesIds(): Promise<{ id: string; updated_at: string }[]> {
   }
 }
 
+async function fetchDessinsSlugs(): Promise<string[]> {
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
+  const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+  if (!supabaseUrl || !supabaseKey) return []
+  try {
+    const res = await fetch(
+      `${supabaseUrl}/rest/v1/dessins?select=slug&publie=eq.true&order=date_publication.desc`,
+      {
+        headers: { apikey: supabaseKey, Authorization: `Bearer ${supabaseKey}` },
+        next: { revalidate: 86400 },
+      }
+    )
+    if (!res.ok) return []
+    const data: { slug: string }[] = await res.json()
+    return data.map(d => d.slug)
+  } catch {
+    return []
+  }
+}
+
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const now = new Date().toISOString()
 
@@ -172,7 +193,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     }))
   )
 
-  const [articles, cartes] = await Promise.all([fetchArticlesSlugs(), fetchCartesIds()])
+  const [articles, cartes, dessinsSlugs] = await Promise.all([fetchArticlesSlugs(), fetchCartesIds(), fetchDessinsSlugs()])
   const articleEntries: MetadataRoute.Sitemap = articles.map(a => ({
     url: `${BASE}/article/${a.slug}`,
     lastModified: new Date(a.published_at).toISOString(),
@@ -188,6 +209,14 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     alternates: { languages: altLanguages(`/outils/cartes-recharge/${c.id}`) },
   }))
 
+  const dessinEntries: MetadataRoute.Sitemap = dessinsSlugs.map(slug => ({
+    url: `${BASE}/dessins/${slug}`,
+    lastModified: now,
+    changeFrequency: 'monthly' as const,
+    priority: 0.55,
+    alternates: { languages: altLanguages(`/dessins/${slug}`) },
+  }))
+
   return [
     ...staticEntries,
     ...trajetEntries,
@@ -195,5 +224,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...tcoEntries,
     ...articleEntries,
     ...carteEntries,
+    ...dessinEntries,
   ]
 }
