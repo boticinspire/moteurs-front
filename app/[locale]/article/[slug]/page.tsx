@@ -39,10 +39,12 @@ export async function generateMetadata({
   return {
     title: article.titre_provisoire,
     description: article.meta_description ?? undefined,
+    alternates: { canonical: `https://moteurs.com/article/${slug}` },
     openGraph: {
       title: `${FLAGS[pays] ?? ''} ${article.titre_provisoire}`,
       description: article.meta_description ?? undefined,
       type: 'article',
+      url: `https://moteurs.com/article/${slug}`,
     },
   }
 }
