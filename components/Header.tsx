@@ -5,7 +5,7 @@ import { Link, usePathname } from '@/i18n/navigation'
 import { useTranslations } from 'next-intl'
 import LanguageSwitcher from './LanguageSwitcher'
 
-type NavHref = '/' | '/articles' | '/recharge-electrique' | '/vacances-voiture' | '/cout-voiture' | '/depannage' | '/documents-auto' | '/outils' | '/b2b' | '/particulier'
+type NavHref = '/' | '/articles' | '/recharge-electrique' | '/vacances-voiture' | '/cout-voiture' | '/depannage' | '/documents-auto' | '/outils' | '/dessins' | '/b2b' | '/particulier'
 
 export default function Header() {
   const t = useTranslations('Header')
@@ -22,6 +22,7 @@ export default function Header() {
     { href: '/depannage',            label: t('nav_depannage'), urgent: true },
     { href: '/documents-auto',       label: t('nav_documents') },
     { href: '/outils',               label: t('nav_outils') },
+    { href: '/dessins',              label: 'Dessins' },
   ]
 
   // Liens audience — visibles dans le menu mobile et en petite taille desktop

@@ -357,9 +357,14 @@ export default function AdminPage() {
             <h1 style={{ fontSize: '1.6rem', marginBottom: 4 }}>🛠️ Administration Moteurs.com</h1>
             <p style={{ color: 'var(--color-text-soft)', fontSize: '0.9rem' }}>Validation articles · Pipeline éditorial · Agents IA</p>
           </div>
-          <button onClick={async () => { await sb.auth.signOut(); window.location.href = '/espace-membres' }} style={{ background: 'none', border: '1px solid var(--color-border)', padding: '6px 14px', borderRadius: 6, cursor: 'pointer', color: 'var(--color-text-soft)' }}>
-            Déconnexion
-          </button>
+          <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+            <Link href="/admin/dessins" style={{ textDecoration: 'none', border: '1px solid var(--color-primary)', padding: '6px 14px', borderRadius: 6, color: 'var(--color-primary)', fontWeight: 600, fontSize: '0.9rem' }}>
+              🎨 Dessins
+            </Link>
+            <button onClick={async () => { await sb.auth.signOut(); window.location.href = '/espace-membres' }} style={{ background: 'none', border: '1px solid var(--color-border)', padding: '6px 14px', borderRadius: 6, cursor: 'pointer', color: 'var(--color-text-soft)' }}>
+              Déconnexion
+            </button>
+          </div>
         </div>
 
         {/* ── Stats ── */}
