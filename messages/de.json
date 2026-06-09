@@ -55,7 +55,11 @@
     "language_label": "Sprache",
     "language_change": "Sprache ändern",
     "nav_b2b": "KMU & Flotten",
-    "nav_particulier": "Privatpersonen"
+    "nav_particulier": "Privatpersonen",
+    "nav_more": "Mehr",
+    "nav_dessins": "Cartoons",
+    "account_profile": "Ihr Profil",
+    "aria_account": "Konto und Profil"
   },
   "Footer": {
     "tagline": "Das redaktionelle Medium zur Energiewende des Straßenverkehrs.",

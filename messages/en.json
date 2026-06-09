@@ -55,7 +55,11 @@
     "language_label": "Language",
     "language_change": "Change language",
     "nav_b2b": "Business & Fleets",
-    "nav_particulier": "Private owners"
+    "nav_particulier": "Private owners",
+    "nav_more": "More",
+    "nav_dessins": "Cartoons",
+    "account_profile": "Your profile",
+    "aria_account": "Account and profile"
   },
   "Footer": {
     "tagline": "The editorial media on the energy transition of road transport.",

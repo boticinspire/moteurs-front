@@ -55,7 +55,11 @@
     "language_label": "Lingua",
     "language_change": "Cambia lingua",
     "nav_b2b": "Aziende & Flotte",
-    "nav_particulier": "Privati"
+    "nav_particulier": "Privati",
+    "nav_more": "Altro",
+    "nav_dessins": "Vignette",
+    "account_profile": "Il tuo profilo",
+    "aria_account": "Account e profilo"
   },
   "Footer": {
     "tagline": "Il media editoriale sulla transizione energetica del trasporto su strada.",

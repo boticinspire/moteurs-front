@@ -55,7 +55,11 @@
     "language_label": "Taal",
     "language_change": "Taal wijzigen",
     "nav_b2b": "KMO & Vloot",
-    "nav_particulier": "Particulieren"
+    "nav_particulier": "Particulieren",
+    "nav_more": "Meer",
+    "nav_dessins": "Cartoons",
+    "account_profile": "Uw profiel",
+    "aria_account": "Account en profiel"
   },
   "Footer": {
     "tagline": "Het redactionele medium over de energietransitie van het wegvervoer.",

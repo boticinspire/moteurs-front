@@ -55,7 +55,11 @@
     "language_label": "Idioma",
     "language_change": "Cambiar de idioma",
     "nav_b2b": "Empresa & Flotas",
-    "nav_particulier": "Particulares"
+    "nav_particulier": "Particulares",
+    "nav_more": "Más",
+    "nav_dessins": "Viñetas",
+    "account_profile": "Tu perfil",
+    "aria_account": "Cuenta y perfil"
   },
   "Footer": {
     "tagline": "El medio editorial de la transición energética del transporte por carretera.",

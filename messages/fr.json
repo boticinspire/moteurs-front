@@ -55,7 +55,11 @@
     "cta_simulator": "Simulateur",
     "cta_simulator_tco": "Simulateur TCO",
     "language_label": "Langue",
-    "language_change": "Changer de langue"
+    "language_change": "Changer de langue",
+    "nav_more": "Plus",
+    "nav_dessins": "Dessins",
+    "account_profile": "Votre profil",
+    "aria_account": "Compte et profil"
   },
   "Footer": {
     "tagline": "Le média éditorial de la transition énergétique des transports routiers.",
