@@ -125,6 +125,7 @@ export default function HomePage() {
           <symbol id="i-file-text" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" /><polyline points="14 2 14 8 20 8" /><line x1="16" x2="8" y1="13" y2="13" /><line x1="16" x2="8" y1="17" y2="17" /></symbol>
           <symbol id="i-wrench" viewBox="0 0 24 24"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z" /></symbol>
           <symbol id="i-life-buoy" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" /><circle cx="12" cy="12" r="4" /><line x1="4.93" x2="9.17" y1="4.93" y2="9.17" /><line x1="14.83" x2="19.07" y1="14.83" y2="19.07" /><line x1="14.83" x2="19.07" y1="9.17" y2="4.93" /><line x1="14.83" x2="18.36" y1="9.17" y2="5.64" /><line x1="4.93" x2="9.17" y1="19.07" y2="14.83" /></symbol>
+          <symbol id="i-alert-triangle" viewBox="0 0 24 24"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z" /><line x1="12" x2="12" y1="9" y2="13" /><line x1="12" x2="12.01" y1="17" y2="17" /></symbol>
         </defs>
       </svg>
 
@@ -363,10 +364,26 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ===== 3 usages principaux ===== */}
-      <section className="v2-section v2-section-tight" style={{ background: 'var(--color-bg-alt, #f8f9fa)', borderTop: '1px solid var(--color-border, #e8eaed)' }}>
+      {/* ===== Logos sources ===== */}
+      <div className="v2-logos">
         <div className="v2-container">
-          <h2 style={{ textAlign: 'center', fontSize: '1.1rem', fontWeight: 700, marginBottom: '1.25rem', color: 'var(--color-text)' }}>
+          <span className="lab"><svg className="v2-ic"><use href="#i-shield-check" /></svg>{t('sources_label')}</span>
+          <div className="row">
+            <span>DGEC</span><span className="dot" />
+            <span>Commission Européenne</span><span className="dot" />
+            <span>ACEA</span><span className="dot" />
+            <span>OpenChargeMap</span><span className="dot" />
+            <span>ADEME</span><span className="dot" />
+            <span>SPF Finances BE</span><span className="dot" />
+            <span>OFEN CH</span>
+          </div>
+        </div>
+      </div>
+
+      {/* ===== 3 usages principaux ===== */}
+      <section className="v2-section v2-section-tight alt">
+        <div className="v2-container">
+          <h2 style={{ textAlign: 'center', fontSize: 'clamp(1.5rem,2.6vw,2rem)', fontWeight: 800, letterSpacing: '-.03em', marginBottom: '2rem', color: 'var(--v2-text-strong)' }}>
             {t('usages_section_title')}
           </h2>
           <div className="v2-tools-grid v2-tools-grid-3">
@@ -424,50 +441,6 @@ export default function HomePage() {
               <span className="open" style={{ marginTop: 'auto', color: '#c2410c', fontWeight: 700 }}>
                 {t('usage_panne_cta')} <svg className="v2-ic"><use href="#i-arrow-right" /></svg>
               </span>
-            </Link>
-          </div>
-        </div>
-      </section>
-
-      {/* ===== 3 outils pour gérer une panne ===== */}
-      <section className="v2-section v2-section-tight">
-        <div className="v2-container">
-          <div className="v2-section-head">
-            <div className="left">
-              <div className="v2-eyebrow">{t('panne_eyebrow')}</div>
-              <h2>{t('panne_title_a')} <span className="grad">{t('panne_title_glow')}</span></h2>
-            </div>
-            <Link className="v2-btn v2-btn-ghost" href="/depannage">
-              {t('panne_cta_hub')} <svg className="v2-ic"><use href="#i-arrow-right" /></svg>
-            </Link>
-          </div>
-          <div className="v2-tools-grid v2-tools-grid-3">
-            <Link className="v2-tcard c-orange v2-tcard-urgent" href="/assistant-depannage" style={{ position: 'relative', border: '2px solid #f97316' }}>
-              <span style={{
-                position: 'absolute', top: 10, right: 10,
-                background: '#f97316', color: 'white',
-                fontSize: '.65rem', fontWeight: 700, padding: '2px 8px', borderRadius: 10,
-                textTransform: 'uppercase', letterSpacing: '.3px',
-              }}>
-                {t('panne_card1_badge')}
-              </span>
-              <div className="icbox"><svg className="v2-ic"><use href="#i-camera" /></svg></div>
-              <h3>{t('panne_card1_title')}</h3>
-              <p>{t('panne_card1_desc')}</p>
-              <p style={{ fontSize: '.72rem', color: '#666', margin: '4px 0 0' }}>{t('panne_card1_micro')}</p>
-              <span className="open" style={{ fontWeight: 700 }}>{t('panne_card1_cta')} <svg className="v2-ic"><use href="#i-arrow-right" /></svg></span>
-            </Link>
-            <Link className="v2-tcard c-amber" href="/constat">
-              <div className="icbox"><svg className="v2-ic"><use href="#i-file-text" /></svg></div>
-              <h3>{t('panne_card2_title')}</h3>
-              <p>{t('panne_card2_desc')}</p>
-              <span className="open">{t('panne_card2_cta')} <svg className="v2-ic"><use href="#i-arrow-right" /></svg></span>
-            </Link>
-            <Link className="v2-tcard c-blue" href="/assistance/panne">
-              <div className="icbox"><svg className="v2-ic"><use href="#i-life-buoy" /></svg></div>
-              <h3>{t('panne_card3_title')}</h3>
-              <p>{t('panne_card3_desc')}</p>
-              <span className="open">{t('panne_card3_cta')} <svg className="v2-ic"><use href="#i-arrow-right" /></svg></span>
             </Link>
           </div>
         </div>
@@ -570,7 +543,7 @@ export default function HomePage() {
       </section>
 
 
-      {/* ===== Tools grid ===== */}
+      {/* ===== Tools grid (groupés) ===== */}
       <section className="v2-section">
         <div className="v2-container">
           <div className="v2-section-head">
@@ -582,86 +555,86 @@ export default function HomePage() {
               {t('tools_cta_all')} <svg className="v2-ic"><use href="#i-arrow-right" /></svg>
             </Link>
           </div>
-          <div className="v2-tools-grid">
-            <Link className="v2-tcard c-blue" href="/comparer-trajet">
-              <div className="icbox"><svg className="v2-ic"><use href="#i-route" /></svg></div>
-              <h3>{t('tool1_title')}</h3>
-              <p>{t('tool1_desc')}</p>
-              <span className="open">{t('tool1_cta')} <svg className="v2-ic"><use href="#i-arrow-right" /></svg></span>
-            </Link>
-            <Link className="v2-tcard c-green" href="/comparer">
-              <div className="icbox"><svg className="v2-ic"><use href="#i-bar-chart" /></svg></div>
-              <h3>{t('tool2_title')}</h3>
-              <p>{t('tool2_desc')}</p>
-              <span className="open">{t('tool2_cta')} <svg className="v2-ic"><use href="#i-arrow-right" /></svg></span>
-            </Link>
-            <Link className="v2-tcard c-amber" href="/simulateur">
-              <div className="icbox"><svg className="v2-ic"><use href="#i-calculator" /></svg></div>
-              <h3>{t('tool3_title')}</h3>
-              <p>{t('tool3_desc')}</p>
-              <span className="open">{t('tool3_cta')} <svg className="v2-ic"><use href="#i-arrow-right" /></svg></span>
-            </Link>
-            <Link className="v2-tcard c-pink" href="/outils/cartes-recharge">
-              <div className="icbox"><svg className="v2-ic"><use href="#i-credit-card" /></svg></div>
-              <h3>{t('tool4_title')}</h3>
-              <p>{t('tool4_desc')}</p>
-              <span className="open">{t('tool4_cta')} <svg className="v2-ic"><use href="#i-arrow-right" /></svg></span>
-            </Link>
-            <Link className="v2-tcard c-violet" href="/assistant-depannage">
-              <div className="icbox"><svg className="v2-ic"><use href="#i-camera" /></svg></div>
-              <h3>{t('tool5_title')}</h3>
-              <p>{t('tool5_desc')}</p>
-              <span className="open">{t('tool5_cta')} <svg className="v2-ic"><use href="#i-arrow-right" /></svg></span>
-            </Link>
-            <Link className="v2-tcard c-orange" href="/constat">
-              <div className="icbox"><svg className="v2-ic"><use href="#i-file-text" /></svg></div>
-              <h3>{t('tool6_title')}</h3>
-              <p>{t('tool6_desc')}</p>
-              <span className="open">{t('tool6_cta')} <svg className="v2-ic"><use href="#i-arrow-right" /></svg></span>
-            </Link>
-            <Link className="v2-tcard c-blue" href="/depannage">
-              <div className="icbox"><svg className="v2-ic"><use href="#i-wrench" /></svg></div>
-              <h3>{t('tool7_title')}</h3>
-              <p>{t('tool7_desc')}</p>
-              <span className="open">{t('tool7_cta')} <svg className="v2-ic"><use href="#i-arrow-right" /></svg></span>
-            </Link>
-            <Link className="v2-tcard c-green" href="/assistance">
-              <div className="icbox"><svg className="v2-ic"><use href="#i-life-buoy" /></svg></div>
-              <h3>{t('tool8_title')}</h3>
-              <p>{t('tool8_desc')}</p>
-              <span className="open">{t('tool8_cta')} <svg className="v2-ic"><use href="#i-arrow-right" /></svg></span>
-            </Link>
-            <Link className="v2-tcard c-amber" href="/vacances-voiture/checklist-ev">
-              <div className="icbox"><svg className="v2-ic"><use href="#i-file-text" /></svg></div>
-              <h3>{t('tool9_title')}</h3>
-              <p>{t('tool9_desc')}</p>
-              <span className="open">{t('tool9_cta')} <svg className="v2-ic"><use href="#i-arrow-right" /></svg></span>
-            </Link>
-            <Link className="v2-tcard c-red" href="/outils/amende-pv">
-              <div className="icbox"><svg className="v2-ic"><use href="#i-alert-triangle" /></svg></div>
-              <h3>{t('tool10_title')}</h3>
-              <p>{t('tool10_desc')}</p>
-              <span className="open">{t('tool10_cta')} <svg className="v2-ic"><use href="#i-arrow-right" /></svg></span>
-            </Link>
+
+          <div className="v2-tool-group">
+            <div className="v2-group-title">{t('tools_group_calc')}</div>
+            <div className="v2-tools-grid">
+              <Link className="v2-tcard c-blue" href="/comparer-trajet">
+                <div className="icbox"><svg className="v2-ic"><use href="#i-route" /></svg></div>
+                <h3>{t('tool1_title')}</h3>
+                <p>{t('tool1_desc')}</p>
+                <span className="open">{t('tool1_cta')} <svg className="v2-ic"><use href="#i-arrow-right" /></svg></span>
+              </Link>
+              <Link className="v2-tcard c-green" href="/comparer">
+                <div className="icbox"><svg className="v2-ic"><use href="#i-bar-chart" /></svg></div>
+                <h3>{t('tool2_title')}</h3>
+                <p>{t('tool2_desc')}</p>
+                <span className="open">{t('tool2_cta')} <svg className="v2-ic"><use href="#i-arrow-right" /></svg></span>
+              </Link>
+              <Link className="v2-tcard c-amber" href="/simulateur">
+                <div className="icbox"><svg className="v2-ic"><use href="#i-calculator" /></svg></div>
+                <h3>{t('tool3_title')}</h3>
+                <p>{t('tool3_desc')}</p>
+                <span className="open">{t('tool3_cta')} <svg className="v2-ic"><use href="#i-arrow-right" /></svg></span>
+              </Link>
+            </div>
+          </div>
+
+          <div className="v2-tool-group">
+            <div className="v2-group-title">{t('tools_group_recharge')}</div>
+            <div className="v2-tools-grid">
+              <Link className="v2-tcard c-pink" href="/outils/cartes-recharge">
+                <div className="icbox"><svg className="v2-ic"><use href="#i-credit-card" /></svg></div>
+                <h3>{t('tool4_title')}</h3>
+                <p>{t('tool4_desc')}</p>
+                <span className="open">{t('tool4_cta')} <svg className="v2-ic"><use href="#i-arrow-right" /></svg></span>
+              </Link>
+              <Link className="v2-tcard c-amber" href="/vacances-voiture/checklist-ev">
+                <div className="icbox"><svg className="v2-ic"><use href="#i-file-text" /></svg></div>
+                <h3>{t('tool9_title')}</h3>
+                <p>{t('tool9_desc')}</p>
+                <span className="open">{t('tool9_cta')} <svg className="v2-ic"><use href="#i-arrow-right" /></svg></span>
+              </Link>
+              <Link className="v2-tcard c-green" href="/assistance">
+                <div className="icbox"><svg className="v2-ic"><use href="#i-life-buoy" /></svg></div>
+                <h3>{t('tool8_title')}</h3>
+                <p>{t('tool8_desc')}</p>
+                <span className="open">{t('tool8_cta')} <svg className="v2-ic"><use href="#i-arrow-right" /></svg></span>
+              </Link>
+            </div>
+          </div>
+
+          <div className="v2-tool-group">
+            <div className="v2-group-title">{t('tools_group_panne')}</div>
+            <div className="v2-tools-grid">
+              <Link className="v2-tcard c-violet" href="/assistant-depannage">
+                <div className="icbox"><svg className="v2-ic"><use href="#i-camera" /></svg></div>
+                <h3>{t('tool5_title')}</h3>
+                <p>{t('tool5_desc')}</p>
+                <span className="open">{t('tool5_cta')} <svg className="v2-ic"><use href="#i-arrow-right" /></svg></span>
+              </Link>
+              <Link className="v2-tcard c-orange" href="/constat">
+                <div className="icbox"><svg className="v2-ic"><use href="#i-file-text" /></svg></div>
+                <h3>{t('tool6_title')}</h3>
+                <p>{t('tool6_desc')}</p>
+                <span className="open">{t('tool6_cta')} <svg className="v2-ic"><use href="#i-arrow-right" /></svg></span>
+              </Link>
+              <Link className="v2-tcard c-blue" href="/depannage">
+                <div className="icbox"><svg className="v2-ic"><use href="#i-wrench" /></svg></div>
+                <h3>{t('tool7_title')}</h3>
+                <p>{t('tool7_desc')}</p>
+                <span className="open">{t('tool7_cta')} <svg className="v2-ic"><use href="#i-arrow-right" /></svg></span>
+              </Link>
+              <Link className="v2-tcard c-red" href="/outils/amende-pv">
+                <div className="icbox"><svg className="v2-ic"><use href="#i-alert-triangle" /></svg></div>
+                <h3>{t('tool10_title')}</h3>
+                <p>{t('tool10_desc')}</p>
+                <span className="open">{t('tool10_cta')} <svg className="v2-ic"><use href="#i-arrow-right" /></svg></span>
+              </Link>
+            </div>
           </div>
         </div>
       </section>
-
-      {/* ===== Logos sources ===== */}
-      <div className="v2-logos">
-        <div className="v2-container">
-          <span className="lab"><svg className="v2-ic"><use href="#i-shield-check" /></svg>{t('sources_label')}</span>
-          <div className="row">
-            <span>DGEC</span><span className="dot" />
-            <span>Commission Européenne</span><span className="dot" />
-            <span>ACEA</span><span className="dot" />
-            <span>OpenChargeMap</span><span className="dot" />
-            <span>ADEME</span><span className="dot" />
-            <span>SPF Finances BE</span><span className="dot" />
-            <span>OFEN CH</span>
-          </div>
-        </div>
-      </div>
 
       {/* ===== Newsletter CTA ===== */}
       <section className="v2-section">

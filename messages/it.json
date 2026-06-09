@@ -271,7 +271,10 @@
     "panne_card1_micro": "Gratuito · Senza iscrizione · Risposta immediata",
     "tool10_title": "Calcola multa",
     "tool10_desc": "Velocità, sosta, alcol, ZTL — tariffe ufficiali 2026 per 10 paesi. Importo esatto, punti, sospensione patente.",
-    "tool10_cta": "Calcola"
+    "tool10_cta": "Calcola",
+    "tools_group_calc": "Costi e calcolo",
+    "tools_group_recharge": "Ricarica e vacanze",
+    "tools_group_panne": "Guasti e pratiche"
   },
   "About": {
     "title": "Chi è Moteurs.com",

@@ -271,7 +271,10 @@
     "panne_card1_micro": "Gratis · Geen registratie · Direct antwoord",
     "tool10_title": "Boetecalculator",
     "tool10_desc": "Snelheid, parkeren, drank, milieuzones — officiële 2026-tarieven voor 10 landen. Exact bedrag, punten, schorsingsrisico.",
-    "tool10_cta": "Berekenen"
+    "tool10_cta": "Berekenen",
+    "tools_group_calc": "Kosten & calculators",
+    "tools_group_recharge": "Opladen & vakantie",
+    "tools_group_panne": "Pech & papierwerk"
   },
   "About": {
     "title": "Over Moteurs.com",

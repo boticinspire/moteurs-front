@@ -1816,6 +1816,22 @@ tr:hover td {
 .home-v2 .v2-cta-block p{color:#cdd5e4;margin-top:12px;max-width:42ch}
 @media (max-width:780px){.home-v2 .v2-cta-block{grid-template-columns:1fr;padding:36px}}
 
+
+/* ===== Réorg home (09/06/2026) : groupes d'outils + accent cartes d'intention ===== */
+.home-v2 .v2-tool-group + .v2-tool-group{margin-top:42px}
+.home-v2 .v2-group-title{display:flex;align-items:center;gap:14px;font-size:.8rem;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:var(--v2-muted);margin-bottom:20px}
+.home-v2 .v2-group-title::after{content:"";flex:1;height:1px;background:var(--v2-line-soft)}
+/* Liseré d'accent en haut des 3 cartes d'intention */
+.home-v2 .v2-tools-grid-3 > .v2-tcard{padding-top:28px}
+.home-v2 .v2-tools-grid-3 > .v2-tcard::after{content:"";position:absolute;top:0;left:0;right:0;height:4px;background:var(--v2-accent-color);border-radius:18px 18px 0 0}
+.home-v2 .v2-tools-grid-3 > .v2-tcard h3{font-size:1.18rem}
+/* Couleur manquante c-red (calculateur d'amendes) */
+.home-v2 .v2-tcard.c-red{--v2-accent-color:#dc2626;--v2-accent-soft:#fee2e2;--v2-accent-border:#fecaca}
+.home-v2[data-theme="dark"] .v2-tcard.c-red{--v2-accent-color:#f87171}
+/* Bandeau sources remonté : un peu plus aéré */
+.home-v2 .v2-logos{padding:26px 0}
+
+
 /* ===== Prefers reduced motion ===== */
 @media (prefers-reduced-motion:reduce){
   .home-v2 .v2-mesh .v2-orb{animation:none}

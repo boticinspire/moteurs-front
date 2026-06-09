@@ -271,7 +271,10 @@
     "panne_card1_micro": "Kostenlos · Ohne Anmeldung · Sofortige Antwort",
     "tool10_title": "Bußgeldrechner",
     "tool10_desc": "Temposünder, Parken, Alkohol, Umweltzonen — offizielle 2026-Tarife für 10 Länder. Genauer Betrag, Punkte, Fahrverbot.",
-    "tool10_cta": "Berechnen"
+    "tool10_cta": "Berechnen",
+    "tools_group_calc": "Kosten & Rechner",
+    "tools_group_recharge": "Laden & Urlaub",
+    "tools_group_panne": "Panne & Papiere"
   },
   "About": {
     "title": "Über Moteurs.com",

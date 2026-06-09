@@ -271,7 +271,10 @@
     "panne_card1_micro": "Gratuit · Sans inscription · Réponse immédiate",
     "tool10_title": "Calculateur d'amendes",
     "tool10_desc": "PV vitesse, stationnement, alcool, ZFE — barèmes officiels 2026 pour 10 pays. Montant exact, points retirés, risque de suspension.",
-    "tool10_cta": "Calculer"
+    "tool10_cta": "Calculer",
+    "tools_group_calc": "Calcul & coûts",
+    "tools_group_recharge": "Recharge & vacances",
+    "tools_group_panne": "Dépannage & démarches"
   },
   "About": {
     "title": "À propos de Moteurs.com",

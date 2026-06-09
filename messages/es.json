@@ -271,7 +271,10 @@
     "panne_card1_micro": "Gratis · Sin registro · Respuesta inmediata",
     "tool10_title": "Calculadora de multas",
     "tool10_desc": "Exceso de velocidad, aparcamiento, alcohol, ZBE — tarifas oficiales 2026 para 10 países. Importe exacto, puntos, riesgo de suspensión.",
-    "tool10_cta": "Calcular"
+    "tool10_cta": "Calcular",
+    "tools_group_calc": "Costes y cálculo",
+    "tools_group_recharge": "Recarga y vacaciones",
+    "tools_group_panne": "Avería y trámites"
   },
   "About": {
     "title": "Sobre Moteurs.com",

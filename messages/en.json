@@ -271,7 +271,10 @@
     "panne_card1_micro": "Free · No sign-up · Instant answer",
     "tool10_title": "Fine Calculator",
     "tool10_desc": "Speeding, parking, drink-driving, low-emission zones — official 2026 rates for 10 countries. Exact fine, penalty points, suspension risk.",
-    "tool10_cta": "Calculate"
+    "tool10_cta": "Calculate",
+    "tools_group_calc": "Costs & calculators",
+    "tools_group_recharge": "Charging & holidays",
+    "tools_group_panne": "Breakdown & paperwork"
   },
   "About": {
     "title": "About Moteurs.com",
