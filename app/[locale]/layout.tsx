@@ -113,6 +113,12 @@ export default async function LocaleLayout({
   return (
     <html lang={locale as Locale} className={inter.variable}>
       <head>
+        {/* Google Tag Manager */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','GTM-W3FM9HVP');`,
+          }}
+        />
         {/* Anti-FOUC : applique data-theme sur <html> avant le rendu */}
         <script dangerouslySetInnerHTML={{ __html: `try{var t=localStorage.getItem('moteurs-theme');if(t==='dark'||t==='light')document.documentElement.dataset.theme=t;}catch(e){}` }} />
         <script
@@ -125,6 +131,15 @@ export default async function LocaleLayout({
         />
       </head>
       <body>
+        {/* Google Tag Manager (noscript) */}
+        <noscript>
+          <iframe
+            src="https://www.googletagmanager.com/ns.html?id=GTM-W3FM9HVP"
+            height="0"
+            width="0"
+            style={{ display: 'none', visibility: 'hidden' }}
+          />
+        </noscript>
         <NextIntlClientProvider>
           <Header />
           <TranslationBannerGate />
