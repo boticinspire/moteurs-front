@@ -1,6 +1,9 @@
 import { notFound } from 'next/navigation'
 import type { Metadata } from 'next'
-import { supabase, FLAGS, CONF_CLASS, CONF_LABEL, CIBLE_LABEL, CIBLE_COLOR, type Article } from '@/lib/supabase'
+import { supabase, FLAGS, CONF_CLASS, CONF_LABEL, CIBLE_LABEL, CIBLE_COLOR, flagForLang, labelForLang, type Article } from '@/lib/supabase'
+
+// Emoji drapeau par langue d'article (pour le titre Open Graph)
+const LANG_EMOJI: Record<string, string> = { fr: '🇫🇷', en: '🇬🇧', nl: '🇳🇱', de: '🇩🇪', es: '🇪🇸', it: '🇮🇹' }
 import Flag from '@/components/Flag'
 import ArticleActions from './ArticleActions'
 import { buildNewsArticleJsonLd, buildFaqJsonLd, stripJsonLd } from '@/lib/articleSchema'
@@ -28,20 +31,21 @@ export async function generateMetadata({
   const { slug } = await params
   const { data: article } = await supabase
     .from('articles')
-    .select('titre_provisoire, meta_description, pays_cible')
+    .select('titre_provisoire, meta_description, pays_cible, langue')
     .eq('slug', slug)
     .eq('etat_code', 'PUBLIE')
     .single()
 
   if (!article) return { title: 'Article introuvable' }
 
-  const pays = article.pays_cible as string
+  const langue = (article.langue as string | null) ?? 'fr'
+  const emoji = LANG_EMOJI[langue.toLowerCase()] ?? FLAGS[(article.pays_cible as string)] ?? ''
   return {
     title: article.titre_provisoire,
     description: article.meta_description ?? undefined,
     alternates: { canonical: `https://moteurs.com/article/${slug}` },
     openGraph: {
-      title: `${FLAGS[pays] ?? ''} ${article.titre_provisoire}`,
+      title: `${emoji} ${article.titre_provisoire}`.trim(),
       description: article.meta_description ?? undefined,
       type: 'article',
       url: `https://moteurs.com/article/${slug}`,
@@ -64,8 +68,6 @@ export default async function ArticlePage({
     .single<Article>()
 
   if (error || !article) notFound()
-
-  const pays     = article.pays_cible
 
   const conf     = article.niveau_confiance ?? 'MOYEN'
   const confCls  = CONF_CLASS[conf] ?? 'conf-medium'
@@ -136,7 +138,7 @@ export default async function ArticlePage({
             />
           </div>
           <div className="page-hero-badges">
-            <span className="page-hero-badge" style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}><Flag code={pays.toLowerCase()} size={16} /> {pays}</span>
+            <span className="page-hero-badge" style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}><Flag code={flagForLang(article.langue)} size={16} /> {labelForLang(article.langue)}</span>
             {dateStr && <span className="page-hero-badge">📅 {dateStr}</span>}
             <span className={`confidence ${confCls}`} style={{ fontSize: '0.72rem' }}>{confLbl}</span>
             {article.cible && article.cible !== 'mixte' && (

@@ -16,6 +16,7 @@ export type Article = {
   contenu_html: string | null
   faq_json: { question: string; reponse: string }[] | null
   pays_cible: 'FR' | 'BE' | 'CH' | 'CA' | 'LU'
+  langue?: string
   cible: 'particulier' | 'pro' | 'mixte'
   niveau_confiance: 'ÉLEVÉ' | 'MOYEN' | 'FAIBLE' | 'DATA_MISSING' | null
   etat_code: string
@@ -24,6 +25,30 @@ export type Article = {
 
 export const FLAGS: Record<string, string> = {
   FR: '🇫🇷', BE: '🇧🇪', CH: '🇨🇭', CA: '🇨🇦', LU: '🇱🇺',
+}
+
+/**
+ * Drapeau d'un article = sa LANGUE (et non son pays cible).
+ * Un article traduit en italien affiche 🇮🇹, en allemand 🇩🇪, etc.
+ * Mappe le code langue ISO 639-1 vers le code drapeau (fichier public/flags/<code>.svg).
+ */
+export const LANG_FLAG: Record<string, string> = {
+  fr: 'fr', en: 'gb', nl: 'nl', de: 'de', es: 'es', it: 'it',
+}
+
+export const LANG_CODE: Record<string, string> = {
+  fr: 'FR', en: 'EN', nl: 'NL', de: 'DE', es: 'ES', it: 'IT',
+}
+
+/** Code drapeau à utiliser pour la langue d'un article (fallback FR). */
+export function flagForLang(langue?: string | null): string {
+  return LANG_FLAG[(langue ?? 'fr').toLowerCase()] ?? 'fr'
+}
+
+/** Libellé court de la langue (fallback code en majuscules, ou FR). */
+export function labelForLang(langue?: string | null): string {
+  const l = (langue ?? 'fr').toLowerCase()
+  return LANG_CODE[l] ?? l.toUpperCase()
 }
 
 export const CONF_CLASS: Record<string, string> = {

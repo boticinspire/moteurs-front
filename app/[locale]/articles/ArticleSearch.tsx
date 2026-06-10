@@ -3,12 +3,12 @@
 import { useState, useMemo, useEffect, Suspense } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { Link } from '@/i18n/navigation'
-import { CONF_CLASS, CONF_LABEL, CIBLE_LABEL_COURT, CIBLE_COLOR, type Article, type Cible } from '@/lib/supabase'
+import { CONF_CLASS, CONF_LABEL, CIBLE_LABEL_COURT, CIBLE_COLOR, flagForLang, labelForLang, type Article, type Cible } from '@/lib/supabase'
 import Flag from '@/components/Flag'
 
 const PAYS_LABELS: Record<string, string> = { FR: 'France', BE: 'Belgique', CH: 'Suisse', CA: 'Canada', LU: 'Luxembourg' }
 
-type ArticleRow = Pick<Article, 'slug' | 'titre_provisoire' | 'resume_50mots' | 'pays_cible' | 'cible' | 'published_at' | 'niveau_confiance'>
+type ArticleRow = Pick<Article, 'slug' | 'titre_provisoire' | 'resume_50mots' | 'pays_cible' | 'langue' | 'cible' | 'published_at' | 'niveau_confiance'>
 
 const PAYS_LIST = ['FR', 'BE', 'CH', 'CA', 'LU'] as const
 const PAYS_STORAGE_KEY = 'moteurs_pays_filter'
@@ -276,7 +276,6 @@ function ArticleSearchInner({ articles }: { articles: ArticleRow[] }) {
       ) : (
         <div className="article-list">
           {paginated.map((a) => {
-            const p    = a.pays_cible as string
             const conf = a.niveau_confiance ?? 'MOYEN'
             const date = a.published_at
               ? new Date(a.published_at).toLocaleDateString('fr-FR', {
@@ -286,7 +285,7 @@ function ArticleSearchInner({ articles }: { articles: ArticleRow[] }) {
 
             return (
               <article key={a.slug} className="article-row">
-                <div className="thumb"><Flag code={p.toLowerCase()} size={40} /></div>
+                <div className="thumb"><Flag code={flagForLang(a.langue)} size={40} /></div>
                 <div>
                   <h3>
                     <Link href={`/article/${a.slug}`}>
@@ -304,7 +303,7 @@ function ArticleSearchInner({ articles }: { articles: ArticleRow[] }) {
                   </div>
                 </div>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 6, alignItems: 'flex-end' }}>
-                  <span className="tag" style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}><Flag code={p.toLowerCase()} size={14} /> {p}</span>
+                  <span className="tag" style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}><Flag code={flagForLang(a.langue)} size={14} /> {labelForLang(a.langue)}</span>
                   {a.cible && a.cible !== 'mixte' && (
                     <span style={{
                       fontSize: '0.7rem', fontWeight: 600,

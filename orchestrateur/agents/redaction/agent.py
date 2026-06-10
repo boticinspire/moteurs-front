@@ -690,6 +690,12 @@ async def run_redaction_item(item: dict, source: dict) -> int:
                 "segment_id": segment_id,
                 "cible": cible_audience,
                 "pays_cible": pays_cible,
+                # Langue de l'ARTICLE (≠ pays cible). L'Agent Rédaction écrit TOUJOURS
+                # en français (prompts « OBLIGATOIREMENT EN FRANÇAIS »), y compris pour
+                # les signaux sources en EN/DE. Toutes les déclinaisons FR/BE/CH/CA sont
+                # donc en 'fr'. Si un futur pipeline de traduction produit une autre
+                # langue, renseigner ici le code ISO 639-1 (en, nl, de, es, it).
+                "langue": article_data.get("_langue", "fr"),
                 "etat_code": "EN_ATTENTE_VALIDATION",
                 "etat_updated_at": datetime.utcnow().isoformat(),
                 "contenu_html": article_data.get("contenu_html", ""),
