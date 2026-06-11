@@ -40,15 +40,24 @@ export const LANG_CODE: Record<string, string> = {
   fr: 'FR', en: 'EN', nl: 'NL', de: 'DE', es: 'ES', it: 'IT',
 }
 
-/** Code drapeau à utiliser pour la langue d'un article (fallback FR). */
-export function flagForLang(langue?: string | null): string {
-  return LANG_FLAG[(langue ?? 'fr').toLowerCase()] ?? 'fr'
+/**
+ * Code drapeau d'un article (logique hybride) :
+ *  - langue étrangère (en/nl/de/es/it) → drapeau de la LANGUE (gb/nl/de/es/it)
+ *  - français → drapeau du PAYS CIBLE (fr/be/ch/ca/lu)
+ * On préserve ainsi l'info pays pour le contenu francophone (BE/CH/CA),
+ * tout en signalant correctement les articles traduits.
+ */
+export function flagForLang(langue?: string | null, paysCible?: string | null): string {
+  const l = (langue ?? 'fr').toLowerCase()
+  if (l !== 'fr' && LANG_FLAG[l]) return LANG_FLAG[l]
+  return (paysCible ?? 'fr').toLowerCase()
 }
 
-/** Libellé court de la langue (fallback code en majuscules, ou FR). */
-export function labelForLang(langue?: string | null): string {
+/** Libellé court : code de la langue étrangère, sinon code du pays cible. */
+export function labelForLang(langue?: string | null, paysCible?: string | null): string {
   const l = (langue ?? 'fr').toLowerCase()
-  return LANG_CODE[l] ?? l.toUpperCase()
+  if (l !== 'fr' && LANG_CODE[l]) return LANG_CODE[l]
+  return (paysCible ?? 'FR').toUpperCase()
 }
 
 export const CONF_CLASS: Record<string, string> = {

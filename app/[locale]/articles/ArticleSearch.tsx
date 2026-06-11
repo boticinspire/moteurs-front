@@ -285,7 +285,7 @@ function ArticleSearchInner({ articles }: { articles: ArticleRow[] }) {
 
             return (
               <article key={a.slug} className="article-row">
-                <div className="thumb"><Flag code={flagForLang(a.langue)} size={40} /></div>
+                <div className="thumb"><Flag code={flagForLang(a.langue, a.pays_cible)} size={40} /></div>
                 <div>
                   <h3>
                     <Link href={`/article/${a.slug}`}>
@@ -303,7 +303,7 @@ function ArticleSearchInner({ articles }: { articles: ArticleRow[] }) {
                   </div>
                 </div>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 6, alignItems: 'flex-end' }}>
-                  <span className="tag" style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}><Flag code={flagForLang(a.langue)} size={14} /> {labelForLang(a.langue)}</span>
+                  <span className="tag" style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}><Flag code={flagForLang(a.langue, a.pays_cible)} size={14} /> {labelForLang(a.langue, a.pays_cible)}</span>
                   {a.cible && a.cible !== 'mixte' && (
                     <span style={{
                       fontSize: '0.7rem', fontWeight: 600,

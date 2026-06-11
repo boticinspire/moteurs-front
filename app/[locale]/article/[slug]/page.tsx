@@ -38,8 +38,11 @@ export async function generateMetadata({
 
   if (!article) return { title: 'Article introuvable' }
 
-  const langue = (article.langue as string | null) ?? 'fr'
-  const emoji = LANG_EMOJI[langue.toLowerCase()] ?? FLAGS[(article.pays_cible as string)] ?? ''
+  const langue = ((article.langue as string | null) ?? 'fr').toLowerCase()
+  // Hybride : emoji de la langue si traduit (≠ fr), sinon emoji du pays cible
+  const emoji = (langue !== 'fr' && LANG_EMOJI[langue])
+    ? LANG_EMOJI[langue]
+    : (FLAGS[(article.pays_cible as string)] ?? '')
   return {
     title: article.titre_provisoire,
     description: article.meta_description ?? undefined,
@@ -138,7 +141,7 @@ export default async function ArticlePage({
             />
           </div>
           <div className="page-hero-badges">
-            <span className="page-hero-badge" style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}><Flag code={flagForLang(article.langue)} size={16} /> {labelForLang(article.langue)}</span>
+            <span className="page-hero-badge" style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}><Flag code={flagForLang(article.langue, article.pays_cible)} size={16} /> {labelForLang(article.langue, article.pays_cible)}</span>
             {dateStr && <span className="page-hero-badge">📅 {dateStr}</span>}
             <span className={`confidence ${confCls}`} style={{ fontSize: '0.72rem' }}>{confLbl}</span>
             {article.cible && article.cible !== 'mixte' && (

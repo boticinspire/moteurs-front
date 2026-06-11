@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { Link, usePathname } from '@/i18n/navigation'
 import { useTranslations } from 'next-intl'
 import LanguageSwitcher from './LanguageSwitcher'
@@ -11,6 +11,8 @@ export default function Header() {
   const t = useTranslations('Header')
   const path = usePathname()
   const [open, setOpen] = useState(false)
+  const [acctOpen, setAcctOpen] = useState(false)
+  const acctRef = useRef<HTMLDivElement>(null)
 
   // Liens principaux visibles dans la nav desktop
   const mainLinks: { href: NavHref; label: string; urgent?: boolean }[] = [
@@ -37,11 +39,26 @@ export default function Header() {
 
   const allNav = [...mainLinks, ...moreLinks]
 
-  useEffect(() => { setOpen(false) }, [path])
+  useEffect(() => { setOpen(false); setAcctOpen(false) }, [path])
   useEffect(() => {
     document.body.style.overflow = open ? 'hidden' : ''
     return () => { document.body.style.overflow = '' }
   }, [open])
+
+  // Fermer le menu compte au clic extérieur + touche Échap
+  useEffect(() => {
+    if (!acctOpen) return
+    const onDown = (e: MouseEvent) => {
+      if (acctRef.current && !acctRef.current.contains(e.target as Node)) setAcctOpen(false)
+    }
+    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') setAcctOpen(false) }
+    document.addEventListener('mousedown', onDown)
+    document.addEventListener('keydown', onKey)
+    return () => {
+      document.removeEventListener('mousedown', onDown)
+      document.removeEventListener('keydown', onKey)
+    }
+  }, [acctOpen])
 
   return (
     <>
@@ -97,8 +114,10 @@ export default function Header() {
         .hdr-acct > button .av { width: 24px; height: 24px; border-radius: 50%; background: rgba(239,108,26,.14); display: grid; place-items: center; color: var(--color-primary); }
         .hdr-acct > button .av svg { width: 15px; height: 15px; stroke: currentColor; fill: none; stroke-width: 2; }
         .hdr-acct .chev { width: 12px; height: 12px; stroke: currentColor; fill: none; stroke-width: 2.2; transition: transform .2s; }
-        .hdr-acct:hover .chev, .hdr-acct:focus-within .chev { transform: rotate(180deg); }
+        .hdr-acct:hover .chev, .hdr-acct:focus-within .chev, .hdr-acct.open .chev { transform: rotate(180deg); }
         .hdr-acct .nav-menu { left: auto; right: 0; min-width: 232px; }
+        /* Ouverture du menu compte : survol/focus souris OU clic (classe .open) */
+        .hdr-acct:hover .nav-menu, .hdr-acct:focus-within .nav-menu, .hdr-acct.open .nav-menu { opacity: 1; visibility: visible; transform: none; }
 
         /* ===== Adaptation thème sombre de la home v2 ===== */
         body:has(.home-v2[data-theme="dark"]) .nav-grp > button { color: #cdd5e4; }
@@ -183,8 +202,14 @@ export default function Header() {
           <div className="header-cta" style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
             <LanguageSwitcher variant="desktop" />
 
-            <div className="hdr-acct">
-              <button type="button" aria-haspopup="true" aria-label={t('aria_account')}>
+            <div className={`hdr-acct${acctOpen ? ' open' : ''}`} ref={acctRef}>
+              <button
+                type="button"
+                aria-haspopup="true"
+                aria-expanded={acctOpen}
+                aria-label={t('aria_account')}
+                onClick={() => setAcctOpen(v => !v)}
+              >
                 <span className="av" aria-hidden="true">
                   <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>
                 </span>
