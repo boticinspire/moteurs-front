@@ -327,6 +327,14 @@ export const SEO_MAP: Record<string, SeoMeta> = {
     volume: 0,
     intent: 'Informationnelle',
   },
+  '/outils/comparateur-voiture-societe-belgique': {
+    title: 'Comparateur voiture de société 2026 — autonomie, ATN, recharge (Belgique) | Moteurs.com',
+    description: 'Comparez les voitures de société de la Carlist (catégories A, B, C) : autonomie réelle été/hiver, confort, ATN mensuel et coût de recharge selon votre installation (PV, borne, public). Barème CREG 2026.',
+    keywords: ['comparateur voiture de société Belgique', 'autonomie voiture société hiver', 'ATN voiture électrique Belgique', 'Carlist voiture société'],
+    primaryKeyword: 'comparateur voiture de société électrique Belgique',
+    volume: 1300,
+    intent: 'Commerciale',
+  },
 }
 
 /** Retourne le metadata SEO pour une route donnée. */

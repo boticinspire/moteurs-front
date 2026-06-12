@@ -189,6 +189,15 @@ export default async function OutilsPage({
       cta: t('atn_cta'),
     },
     {
+      href: '/outils/comparateur-voiture-societe-belgique',
+      icon: '🚗',
+      titre: 'Comparateur voiture de société',
+      desc: 'Classez les voitures de la Carlist (cat. A, B, C) selon vos priorités : autonomie réelle été/hiver, confort, ATN et coût de recharge selon votre installation.',
+      tags: ['Belgique', 'Autonomie', 'ATN', 'Membres'],
+      cta: 'Comparer les véhicules',
+      badge: t('badge_new'),
+    },
+    {
       href: '/outils/simulateur-borne-recharge',
       icon: '🔌',
       titre: t('borne_budget_titre'),
