@@ -25,12 +25,14 @@ CONTEXTES_PAYS = {
     "FR": {
         "nom": "France",
         "contexte_reglementaire": """\
-• ZFE-m dans 43 agglomérations (Paris, Lyon, Marseille…) — Crit'Air 3 progressivement interdits
-• Bonus écologique : jusqu'à 7 000 € particuliers, 9 000 € entreprises (sous conditions de revenus)
-• Suramortissement 40 % sur véhicules propres en entreprise (base plafonnée à 30 000 €)
-• Leasing social à partir de 100 €/mois pour ménages modestes éligibles
-• CEE (Certificats d'Économie d'Énergie) finançant les bornes de recharge en entreprise
-• TVS remplacée par taxe annuelle sur émissions CO₂ (avantage fort pour véhicules < 20 g/km)""",
+• ZFE : la suppression votée en avril 2026 a été ANNULÉE par le Conseil constitutionnel (21 mai 2026) — les ZFE RESTENT en vigueur dans 43 agglomérations. Verbalisation variable : Paris (pas de PV en 2026), Lyon (dès le 1er juillet 2026), Grenoble (déjà active, 68 €). Crit'Air 3 et au-delà visés.
+• Bonus écologique 2026 — voitures 100 % ÉLECTRIQUES NEUVES uniquement (prix < 47 000 €, poids < 2 400 kg, score environnemental ADEME ≥ 60/80) : jusqu'à 5 700 € (ménages très modestes), 4 700 € (modestes), 3 500 € (autres) + surbonus batterie européenne de 1 200 à 2 000 €. ⚠️ Les hybrides rechargeables (PHEV) ne sont PLUS éligibles depuis le 1er juillet 2025.
+• Prime à la conversion : SUPPRIMÉE fin 2024 — ne jamais la citer comme aide active.
+• Leasing social 2026 : location d'un VE neuf à partir de 82 à 200 €/mois pour ménages modestes éligibles (critère « gros rouleur »), ouverture le 16 juillet 2026, NON cumulable avec le bonus écologique.
+• Entreprises : suramortissement 40 % sur véhicules lourds électriques (jusqu'à fin 2026), TVA récupérable à 100 % sur VE et VUL.
+• Bornes de recharge : crédit d'impôt jusqu'à 500 €/borne (particuliers) + primes CEE (Certificats d'Économie d'Énergie).
+• TVS remplacée par taxe annuelle sur émissions CO₂ (avantage fort pour véhicules < 20 g/km)
+• (Contexte réglementaire vérifié et daté du 12/06/2026 — à réauditer régulièrement.)""",
     },
     "BE": {
         "nom": "Belgique",
@@ -698,6 +700,21 @@ async def run_redaction_item(item: dict, source: dict) -> int:
         )
         suffixe_cible = "par" if cible_audience == "particulier" else "pro"
         slug = f"{base_slug}-{pays_cible.lower()}-{suffixe_cible}"
+
+        # ── Garde anti-doublon EXACT (titre+pays+cible+langue) ──────────────
+        # Évite la cannibalisation : si un article actif a déjà ce titre pour
+        # ce pays/cible/langue, on saute la déclinaison (cf. dédup 2026-06-12).
+        langue_art = article_data.get("_langue", "fr")
+        titre_art = article_data.get("titre", item.get("titre", ""))
+        try:
+            if dedup.is_exact_duplicate(supabase, titre_art, pays_cible, cible_audience, langue_art):
+                logger.info(
+                    f"[Guard] Doublon exact ignoré : '{titre_art[:60]}' "
+                    f"({pays_cible}/{cible_audience}/{langue_art})"
+                )
+                continue
+        except Exception as e:
+            logger.error(f"[Guard] Erreur anti-doublon exact : {e}")
 
         try:
             result = supabase.table("articles").insert({

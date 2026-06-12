@@ -22,7 +22,7 @@ export default async function ArticlesPage() {
       <section className="page-hero">
         <div className="container">
           <h1>Décryptages</h1>
-          <p>Veille triangulée · 2 sources minimum par fait publié · niveaux de confiance affichés.</p>
+          <p>Veille triangulée · sources officielles recoupées · niveaux de confiance affichés.</p>
         </div>
       </section>
 

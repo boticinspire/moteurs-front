@@ -203,3 +203,40 @@ def is_recently_covered(
         if jaccard(fp_sig, fp_a) >= threshold:
             return True
     return False
+
+
+# -- Garde anti-doublon EXACT (niveau article, AVANT insertion) ---------------
+# Complète la dédup floue ci-dessus : empêche qu'un article au titre EXACTEMENT
+# identique soit publié pour le MÊME (pays_cible, cible, langue). C'est ce trou
+# qui avait laissé passer 66 doublons (cannibalisation), retirés le 2026-06-12.
+
+def exact_title_key(titre: Optional[str]) -> str:
+    """Clé normalisée d'un titre : minuscules, sans accents, alphanumérique only."""
+    if not titre:
+        return ""
+    return re.sub(r"[^a-z0-9]", "", _strip_accents(titre.lower()))
+
+
+def is_exact_duplicate(
+    supabase, titre: str, pays_cible: str, cible: str, langue: str = "fr",
+    etats: Iterable = ("PUBLIE", "EN_ATTENTE_VALIDATION", "VALIDE"),
+) -> bool:
+    """True si un article actif partage le MÊME titre normalisé + pays + cible + langue.
+
+    À appeler AVANT l'insert d'une déclinaison. Respecte la stratégie géo
+    (un même titre sur des pays différents reste autorisé) tout en bloquant les
+    vrais doublons intra-pays.
+    """
+    key = exact_title_key(titre)
+    if not key:
+        return False
+    resp = (
+        supabase.table("articles")
+        .select("titre_provisoire")
+        .eq("pays_cible", pays_cible)
+        .eq("cible", cible)
+        .eq("langue", langue)
+        .in_("etat_code", list(etats))
+        .execute()
+    )
+    return any(exact_title_key(a.get("titre_provisoire", "")) == key for a in (resp.data or []))

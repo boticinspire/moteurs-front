@@ -92,9 +92,9 @@ export function buildNewsArticleJsonLd(a: ArticleSchemaInput) {
     datePublished: published,
     dateModified: modified,
     author: {
-      '@type': 'Organization',
-      name: 'La Rédaction Moteurs.com',
-      url: `${SITE}/auteurs/la-redaction`,
+      '@type': 'Person',
+      name: 'Olivier Lory',
+      url: `${SITE}/auteurs/olivier-lory`,
     },
     publisher: {
       '@type': 'NewsMediaOrganization',

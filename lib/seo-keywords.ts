@@ -25,7 +25,7 @@ export const SEO_MAP: Record<string, SeoMeta> = {
   },
   '/articles': {
     title: 'Décryptages auto & transition énergétique 2026 — Aides, ZFE, TCO | Moteurs.com',
-    description: 'Tous nos décryptages sur la voiture et la transition énergétique : aides 2026, bonus écologique, ZFE, TCO, fiscalité électrique. Veille triangulée, 2 sources minimum, 4 pays (France, Belgique, Suisse, Canada).',
+    description: 'Tous nos décryptages sur la voiture et la transition énergétique : aides 2026, bonus écologique, ZFE, TCO, fiscalité électrique. Veille triangulée, sources officielles recoupées, 4 pays (France, Belgique, Suisse, Canada).',
     keywords: ['actualité voiture électrique', 'aides voiture électrique 2026', 'décryptage transition énergétique'],
     primaryKeyword: 'actualité voiture électrique 2026',
     volume: 12000,

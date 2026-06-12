@@ -164,13 +164,13 @@ export default async function ArticlePage({
             marginTop: 14, marginBottom: 4,
             fontSize: '0.8rem', color: 'rgba(255,255,255,0.6)',
           }}>
-            <a href="/a-propos" style={{
+            <a href="/auteurs/olivier-lory" style={{
               display: 'inline-flex', alignItems: 'center', gap: 6,
               background: 'rgba(255,255,255,0.08)', borderRadius: 20,
               padding: '4px 13px', border: '1px solid rgba(255,255,255,0.15)',
               color: 'rgba(255,255,255,0.85)', fontWeight: 600, textDecoration: 'none',
             }}>
-              ✍️ La Rédaction Moteurs.com
+              ✍️ Olivier Lory
             </a>
             <span>· <a href="/charte-editoriale" style={{ color: 'rgba(255,255,255,0.78)', textDecoration: 'underline' }}>Triangulation systématique</a> · Sources officielles · Niveaux de confiance affichés</span>
           </div>

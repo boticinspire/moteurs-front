@@ -149,7 +149,7 @@ const TOOL_HTML = `
     <div class="meta-row">
       <span class="chip pays">🇧🇪 Belgique</span>
       <span class="chip maj">Mis à jour le 1er juin 2026</span>
-      <span class="chip">2 sources min. par chiffre</span>
+      <span class="chip">Sources officielles recoupées</span>
       <span class="chip">Réservé aux membres · partageable</span>
     </div>
     <h1>Recharge électrique payée par l'employeur : quel montant est imposable&nbsp;? (Belgique)</h1>
@@ -383,7 +383,7 @@ const TOOL_HTML_EN = `
       <div class="meta-row">
         <span class="chip pays">🇧🇪 Belgium</span>
         <span class="chip maj">Updated June 1, 2026</span>
-        <span class="chip">2 sources min. per figure</span>
+        <span class="chip">Cross-checked official sources</span>
         <span class="chip">Free · no registration</span>
       </div>
       <h1>Home charging of a company car: what amount is taxable&nbsp;?</h1>

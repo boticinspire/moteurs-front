@@ -31,6 +31,27 @@ export interface Auteur {
 
 export const AUTEURS: Auteur[] = [
   {
+    slug: 'olivier-lory',
+    nom: 'Olivier Lory',
+    role: 'Fondateur & directeur de la publication',
+    type: 'Person',
+    bio:
+      "Olivier Lory est le fondateur et directeur de la publication de Moteurs.com. Il pilote la " +
+      "ligne éditoriale du média : le décryptage par les chiffres de la transition énergétique des " +
+      "transports routiers — coût total de possession (TCO), aides, ZFE, fiscalité — pour les " +
+      "particuliers, les artisans et les flottes en France, Belgique, Suisse et Canada. Chaque " +
+      "publication s'appuie sur des sources officielles recoupées, avec un niveau de confiance affiché.",
+    // photo: '/auteurs/olivier-lory.jpg',   // ← dépose une vraie photo dans public/auteurs/ puis décommente
+    // sameAs: ['https://www.linkedin.com/in/...'],  // ← ajoute ton LinkedIn / X pour renforcer l'E-E-A-T
+    expertise: [
+      "Transition énergétique des transports routiers",
+      "Coût total de possession (TCO) automobile",
+      "Aides à l'achat de véhicules électriques",
+      "Zones à faibles émissions (ZFE) et Crit'Air",
+      "Fiscalité automobile France / Belgique / Suisse / Canada",
+    ],
+  },
+  {
     slug: 'la-redaction',
     nom: 'La Rédaction Moteurs.com',
     role: 'Équipe éditoriale',
@@ -38,7 +59,7 @@ export const AUTEURS: Auteur[] = [
     bio:
       "La Rédaction de Moteurs.com décrypte la transition énergétique des transports routiers pour " +
       "les particuliers, les artisans et les flottes. Chaque information publiée est triangulée à " +
-      "partir d'au moins deux sources indépendantes, avec un niveau de confiance affiché et des " +
+      "partir de sources officielles recoupées, avec un niveau de confiance affiché et des " +
       "sources officielles citées (DGEC, Commission européenne, ADEME, SPF Finances, OFEN…).",
     expertise: [
       "Coût total de possession (TCO) automobile",
