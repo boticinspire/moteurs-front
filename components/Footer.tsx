@@ -30,6 +30,8 @@ export default function Footer() {
               <li><Link href="/trajet">{t('link_trajet')}</Link></li>
               <li><Link href="/vacances-voiture">{t('link_vacances')}</Link></li>
               <li><Link href="/cout-voiture">{t('link_cout_voiture')}</Link></li>
+              <li><Link href="/aides-vehicules">Aides véhicules 2026</Link></li>
+              <li><Link href="/zfe-reglementation">ZFE &amp; Crit&apos;Air</Link></li>
               <li><Link href="/depannage">{t('link_depannage')}</Link></li>
               <li><Link href="/documents-auto">{t('link_documents')}</Link></li>
               <li><Link href="/outils">{t('link_outils')}</Link></li>
@@ -54,6 +56,7 @@ export default function Footer() {
               <li><Link href="/cgu">{t('link_cgu')}</Link></li>
               <li><Link href="/a-propos">{t('link_about')}</Link></li>
               <li><Link href="/charte-editoriale">Charte éditoriale</Link></li>
+              <li><Link href="/auteurs">Nos auteurs</Link></li>
               <li><Link href="/presse">Espace presse</Link></li>
             </ul>
           </div>

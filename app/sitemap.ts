@@ -2,6 +2,7 @@ import type { MetadataRoute } from 'next'
 import routesData from '@/data/routes-vacances.json'
 import { TRAJETS_SEO, variantesForTrajet } from '@/lib/trajets-seo'
 import { routing } from '@/i18n/routing'
+import { getAuteurSlugs } from '@/lib/auteurs'
 
 const BASE = 'https://moteurs.com'
 
@@ -80,6 +81,8 @@ const PAGES_STATIQUES: { url: string; priority: number; changeFreq: MetadataRout
   { url: '/cout-voiture',        priority: 0.9, changeFreq: 'weekly' },
   { url: '/depannage',           priority: 0.9, changeFreq: 'weekly' },
   { url: '/documents-auto',      priority: 0.85, changeFreq: 'monthly' },
+  { url: '/zfe-reglementation',  priority: 0.9,  changeFreq: 'weekly'  },
+  { url: '/aides-vehicules',     priority: 0.9,  changeFreq: 'weekly'  },
   { url: '/assistant-vacances',      priority: 0.8, changeFreq: 'monthly' },
   { url: '/checklist-depart',        priority: 0.8, changeFreq: 'monthly' },
   { url: '/assistance/couts',        priority: 0.8, changeFreq: 'monthly' },
@@ -128,6 +131,7 @@ const PAGES_STATIQUES: { url: string; priority: number; changeFreq: MetadataRout
   { url: '/jeux/sudoku',    priority: 0.4, changeFreq: 'yearly' },
   { url: '/presse',         priority: 0.5, changeFreq: 'monthly' },
   { url: '/charte-editoriale', priority: 0.4, changeFreq: 'yearly' },
+  { url: '/auteurs',        priority: 0.5, changeFreq: 'monthly' },
 ]
 
 async function fetchArticlesSlugs(): Promise<{ slug: string; published_at: string }[]> {
@@ -256,6 +260,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.55,
   }))
 
+  const auteurEntries: MetadataRoute.Sitemap = getAuteurSlugs().map(slug => ({
+    url: `${BASE}/auteurs/${slug}`,
+    lastModified: now,
+    changeFrequency: 'monthly' as const,
+    priority: 0.4,
+  }))
+
   return [
     ...staticEntries,
     ...trajetEntries,
@@ -264,5 +275,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...articleEntries,
     ...carteEntries,
     ...dessinEntries,
+    ...auteurEntries,
   ]
 }

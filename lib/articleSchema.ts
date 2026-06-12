@@ -94,7 +94,7 @@ export function buildNewsArticleJsonLd(a: ArticleSchemaInput) {
     author: {
       '@type': 'Organization',
       name: 'La Rédaction Moteurs.com',
-      url: `${SITE}/charte-editoriale`,
+      url: `${SITE}/auteurs/la-redaction`,
     },
     publisher: {
       '@type': 'NewsMediaOrganization',
