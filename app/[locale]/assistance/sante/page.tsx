@@ -11,6 +11,7 @@ export const metadata: Metadata = {
     title: "Santé Voyage : vaccins, trousse, assurance — tout préparer avant de partir",
     description: "8 zones géographiques, conseils bébé/femme enceinte/senior, gestes d'urgence, analyse de votre couverture médicale.",
   },
+  alternates: { canonical: 'https://moteurs.com/assistance/sante' },
 }
 
 export default function PageAssistanceSante() {

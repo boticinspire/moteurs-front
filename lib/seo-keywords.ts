@@ -23,6 +23,14 @@ export const SEO_MAP: Record<string, SeoMeta> = {
     volume: 14500,
     intent: 'Commerciale',
   },
+  '/articles': {
+    title: 'Décryptages auto & transition énergétique 2026 — Aides, ZFE, TCO | Moteurs.com',
+    description: 'Tous nos décryptages sur la voiture et la transition énergétique : aides 2026, bonus écologique, ZFE, TCO, fiscalité électrique. Veille triangulée, 2 sources minimum, 4 pays (France, Belgique, Suisse, Canada).',
+    keywords: ['actualité voiture électrique', 'aides voiture électrique 2026', 'décryptage transition énergétique'],
+    primaryKeyword: 'actualité voiture électrique 2026',
+    volume: 12000,
+    intent: 'Informationnelle',
+  },
   '/comparer': {
     title: 'Comparateur voiture électrique vs diesel vs essence — TCO 2026 | Moteurs.com',
     description: 'Comparez diesel, essence, électrique, hybride et GNV sur 48 mois. Aides 2026 incluses. 4 pays couverts.',

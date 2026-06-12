@@ -10,6 +10,7 @@ export const metadata: Metadata = {
     title: 'Quelle voiture acheter ? Recommandation motorisation personnalisée',
     description: 'Électrique, hybride, essence, diesel : quelle motorisation selon votre budget et usage ? Modèles recommandés + aides 2026.',
   },
+  alternates: { canonical: 'https://moteurs.com/assistance/achat' },
 }
 
 export default function PageAssistanceAchat() {

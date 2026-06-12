@@ -22,6 +22,7 @@ export const metadata: Metadata = {
     title: 'Quelle carte de recharge vous coûte le moins cher ?',
     description: 'Calculateur gratuit : coût mensuel estimé selon votre usage + tableau comparatif 14 cartes FR & BE.',
   },
+  alternates: { canonical: 'https://moteurs.com/outils/cartes-recharge' },
 }
 
 const FAQ_CARTES = [

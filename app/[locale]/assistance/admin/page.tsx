@@ -10,6 +10,7 @@ export const metadata: Metadata = {
     title: "Carte grise, ZFE, bonus VE — Toutes vos démarches auto en un clic",
     description: "Frais d'immatriculation, Crit'Air, bonus écologique, prime à la conversion, leasing social. FR · BE · CH · CA.",
   },
+  alternates: { canonical: 'https://moteurs.com/assistance/admin' },
 }
 
 export default function PageAssistanceAdmin() {

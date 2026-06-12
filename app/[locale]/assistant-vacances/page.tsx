@@ -9,6 +9,7 @@ export const metadata: Metadata = {
     title: 'Assistant Vacances Auto — Combien va coûter votre voyage ?',
     description: 'Budget transport + hébergement, itinéraire économique, recharge VE, trafic, bagages — tout en un.',
   },
+  alternates: { canonical: 'https://moteurs.com/assistant-vacances' },
 }
 
 export default function PageAssistantVacances() {

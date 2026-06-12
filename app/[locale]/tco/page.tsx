@@ -8,6 +8,7 @@ export const metadata: Metadata = {
   title: 'Comparatifs TCO par segment — France, Belgique, Suisse, Canada 2026',
   description:
     'Tous les comparatifs de coût total de possession (TCO) par type de véhicule et par pays. Diesel, électrique, hydrogène, GNV, PHEV — aides 2026 incluses.',
+  alternates: { canonical: 'https://moteurs.com/tco' },
 }
 
 const PAYS = [

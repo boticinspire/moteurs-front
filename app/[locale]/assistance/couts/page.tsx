@@ -9,6 +9,7 @@ export const metadata: Metadata = {
     title: 'Votre voiture vous coûte combien par mois, vraiment ?',
     description: 'Toutes charges incluses : financement, carburant, assurance, entretien, dépréciation. Plus le comparatif VE.',
   },
+  alternates: { canonical: 'https://moteurs.com/assistance/couts' },
 }
 
 export default function PageAssistanceCouts() {

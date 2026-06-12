@@ -9,6 +9,7 @@ export const metadata: Metadata = {
     description: 'Checklist interactive personnalisée avant de prendre la route : véhicule, documents, sécurité, VE, bébé, animaux.',
     url: 'https://moteurs.com/checklist-depart',
   },
+  alternates: { canonical: 'https://moteurs.com/checklist-depart' },
 }
 
 const AVANTAGES = [

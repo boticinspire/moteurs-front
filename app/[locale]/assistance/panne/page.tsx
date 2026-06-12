@@ -10,6 +10,7 @@ export const metadata: Metadata = {
     title: 'Que faire en cas de panne — Guide d\'urgence automobile',
     description: 'Protocole pas-à-pas pour panne carburant, crevaison, accident, surchauffe. Spécificités VE et contacts urgence par pays.',
   },
+  alternates: { canonical: 'https://moteurs.com/assistance/panne' },
 }
 
 export default function PageAssistancePanne() {

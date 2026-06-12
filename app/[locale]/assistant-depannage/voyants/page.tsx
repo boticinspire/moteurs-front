@@ -41,6 +41,7 @@ export async function generateMetadata({
   return {
     title: m.title,
     description: m.description,
+    alternates: { canonical: 'https://moteurs.com/assistant-depannage/voyants' },
   }
 }
 

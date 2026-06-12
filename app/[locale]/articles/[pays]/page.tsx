@@ -1,6 +1,7 @@
 import { createClient } from '@supabase/supabase-js';
 import { Link } from '@/i18n/navigation'
 import { Metadata } from 'next';
+import { getSeoMeta } from '@/lib/seo-keywords';
 
 // Countries mapping
 const paysMap: Record<string, { label: string; long: string }> = {
@@ -37,12 +38,20 @@ export async function generateMetadata({
     };
   }
 
+  const seo = getSeoMeta(`/articles/${pays}`);
+  const title = seo ? seo.title : `Articles ${paysConfig.label} - Moteurs.com`;
+  const description = seo
+    ? seo.description
+    : `${paysConfig.long} : décryptage TCO, ZFE, aides gouvernementales et comparatifs énergétiques.`;
+
   return {
-    title: `Articles ${paysConfig.label} - Moteurs.com`,
-    description: `${paysConfig.long} : décryptage TCO, ZFE, aides gouvernementales et comparatifs énergétiques.`,
+    title,
+    description,
+    keywords: seo ? [seo.primaryKeyword, ...seo.keywords].join(', ') : undefined,
+    alternates: { canonical: `https://moteurs.com/articles/${pays}` },
     openGraph: {
-      title: `Articles ${paysConfig.label} - Moteurs.com`,
-      description: `${paysConfig.long} : décryptage TCO, ZFE, aides gouvernementales.`,
+      title,
+      description,
       url: `https://moteurs.com/articles/${pays}`,
     },
   };

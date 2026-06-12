@@ -12,6 +12,7 @@ export const metadata: Metadata = {
     title: "Mauvaises surprises en voiture : amende, fourrière, vol — que faire ?",
     description: "8 situations couvertes avec étapes pas à pas, contacts officiels, erreurs à éviter et checklists de prévention.",
   },
+  alternates: { canonical: 'https://moteurs.com/assistance/surprises' },
 }
 
 export default function PageAssistanceSurprises() {

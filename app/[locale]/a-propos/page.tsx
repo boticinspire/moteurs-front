@@ -2,6 +2,7 @@ import { useTranslations } from 'next-intl'
 import { getTranslations, setRequestLocale } from 'next-intl/server'
 import type { Metadata } from 'next'
 import { routing } from '@/i18n/routing'
+import { buildAlternates } from '@/lib/seo-utils'
 
 export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }))
@@ -17,6 +18,7 @@ export async function generateMetadata({
   return {
     title: t('title'),
     description: t('lead'),
+    alternates: buildAlternates(locale, '/a-propos'),
   }
 }
 

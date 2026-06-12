@@ -10,6 +10,7 @@ export const metadata: Metadata = {
     title: "Météo route : quel jour partir ? Alertes conduite en temps réel",
     description: "Score conditions de conduite jour par jour, alertes vent violent, verglas, canicule, orage. Pour 35 villes et toute destination.",
   },
+  alternates: { canonical: 'https://moteurs.com/assistance/meteo' },
 }
 
 export default function PageAssistanceMeteo() {

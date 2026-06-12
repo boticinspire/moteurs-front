@@ -9,6 +9,7 @@ export const metadata: Metadata = {
     title: 'Assistant Moteurs.com — Votre copilote pour la voiture',
     description: 'Coûts, recharge, vacances, achat, panne, administratif — 6 modules d\'assistance automobile gratuits.',
   },
+  alternates: { canonical: 'https://moteurs.com/assistance' },
 }
 
 export default function PageAssistance() {

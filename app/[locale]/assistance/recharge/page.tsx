@@ -10,6 +10,7 @@ export const metadata: Metadata = {
     title: 'Assistance Recharge VE — Combien coûte vraiment recharger ?',
     description: 'Coût domicile vs public, installation borne, autonomie réelle été/hiver, réseaux par pays.',
   },
+  alternates: { canonical: 'https://moteurs.com/assistance/recharge' },
 }
 
 export default function PageAssistanceRecharge() {

@@ -11,6 +11,7 @@ export const metadata: Metadata = {
     title: "Location voiture : CDW ou pas ? Analyse personnalisée par destination",
     description: "Visa, Mastercard, Amex — découvrez si votre CB couvre déjà les dommages. Alertes ZTL Italie, vols Espagne, CB refusées aux USA.",
   },
+  alternates: { canonical: 'https://moteurs.com/assistance/location' },
 }
 
 export default function PageAssistanceLocation() {

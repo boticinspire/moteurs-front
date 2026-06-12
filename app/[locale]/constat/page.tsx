@@ -6,6 +6,7 @@ export const metadata: Metadata = {
   title: 'Constat Amiable Intelligent — Guidé pas-à-pas | Moteurs.com',
   description:
     'Remplissez votre constat amiable étape par étape : checklist photos, circonstances, croquis guidé, PDF téléchargeable et email récapitulatif. Adapté FR, BE, CH, CA.',
+  alternates: { canonical: 'https://moteurs.com/constat' },
 }
 
 export default function PageConstat() {
