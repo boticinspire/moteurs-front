@@ -82,7 +82,10 @@ export default async function PagePasserelle({
 
   // NB : le JSON-LD FAQPage est injecté par <FaqAccordion> — pas de doublon ici.
 
-  const autres = SELECTIONS.filter((s) => s.slug !== sel.slug)
+  const groupeCourant = sel.groupe ?? 'profil'
+  const autres = SELECTIONS.filter(
+    (s) => s.slug !== sel.slug && (s.groupe ?? 'profil') === groupeCourant
+  )
 
   return (
     <main className="container" style={{ paddingTop: 32, paddingBottom: 64 }}>
@@ -116,6 +119,18 @@ export default async function PagePasserelle({
         subtitle={`${cartes.length} carte${cartes.length > 1 ? 's' : ''} correspondant à ce profil, avec tarif au kWh par type de borne et abonnement mensuel.`}
         showFiltrePays={sel.showFiltrePays}
       />
+
+      {/* ── Note roaming (pages réseau) ── */}
+      {sel.noteRoaming && (
+        <aside style={{
+          marginTop: 24, padding: '16px 18px', borderRadius: 12,
+          background: 'var(--color-bg-card)', border: '1px solid var(--color-border)',
+          fontSize: '0.92rem', lineHeight: 1.6, color: 'var(--color-text)',
+        }}>
+          <strong style={{ display: 'block', marginBottom: 6 }}>💡 Recharger sans la carte de l&apos;opérateur</strong>
+          {sel.noteRoaming}
+        </aside>
+      )}
 
       {/* ── FAQ ── */}
       <FaqAccordion items={sel.faq} title={`Questions fréquentes — ${sel.label}`} />

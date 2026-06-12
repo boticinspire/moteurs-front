@@ -4,7 +4,7 @@ import TableauCartes from './TableauCartes'
 import FaqAccordion from '@/components/FaqAccordion'
 import { Link } from '@/i18n/navigation'
 import { getCartes } from '@/lib/cartes-recharge'
-import { SELECTIONS } from '@/lib/cartes-selections'
+import { SELECTIONS_PROFIL, SELECTIONS_RESEAU } from '@/lib/cartes-selections'
 import { setRequestLocale } from 'next-intl/server'
 import { routing } from '@/i18n/routing'
 
@@ -105,8 +105,23 @@ export default async function PageCartesRecharge({
         <p style={{ color: 'var(--color-text-muted)', fontSize: '0.9rem', marginBottom: 18 }}>
           Accédez directement au comparatif filtré selon votre besoin.
         </p>
+
+        <div style={{ fontSize: '0.78rem', fontWeight: 600, color: 'var(--color-text-muted)', textTransform: 'uppercase', letterSpacing: '0.04em', marginBottom: 10 }}>Par profil d&apos;usage</div>
+        <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', marginBottom: 22 }}>
+          {SELECTIONS_PROFIL.map(s => (
+            <Link key={s.slug} href={`/outils/cartes-recharge/comparatif/${s.slug}`} style={{
+              padding: '8px 16px', borderRadius: 24, fontSize: '0.88rem', fontWeight: 600,
+              border: '1px solid var(--color-border)', color: 'var(--color-text)',
+              textDecoration: 'none', background: 'var(--color-bg-card)',
+            }}>
+              {s.emoji} {s.label}
+            </Link>
+          ))}
+        </div>
+
+        <div style={{ fontSize: '0.78rem', fontWeight: 600, color: 'var(--color-text-muted)', textTransform: 'uppercase', letterSpacing: '0.04em', marginBottom: 10 }}>Par réseau de bornes</div>
         <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
-          {SELECTIONS.map(s => (
+          {SELECTIONS_RESEAU.map(s => (
             <Link key={s.slug} href={`/outils/cartes-recharge/comparatif/${s.slug}`} style={{
               padding: '8px 16px', borderRadius: 24, fontSize: '0.88rem', fontWeight: 600,
               border: '1px solid var(--color-border)', color: 'var(--color-text)',
