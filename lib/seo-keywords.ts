@@ -71,6 +71,14 @@ export const SEO_MAP: Record<string, SeoMeta> = {
     volume: 8500,
     intent: 'Commerciale',
   },
+  '/outils/facture-recharge': {
+    title: 'Avez-vous payé votre recharge trop cher ? Simulateur de facture | Moteurs.com',
+    description: 'Entrez ce que vous avez payé sur une borne (kWh + montant) : on compare au tarif le moins cher et on vous dit combien vous auriez économisé avec la bonne carte.',
+    keywords: ['prix recharge trop cher', 'tarif recharge borne arnaque', 'combien coûte une recharge'],
+    primaryKeyword: 'prix recharge voiture électrique trop cher',
+    volume: 4800,
+    intent: 'Commerciale',
+  },
   '/outils/cartes-recharge': {
     title: 'Meilleure carte recharge voiture électrique 2026 — Comparatif | Moteurs.com',
     description: 'Comparez Chargemap, Freshmile, IONITY, Fastned, Electra : tarifs par pays, plans abonnement, roaming. Trouvez la carte la moins chère.',

@@ -33,6 +33,15 @@ export default async function OutilsPage({
 
   const OUTILS_PHARES = [
     {
+      href: '/outils/facture-recharge',
+      icon: '🔥',
+      titre: 'Avez-vous payé trop cher ?',
+      desc: 'Entrez votre dernière recharge (kWh + montant) : on vous dit en 10 s combien vous auriez pu économiser avec la bonne carte.',
+      tags: ['Recharge', '€/kWh', 'Partageable', 'FR · BE · CH'],
+      cta: 'Vérifier ma recharge',
+      badge: t('badge_new'),
+    },
+    {
       href: '/outils/cartes-recharge',
       icon: '⚡',
       titre: t('cartes_titre'),

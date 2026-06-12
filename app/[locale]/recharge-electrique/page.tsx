@@ -177,7 +177,8 @@ function RechargeContent() {
           {t('cards_body')}
         </p>
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10 }}>
-          <Link href="/outils/cartes-recharge" style={btnPrimaire}>{t('cards_cta_compare')}</Link>
+          <Link href="/outils/facture-recharge" style={btnPrimaire}>🔥 Ai-je payé ma recharge trop cher&nbsp;?</Link>
+          <Link href="/outils/cartes-recharge" style={btnSecondaire}>{t('cards_cta_compare')}</Link>
           <Link href="/assistance/recharge" style={btnSecondaire}>{t('cards_cta_cost')}</Link>
         </div>
       </section>
@@ -298,6 +299,7 @@ function RechargeContent() {
           <Link href="/comparer-trajet" style={btnSecondaire}>{t('outils_comparer_trajet')}</Link>
           <Link href="/trajet" style={btnSecondaire}>{t('outils_trajets')}</Link>
           <Link href="/outils/recharge-domicile-voiture-societe-belgique" style={btnSecondaire}>ATN recharge domicile (BE)</Link>
+          <Link href="/outils/facture-recharge" style={btnSecondaire}>Simulateur de facture de recharge</Link>
         </div>
       </section>
 
