@@ -6,6 +6,7 @@ from datetime import datetime
 from config import get_settings
 from database import get_supabase
 from safe_agent import get_veille_agent, get_redaction_agent
+from agents.common import dedup
 
 logger = logging.getLogger(__name__)
 settings = get_settings()
@@ -605,6 +606,22 @@ async def generer_declinaisons(item: dict, source: dict) -> list[dict]:
     cibles_a_generer = (
         ["particulier", "pro"] if cible_globale == "mixte" else [cible_globale]
     )
+
+    # -- Declinaison conditionnelle (anti sur-declinaison) -------------------
+    # Mesure UE / industrielle sans levier conso direct : la version
+    # 'particulier' est interchangeable entre pays et finit rejetee. On la
+    # retire quand un angle 'pro' existe deja.
+    _plan = dedup.classify_signal(
+        f"{item.get('titre', '')} {item.get('resume_ia', '')}"
+    )
+    if _plan["scope"] == "europeen" and "pro" in cibles_a_generer \
+            and "particulier" in cibles_a_generer:
+        cibles_a_generer = ["pro"]
+        logger.info(
+            "[AgentRedaction] Signal UE/industriel -> cibles reduites a %s",
+            cibles_a_generer,
+        )
+    # ------------------------------------------------------------------------
     logger.info(
         f"[AgentRédaction] Classification audience : {cible_globale} "
         f"→ versions à générer : {cibles_a_generer}"
@@ -773,8 +790,39 @@ async def run_redaction_batch(limit: int = 3) -> dict:
     logger.info(f"[AgentRédaction] {len(items)} items éligibles, génération en cours...")
     total_articles = 0
 
+    # -- Garde-fou cross-langue (ceinture + bretelles) -----------------------
+    # Si la dedup veille a laisse passer un doublon, on le rattrape ici en
+    # comparant chaque item aux items recents deja TRAITE (+ a ceux deja vus
+    # dans ce batch) via resume_ia.
+    try:
+        _seen = (
+            supabase.table("veille_items")
+            .select("id,titre,resume_ia,article_id,date_detection,statut")
+            .gte("date_detection", dedup._since_iso(dedup.RECENCY_HOURS))
+            .in_("statut", ["TRAITE", "EN_TRAITEMENT"])
+            .execute()
+            .data
+        ) or []
+    except Exception:
+        _seen = []
+    # ------------------------------------------------------------------------
+
     for item in items:
         source = item.pop("sources", None) or {}
+        _dup = dedup.find_duplicate(item, _seen)
+        if _dup is not None:
+            try:
+                supabase.table("veille_items").update(
+                    {"statut": "IGNORE", "article_id": _dup.get("article_id")}
+                ).eq("id", item["id"]).execute()
+            except Exception as e:
+                logger.error(f"[AgentRédaction] Erreur IGNORE doublon : {e}")
+            logger.info(
+                f"[AgentRédaction] Item #{item.get('id')} ignore : doublon de "
+                f"#{_dup['id']}"
+            )
+            continue
+        _seen.append(item)
         try:
             n = await run_redaction_item(item, source)
             total_articles += n

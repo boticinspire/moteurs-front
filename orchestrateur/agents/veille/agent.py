@@ -4,6 +4,7 @@ from datetime import datetime
 
 from config import get_settings
 from database import get_supabase
+from agents.common import dedup
 from agents.veille.scraper import scrape_source
 from safe_agent import get_veille_agent
 
@@ -75,6 +76,33 @@ async def analyser_avec_claude(contenu: dict, source: dict) -> dict:
 
 async def _stocker_item(supabase, source: dict, contenu: dict, analyse: dict) -> bool:
     """Insère un item pertinent dans veille_items. Retourne True si inséré."""
+    # -- Dedup cross-source / cross-langue (0 token) -------------------------
+    # Le meme evenement scrape depuis 2 sources (ex. EN + DE) cree 2 items et
+    # double le fan-out de redaction. On compare via resume_ia (pivot FR)
+    # contre les items des dernieres 72 h (hors items deja IGNORE).
+    _nouvel = {
+        "titre": analyse.get("titre", contenu.get("titre", "")),
+        "resume_ia": analyse.get("resume_ia", "") or "",
+    }
+    try:
+        _recents = (
+            supabase.table("veille_items")
+            .select("id,titre,resume_ia,date_detection,statut")
+            .gte("date_detection", dedup._since_iso(dedup.RECENCY_HOURS))
+            .neq("statut", "IGNORE")
+            .execute()
+            .data
+        ) or []
+        _dup = dedup.find_duplicate(_nouvel, _recents)
+        if _dup is not None:
+            logger.info(
+                f"[AgentVeille] Doublon cross-langue ignore : "
+                f"{_nouvel['titre'][:60]!r} ~ item #{_dup['id']}"
+            )
+            return False
+    except Exception as e:
+        logger.error(f"[AgentVeille] Erreur dedup (non bloquant) : {e}")
+    # ------------------------------------------------------------------------
     try:
         supabase.table("veille_items").insert({
             "source_id": source["id"],
