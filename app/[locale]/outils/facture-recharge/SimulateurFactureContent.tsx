@@ -184,6 +184,7 @@ export default function SimulateurFactureContent() {
   const [loading, setLoading] = useState(false)
   const [erreur, setErreur]   = useState<string>('')
   const [shareUrl, setShareUrl] = useState<string>('')
+  const [copie, setCopie] = useState(false)
 
   const canvasRef = useRef<HTMLCanvasElement | null>(null)
 
@@ -314,6 +315,40 @@ export default function SimulateurFactureContent() {
     a.click()
   }
 
+  // ── Partage réseaux (desktop + mobile) ──
+  function lienPartage() {
+    if (typeof window !== 'undefined') return window.location.origin + window.location.pathname
+    return 'https://moteurs.com/outils/facture-recharge'
+  }
+
+  function textePartage() {
+    if (verdict && verdict.economie > 0.5) {
+      const e = verdict.economie >= 10 ? Math.round(verdict.economie) : verdict.economie.toFixed(1)
+      return `Je me suis fait facturer ${e} ${symb(verdict.devise)} de trop sur UNE recharge 😤 Vérifie la tienne :`
+    }
+    return 'Vérifie si ta dernière recharge était au bon prix :'
+  }
+
+  function ouvrirReseau(reseau: 'x' | 'facebook' | 'linkedin' | 'whatsapp') {
+    const url = encodeURIComponent(lienPartage())
+    const txt = encodeURIComponent(textePartage())
+    const liens: Record<typeof reseau, string> = {
+      x:        `https://twitter.com/intent/tweet?text=${txt}&url=${url}`,
+      facebook: `https://www.facebook.com/sharer/sharer.php?u=${url}`,
+      linkedin: `https://www.linkedin.com/sharing/share-offsite/?url=${url}`,
+      whatsapp: `https://wa.me/?text=${txt}%20${url}`,
+    }
+    window.open(liens[reseau], '_blank', 'noopener,noreferrer,width=600,height=560')
+  }
+
+  async function copierLien() {
+    try {
+      await navigator.clipboard.writeText(`${textePartage()} ${lienPartage()}`)
+      setCopie(true)
+      setTimeout(() => setCopie(false), 2000)
+    } catch { /* clipboard indisponible */ }
+  }
+
   const operateursDispo = offres.length > 0 ? offres : []
 
   return (
@@ -441,8 +476,17 @@ export default function SimulateurFactureContent() {
                 : <p style={{ color: 'var(--color-text-muted)', fontSize: '.85rem' }}>Génération de l&apos;image…</p>}
               <div className="sf-share-btns">
                 <button className="sf-sbtn primary" onClick={partager}>📤 Partager</button>
-                <button className="sf-sbtn" onClick={telecharger}>⬇️ Télécharger l&apos;image</button>
+                <button className="sf-sbtn" onClick={() => ouvrirReseau('x')}>𝕏</button>
+                <button className="sf-sbtn" onClick={() => ouvrirReseau('whatsapp')}>💬 WhatsApp</button>
+                <button className="sf-sbtn" onClick={() => ouvrirReseau('facebook')}>f Facebook</button>
+                <button className="sf-sbtn" onClick={() => ouvrirReseau('linkedin')}>in LinkedIn</button>
+                <button className="sf-sbtn" onClick={copierLien}>{copie ? '✓ Lien copié' : '🔗 Copier le lien'}</button>
+                <button className="sf-sbtn" onClick={telecharger}>⬇️ Image</button>
               </div>
+              <p style={{ fontSize: '.78rem', color: 'var(--color-text-muted)', textAlign: 'center', margin: 0, lineHeight: 1.5 }}>
+                Astuce : <strong>télécharge l&apos;image</strong> puis attache-la à ton post pour plus d&apos;impact.
+                Le bouton « Partager » ouvre le partage natif sur mobile.
+              </p>
             </div>
 
             {/* CTA */}

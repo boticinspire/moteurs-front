@@ -1,0 +1,14 @@
+{
+  "host": "moteurs.com",
+  "key": "83dfd5cc3e064f91a86c12050835e52e",
+  "keyLocation": "https://moteurs.com/83dfd5cc3e064f91a86c12050835e52e.txt",
+  "urlList": [
+    "https://moteurs.com/outils/cartes-recharge",
+    "https://moteurs.com/outils/cartes-recharge/comparatif/sans-abonnement",
+    "https://moteurs.com/outils/cartes-recharge/comparatif/voyage-europe",
+    "https://moteurs.com/outils/cartes-recharge/comparatif/flotte-pro",
+    "https://moteurs.com/outils/cartes-recharge/comparatif/france",
+    "https://moteurs.com/outils/cartes-recharge/comparatif/belgique",
+    "https://moteurs.com/sitemap.xml"
+  ]
+}

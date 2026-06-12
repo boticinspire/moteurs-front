@@ -1,43 +1,10 @@
 'use client'
 
-import { useState, useEffect, useMemo } from 'react'
+import { useState, useMemo } from 'react'
+import type { Carte } from '@/lib/cartes-recharge'
+import { getTarifs } from '@/lib/cartes-recharge'
 
-// ── Types ─────────────────────────────────────────────────────────────────────
-
-interface Tarifs {
-  ac_slow?:   { modele?: string; prix?: number; frais_session?: number }
-  dc_rapide?: { modele?: string; prix?: number; frais_session?: number }
-  dc_ultra?:  { modele?: string; prix?: number; frais_session?: number }
-}
-
-interface Roaming {
-  disponible?: boolean
-  pays_couverts?: string[]
-  tarif_dc_rapide?: { prix?: number }
-  tarif_dc_ultra?:  { prix?: number }
-}
-
-interface Carte {
-  id: string
-  nom: string
-  operateur: string
-  pays_origine: string[]
-  url_officielle?: string
-  url_tarifs?: string
-  ideal_voyage: boolean
-  ideal_quotidien: boolean
-  flotte_pro: boolean
-  points_forts: string[]
-  points_faibles: string[]
-  donnees: {
-    abonnement?: { mensuel_eur?: number; annuel_eur?: number; engagement_mois?: number }
-    tarifs_fr?: Tarifs
-    tarifs_be?: Tarifs
-    roaming?: Roaming
-  }
-}
-
-/** URL "Voir l'offre" — préfère url_tarifs (page de prix) sur url_officielle. */
+// ── URL "Voir l'offre" — préfère url_tarifs (page de prix) sur url_officielle. ──
 function urlOffre(carte: Carte): string | null {
   const raw = carte.url_tarifs || carte.url_officielle
   if (!raw) return null
@@ -59,10 +26,6 @@ interface ProfilFlotte {
 }
 
 // ── Calcul coût mensuel ────────────────────────────────────────────────────────
-
-function getTarifs(carte: Carte): Tarifs {
-  return carte.donnees?.tarifs_fr || carte.donnees?.tarifs_be || {}
-}
 
 function calculerCoutParticulier(carte: Carte, p: ProfilParticulier): number | null {
   const tarifs = getTarifs(carte)
@@ -150,18 +113,11 @@ function Slider({ label, min, max, step, value, onChange, unit = '' }:
   )
 }
 
-function PrixCell({ prix }: { prix?: number | null }) {
-  if (prix == null) return <span style={{ color: MUTED, fontSize: '0.8rem' }}>—</span>
-  return <span style={{ fontWeight: 600 }}>{prix.toFixed(2)} €/kWh</span>
-}
+// ── Composant principal (calculateur interactif) ───────────────────────────────
 
-// ── Composant principal ────────────────────────────────────────────────────────
-
-export default function ComparateurCartes() {
-  const [cartes, setCartes] = useState<Carte[]>([])
-  const [loading, setLoading] = useState(true)
+export default function ComparateurCartes({ initialCartes }: { initialCartes: Carte[] }) {
+  const cartes = initialCartes
   const [onglet, setOnglet] = useState<'particulier' | 'flotte'>('particulier')
-  const [vue, setVue] = useState<'calcul' | 'tableau'>('calcul')
 
   // Profil particulier
   const [kmMois, setKmMois] = useState(200)
@@ -173,16 +129,6 @@ export default function ComparateurCartes() {
   const [kmVeh, setKmVeh] = useState(500)
   const [pctDCFlotte, setPctDCFlotte] = useState(40)
   const [voyagesFlotte, setVoyagesFlotte] = useState(0)
-
-  // Filtre tableau
-  const [filtrePays, setFiltrePays] = useState<'FR' | 'BE' | 'tous'>('FR')
-
-  useEffect(() => {
-    fetch('/api/cartes-recharge')
-      .then(r => r.json())
-      .then(d => { setCartes(d.cartes || []); setLoading(false) })
-      .catch(() => setLoading(false))
-  }, [])
 
   // Calcul et classement
   const resultats = useMemo(() => {
@@ -198,18 +144,7 @@ export default function ComparateurCartes() {
       .sort((a, b) => (a.cout ?? 999) - (b.cout ?? 999))
   }, [cartes, onglet, kmMois, pctDC, voyages, nbVeh, kmVeh, pctDCFlotte, voyagesFlotte])
 
-  const cartesFiltrees = useMemo(() => {
-    if (filtrePays === 'tous') return cartes
-    return cartes.filter(c => c.pays_origine?.includes(filtrePays))
-  }, [cartes, filtrePays])
-
   const voyagesLabel = ['Jamais', '1–2 fois/an', '3+ fois/an']
-
-  if (loading) return (
-    <div style={{ textAlign: 'center', padding: '60px 0', color: MUTED }}>
-      Chargement des cartes de recharge…
-    </div>
-  )
 
   if (!cartes.length) return (
     <div style={{ textAlign: 'center', padding: '60px 0', color: MUTED }}>
@@ -231,207 +166,124 @@ export default function ComparateurCartes() {
             {o === 'particulier' ? '👤 Particulier' : '🏢 Flotte Pro'}
           </button>
         ))}
-        <div style={{ marginLeft: 'auto', display: 'flex', gap: 8 }}>
-          {(['calcul', 'tableau'] as const).map(v => (
-            <button key={v} onClick={() => setVue(v)} style={{
-              padding: '10px 18px', borderRadius: 8, fontWeight: 500, fontSize: '0.85rem',
-              border: `1px solid ${vue === v ? PRIMARY : BORDER}`,
-              background: vue === v ? `color-mix(in srgb, ${PRIMARY} 8%, transparent)` : 'transparent',
-              color: vue === v ? PRIMARY : MUTED, cursor: 'pointer',
-            }}>
-              {v === 'calcul' ? '🧮 Calculateur' : '📊 Tableau'}
-            </button>
-          ))}
-        </div>
       </div>
 
       {/* ── Vue Calculateur ──────────────────────────────────────────────── */}
-      {vue === 'calcul' && (
-        <div style={{ display: 'grid', gridTemplateColumns: 'minmax(260px,320px) 1fr', gap: 32, alignItems: 'start' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'minmax(260px,320px) 1fr', gap: 32, alignItems: 'start' }}>
 
-          {/* Panneau paramètres */}
-          <div style={{ background: BG_CARD, border: `1px solid ${BORDER}`, borderRadius: 14, padding: 24 }}>
-            <h3 style={{ fontSize: '1rem', fontWeight: 700, marginBottom: 20 }}>
-              {onglet === 'particulier' ? '👤 Votre profil' : '🏢 Votre flotte'}
-            </h3>
+        {/* Panneau paramètres */}
+        <div style={{ background: BG_CARD, border: `1px solid ${BORDER}`, borderRadius: 14, padding: 24 }}>
+          <h3 style={{ fontSize: '1rem', fontWeight: 700, marginBottom: 20 }}>
+            {onglet === 'particulier' ? '👤 Votre profil' : '🏢 Votre flotte'}
+          </h3>
 
-            {onglet === 'particulier' ? (
-              <>
-                <Slider label="km/mois en recharge publique" min={0} max={1500} step={25} value={kmMois} onChange={setKmMois} unit=" km" />
-                <Slider label="Part de recharge DC rapide" min={0} max={100} step={5} value={pctDC} onChange={setPctDC} unit="%" />
-                <div style={{ marginBottom: 20 }}>
-                  <div style={{ fontSize: '0.88rem', fontWeight: 500, marginBottom: 8 }}>Voyages UE en voiture</div>
-                  <div style={{ display: 'flex', gap: 6 }}>
-                    {voyagesLabel.map((l, i) => (
-                      <button key={i} onClick={() => setVoyages(i)} style={{
-                        flex: 1, padding: '7px 4px', borderRadius: 6, fontSize: '0.75rem', fontWeight: 600,
-                        border: `1.5px solid ${voyages === i ? PRIMARY : BORDER}`,
-                        background: voyages === i ? `color-mix(in srgb, ${PRIMARY} 10%, transparent)` : 'transparent',
-                        color: voyages === i ? PRIMARY : MUTED, cursor: 'pointer',
-                      }}>
-                        {l}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              </>
-            ) : (
-              <>
-                <Slider label="Nombre de véhicules" min={1} max={50} step={1} value={nbVeh} onChange={setNbVeh} unit=" véh." />
-                <Slider label="km/mois en public par véhicule" min={0} max={2000} step={50} value={kmVeh} onChange={setKmVeh} unit=" km" />
-                <Slider label="Part DC rapide" min={0} max={100} step={5} value={pctDCFlotte} onChange={setPctDCFlotte} unit="%" />
-                <div style={{ marginBottom: 20 }}>
-                  <div style={{ fontSize: '0.88rem', fontWeight: 500, marginBottom: 8 }}>Missions EU régulières</div>
-                  <div style={{ display: 'flex', gap: 6 }}>
-                    {['Non', 'Occasionnel', 'Fréquent'].map((l, i) => (
-                      <button key={i} onClick={() => setVoyagesFlotte(i)} style={{
-                        flex: 1, padding: '7px 4px', borderRadius: 6, fontSize: '0.75rem', fontWeight: 600,
-                        border: `1.5px solid ${voyagesFlotte === i ? PRIMARY : BORDER}`,
-                        background: voyagesFlotte === i ? `color-mix(in srgb, ${PRIMARY} 10%, transparent)` : 'transparent',
-                        color: voyagesFlotte === i ? PRIMARY : MUTED, cursor: 'pointer',
-                      }}>
-                        {l}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              </>
-            )}
-
-            <div style={{ fontSize: '0.75rem', color: MUTED, lineHeight: 1.5, padding: '12px', background: 'var(--color-bg-alt)', borderRadius: 8 }}>
-              💡 Hypothèses : 20 kWh/100 km, sessions AC = 15 kWh, sessions DC = 45 kWh.
-              Estimation indicative — vérifiez les tarifs officiels avant de souscrire.
-            </div>
-          </div>
-
-          {/* Résultats classés */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-            {resultats.map((r, i) => {
-              const isWinner = i === 0
-              const tarifs = getTarifs(r.carte)
-              const roaming = r.carte.donnees?.roaming
-              return (
-                <div key={r.carte.id} style={{
-                  background: BG_CARD,
-                  border: `${isWinner ? '2px' : '1px'} solid ${isWinner ? PRIMARY : BORDER}`,
-                  borderRadius: 12, padding: '18px 20px',
-                  display: 'grid', gridTemplateColumns: '1fr auto', gap: 12, alignItems: 'center',
-                }}>
-                  <div>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 6 }}>
-                      {isWinner && <span style={{ fontSize: '1rem' }}>🏆</span>}
-                      <span style={{ fontWeight: 700, fontSize: '1rem' }}>{r.carte.nom}</span>
-                      <span style={{ fontSize: '0.78rem', color: MUTED }}>{r.carte.operateur}</span>
-                    </div>
-                    <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
-                      {r.carte.ideal_voyage && <Badge>✈️ Voyage EU</Badge>}
-                      {r.carte.flotte_pro && <Badge color="#8b5cf6">🏢 Flotte</Badge>}
-                      {(r.carte.donnees?.abonnement?.mensuel_eur || 0) === 0 && <Badge color="#f59e0b">Sans abo</Badge>}
-                      {roaming?.disponible && (roaming.pays_couverts?.length || 0) >= 5 && (
-                        <Badge color="#06b6d4" title="Nombre de pays couverts par notre comparatif tarifaire — pas forcément la couverture maximale du réseau partenaire.">
-                          Couverture {roaming.pays_couverts?.length || 0} pays
-                        </Badge>
-                      )}
-                    </div>
-                    {r.carte.points_forts?.length > 0 && (
-                      <div style={{ fontSize: '0.8rem', color: MUTED, marginTop: 6 }}>
-                        {r.carte.points_forts[0]}
-                      </div>
-                    )}
-                  </div>
-                  <div style={{ textAlign: 'right', minWidth: 110 }}>
-                    <div style={{ fontSize: '1.5rem', fontWeight: 800, color: isWinner ? PRIMARY : 'var(--color-text)' }}>
-                      {r.cout?.toFixed(0)} €
-                    </div>
-                    <div style={{ fontSize: '0.75rem', color: MUTED }}>
-                      {onglet === 'flotte' ? `/ mois (${nbVeh} véh.)` : '/ mois estimé'}
-                    </div>
-                    {urlOffre(r.carte) && (
-                      <a href={urlOffre(r.carte) as string}
-                        target="_blank" rel="noopener noreferrer"
-                        style={{ fontSize: '0.78rem', color: PRIMARY, fontWeight: 600, textDecoration: 'none', display: 'block', marginTop: 4 }}>
-                        Voir l&apos;offre →
-                      </a>
-                    )}
-                    <a href={`/outils/cartes-recharge/${r.carte.id}`}
-                      style={{ fontSize: '0.78rem', color: MUTED, fontWeight: 500, textDecoration: 'none', display: 'block', marginTop: 2 }}>
-                      📊 Tarifs par pays
-                    </a>
-                  </div>
-                </div>
-              )
-            })}
-          </div>
-        </div>
-      )}
-
-      {/* ── Vue Tableau ──────────────────────────────────────────────────── */}
-      {vue === 'tableau' && (
-        <div>
-          {/* Filtres */}
-          <div style={{ display: 'flex', gap: 8, marginBottom: 20, flexWrap: 'wrap' }}>
-            <span style={{ fontSize: '0.85rem', color: MUTED, alignSelf: 'center' }}>Pays :</span>
-            {(['FR', 'BE', 'tous'] as const).map(p => (
-              <button key={p} onClick={() => setFiltrePays(p)} style={{
-                padding: '5px 14px', borderRadius: 20, fontSize: '0.8rem', fontWeight: 600,
-                border: `1px solid ${filtrePays === p ? PRIMARY : BORDER}`,
-                background: filtrePays === p ? `color-mix(in srgb, ${PRIMARY} 10%, transparent)` : 'transparent',
-                color: filtrePays === p ? PRIMARY : MUTED, cursor: 'pointer',
-              }}>
-                {p === 'tous' ? '🌍 Tous' : p === 'FR' ? '🇫🇷 France' : '🇧🇪 Belgique'}
-              </button>
-            ))}
-          </div>
-
-          {/* Tableau */}
-          <div style={{ overflowX: 'auto' }}>
-            <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.875rem' }}>
-              <thead>
-                <tr style={{ borderBottom: `2px solid ${BORDER}` }}>
-                  {['Carte', 'Abo/mois', 'AC ≤22 kW', 'DC 50–150 kW', 'DC ≥150 kW', 'Roaming DC', 'Idéal pour'].map(h => (
-                    <th key={h} style={{ padding: '10px 14px', textAlign: 'left', fontWeight: 600, color: MUTED, fontSize: '0.78rem', textTransform: 'uppercase', letterSpacing: '0.04em', whiteSpace: 'nowrap' }}>
-                      {h}
-                    </th>
+          {onglet === 'particulier' ? (
+            <>
+              <Slider label="km/mois en recharge publique" min={0} max={1500} step={25} value={kmMois} onChange={setKmMois} unit=" km" />
+              <Slider label="Part de recharge DC rapide" min={0} max={100} step={5} value={pctDC} onChange={setPctDC} unit="%" />
+              <div style={{ marginBottom: 20 }}>
+                <div style={{ fontSize: '0.88rem', fontWeight: 500, marginBottom: 8 }}>Voyages UE en voiture</div>
+                <div style={{ display: 'flex', gap: 6 }}>
+                  {voyagesLabel.map((l, i) => (
+                    <button key={i} onClick={() => setVoyages(i)} style={{
+                      flex: 1, padding: '7px 4px', borderRadius: 6, fontSize: '0.75rem', fontWeight: 600,
+                      border: `1.5px solid ${voyages === i ? PRIMARY : BORDER}`,
+                      background: voyages === i ? `color-mix(in srgb, ${PRIMARY} 10%, transparent)` : 'transparent',
+                      color: voyages === i ? PRIMARY : MUTED, cursor: 'pointer',
+                    }}>
+                      {l}
+                    </button>
                   ))}
-                </tr>
-              </thead>
-              <tbody>
-                {cartesFiltrees.map((c, i) => {
-                  const tarifs = getTarifs(c)
-                  const roaming = c.donnees?.roaming
-                  const abo = c.donnees?.abonnement?.mensuel_eur || 0
-                  return (
-                    <tr key={c.id} style={{ borderBottom: `1px solid ${BORDER}`, background: i % 2 === 0 ? 'transparent' : 'rgba(255,255,255,0.02)' }}>
-                      <td style={{ padding: '12px 14px' }}>
-                        <div style={{ fontWeight: 700 }}>{c.nom}</div>
-                        <div style={{ fontSize: '0.75rem', color: MUTED }}>{c.operateur}</div>
-                      </td>
-                      <td style={{ padding: '12px 14px' }}>
-                        {abo === 0 ? <span style={{ color: '#22c55e', fontWeight: 600 }}>Gratuit</span> : <span style={{ fontWeight: 600 }}>{abo} €</span>}
-                      </td>
-                      <td style={{ padding: '12px 14px' }}><PrixCell prix={tarifs.ac_slow?.prix} /></td>
-                      <td style={{ padding: '12px 14px' }}><PrixCell prix={tarifs.dc_rapide?.prix} /></td>
-                      <td style={{ padding: '12px 14px' }}><PrixCell prix={tarifs.dc_ultra?.prix} /></td>
-                      <td style={{ padding: '12px 14px' }}>
-                        {roaming?.disponible
-                          ? <PrixCell prix={roaming.tarif_dc_rapide?.prix} />
-                          : <span style={{ color: MUTED, fontSize: '0.8rem' }}>Non</span>}
-                      </td>
-                      <td style={{ padding: '12px 14px' }}>
-                        <div style={{ display: 'flex', gap: 4, flexWrap: 'wrap' }}>
-                          {c.ideal_voyage && <Badge>✈️ Voyage</Badge>}
-                          {c.ideal_quotidien && <Badge color="#f59e0b">🏠 Quotidien</Badge>}
-                          {c.flotte_pro && <Badge color="#8b5cf6">🏢 Flotte</Badge>}
-                        </div>
-                      </td>
-                    </tr>
-                  )
-                })}
-              </tbody>
-            </table>
+                </div>
+              </div>
+            </>
+          ) : (
+            <>
+              <Slider label="Nombre de véhicules" min={1} max={50} step={1} value={nbVeh} onChange={setNbVeh} unit=" véh." />
+              <Slider label="km/mois en public par véhicule" min={0} max={2000} step={50} value={kmVeh} onChange={setKmVeh} unit=" km" />
+              <Slider label="Part DC rapide" min={0} max={100} step={5} value={pctDCFlotte} onChange={setPctDCFlotte} unit="%" />
+              <div style={{ marginBottom: 20 }}>
+                <div style={{ fontSize: '0.88rem', fontWeight: 500, marginBottom: 8 }}>Missions EU régulières</div>
+                <div style={{ display: 'flex', gap: 6 }}>
+                  {['Non', 'Occasionnel', 'Fréquent'].map((l, i) => (
+                    <button key={i} onClick={() => setVoyagesFlotte(i)} style={{
+                      flex: 1, padding: '7px 4px', borderRadius: 6, fontSize: '0.75rem', fontWeight: 600,
+                      border: `1.5px solid ${voyagesFlotte === i ? PRIMARY : BORDER}`,
+                      background: voyagesFlotte === i ? `color-mix(in srgb, ${PRIMARY} 10%, transparent)` : 'transparent',
+                      color: voyagesFlotte === i ? PRIMARY : MUTED, cursor: 'pointer',
+                    }}>
+                      {l}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </>
+          )}
+
+          <div style={{ fontSize: '0.75rem', color: MUTED, lineHeight: 1.5, padding: '12px', background: 'var(--color-bg-alt)', borderRadius: 8 }}>
+            💡 Hypothèses : 20 kWh/100 km, sessions AC = 15 kWh, sessions DC = 45 kWh.
+            Estimation indicative — vérifiez les tarifs officiels avant de souscrire.
           </div>
         </div>
-      )}
+
+        {/* Résultats classés */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+          {resultats.map((r, i) => {
+            const isWinner = i === 0
+            const roaming = r.carte.donnees?.roaming
+            return (
+              <div key={r.carte.id} style={{
+                background: BG_CARD,
+                border: `${isWinner ? '2px' : '1px'} solid ${isWinner ? PRIMARY : BORDER}`,
+                borderRadius: 12, padding: '18px 20px',
+                display: 'grid', gridTemplateColumns: '1fr auto', gap: 12, alignItems: 'center',
+              }}>
+                <div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 6 }}>
+                    {isWinner && <span style={{ fontSize: '1rem' }}>🏆</span>}
+                    <span style={{ fontWeight: 700, fontSize: '1rem' }}>{r.carte.nom}</span>
+                    <span style={{ fontSize: '0.78rem', color: MUTED }}>{r.carte.operateur}</span>
+                  </div>
+                  <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
+                    {r.carte.ideal_voyage && <Badge>✈️ Voyage EU</Badge>}
+                    {r.carte.flotte_pro && <Badge color="#8b5cf6">🏢 Flotte</Badge>}
+                    {(r.carte.donnees?.abonnement?.mensuel_eur || 0) === 0 && <Badge color="#f59e0b">Sans abo</Badge>}
+                    {roaming?.disponible && (roaming.pays_couverts?.length || 0) >= 5 && (
+                      <Badge color="#06b6d4" title="Nombre de pays couverts par notre comparatif tarifaire — pas forcément la couverture maximale du réseau partenaire.">
+                        Couverture {roaming.pays_couverts?.length || 0} pays
+                      </Badge>
+                    )}
+                  </div>
+                  {r.carte.points_forts?.length > 0 && (
+                    <div style={{ fontSize: '0.8rem', color: MUTED, marginTop: 6 }}>
+                      {r.carte.points_forts[0]}
+                    </div>
+                  )}
+                </div>
+                <div style={{ textAlign: 'right', minWidth: 110 }}>
+                  <div style={{ fontSize: '1.5rem', fontWeight: 800, color: isWinner ? PRIMARY : 'var(--color-text)' }}>
+                    {r.cout?.toFixed(0)} €
+                  </div>
+                  <div style={{ fontSize: '0.75rem', color: MUTED }}>
+                    {onglet === 'flotte' ? `/ mois (${nbVeh} véh.)` : '/ mois estimé'}
+                  </div>
+                  {urlOffre(r.carte) && (
+                    <a href={urlOffre(r.carte) as string}
+                      target="_blank" rel="noopener noreferrer"
+                      style={{ fontSize: '0.78rem', color: PRIMARY, fontWeight: 600, textDecoration: 'none', display: 'block', marginTop: 4 }}>
+                      Voir l&apos;offre →
+                    </a>
+                  )}
+                  <a href={`/outils/cartes-recharge/${r.carte.id}`}
+                    style={{ fontSize: '0.78rem', color: MUTED, fontWeight: 500, textDecoration: 'none', display: 'block', marginTop: 2 }}>
+                    📊 Tarifs par pays
+                  </a>
+                </div>
+              </div>
+            )
+          })}
+        </div>
+      </div>
     </div>
   )
 }

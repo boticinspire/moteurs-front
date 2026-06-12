@@ -77,6 +77,11 @@ const PAGES_STATIQUES: { url: string; priority: number; changeFreq: MetadataRout
   { url: '/constat',                       priority: 0.8,  changeFreq: 'monthly' },
   { url: '/outils/comparer-modeles',        priority: 0.8,  changeFreq: 'weekly'  },
   { url: '/outils/cartes-recharge',        priority: 0.85, changeFreq: 'weekly'  },
+  { url: '/outils/cartes-recharge/comparatif/sans-abonnement', priority: 0.8, changeFreq: 'weekly' },
+  { url: '/outils/cartes-recharge/comparatif/voyage-europe',   priority: 0.8, changeFreq: 'weekly' },
+  { url: '/outils/cartes-recharge/comparatif/flotte-pro',      priority: 0.8, changeFreq: 'weekly' },
+  { url: '/outils/cartes-recharge/comparatif/france',          priority: 0.8, changeFreq: 'weekly' },
+  { url: '/outils/cartes-recharge/comparatif/belgique',        priority: 0.8, changeFreq: 'weekly' },
   { url: '/outils/facture-recharge',       priority: 0.85, changeFreq: 'monthly' },
   { url: '/outils/documents-europe',       priority: 0.75, changeFreq: 'monthly' },
   { url: '/outils/simulateur-borne-recharge', priority: 0.82, changeFreq: 'monthly' },
@@ -129,8 +134,9 @@ async function fetchCartesIds(): Promise<{ id: string; updated_at: string }[]> {
     )
     if (!res.ok) return []
     const data: { nb?: number; cartes?: { id: string; actif?: boolean; updated_at?: string }[] } = await res.json()
+    const DEPRECATED = new Set(['blue-corner']) // fusionné dans blink-charging-be
     return (data.cartes ?? [])
-      .filter(c => c.actif !== false && typeof c.id === 'string' && c.id.length > 0)
+      .filter(c => c.actif !== false && typeof c.id === 'string' && c.id.length > 0 && !DEPRECATED.has(c.id))
       .map(c => ({ id: c.id, updated_at: c.updated_at ?? new Date().toISOString() }))
   } catch {
     return []

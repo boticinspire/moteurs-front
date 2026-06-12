@@ -1,12 +1,18 @@
 import type { Metadata } from 'next'
 import ComparateurCartes from './ComparateurCartes'
+import TableauCartes from './TableauCartes'
 import FaqAccordion from '@/components/FaqAccordion'
+import { Link } from '@/i18n/navigation'
+import { getCartes } from '@/lib/cartes-recharge'
+import { SELECTIONS } from '@/lib/cartes-selections'
 import { setRequestLocale } from 'next-intl/server'
 import { routing } from '@/i18n/routing'
 
 export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }))
 }
+
+export const revalidate = 3600
 
 export const metadata: Metadata = {
   title: 'Comparateur cartes de recharge VE 2026 — France, Belgique, Europe | Moteurs.com',
@@ -53,13 +59,18 @@ export default async function PageCartesRecharge({
 }) {
   const { locale } = await params
   setRequestLocale(locale)
+
+  // Fetch serveur → le tableau est rendu en HTML statique (indexable),
+  // et le calculateur reçoit les mêmes données sans re-fetch côté client.
+  const cartes = await getCartes()
+
   return (
     <main className="container" style={{ paddingTop: 40, paddingBottom: 64 }}>
 
       {/* ── Hero ── */}
       <div style={{ textAlign: 'center', marginBottom: 48 }}>
         <div style={{ fontSize: '0.82rem', color: 'var(--color-primary)', fontWeight: 600, marginBottom: 10, letterSpacing: '0.05em', textTransform: 'uppercase' }}>
-          14 cartes comparées · Mis à jour 2026
+          {cartes.length} cartes comparées · Mis à jour 2026
         </div>
         <h1 style={{ fontSize: 'clamp(1.6rem, 4vw, 2.4rem)', marginBottom: 14, lineHeight: 1.2 }}>
           Quelle carte de recharge<br />
@@ -70,7 +81,7 @@ export default async function PageCartesRecharge({
         </p>
 
         <div style={{ display: 'flex', justifyContent: 'center', flexWrap: 'wrap', gap: 10, marginTop: 20 }}>
-          {['⚡ 14 cartes FR & BE', '✈️ Roaming EU calculé', '🏢 Mode flotte', '📊 Tableau comparatif'].map(b => (
+          {[`⚡ ${cartes.length} cartes FR & BE`, '✈️ Roaming EU calculé', '🏢 Mode flotte', '📊 Tableau comparatif'].map(b => (
             <span key={b} style={{
               padding: '5px 14px', borderRadius: 20, fontSize: '0.8rem',
               background: 'rgba(122,240,194,0.08)', border: '1px solid rgba(122,240,194,0.2)',
@@ -82,8 +93,30 @@ export default async function PageCartesRecharge({
         </div>
       </div>
 
-      {/* ── Comparateur ── */}
-      <ComparateurCartes />
+      {/* ── Calculateur interactif (client) ── */}
+      <ComparateurCartes initialCartes={cartes} />
+
+      {/* ── Tableau comparatif (rendu serveur, indexable) ── */}
+      <TableauCartes cartes={cartes} />
+
+      {/* ── Comparatifs ciblés (pages passerelles SEO) ── */}
+      <section style={{ marginTop: 48 }}>
+        <h2 style={{ fontSize: '1.25rem', fontWeight: 700, marginBottom: 6 }}>Comparatifs ciblés</h2>
+        <p style={{ color: 'var(--color-text-muted)', fontSize: '0.9rem', marginBottom: 18 }}>
+          Accédez directement au comparatif filtré selon votre besoin.
+        </p>
+        <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
+          {SELECTIONS.map(s => (
+            <Link key={s.slug} href={`/outils/cartes-recharge/comparatif/${s.slug}`} style={{
+              padding: '8px 16px', borderRadius: 24, fontSize: '0.88rem', fontWeight: 600,
+              border: '1px solid var(--color-border)', color: 'var(--color-text)',
+              textDecoration: 'none', background: 'var(--color-bg-card)',
+            }}>
+              {s.emoji} {s.label}
+            </Link>
+          ))}
+        </div>
+      </section>
 
       {/* ── FAQ ── */}
       <FaqAccordion items={FAQ_CARTES} title="Questions fréquentes sur les cartes de recharge" />
