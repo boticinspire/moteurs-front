@@ -20,6 +20,34 @@ function altLanguages(pathname: string): Record<string, string> {
   return langs
 }
 
+/**
+ * Routes reellement localisees : leur page emet une canonique AUTO-REFERENTE
+ * par locale (`/es/...` canonise vers `/es/...`). Seules celles-ci doivent
+ * declarer des alternates hreflang dans le sitemap.
+ *
+ * Toutes les autres routes (trajets, tco, articles, outils/*, cartes-recharge,
+ * dessins...) servent du contenu FR sous les prefixes langue et canonisent
+ * vers la version FR. Leur annoncer des alternates hreflang creait une
+ * contradiction (sitemap dit "version ES existe" / page dit "canonique = FR")
+ * → Google les classait "Autre page avec balise canonique correcte" et ne les
+ * indexait pas. On ne liste donc QUE l'URL FR pour ces routes.
+ */
+const HREFLANG_ROUTES = new Set<string>([
+  '/',
+  '/a-propos',
+  '/mentions-legales',
+  '/recharge-electrique',
+  '/vacances-voiture',
+  '/vacances-voiture/checklist-ev',
+  '/cout-voiture',
+  '/documents-auto',
+])
+
+/** Renvoie les alternates hreflang uniquement pour les routes auto-referentes. */
+function altFor(pathname: string): { languages: Record<string, string> } | undefined {
+  return HREFLANG_ROUTES.has(pathname) ? { languages: altLanguages(pathname) } : undefined
+}
+
 const TRAJET_SLUGS = (routesData as { slug: string }[]).map(r => r.slug)
 
 const TRAJET_SEO_URLS: string[] = [
@@ -179,15 +207,15 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     lastModified: now,
     changeFrequency: p.changeFreq,
     priority: p.priority,
-    alternates: { languages: altLanguages(p.url) },
+    alternates: altFor(p.url),
   }))
 
+  // Routes FR-only (contenu non traduit, canonique → FR) : pas d'alternates hreflang.
   const trajetEntries: MetadataRoute.Sitemap = TRAJET_SLUGS.map(slug => ({
     url: `${BASE}/comparer-trajet/${slug}`,
     lastModified: now,
     changeFrequency: 'monthly' as const,
     priority: 0.75,
-    alternates: { languages: altLanguages(`/comparer-trajet/${slug}`) },
   }))
 
   const trajetSeoEntries: MetadataRoute.Sitemap = TRAJET_SEO_URLS.map(url => ({
@@ -195,7 +223,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     lastModified: now,
     changeFrequency: 'monthly' as const,
     priority: url === '/trajet' ? 0.85 : url.split('/').length === 3 ? 0.82 : 0.78,
-    alternates: { languages: altLanguages(url) },
   }))
 
   const tcoEntries: MetadataRoute.Sitemap = TCO_PAYS.flatMap(pays =>
@@ -204,7 +231,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       lastModified: now,
       changeFrequency: 'monthly' as const,
       priority: 0.7,
-      alternates: { languages: altLanguages(`/tco/${pays}/${segment}`) },
     }))
   )
 
@@ -221,7 +247,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     lastModified: new Date(c.updated_at).toISOString(),
     changeFrequency: 'weekly' as const,
     priority: 0.8,
-    alternates: { languages: altLanguages(`/outils/cartes-recharge/${c.id}`) },
   }))
 
   const dessinEntries: MetadataRoute.Sitemap = dessinsSlugs.map(slug => ({
@@ -229,7 +254,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     lastModified: now,
     changeFrequency: 'monthly' as const,
     priority: 0.55,
-    alternates: { languages: altLanguages(`/dessins/${slug}`) },
   }))
 
   return [
