@@ -30,6 +30,7 @@ export interface TrajetCache {
   nb_requetes:   number
   created_at:    string
   last_used:     string
+  geometry:      Array<[number, number]> | null
 }
 
 // ─── Normalisation ────────────────────────────────────────────────────────────
@@ -138,6 +139,7 @@ export async function saveRouteToCache(params: SaveRouteCacheParams): Promise<vo
     distance_km:   itineraire.distance_km,
     duree_base_min: itineraire.duree_min,
     peages_eur,
+    geometry:      itineraire.geometry?.length ? itineraire.geometry : null,
     nb_requetes: 1,
     last_used: new Date().toISOString(),
   }

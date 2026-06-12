@@ -624,6 +624,16 @@ export default function ComparateurTrajet({ routeInitiale }: { routeInitiale?: R
           duree_base_min: cached.duree_base_min,
           pays_depart: 'FR',
         }
+        // Restaure coords + géométrie depuis le cache, sinon la carte trace
+        // un trajet en vol d'oiseau (ligne droite) au lieu de suivre la route.
+        if (cached.lon_depart != null && cached.lat_depart != null &&
+            cached.lon_arrivee != null && cached.lat_arrivee != null) {
+          setRouteCoords({
+            depart:  { lat: cached.lat_depart,  lng: cached.lon_depart },
+            arrivee: { lat: cached.lat_arrivee, lng: cached.lon_arrivee },
+          })
+        }
+        setRouteGeometry(cached.geometry?.length ? cached.geometry : null)
         setOrsRoute(route)
         setOrsEtat('idle')
         setConfirmed(true)
