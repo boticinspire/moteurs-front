@@ -96,6 +96,8 @@ const PAGES_STATIQUES: { url: string; priority: number; changeFreq: MetadataRout
   { url: '/a-propos',       priority: 0.4, changeFreq: 'yearly' },
   { url: '/mentions-legales', priority: 0.3, changeFreq: 'yearly' },
   { url: '/dessins',        priority: 0.6, changeFreq: 'weekly' },
+  { url: '/jeux',           priority: 0.5, changeFreq: 'monthly' },
+  { url: '/jeux/sudoku',    priority: 0.4, changeFreq: 'yearly' },
   { url: '/presse',         priority: 0.5, changeFreq: 'monthly' },
   { url: '/charte-editoriale', priority: 0.4, changeFreq: 'yearly' },
 ]

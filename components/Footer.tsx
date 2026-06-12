@@ -34,6 +34,7 @@ export default function Footer() {
               <li><Link href="/documents-auto">{t('link_documents')}</Link></li>
               <li><Link href="/outils">{t('link_outils')}</Link></li>
               <li><Link href="/dessins">Dessins &amp; humour</Link></li>
+              <li><Link href="/jeux">Jeux gratuits</Link></li>
             </ul>
           </div>
           <div>

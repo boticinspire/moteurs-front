@@ -263,6 +263,22 @@ export const SEO_MAP: Record<string, SeoMeta> = {
     volume: 600,
     intent: 'Transactionnelle',
   },
+  '/jeux': {
+    title: 'Jeux gratuits — la pause détente | Moteurs.com',
+    description: 'Des jeux gratuits pour faire une pause : Sudoku et bientôt plus. Accessibles gratuitement à tous les membres de Moteurs.com.',
+    keywords: ['jeux gratuits en ligne', 'jeu de réflexion gratuit', 'pause détente'],
+    primaryKeyword: 'jeux gratuits en ligne',
+    volume: 0,
+    intent: 'Navigationnelle',
+  },
+  '/jeux/sudoku': {
+    title: 'Sudoku gratuit en ligne — pause détente | Moteurs.com',
+    description: 'Jouez au Sudoku directement dans votre navigateur : 4 niveaux (facile à expert), grille à solution unique générée à chaque partie, notes, indices et chrono. Réservé aux membres.',
+    keywords: ['sudoku gratuit en ligne', 'jeu sudoku navigateur', 'grille sudoku à imprimer'],
+    primaryKeyword: 'sudoku gratuit en ligne',
+    volume: 0,
+    intent: 'Navigationnelle',
+  },
   '/presse': {
     title: 'Espace presse — Moteurs.com, média de la transition énergétique des transports',
     description: 'Kit média, chiffres clés, communiqués et contact journalistes. Moteurs.com, média de référence sur la transition énergétique des transports routiers (France, Belgique, Suisse, Canada).',
