@@ -633,6 +633,18 @@ export default function HomePage() {
               </Link>
             </div>
           </div>
+
+          <div className="v2-tool-group">
+            <div className="v2-group-title">Pause détente</div>
+            <div className="v2-tools-grid">
+              <Link className="v2-tcard c-violet" href="/jeux/sudoku">
+                <div className="icbox" style={{ fontSize: '1.5rem', lineHeight: 1, display: 'grid', placeItems: 'center' }}>🧩</div>
+                <h3>Sudoku</h3>
+                <p>Une grille à solution unique générée à chaque partie — 4 niveaux, notes, indices et chrono. La pause maligne entre deux trajets.</p>
+                <span className="open">Jouer <svg className="v2-ic"><use href="#i-arrow-right" /></svg></span>
+              </Link>
+            </div>
+          </div>
         </div>
       </section>
 

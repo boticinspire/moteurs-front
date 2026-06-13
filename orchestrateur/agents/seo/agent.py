@@ -216,13 +216,43 @@ def _verifier_meta(article: dict) -> dict:
     elif len(md) > 170:
         avertissements.append(f"meta_description trop longue ({len(md)} car.) — cible : 150-160")
 
-    if avertissements:
-        logger.warning(
-            f"[AgentSEO] Meta warnings article #{article.get('id')} : "
-            + " | ".join(avertissements)
-        )
-
+    # Pas de log ici : l'avertissement n'est émis qu'en cas d'échec APRÈS
+    # tentative de correction (cf. enrichir_article_seo) pour éviter le bruit.
     return {"avertissements": avertissements, "meta_ok": len(avertissements) == 0}
+
+
+# ── 2bis. Normalisation déterministe (0 token, repli garanti) ─────────────────
+
+def _tronquer_aux_mots(texte: str, maxlen: int) -> str:
+    """
+    Tronque `texte` à <= maxlen caractères sans couper un mot.
+    La coupe au dernier espace n'est acceptée que si elle conserve au moins
+    75 % de maxlen (évite de tomber sous le seuil « trop court »).
+    """
+    texte = " ".join((texte or "").split())  # normalise espaces / retours ligne
+    if len(texte) <= maxlen:
+        return texte
+    coupe = texte[:maxlen]
+    espace = coupe.rfind(" ")
+    if espace >= maxlen * 3 // 4:
+        coupe = coupe[:espace]
+    return coupe.rstrip(" ,.;:-—…")
+
+
+def _normaliser_meta_fallback(article: dict) -> dict | None:
+    """
+    Repli déterministe quand Haiku est indisponible ou échoue : raccourcit
+    meta_title (<= 60) et meta_description (<= 160) en coupant aux mots.
+    Ne peut pas rallonger un texte trop court — la valeur d'origine est alors
+    conservée. Retourne {"meta_title", "meta_description"} ou None si rien à faire.
+    """
+    mt = " ".join((article.get("meta_title", "") or "").split())
+    md = " ".join((article.get("meta_description", "") or "").split())
+    nouveau_mt = _tronquer_aux_mots(mt, 60) if len(mt) > 60 else mt
+    nouveau_md = _tronquer_aux_mots(md, 160) if len(md) > 160 else md
+    if nouveau_mt == mt and nouveau_md == md:
+        return None
+    return {"meta_title": nouveau_mt, "meta_description": nouveau_md}
 
 
 # ── 2bis. Correction meta via Claude Haiku ────────────────────────────────────
@@ -295,11 +325,11 @@ def _corriger_meta_via_haiku(article: dict) -> dict | None:
         nouveau_mt = (data.get("meta_title") or "").strip()
         nouveau_md = (data.get("meta_description") or "").strip()
 
-        # Garde-fous : tronquer doucement si Haiku déborde encore (rare)
+        # Garde-fous : tronquer aux mots si Haiku déborde encore (rare)
         if len(nouveau_mt) > 60:
-            nouveau_mt = nouveau_mt[:60].rstrip(" ,.;:-—")
+            nouveau_mt = _tronquer_aux_mots(nouveau_mt, 60)
         if len(nouveau_md) > 160:
-            nouveau_md = nouveau_md[:160].rstrip(" ,.;:-—")
+            nouveau_md = _tronquer_aux_mots(nouveau_md, 160)
 
         # Refuser si Haiku a renvoyé vide ou des valeurs absurdes
         if not nouveau_mt or not nouveau_md:
@@ -439,24 +469,36 @@ async def enrichir_article_seo(article_id: int) -> dict:
     meta_corrigee = None
     if not meta_rapport["meta_ok"]:
         logger.info(
-            f"[AgentSEO] Tentative de correction meta via Haiku pour article #{article_id}"
+            f"[AgentSEO] Meta hors plage article #{article_id} "
+            f"({' | '.join(meta_rapport['avertissements'])}) — correction en cours"
         )
+        # 1) Réécriture qualité via Claude Haiku
         meta_corrigee = _corriger_meta_via_haiku(article)
+        methode = "Haiku"
+        # 2) Repli déterministe garanti (0 token) si Haiku indisponible/échoue
+        if not meta_corrigee:
+            meta_corrigee = _normaliser_meta_fallback(article)
+            methode = "troncature"
         if meta_corrigee:
-            # Mettre à jour l'article local pour les étapes suivantes (JSON-LD déjà généré,
-            # on régénère pour bénéficier de la nouvelle meta_description)
+            # Mettre à jour l'article local pour les étapes suivantes
             article["meta_title"] = meta_corrigee["meta_title"]
             article["meta_description"] = meta_corrigee["meta_description"]
-            # Re-vérification
+            # Re-vérification + re-génération du JSON-LD avec la nouvelle meta
             meta_rapport = _verifier_meta(article)
-            # Re-générer le JSON-LD avec la nouvelle description
             json_ld = _generer_json_ld(article)
             logger.info(
-                f"[AgentSEO] ✅ Meta corrigées via Haiku pour article #{article_id} : "
+                f"[AgentSEO] ✅ Meta corrigées ({methode}) article #{article_id} : "
                 f"title={len(meta_corrigee['meta_title'])} car., "
                 f"desc={len(meta_corrigee['meta_description'])} car. — "
                 f"meta_ok={meta_rapport['meta_ok']}"
             )
+
+    # Avertissement émis UNIQUEMENT si la meta reste hors plage après correction
+    if not meta_rapport["meta_ok"]:
+        logger.warning(
+            f"[AgentSEO] Meta encore hors plage article #{article_id} : "
+            + " | ".join(meta_rapport["avertissements"])
+        )
 
     # ── Étape 3 : maillage interne ──
     # Charger les articles publiés en base (hors article courant)

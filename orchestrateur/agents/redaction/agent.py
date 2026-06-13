@@ -408,6 +408,23 @@ def _slugify(texte: str) -> str:
     return slug[:80]
 
 
+def _tronquer_aux_mots(texte: str, maxlen: int) -> str:
+    """
+    Tronque `texte` à <= maxlen caractères sans couper un mot.
+    La coupe au dernier espace n'est acceptée que si elle conserve au moins
+    75 % de maxlen (évite de tomber sous le seuil SEO « trop court »).
+    Garantit que les meta arrivent déjà dans les plages avant l'étape SEO.
+    """
+    texte = " ".join((texte or "").split())  # normalise espaces / retours ligne
+    if len(texte) <= maxlen:
+        return texte
+    coupe = texte[:maxlen]
+    espace = coupe.rfind(" ")
+    if espace >= maxlen * 3 // 4:
+        coupe = coupe[:espace]
+    return coupe.rstrip(" ,.;:-—…")
+
+
 def _detecter_segment(item: dict) -> str:
     """Heuristique : B2B si le contenu évoque les professionnels."""
     mots_b2b = [
@@ -629,6 +646,31 @@ async def generer_declinaisons(item: dict, source: dict) -> list[dict]:
         f"→ versions à générer : {cibles_a_generer}"
     )
 
+    # ── Garde anti-doublon NIVEAU ARTICLE (cross-langue, fenetre longue) ──────
+    # Backstop ajoute 2026-06-13. Compare le signal (resume_ia FR + titre) aux
+    # ARTICLES recents (titre+resume FR) sur 14 jours. Rattrape un MEME evenement
+    # capte via une autre source / un autre veille_item au titre different, que
+    # les gardes "titre exact" et "dedup veille 72 h" laissent passer. Si couvert,
+    # on saute TOUT le signal (aucune declinaison) -> l'item sera marque TRAITE.
+    try:
+        _signal_txt = f"{item.get('resume_ia', '')} {item.get('titre', '')}"
+        _supa_guard = get_supabase()
+        if dedup.is_recently_covered(
+            _supa_guard, _signal_txt,
+            hours=dedup.ARTICLE_COVERAGE_HOURS,
+            threshold=dedup.ARTICLE_COVERAGE_THRESHOLD,
+        ):
+            logger.info(
+                "[Guard] Signal déjà couvert par un article récent (<=%dj) "
+                "→ skip total : %s",
+                dedup.ARTICLE_COVERAGE_HOURS // 24,
+                item.get("titre", "")[:60],
+            )
+            return []
+    except Exception as e:
+        logger.error("[Guard] Erreur is_recently_covered (non bloquant) : %s", e)
+    # ─────────────────────────────────────────────────────────────────────────
+
     # ── Étape 2 : rédaction originale par (pays × cible) ──
     articles = []
     total_attendu = len(pays_cibles) * len(cibles_a_generer)
@@ -734,8 +776,8 @@ async def run_redaction_item(item: dict, source: dict) -> int:
                 "etat_updated_at": datetime.utcnow().isoformat(),
                 "contenu_html": article_data.get("contenu_html", ""),
                 "resume_50mots": article_data.get("resume_50mots", "")[:300],
-                "meta_title": article_data.get("meta_title", "")[:70],
-                "meta_description": article_data.get("meta_description", "")[:200],
+                "meta_title": _tronquer_aux_mots(article_data.get("meta_title", ""), 60),
+                "meta_description": _tronquer_aux_mots(article_data.get("meta_description", ""), 160),
                 "faq_json": article_data.get("faq", []),
                 "sources_json": {
                     "veille_item_id": item["id"],

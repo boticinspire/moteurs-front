@@ -5,7 +5,7 @@ import { Link, usePathname } from '@/i18n/navigation'
 import { useTranslations } from 'next-intl'
 import LanguageSwitcher from './LanguageSwitcher'
 
-type NavHref = '/' | '/articles' | '/recharge-electrique' | '/vacances-voiture' | '/cout-voiture' | '/depannage' | '/documents-auto' | '/outils' | '/dessins' | '/b2b' | '/particulier'
+type NavHref = '/' | '/articles' | '/recharge-electrique' | '/vacances-voiture' | '/cout-voiture' | '/depannage' | '/documents-auto' | '/outils' | '/dessins' | '/jeux' | '/b2b' | '/particulier'
 
 export default function Header() {
   const t = useTranslations('Header')
@@ -29,6 +29,7 @@ export default function Header() {
     { href: '/documents-auto', label: t('nav_documents') },
     { href: '/outils',         label: t('nav_outils') },
     { href: '/dessins',        label: t('nav_dessins') },
+    { href: '/jeux',           label: 'Jeux' },
   ]
 
   // Liens audience — menu compte (desktop) + section profil (mobile)
@@ -194,6 +195,10 @@ export default function Header() {
                 <Link href="/dessins" className={path === '/dessins' ? 'active' : ''} role="menuitem">
                   <svg viewBox="0 0 24 24"><path d="M12 19l7-7 3 3-7 7-3-3z"/><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18z"/></svg>
                   {t('nav_dessins')}
+                </Link>
+                <Link href="/jeux" className={path === '/jeux' ? 'active' : ''} role="menuitem">
+                  <svg viewBox="0 0 24 24"><rect width="18" height="12" x="3" y="6" rx="3"/><line x1="8" x2="8" y1="11" y2="13"/><line x1="7" x2="9" y1="12" y2="12"/><circle cx="15.5" cy="10.5" r=".6" fill="currentColor"/><circle cx="17.5" cy="12.5" r=".6" fill="currentColor"/></svg>
+                  Jeux
                 </Link>
               </div>
             </div>

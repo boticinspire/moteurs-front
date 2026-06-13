@@ -156,6 +156,11 @@ html[data-theme="dark"] .cvs{--shadow:0 1px 3px rgba(0,0,0,.4),0 16px 36px -16px
 .cvs .srcs a{color:var(--accent);text-decoration:none;font-weight:600}
 .cvs .srcs a:hover{text-decoration:underline}
 .cvs .srcs a .ext{font-size:.7rem;opacity:.6;font-weight:400}
+.cvs .disc{margin-top:18px;background:var(--surface-2);border:1px solid var(--line);border-left:3px solid var(--accent);border-radius:0 12px 12px 0;padding:16px 18px}
+.cvs .disc h3{font-size:.92rem;font-weight:800;margin-bottom:6px}
+.cvs .disc h4{font-size:.74rem;text-transform:uppercase;letter-spacing:.05em;color:var(--text-faint);font-weight:700;margin:12px 0 5px}
+.cvs .disc ul{margin:0 0 0 18px;display:flex;flex-direction:column;gap:5px}
+.cvs .disc li{font-size:.8rem;color:var(--text-soft);line-height:1.45}
 `
 
 // ── Gate strings ──
@@ -397,6 +402,29 @@ export default function ComparateurVoitureSociete() {
                 <li><a href="https://www.ionity.eu/subscriptions" target="_blank" rel="noopener noreferrer">IONITY — abonnements &amp; tarifs <span className="ext">↗</span></a></li>
                 <li><a href="https://www.fastnedcharging.com/fr/tarifs" target="_blank" rel="noopener noreferrer">Fastned — tarifs <span className="ext">↗</span></a></li>
                 <li><a href="https://chargemap.com/fr/price" target="_blank" rel="noopener noreferrer">Chargemap — tarifs Pass <span className="ext">↗</span></a></li>
+              </ul>
+            </section>
+
+            <section className="disc">
+              <h3>⚠️ Limites de l'outil &amp; responsabilité</h3>
+
+              <h4>Limites de l'outil</h4>
+              <ul>
+                <li>Les résultats sont des <b>estimations indicatives</b>, pas des valeurs contractuelles ni garanties.</li>
+                <li>Les autonomies reposent sur le cycle <b>WLTP corrigé</b> (été ×0,88 · annuel ×0,78 · hiver ×0,68) : l'autonomie réelle dépend de la vitesse, du relief, de la météo, du chargement, du style de conduite et de l'état de la batterie.</li>
+                <li>Les coûts de recharge reposent sur des <b>hypothèses</b> (mix 80 % domicile / 20 % public, consommation = batterie/WLTP ×1,15, kilométrage saisi) ; vos coûts réels peuvent différer.</li>
+                <li>Les tarifs des cartes (IONITY, Fastned, Chargemap) et le <b>barème CREG</b> ont été relevés en juin 2026 et <b>évoluent</b> dans le temps.</li>
+                <li>L'<b>indice de confort</b> est une appréciation éditoriale subjective, pas une mesure normalisée.</li>
+                <li>Les montants <b>ATN</b> proviennent de la Carlist fournie (catégories A/B/C) ; le calcul fiscal réel (ATN voiture, ATN recharge domicile, contribution propre) dépend de votre situation, de votre car policy et de l'administration.</li>
+                <li>Liste <b>non exhaustive</b> : d'autres modèles, options, configurations et conditions de leasing ne sont pas couverts.</li>
+              </ul>
+
+              <h4>Responsabilité — Moteurs.com</h4>
+              <ul>
+                <li>Cet outil est fourni à titre <b>informatif</b> et d'aide à la décision. Il ne constitue pas un <b>conseil fiscal, juridique, financier ou d'achat personnalisé</b>.</li>
+                <li>Il ne remplace pas l'avis d'un <b>expert-comptable / conseiller fiscal</b>, ni les informations de votre <b>employeur ou société de leasing</b>, ni les documents officiels (Carlist, car policy, circulaires, barèmes CREG).</li>
+                <li>Moteurs.com met à jour ses données avec soin mais ne <b>garantit pas</b> leur exactitude, leur exhaustivité ou leur actualité, et <b>décline toute responsabilité</b> quant aux décisions prises sur la base de cet outil.</li>
+                <li>Vérifiez toujours les chiffres clés auprès des <b>sources officielles</b> et de votre employeur avant tout engagement.</li>
               </ul>
             </section>
           </main>

@@ -97,6 +97,17 @@ def fingerprint(item: dict) -> set:
 SIMILARITY_THRESHOLD = 0.42   # Jaccard sur resume_ia + titre normalisés
 RECENCY_HOURS = 72
 
+# Garde NIVEAU ARTICLE (cross-langue, fenetre longue) — backstop ajoute 2026-06-13.
+# Utilise par is_recently_covered() appele dans l'Agent Redaction AVANT la fan-out.
+# But : rattraper un MEME evenement capte via une autre source / un autre
+# veille_item au titre different, couvert il y a plus de RECENCY_HOURS (72 h),
+# que les gardes "titre exact" et "dedup veille 72 h" laissent passer.
+# Comparaison faite sur resume_ia (FR) du signal vs titre+resume (FR) des articles
+# -> robuste au cross-langue. Seuil un peu plus strict pour limiter les faux positifs
+# sur des evenements distincts partageant du vocabulaire.
+ARTICLE_COVERAGE_HOURS = 14 * 24      # 14 jours
+ARTICLE_COVERAGE_THRESHOLD = 0.40
+
 
 def find_duplicate(
     new_item: dict,

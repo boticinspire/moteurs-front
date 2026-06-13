@@ -516,8 +516,16 @@ export default function SudokuContent() {
     if (!mounted || !userId) return
     const root = rootRef.current
     if (!root) return
+    // Injection impérative du markup : on NE passe PAS par dangerouslySetInnerHTML
+    // sur le <main>. Sinon chaque re-render React (ex. le message de partage qui
+    // s'affiche puis disparaît après une partie gagnée) réécrit le HTML statique,
+    // détruit la grille déjà construite et détache les listeners → jeu figé.
+    root.innerHTML = SUDOKU_HTML
     const cleanup = runSudoku(root)
-    return cleanup
+    return () => {
+      cleanup()
+      root.innerHTML = ''
+    }
   }, [mounted, userId])
 
   async function handleShare() {
@@ -611,7 +619,7 @@ export default function SudokuContent() {
           </button>
         </div>
       </div>
-      <main className="m-sudoku" ref={rootRef} dangerouslySetInnerHTML={{ __html: SUDOKU_HTML }} />
+      <main className="m-sudoku" ref={rootRef} />
     </>
   )
 }
