@@ -198,6 +198,15 @@ export default async function OutilsPage({
       badge: t('badge_new'),
     },
     {
+      href: '/outils/comparateur-financement-voiture',
+      icon: '💶',
+      titre: 'LOA, LLD, crédit ou comptant',
+      desc: "Calculez le vrai coût de votre voiture selon le mode de financement et identifiez l'option la plus avantageuse : coût réel actualisé, revente et coût d'opportunité du capital.",
+      tags: ['Comptant', 'Crédit', 'LOA', 'LLD'],
+      cta: 'Comparer les financements',
+      badge: t('badge_new'),
+    },
+    {
       href: '/outils/simulateur-borne-recharge',
       icon: '🔌',
       titre: t('borne_budget_titre'),

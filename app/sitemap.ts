@@ -124,6 +124,7 @@ const PAGES_STATIQUES: { url: string; priority: number; changeFreq: MetadataRout
   { url: '/outils/simulateur-borne-recharge', priority: 0.82, changeFreq: 'monthly' },
   { url: '/outils/recharge-domicile-voiture-societe-belgique', priority: 0.7, changeFreq: 'monthly' },
   { url: '/outils/comparateur-voiture-societe-belgique', priority: 0.78, changeFreq: 'monthly' },
+  { url: '/outils/comparateur-financement-voiture', priority: 0.85, changeFreq: 'monthly' },
   { url: '/outils/amende-pv',               priority: 0.85, changeFreq: 'monthly'  },
   { url: '/a-propos',       priority: 0.4, changeFreq: 'yearly' },
   { url: '/mentions-legales', priority: 0.3, changeFreq: 'yearly' },

@@ -335,6 +335,14 @@ export const SEO_MAP: Record<string, SeoMeta> = {
     volume: 1300,
     intent: 'Commerciale',
   },
+  '/outils/comparateur-financement-voiture': {
+    title: 'LOA, LLD, crédit ou comptant : le vrai coût de votre voiture | Moteurs.com',
+    description: "Comparez achat comptant, crédit auto, LOA et LLD pour calculer le vrai coût de votre voiture et identifier l'option la plus avantageuse. Coût réel actualisé (coût d'opportunité, revente, usage), adapté à la France, la Belgique, le Luxembourg, la Suisse et le Canada — en € / CHF / C$.",
+    keywords: ['LOA ou crédit', 'LOA LLD crédit comptant', 'vrai coût voiture', 'comparateur financement voiture', 'leasing ou achat voiture', 'coût réel LOA', 'leasing voiture Suisse', 'prêt à tempérament Belgique', 'crédit auto Canada'],
+    primaryKeyword: 'LOA ou crédit ou comptant',
+    volume: 4400,
+    intent: 'Commerciale',
+  },
 }
 
 /** Retourne le metadata SEO pour une route donnée. */
