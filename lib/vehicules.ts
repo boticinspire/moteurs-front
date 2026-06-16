@@ -77,10 +77,12 @@ export async function getVehiculesEV(): Promise<EV[]> {
   const rows = await sbSelect<EV>(
     'vehicules_ev?actif=eq.true&select=*&order=brand.asc,model.asc'
   )
-  if (rows.length > 0) return rows
-  // Fallback : snapshot bundlé (peut être un simple jeu de démarrage).
   const ds = seed as unknown as { vehicles: EV[] }
-  return ds.vehicles ?? []
+  const bundled = ds.vehicles ?? []
+  // On garde la source la PLUS complète : tant que l'ingestion Supabase n'est pas
+  // aussi fournie que le snapshot bundlé, on sert le snapshot (évite de n'afficher
+  // que le jeu de démarrage). Une fois Supabase peuplé (>= snapshot), il prend la main.
+  return rows.length >= bundled.length ? rows : bundled
 }
 
 /** Modèles thermiques repères — Supabase uniquement (pas de fallback JSON). */
