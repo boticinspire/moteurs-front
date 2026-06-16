@@ -34,6 +34,7 @@ export default function Footer() {
               <li><Link href="/zfe-reglementation">ZFE &amp; Crit&apos;Air</Link></li>
               <li><Link href="/depannage">{t('link_depannage')}</Link></li>
               <li><Link href="/documents-auto">{t('link_documents')}</Link></li>
+              <li><Link href="/autopulse">Autopulse — co-pilote auto</Link></li>
               <li><Link href="/outils">{t('link_outils')}</Link></li>
               <li><Link href="/outils/comparateur-voiture-societe-belgique">Comparateur voiture de société (BE)</Link></li>
               <li><Link href="/dessins">Dessins &amp; humour</Link></li>

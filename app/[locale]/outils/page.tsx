@@ -3,6 +3,7 @@ import { getTranslations, setRequestLocale } from 'next-intl/server'
 import { Link } from '@/i18n/navigation'
 import { routing } from '@/i18n/routing'
 import { buildAlternates } from '@/lib/seo-utils'
+import AutopulseManifesto from '@/components/AutopulseManifesto'
 
 export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }))
@@ -259,8 +260,13 @@ export default async function OutilsPage({
 
   return (
     <>
+      {/* ── Manifeste Autopulse + capture email ── */}
+      <section className="page-hero" style={{ paddingBottom: 0 }}>
+        <div className="container"><AutopulseManifesto /></div>
+      </section>
+
       {/* ── Hero ── */}
-      <section className="page-hero">
+      <section className="page-hero" style={{ paddingTop: 8 }}>
         <div className="container">
           <div style={{ fontSize: '0.82rem', color: 'var(--color-primary)', fontWeight: 600, marginBottom: 10, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
             {t('hero_chip')}
