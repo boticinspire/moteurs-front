@@ -24,6 +24,7 @@ export interface TcoInput {
   taux_recharge_phev: number   // 0-100
   prix_custom?:       number   // Prix HT personnalisé
   prix_remise?:       number   // Remise globale
+  conso_custom?:      number   // kWh/100 km réel d'un modèle choisi (override motorisation élec)
 }
 
 export interface TcoResult {
@@ -247,7 +248,7 @@ export function calculTCO(input: TcoInput): TcoResult {
     segment, motor, profil, pays,
     km_an, duree_mois,
     profil_conduite, charge, pct_hiver, taux_recharge_phev,
-    prix_custom, prix_remise = 0,
+    prix_custom, prix_remise = 0, conso_custom,
   } = input
 
   const refConso = REF_CONSO[segment]?.[motor]
@@ -270,7 +271,8 @@ export function calculTCO(input: TcoInput): TcoResult {
   const energyPrices      = ENERGY_PRICES_FALLBACK[pays]
   const prixEnergie       = energyPrices[energyKey] ?? 0
 
-  const consoReel = refConso
+  const consoBase = (motor === 'elec' && typeof conso_custom === 'number' && conso_custom > 0) ? conso_custom : refConso
+  const consoReel = consoBase
     * correcteurConduite(motor, profil_conduite)
     * correcteurCharge(charge)
     * correcteurHiver(motor, pct_hiver)

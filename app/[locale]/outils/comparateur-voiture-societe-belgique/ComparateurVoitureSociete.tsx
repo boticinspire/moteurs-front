@@ -3,6 +3,7 @@
 import { useMemo, useState, useEffect } from 'react'
 import { Link, usePathname } from '@/i18n/navigation'
 import { useUserContext } from '@/context/UserContextProvider'
+import { chargeTimeMin } from '@/lib/ev-charge-model'
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Données — Carlist Bedrijfswagen (niveau / ATN) A + B + C
@@ -23,36 +24,38 @@ type Car = {
   atnGross: number  // €/mois brut (avant contribution upgrade)
   contrib: number   // contribution propre €/mois
   confort: number   // 0-10
+  dcKw: number      // puissance DC crête (OpenEV Data / spec constructeur)
+  vc?: '400v' | '800v'
 }
 
 const CARS: Car[] = [
   // ── CAT A ──
-  { id: 'puma-gene', nom: 'Ford Puma Gen-E Premium', cat: 'A', body: 'SUV urbain', batt: 43.6, wltp: 404, hp: 169, atnNet: 140.83, atnGross: 140.83, contrib: 0, confort: 5.5 },
-  { id: 'ev3-sr', nom: 'Kia EV3 Business (Standard Range)', cat: 'A', body: 'SUV compact', batt: 58.3, wltp: 429, hp: 204, atnNet: 140.83, atnGross: 140.83, contrib: 0, confort: 6.5 },
-  { id: 'aceman', nom: 'Mini Aceman SE', cat: 'A', body: 'SUV urbain', batt: 49.2, wltp: 405, hp: 218, atnNet: 140.83, atnGross: 140.83, contrib: 0, confort: 5.5 },
-  { id: 'mokka', nom: 'Opel Mokka Electric Edition (LR)', cat: 'A', body: 'SUV urbain', batt: 54, wltp: 408, hp: 156, atnNet: 140.83, atnGross: 140.83, contrib: 0, confort: 6.0 },
-  { id: 'e308sw', nom: 'Peugeot e-308 SW GT', cat: 'A', body: 'Break', batt: 58, wltp: 440, hp: 156, atnNet: 140.83, atnGross: 140.83, contrib: 0, confort: 7.5 },
-  { id: 'e2008', nom: 'Peugeot E-2008 Allure', cat: 'A', body: 'SUV urbain', batt: 54, wltp: 399, hp: 156, atnNet: 140.83, atnGross: 140.83, contrib: 0, confort: 6.0 },
+  { id: 'puma-gene', nom: 'Ford Puma Gen-E Premium', cat: 'A', body: 'SUV urbain', batt: 43.6, wltp: 404, hp: 169, atnNet: 140.83, atnGross: 140.83, contrib: 0, confort: 5.5, dcKw: 100 },
+  { id: 'ev3-sr', nom: 'Kia EV3 Business (Standard Range)', cat: 'A', body: 'SUV compact', batt: 58.3, wltp: 429, hp: 204, atnNet: 140.83, atnGross: 140.83, contrib: 0, confort: 6.5, dcKw: 100 },
+  { id: 'aceman', nom: 'Mini Aceman SE', cat: 'A', body: 'SUV urbain', batt: 49.2, wltp: 405, hp: 218, atnNet: 140.83, atnGross: 140.83, contrib: 0, confort: 5.5, dcKw: 95 },
+  { id: 'mokka', nom: 'Opel Mokka Electric Edition (LR)', cat: 'A', body: 'SUV urbain', batt: 54, wltp: 408, hp: 156, atnNet: 140.83, atnGross: 140.83, contrib: 0, confort: 6.0, dcKw: 100 },
+  { id: 'e308sw', nom: 'Peugeot e-308 SW GT', cat: 'A', body: 'Break', batt: 58, wltp: 440, hp: 156, atnNet: 140.83, atnGross: 140.83, contrib: 0, confort: 7.5, dcKw: 100 },
+  { id: 'e2008', nom: 'Peugeot E-2008 Allure', cat: 'A', body: 'SUV urbain', batt: 54, wltp: 399, hp: 156, atnNet: 140.83, atnGross: 140.83, contrib: 0, confort: 6.0, dcKw: 100 },
   // ── CAT B ──
-  { id: 'ix1', nom: 'BMW iX1 eDrive20 M Edition', cat: 'B', body: 'SUV premium', batt: 64.7, wltp: 516, hp: 204, atnNet: 143.36, atnGross: 143.36, contrib: 0, confort: 7.5 },
-  { id: 'ev3-lr', nom: 'Kia EV3 Business Plus (Long Range)', cat: 'B', body: 'SUV compact', batt: 81.4, wltp: 605, hp: 204, atnNet: 140.83, atnGross: 140.83, contrib: 0, confort: 7.5 },
-  { id: 'countryman', nom: 'Mini Countryman E', cat: 'B', body: 'SUV compact', batt: 66.5, wltp: 501, hp: 204, atnNet: 140.83, atnGross: 140.83, contrib: 0, confort: 6.5 },
-  { id: 'e3008', nom: 'Peugeot e-3008 Long Range GT', cat: 'B', body: 'SUV familial', batt: 96, wltp: 700, hp: 230, atnNet: 172.00, atnGross: 172.00, contrib: 0, confort: 9.0 },
-  { id: 'elroq', nom: 'Skoda Elroq 85 Corporate', cat: 'B', body: 'SUV compact', batt: 82, wltp: 568, hp: 286, atnNet: 140.83, atnGross: 140.83, contrib: 0, confort: 8.0 },
-  { id: 'id3', nom: 'Volkswagen ID.3 Pro Performance', cat: 'B', body: 'Compacte', batt: 58, wltp: 432, hp: 204, atnNet: 140.83, atnGross: 140.83, contrib: 0, confort: 6.0 },
-  { id: 'capri', nom: 'Ford Capri Select Ext. Range RWD', cat: 'B', body: 'SUV coupé', batt: 77, wltp: 627, hp: 286, atnNet: 146.31, atnGross: 146.31, contrib: 0, confort: 7.0 },
-  { id: 'explorer', nom: 'Ford Explorer Select Ext. Range RWD', cat: 'B', body: 'SUV familial', batt: 77, wltp: 602, hp: 286, atnNet: 140.83, atnGross: 140.83, contrib: 0, confort: 8.5 },
-  { id: 'ex30', nom: 'Volvo EX30 Plus Ext. Range', cat: 'B', body: 'SUV urbain', batt: 65, wltp: 475, hp: 272, atnNet: 140.96, atnGross: 140.96, contrib: 0, confort: 5.5 },
+  { id: 'ix1', nom: 'BMW iX1 eDrive20 M Edition', cat: 'B', body: 'SUV premium', batt: 64.7, wltp: 516, hp: 204, atnNet: 143.36, atnGross: 143.36, contrib: 0, confort: 7.5, dcKw: 130 },
+  { id: 'ev3-lr', nom: 'Kia EV3 Business Plus (Long Range)', cat: 'B', body: 'SUV compact', batt: 81.4, wltp: 605, hp: 204, atnNet: 140.83, atnGross: 140.83, contrib: 0, confort: 7.5, dcKw: 128 },
+  { id: 'countryman', nom: 'Mini Countryman E', cat: 'B', body: 'SUV compact', batt: 66.5, wltp: 501, hp: 204, atnNet: 140.83, atnGross: 140.83, contrib: 0, confort: 6.5, dcKw: 130 },
+  { id: 'e3008', nom: 'Peugeot e-3008 Long Range GT', cat: 'B', body: 'SUV familial', batt: 96, wltp: 700, hp: 230, atnNet: 172.00, atnGross: 172.00, contrib: 0, confort: 9.0, dcKw: 160 },
+  { id: 'elroq', nom: 'Skoda Elroq 85 Corporate', cat: 'B', body: 'SUV compact', batt: 82, wltp: 568, hp: 286, atnNet: 140.83, atnGross: 140.83, contrib: 0, confort: 8.0, dcKw: 175 },
+  { id: 'id3', nom: 'Volkswagen ID.3 Pro Performance', cat: 'B', body: 'Compacte', batt: 58, wltp: 432, hp: 204, atnNet: 140.83, atnGross: 140.83, contrib: 0, confort: 6.0, dcKw: 135 },
+  { id: 'capri', nom: 'Ford Capri Select Ext. Range RWD', cat: 'B', body: 'SUV coupé', batt: 77, wltp: 627, hp: 286, atnNet: 146.31, atnGross: 146.31, contrib: 0, confort: 7.0, dcKw: 135 },
+  { id: 'explorer', nom: 'Ford Explorer Select Ext. Range RWD', cat: 'B', body: 'SUV familial', batt: 77, wltp: 602, hp: 286, atnNet: 140.83, atnGross: 140.83, contrib: 0, confort: 8.5, dcKw: 150 },
+  { id: 'ex30', nom: 'Volvo EX30 Plus Ext. Range', cat: 'B', body: 'SUV urbain', batt: 65, wltp: 475, hp: 272, atnNet: 140.96, atnGross: 140.96, contrib: 0, confort: 5.5, dcKw: 153 },
   // ── CAT C ──
-  { id: 'ix2', nom: 'BMW iX2 eDrive20 M Edition', cat: 'C', body: 'SUV coupé', batt: 64.8, wltp: 470, hp: 204, atnNet: 85.19, atnGross: 160.19, contrib: 75, confort: 7.0 },
-  { id: 'ev6', nom: 'Kia EV6 Business Plus', cat: 'C', body: 'SUV', batt: 84, wltp: 582, hp: 229, atnNet: 85.98, atnGross: 160.98, contrib: 75, confort: 8.0 },
-  { id: 'glb', nom: 'Mercedes-Benz GLB 250+ Business Line', cat: 'C', body: 'SUV familial', batt: 85, wltp: 629, hp: 272, atnNet: 97.89, atnGross: 172.89, contrib: 75, confort: 9.0 },
-  { id: 'grandland', nom: 'Opel Grandland GS', cat: 'C', body: 'SUV', batt: 82.2, wltp: 583, hp: 213, atnNet: 85.66, atnGross: 160.66, contrib: 75, confort: 7.5 },
-  { id: 'enyaq', nom: 'Skoda Enyaq 85 Corporate', cat: 'C', body: 'SUV familial', batt: 77, wltp: 576, hp: 286, atnNet: 96.42, atnGross: 171.42, contrib: 75, confort: 9.0 },
-  { id: 'id4', nom: 'Volkswagen ID.4 Pro Business', cat: 'C', body: 'SUV', batt: 77, wltp: 559, hp: 286, atnNet: 66.94, atnGross: 141.94, contrib: 75, confort: 8.5 },
-  { id: 'cla', nom: 'Mercedes-Benz CLA 250+ Business Line', cat: 'C', body: 'Berline', batt: 85, wltp: 772, hp: 272, atnNet: 88.44, atnGross: 163.44, contrib: 75, confort: 7.0 },
-  { id: 'cla-sb', nom: 'Mercedes-Benz CLA Shooting Brake 250+', cat: 'C', body: 'Break', batt: 85, wltp: 747, hp: 272, atnNet: 91.86, atnGross: 166.86, contrib: 75, confort: 8.0 },
-  { id: 'ex40', nom: 'Volvo EX40 Plus Single Motor Ext. Range', cat: 'C', body: 'SUV', batt: 79, wltp: 575, hp: 252, atnNet: 87.25, atnGross: 162.25, contrib: 75, confort: 7.5 },
+  { id: 'ix2', nom: 'BMW iX2 eDrive20 M Edition', cat: 'C', body: 'SUV coupé', batt: 64.8, wltp: 470, hp: 204, atnNet: 85.19, atnGross: 160.19, contrib: 75, confort: 7.0, dcKw: 130 },
+  { id: 'ev6', nom: 'Kia EV6 Business Plus', cat: 'C', body: 'SUV', batt: 84, wltp: 582, hp: 229, atnNet: 85.98, atnGross: 160.98, contrib: 75, confort: 8.0, dcKw: 240, vc: '800v' },
+  { id: 'glb', nom: 'Mercedes-Benz GLB 250+ Business Line', cat: 'C', body: 'SUV familial', batt: 85, wltp: 629, hp: 272, atnNet: 97.89, atnGross: 172.89, contrib: 75, confort: 9.0, dcKw: 100 },
+  { id: 'grandland', nom: 'Opel Grandland GS', cat: 'C', body: 'SUV', batt: 82.2, wltp: 583, hp: 213, atnNet: 85.66, atnGross: 160.66, contrib: 75, confort: 7.5, dcKw: 160 },
+  { id: 'enyaq', nom: 'Skoda Enyaq 85 Corporate', cat: 'C', body: 'SUV familial', batt: 77, wltp: 576, hp: 286, atnNet: 96.42, atnGross: 171.42, contrib: 75, confort: 9.0, dcKw: 175 },
+  { id: 'id4', nom: 'Volkswagen ID.4 Pro Business', cat: 'C', body: 'SUV', batt: 77, wltp: 559, hp: 286, atnNet: 66.94, atnGross: 141.94, contrib: 75, confort: 8.5, dcKw: 135 },
+  { id: 'cla', nom: 'Mercedes-Benz CLA 250+ Business Line', cat: 'C', body: 'Berline', batt: 85, wltp: 772, hp: 272, atnNet: 88.44, atnGross: 163.44, contrib: 75, confort: 7.0, dcKw: 200, vc: '800v' },
+  { id: 'cla-sb', nom: 'Mercedes-Benz CLA Shooting Brake 250+', cat: 'C', body: 'Break', batt: 85, wltp: 747, hp: 272, atnNet: 91.86, atnGross: 166.86, contrib: 75, confort: 8.0, dcKw: 200, vc: '800v' },
+  { id: 'ex40', nom: 'Volvo EX40 Plus Single Motor Ext. Range', cat: 'C', body: 'SUV', batt: 79, wltp: 575, hp: 252, atnNet: 87.25, atnGross: 162.25, contrib: 75, confort: 7.5, dcKw: 150 },
 ]
 
 // ── Constantes ──
@@ -368,6 +371,7 @@ export default function ComparateurVoitureSociete() {
                       <div className="st"><div className="k">Confort</div><div className="v">{r.c.confort.toFixed(1)}<span className="x"> /10</span></div></div>
                       <div className="st"><div className="k">ATN / mois</div><div className="v">{fmt2(r.c.atnNet)} €</div>{r.c.contrib > 0 && <div className="x">après −{r.c.contrib} € contrib.</div>}</div>
                       <div className="st"><div className="k">Recharge / an</div><div className="v">{fmt0(r.cost)} €</div><div className="x">{kmAn.toLocaleString('fr-BE')} km</div></div>
+                      <div className="st"><div className="k">Recharge 10→80%</div><div className="v">~{chargeTimeMin({ battKwhNet: r.c.batt, dcPeakKw: r.c.dcKw, voltageClass: r.c.vc, stationKw: 150 }, 10, 80)} min</div><div className="x">{r.c.dcKw} kW DC{r.c.vc === '800v' ? ' · 800V' : ''}</div></div>
                     </div>
                     <div className="bar"><i style={{ width: Math.max(4, Math.min(100, r.score * 10)) + '%' }} /></div>
                     <div className="scoreline"><span>Score pondéré</span><span>{r.score.toFixed(2)} / 10</span></div>
@@ -377,7 +381,7 @@ export default function ComparateurVoitureSociete() {
             </div>
 
             <p className="foot">
-              Méthodologie Moteurs.com. Autonomie réelle estimée : été = WLTP ×0,88 · annuel ×0,78 · hiver ×0,68. Consommation réelle mixte ≈ batterie/WLTP ×1,15.
+              Méthodologie Moteurs.com. Autonomie réelle estimée : été = WLTP ×0,88 · annuel ×0,78 · hiver ×0,68. Consommation réelle mixte ≈ batterie/WLTP ×1,15. Puissance DC : OpenEV Data / specs constructeur ; temps de recharge 10→80 % estimé (modèle paramétrique, borne 150 kW).
               Coût de recharge sur la base du kilométrage saisi, 80% domicile / 20% public (sauf « 100% public »). Barème CREG Q2 2026. Tarifs cartes IONITY/Fastned/Chargemap relevés en juin 2026, indicatifs.
               ATN = montant imposable mensuel issu de la Carlist Bedrijfswagen (catégories A/B/C) ; pour la catégorie C, montant net après contribution propre « upgrade ». Données indicatives, à vérifier dans ta car policy.
             </p>

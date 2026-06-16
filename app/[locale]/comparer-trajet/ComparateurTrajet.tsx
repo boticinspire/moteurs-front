@@ -6,8 +6,9 @@ import {
   fmtEur, fmtDuree, economieVsGagnant,
   PRIX_ENERGIE, CATEGORIES_LOCATION,
   type Route, type ResultatTrajet, type ResultatLocation,
-  type CategorieLocation,
+  type CategorieLocation, type VehiculeReel,
 } from '@/lib/trajet'
+import SelecteurModele, { consoReelleKwh100 } from '@/components/SelecteurModele'
 import { geocoderEtCalculer, geocoderCandidats, calculerRoute, type ORSCoordonnees, type ORSItineraire } from '@/lib/openrouteservice'
 import { getRouteFromCache, saveRouteToCache, normaliserVille } from '@/lib/trajets-cache'
 import { type Coords } from '@/lib/openchargemaps'
@@ -502,6 +503,7 @@ export default function ComparateurTrajet({ routeInitiale }: { routeInitiale?: R
   const [depart, setDepart] = useState(routeInitiale?.depart ?? '')
   const [arrivee, setArrivee] = useState(routeInitiale?.arrivee ?? '')
   const [confirmed, setConfirmed] = useState(!!routeInitiale)
+  const [vehiculeReel, setVehiculeReel] = useState<VehiculeReel | null>(null)
   const [recents, setRecents] = useState<{ depart: string; arrivee: string }[]>([])
 
   // ── Date de départ (optionnelle — déclenche l'expiration auto du contexte) ──
@@ -728,13 +730,37 @@ export default function ComparateurTrajet({ routeInitiale }: { routeInitiale?: R
 
   const resultatsVoiture = useMemo<ResultatTrajet[]>(() => {
     if (!routeSelectionnee || !confirmed) return []
-    return calculerTousVehicules(routeSelectionnee)
-  }, [routeSelectionnee, confirmed])
+    return calculerTousVehicules(routeSelectionnee, vehiculeReel ?? undefined)
+  }, [routeSelectionnee, confirmed, vehiculeReel])
 
   const resultatsLocation = useMemo<ResultatLocation[]>(() => {
     if (!routeSelectionnee || !confirmed) return []
     return calculerLocation(routeSelectionnee, categorieId, nbJours)
   }, [routeSelectionnee, confirmed, categorieId, nbJours])
+
+  // Trajet confirmé mais sans géométrie réelle (routes pré-enregistrées, trajets
+  // populaires/récents, arrivée depuis l'espace membres) → on récupère le tracé ORS
+  // pour la carte, sinon elle affiche une ligne droite "vol d'oiseau".
+  useEffect(() => {
+    if (!confirmed) return
+    if (routeGeometry && routeGeometry.length > 1) return
+    const d = depart.trim(), a = arrivee.trim()
+    if (!d || !a) return
+    let cancel = false
+    ;(async () => {
+      try {
+        const result = await geocoderEtCalculer(d, a, 'recommended')
+        if (cancel || !result) return
+        if (result.itineraire.geometry?.length) setRouteGeometry(result.itineraire.geometry)
+        setRouteCoords({
+          depart:  { lat: result.coordDepart.lat,  lng: result.coordDepart.lon },
+          arrivee: { lat: result.coordArrivee.lat, lng: result.coordArrivee.lon },
+        })
+      } catch { /* tracé ORS indisponible — la carte retombe sur la ligne droite */ }
+    })()
+    return () => { cancel = true }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [confirmed, depart, arrivee])
 
   // Trajets populaires filtrés (en suggestions sous le formulaire)
   const popularRoutes = useMemo(() => {
@@ -1043,6 +1069,33 @@ export default function ComparateurTrajet({ routeInitiale }: { routeInitiale?: R
               </button>
             ))}
           </div>
+
+          {/* Sélecteur de modèle réel (OpenEV Data) */}
+          {onglet === 'voiture' && (
+            <div style={{ background: 'var(--color-bg-card)', border: '1.5px solid var(--color-border)', borderRadius: 14, padding: '16px 20px', marginBottom: 18 }}>
+              <SelecteurModele
+                onSelect={(m) => {
+                  const batt = m.batt_kwh_net ?? m.batt_kwh_gross
+                  const mix = consoReelleKwh100(m)
+                  if (!batt || !m.dc_kw) { setVehiculeReel(null); return }
+                  setVehiculeReel({
+                    label: `${m.make} ${m.model}`,
+                    conso_kwh100: mix ? Math.round(mix * 1.15 * 10) / 10 : 20,
+                    batt_kwh: batt,
+                    dc_kw: m.dc_kw,
+                    voltage_class: (m.voltage_class as VehiculeReel['voltage_class']) ?? undefined,
+                    station_kw: 150,
+                  })
+                }}
+              />
+              {vehiculeReel && (
+                <div style={{ fontSize: 12, marginTop: 8, color: 'var(--color-text-muted)' }}>
+                  Calcul électrique basé sur <strong>{vehiculeReel.label}</strong> · {vehiculeReel.batt_kwh} kWh · {vehiculeReel.dc_kw} kW DC · temps de charge estimé.{' '}
+                  <button type="button" onClick={() => setVehiculeReel(null)} style={{ background: 'none', border: 'none', color: 'var(--color-primary)', cursor: 'pointer', textDecoration: 'underline', padding: 0, fontSize: 12 }}>Réinitialiser</button>
+                </div>
+              )}
+            </div>
+          )}
 
           {/* Onglet Ma voiture */}
           {onglet === 'voiture' && resultatsVoiture.length > 0 && (

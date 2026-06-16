@@ -25,6 +25,8 @@ export default function CarteStations({ stations, coordDepart, coordArrivee, rou
   useEffect(() => {
     if (!mapRef.current) return
 
+    let cancelled = false
+
     // Nettoyage si la carte existait déjà (rechargement de données)
     if (leafletMap.current) {
       leafletMap.current.remove()
@@ -33,6 +35,14 @@ export default function CarteStations({ stations, coordDepart, coordArrivee, rou
 
     // Import dynamique de Leaflet (côté client uniquement)
     import('leaflet').then(L => {
+      // StrictMode (dev) exécute l'effet deux fois : si le cleanup est déjà passé
+      // ou si le conteneur a déjà une carte, on abandonne cette initialisation.
+      if (cancelled || !mapRef.current) return
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      if ((mapRef.current as any)._leaflet_id && leafletMap.current) {
+        leafletMap.current.remove()
+        leafletMap.current = null
+      }
       // Icônes Leaflet par défaut (hack CDN)
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const iconDefault = L.Icon.Default as any
@@ -149,6 +159,7 @@ export default function CarteStations({ stations, coordDepart, coordArrivee, rou
     })
 
     return () => {
+      cancelled = true
       if (leafletMap.current) {
         leafletMap.current.remove()
         leafletMap.current = null

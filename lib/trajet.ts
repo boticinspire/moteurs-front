@@ -6,6 +6,17 @@
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
+import { chargeTimeMin, type VoltageClass } from './ev-charge-model'
+
+export interface VehiculeReel {
+  label?: string
+  conso_kwh100: number   // kWh/100 km autoroute (réel)
+  batt_kwh: number       // capacité utile
+  dc_kw: number          // puissance DC crête
+  voltage_class?: VoltageClass
+  station_kw?: number    // borne autoroute typique (défaut 150)
+}
+
 export type MotorisationTrajet = 'diesel' | 'essence' | 'elec' | 'phev'
 export type CategorieLocation = 'citadine' | 'berline' | 'suv' | 'monospace'
 
@@ -229,7 +240,7 @@ export const PROFILS_VEHICULE: ProfilVehicule[] = [
 
 // ─── Calcul pour une motorisation ────────────────────────────────────────────
 
-export function calculerTrajet(route: Route, motorisationId: MotorisationTrajet): ResultatTrajet {
+export function calculerTrajet(route: Route, motorisationId: MotorisationTrajet, vehicule?: VehiculeReel): ResultatTrajet {
   const profil = PROFILS_VEHICULE.find(p => p.id === motorisationId)!
   const { distance_km, peages_eur, duree_base_min } = route
 
@@ -253,10 +264,25 @@ export function calculerTrajet(route: Route, motorisationId: MotorisationTrajet)
     }
     case 'elec': {
       const p = profil as ProfilElec
-      cout_energie = (p.conso_kwh100 / 100) * distance_km * PRIX_ENERGIE.elec_blended
-      nb_arrets = Math.max(0, Math.ceil(distance_km / p.autonomie_km) - 1)
-      temps_recharge = nb_arrets * p.temps_recharge_min
-      conso_detail = `${p.conso_kwh100} kWh/100km · tarif moyen ${PRIX_ENERGIE.elec_blended.toFixed(2)} €/kWh`
+      let conso = p.conso_kwh100
+      let autonomie = p.autonomie_km
+      let tpsParArret = p.temps_recharge_min
+      let prefixe = ''
+      if (vehicule && vehicule.batt_kwh && vehicule.conso_kwh100 && vehicule.dc_kw) {
+        conso = vehicule.conso_kwh100
+        // autonomie entre charges = fenêtre utile 10→80 % (70 % de la batterie)
+        autonomie = Math.max(80, Math.round((vehicule.batt_kwh * 0.7) / conso * 100))
+        const t = chargeTimeMin(
+          { battKwhNet: vehicule.batt_kwh, dcPeakKw: vehicule.dc_kw, voltageClass: vehicule.voltage_class, stationKw: vehicule.station_kw ?? 150 },
+          10, 80,
+        )
+        if (t > 0) tpsParArret = t
+        prefixe = vehicule.label ? `${vehicule.label} · ` : ''
+      }
+      cout_energie = (conso / 100) * distance_km * PRIX_ENERGIE.elec_blended
+      nb_arrets = Math.max(0, Math.ceil(distance_km / autonomie) - 1)
+      temps_recharge = nb_arrets * tpsParArret
+      conso_detail = `${prefixe}${conso} kWh/100km${nb_arrets > 0 ? ` · charge ~${tpsParArret} min/arrêt` : ''} · tarif moyen ${PRIX_ENERGIE.elec_blended.toFixed(2)} €/kWh`
       break
     }
     case 'phev': {
@@ -292,9 +318,9 @@ export function calculerTrajet(route: Route, motorisationId: MotorisationTrajet)
 
 // ─── Calcul pour toutes les motorisations ────────────────────────────────────
 
-export function calculerTousVehicules(route: Route): ResultatTrajet[] {
+export function calculerTousVehicules(route: Route, vehicule?: VehiculeReel): ResultatTrajet[] {
   const motorisations: MotorisationTrajet[] = ['diesel', 'essence', 'elec', 'phev']
-  const resultats = motorisations.map(m => calculerTrajet(route, m))
+  const resultats = motorisations.map(m => calculerTrajet(route, m, vehicule))
   resultats.sort((a, b) => a.cout_total - b.cout_total)
   resultats[0].gagnant = true
   return resultats

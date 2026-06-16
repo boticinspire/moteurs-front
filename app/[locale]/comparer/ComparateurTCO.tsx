@@ -7,6 +7,7 @@ import {
   fmtEur, fmtEurM,
   type Segment, type Profil, type Pays, type Motor, type TcoResult,
 } from '@/lib/tco'
+import SelecteurModele, { consoReelleKwh100 } from '@/components/SelecteurModele'
 
 // ─── Constantes ───────────────────────────────────────────────────────────────
 
@@ -254,6 +255,7 @@ export default function ComparateurTCO() {
   const [charge, setCharge]       = useState<'vide'|'standard'|'pleine'>('standard')
   const [pctHiver, setPctHiver]   = useState(25)
   const [tauxPhev, setTauxPhev]   = useState(50)
+  const [evModele, setEvModele]   = useState<{ label: string; conso: number } | null>(null)
 
   // Quand le profil change → réinitialise le segment au premier disponible
   const segments = useMemo(() => getSegments(profil), [profil])
@@ -279,9 +281,10 @@ export default function ComparateurTCO() {
         charge,
         pct_hiver: pctHiver,
         taux_recharge_phev: tauxPhev,
+        conso_custom: motor === 'elec' && segment === 'voiture' && evModele ? evModele.conso : undefined,
       })
     )
-  }, [segment, profil, pays, kmAn, duree, profilCond, charge, pctHiver, tauxPhev, motors])
+  }, [segment, profil, pays, kmAn, duree, profilCond, charge, pctHiver, tauxPhev, motors, evModele])
 
   const availableResults = results.filter((r) => r.available)
   const maxTotal = Math.max(...availableResults.map((r) => r.total), 1)
@@ -303,6 +306,24 @@ export default function ComparateurTCO() {
           value={profil}
           onChange={handleProfilChange}
         />
+
+        {segment === 'voiture' && (
+          <div style={{ marginTop: 10, marginBottom: 4 }}>
+            <SelecteurModele
+              label="Pré-remplir l'électrique avec un modèle"
+              onSelect={(m) => {
+                const c = consoReelleKwh100(m)
+                setEvModele(c ? { label: `${m.make} ${m.model}`, conso: c } : null)
+              }}
+            />
+            {evModele && (
+              <div style={{ fontSize: 12, marginTop: 6, color: 'var(--color-text-muted)' }}>
+                Électrique calculé avec <strong>{evModele.label}</strong> · {evModele.conso} kWh/100 km (estimé).{' '}
+                <button type="button" onClick={() => setEvModele(null)} style={{ background: 'none', border: 'none', color: 'var(--color-primary)', cursor: 'pointer', textDecoration: 'underline', padding: 0, fontSize: 12 }}>Réinitialiser</button>
+              </div>
+            )}
+          </div>
+        )}
 
         <div className="form-group" style={{ marginTop: 18 }}>
           <label htmlFor="cmp-pays">Pays</label>
