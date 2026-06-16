@@ -145,7 +145,7 @@ const MODELES: Record<Carburant, Modele[]> = {
   HYBRIDE: [
     { label: 'Vidange huile moteur + filtre', intervalleKm: 15000, intervalleMois: 12, parDefaut: true },
     { label: 'Filtre à air', intervalleKm: 30000, intervalleMois: 24, parDefaut: true },
-    { label: 'Liquide de refroidissement batterie', intervalleKm: 0, intervalleMois: 60, parDefaut: true },
+    { label: 'Liquide de refroidissement (circuit batterie/électronique)', intervalleKm: 0, intervalleMois: 60, parDefaut: true },
     { label: 'Plaquettes de frein (contrôle — usure réduite)', intervalleKm: 50000, intervalleMois: 0, parDefaut: true },
     { label: 'Filtre habitacle', intervalleKm: 15000, intervalleMois: 12, parDefaut: true },
     { label: 'Liquide de frein', intervalleKm: 0, intervalleMois: 24, parDefaut: true },
@@ -156,7 +156,7 @@ const MODELES: Record<Carburant, Modele[]> = {
     { label: 'Filtre habitacle', intervalleKm: 15000, intervalleMois: 12, parDefaut: true },
     { label: 'Plaquettes de frein (contrôle — usure réduite)', intervalleKm: 60000, intervalleMois: 0, parDefaut: true },
     { label: 'Liquide de frein', intervalleKm: 0, intervalleMois: 24, parDefaut: true },
-    { label: 'Liquide de refroidissement batterie', intervalleKm: 30000, intervalleMois: 24, parDefaut: true },
+    { label: 'Liquide de refroidissement (circuit batterie/électronique)', intervalleKm: 30000, intervalleMois: 24, parDefaut: true },
     { label: 'Pneus — contrôle / permutation', intervalleKm: 10000, intervalleMois: 0, parDefaut: true },
     { label: 'Batterie 12 V — contrôle', intervalleKm: 0, intervalleMois: 48, parDefaut: true },
     { label: 'Contrôle technique', intervalleKm: 0, intervalleMois: 24, parDefaut: true },
@@ -221,34 +221,45 @@ const todayISO = () => new Date().toISOString().slice(0, 10)
  * Retient l'échéance la plus contraignante (la plus proche / déjà dépassée).
  */
 export function calcEcheance(v: Vehicule, e: Echeance, now = todayISO()): EcheanceCalc {
-  const base = e.dernierKm
-  const baseDate = e.derniereDate
   const kmPerDay = v.kmParAn > 0 ? v.kmParAn / 365 : 0
+  const jamaisFait = e.dernierKm === null && e.derniereDate === null
 
+  // ── Dimension km — uniquement si on connaît un point de départ réel (dernier passage). ──
+  // On ne suppose JAMAIS « fait au km actuel » : sans dernier passage, on ne projette pas.
   let kmRestant: number | null = null
   let prochainKm: number | null = null
   let joursParKm: number | null = null
-
-  if (e.intervalleKm > 0) {
-    const dep = base ?? v.kmActuel
-    prochainKm = dep + e.intervalleKm
+  if (e.intervalleKm > 0 && e.dernierKm !== null) {
+    prochainKm = e.dernierKm + e.intervalleKm
     kmRestant = prochainKm - v.kmActuel
     if (kmPerDay > 0) joursParKm = Math.round(kmRestant / kmPerDay)
   }
 
+  // ── Dimension calendaire ──
+  // Base = dernier passage si connu ; sinon, pour un véhicule récent, la mise en circulation
+  // (on ne s'en sert que si la 1re échéance tombe encore dans le futur → pas d'alarme rétroactive
+  // sur une voiture ancienne dont on ignore l'historique).
   let joursParDate: number | null = null
   let prochaineDate: string | null = null
   if (e.intervalleMois > 0) {
-    const depDate = baseDate ?? v.kmActuelDate
-    prochaineDate = addMois(depDate, e.intervalleMois)
-    joursParDate = joursEntre(now, prochaineDate)
+    if (e.derniereDate) {
+      prochaineDate = addMois(e.derniereDate, e.intervalleMois)
+      joursParDate = joursEntre(now, prochaineDate)
+    } else if (v.miseEnService) {
+      const firstDue = addMois(v.miseEnService, e.intervalleMois)
+      if (firstDue >= now) {            // véhicule plus jeune qu'un cycle → estimation fiable
+        prochaineDate = firstDue
+        joursParDate = joursEntre(now, firstDue)
+      }
+      // véhicule plus ancien : historique inconnu → on laisse « à renseigner »
+    }
   }
 
-  // jours restant effectif = min des deux dimensions disponibles
+  // jours restant effectif = min des dimensions disponibles
   const candidats = [joursParKm, joursParDate].filter((x): x is number => x !== null)
   const joursRestant = candidats.length ? Math.min(...candidats) : null
 
-  // date projetée la plus proche
+  // date projetée la plus proche (entre dimension km et dimension date)
   let dateProj = prochaineDate
   if (joursParKm !== null && (joursParDate === null || joursParKm < joursParDate)) {
     const d = new Date(now + 'T00:00:00')
@@ -256,10 +267,9 @@ export function calcEcheance(v: Vehicule, e: Echeance, now = todayISO()): Echean
     dateProj = d.toISOString().slice(0, 10)
   }
 
-  // statut
-  let statut: StatutEcheance = 'inconnu'
-  const jamaisFait = base === null && baseDate === null
-  if (joursRestant === null && kmRestant === null) {
+  // statut — aucune dimension projetable → « à renseigner » (jamais d'échéance fabriquée)
+  let statut: StatutEcheance
+  if (kmRestant === null && joursRestant === null) {
     statut = 'inconnu'
   } else {
     const retardKm = kmRestant !== null && kmRestant <= 0
@@ -270,15 +280,11 @@ export function calcEcheance(v: Vehicule, e: Echeance, now = todayISO()): Echean
     else if (bientotKm || bientotJours) statut = 'bientot'
     else statut = 'a_jour'
   }
-  if (jamaisFait && statut === 'a_jour') {
-    // jamais enregistré : on n'alarme pas, mais on signale « à renseigner »
-    statut = 'inconnu'
-  }
 
   // détail lisible
   let detail = ''
   if (statut === 'inconnu') {
-    detail = jamaisFait ? 'Jamais renseigné' : 'Données insuffisantes'
+    detail = ''   // le badge affiche déjà « À renseigner » — pas de redondance
   } else if (kmRestant !== null && (joursParDate === null || (joursParKm !== null && joursParKm <= joursParDate))) {
     detail = kmRestant <= 0 ? `Dépassé de ${Math.abs(kmRestant).toLocaleString('fr-FR')} km` : `Dans ${kmRestant.toLocaleString('fr-FR')} km`
   } else if (joursRestant !== null) {

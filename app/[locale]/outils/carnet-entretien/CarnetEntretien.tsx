@@ -390,6 +390,7 @@ function VehiculeDashboard({ v, onChange, onDelete }: {
               {c.echeance.intervalleKm > 0 && c.echeance.intervalleMois > 0 && ' · '}
               {c.echeance.intervalleMois > 0 && `${c.echeance.intervalleMois} mois`}
               {c.prochaineDate && ` · échéance ~${new Date(c.prochaineDate).toLocaleDateString('fr-FR')}`}
+              {c.statut === 'inconnu' && ' · dernier passage à renseigner'}
             </div>
           </div>
           <div className="act">
@@ -461,8 +462,10 @@ function VehiculeDashboard({ v, onChange, onDelete }: {
       </div>
 
       <p className="note" style={{ marginTop: 22 }}>
-        Les intervalles d’entretien proposés sont indicatifs (génériques par type de carburant) : reportez-vous au
-        carnet constructeur de votre véhicule, qui prévaut. Autopulse vous aide à ne rien oublier — il ne remplace pas un professionnel.
+        Une échéance reste « à renseigner » tant qu’Autopulse n’a pas de point de départ : marquez « Fait ✓ » lorsque
+        vous réalisez l’opération, ou indiquez la date de mise en circulation (les échéances calendaires d’un véhicule
+        récent sont alors estimées). Les intervalles proposés sont indicatifs : le carnet constructeur prévaut. Autopulse
+        vous aide à ne rien oublier — il ne remplace pas un professionnel.
       </p>
 
       {showEch && <AddEcheanceModal onClose={() => setShowEch(false)} onAdd={addEch} />}

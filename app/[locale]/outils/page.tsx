@@ -110,7 +110,7 @@ export default async function OutilsPage({
       icon: '⚖️',
       titre: t('amende_titre'),
       desc: t('amende_desc'),
-      tags: ['FR', 'BE', 'CH', 'CA', 'DE', 'ES', 'IT', 'NL'],
+      tags: ['Excès vitesse', 'Stationnement', 'Alcool · ZFE', '10 pays'],
       cta: t('amende_cta'),
       badge: t('badge_new'),
     },
