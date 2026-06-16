@@ -23,8 +23,8 @@ const CSS = `
 .apm h2 .g{color:#ef6c1a}
 .apm .lead{max-width:620px;font-size:1.06rem;line-height:1.6;color:#bdc6d8;margin:0 0 26px}
 .apm .stats{display:flex;gap:30px;flex-wrap:wrap;margin:0 0 30px}
-.apm .stat .n{font-size:1.5rem;font-weight:800;color:#fff}
-.apm .stat .l{font-size:.78rem;color:#8b97ad;margin-top:2px}
+.apm .st .n{font-size:1.5rem;font-weight:800;color:#fff}
+.apm .st .l{font-size:.78rem;color:#8b97ad;margin-top:2px}
 .apm .cta{display:flex;gap:12px;flex-wrap:wrap;align-items:center}
 .apm .btnp{display:inline-flex;align-items:center;gap:8px;background:#ef6c1a;color:#fff;font-weight:800;font-size:.95rem;
  border:none;border-radius:12px;padding:13px 22px;text-decoration:none;cursor:pointer;transition:filter .15s}
@@ -82,9 +82,9 @@ export default function AutopulseManifesto() {
         </p>
 
         <div className="stats">
-          <div className="stat"><div className="n">13 Mds €</div><div className="l">marché européen de la voiture connectée</div></div>
-          <div className="stat"><div className="n">+8,3 %/an</div><div className="l">croissance annuelle</div></div>
-          <div className="stat"><div className="n">4 carburants</div><div className="l">thermique · hybride · électrique · gaz</div></div>
+          <div className="st"><div className="n">13 Mds €</div><div className="l">marché européen de la voiture connectée</div></div>
+          <div className="st"><div className="n">+8,3 %/an</div><div className="l">croissance annuelle</div></div>
+          <div className="st"><div className="n">4 carburants</div><div className="l">thermique · hybride · électrique · gaz</div></div>
         </div>
 
         <div className="cta">
