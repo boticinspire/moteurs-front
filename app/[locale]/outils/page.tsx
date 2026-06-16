@@ -34,6 +34,15 @@ export default async function OutilsPage({
 
   const OUTILS_PHARES = [
     {
+      href: '/outils/catalogue-electriques',
+      icon: '⚡',
+      titre: 'Comparateur de voitures électriques',
+      desc: 'Toutes les électriques face à face : autonomie WLTP et réelle, batterie, consommation, charge rapide et temps de charge. Données ouvertes Open EV Data.',
+      tags: ['Toutes marques', 'Autonomie', 'Charge rapide', 'Open data'],
+      cta: 'Comparer les électriques',
+      badge: t('badge_new'),
+    },
+    {
       href: '/outils/carnet-entretien',
       icon: '🩺',
       titre: 'Le carnet d’entretien intelligent',

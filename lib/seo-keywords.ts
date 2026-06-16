@@ -31,6 +31,14 @@ export const SEO_MAP: Record<string, SeoMeta> = {
     volume: 12000,
     intent: 'Informationnelle',
   },
+  '/outils/catalogue-electriques': {
+    title: 'Catalogue voitures électriques 2026 — autonomie, batterie, charge | Moteurs.com',
+    description: 'Comparez les voitures électriques : autonomie WLTP et réelle, capacité batterie, consommation, puissance de charge rapide et temps de charge. Données ouvertes Open EV Data, toutes marques.',
+    keywords: ['comparateur voiture électrique', 'autonomie voiture électrique', 'catalogue voiture électrique', 'meilleure voiture électrique autonomie'],
+    primaryKeyword: 'comparateur voiture électrique autonomie',
+    volume: 12000,
+    intent: 'Commerciale',
+  },
   '/outils/carnet-entretien': {
     title: 'Carnet d’entretien intelligent — toutes voitures, tous carburants | Moteurs.com',
     description: 'Suivez l’entretien de votre voiture (essence, diesel, hybride, électrique) : échéances au km et à la date, rappels vidange, freins, pneus, contrôle technique et suivi des coûts. Gratuit, sans matériel.',
