@@ -3,6 +3,7 @@ import { useTranslations } from 'next-intl'
 import { getTranslations, setRequestLocale } from 'next-intl/server'
 import ComparerTabs, { type ComparerMode } from './ComparerTabs'
 import FaqAccordion from '@/components/FaqAccordion'
+import ToolFooterCTA from '@/components/ToolFooterCTA'
 import { routing } from '@/i18n/routing'
 import { buildAlternates } from '@/lib/seo-utils'
 
@@ -64,6 +65,7 @@ function ComparerContent({ mode }: { mode: ComparerMode }) {
         <div className="container">
           <ComparerTabs initialMode={mode} />
           <FaqAccordion items={faq} />
+          <ToolFooterCTA />
         </div>
       </section>
     </>
