@@ -34,7 +34,7 @@ const MODULES: Module[] = [
     id: 'couts', icon: '💰', label: 'Assistance Coûts',
     desc: 'TCO · Leasing · Mensuel',
     detail: 'Votre voiture vous coûte combien par mois, par km ? Économie potentielle si vous changez.',
-    href: '/assistance/couts', disponible: true, couleur: '#f59e0b',
+    href: '/comparer?mode=mensuel', disponible: true, couleur: '#f59e0b',
   },
   {
     id: 'recharge', icon: '⚡', label: 'Assistance Recharge',

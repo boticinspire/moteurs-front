@@ -79,7 +79,7 @@ export default async function OutilsPage({
       badge: t('badge_new'),
     },
     {
-      href: '/assistance/couts',
+      href: '/comparer?mode=mensuel',
       icon: '💰',
       titre: t('couts_titre'),
       desc: t('couts_desc'),
@@ -97,7 +97,7 @@ export default async function OutilsPage({
       badge: null,
     },
     {
-      href: '/simulateur',
+      href: '/comparer',
       icon: '🧮',
       titre: t('simulateur_titre'),
       desc: t('simulateur_desc'),

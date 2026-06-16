@@ -1,0 +1,14 @@
+{
+  "host": "moteurs.com",
+  "key": "83dfd5cc3e064f91a86c12050835e52e",
+  "keyLocation": "https://moteurs.com/83dfd5cc3e064f91a86c12050835e52e.txt",
+  "urlList": [
+    "https://moteurs.com/comparer",
+    "https://moteurs.com/outils/catalogue-electriques",
+    "https://moteurs.com/simulateur",
+    "https://moteurs.com/assistance/couts",
+    "https://moteurs.com/outils/tco-particulier",
+    "https://moteurs.com/outils/comparer-modeles",
+    "https://moteurs.com/sitemap.xml"
+  ]
+}

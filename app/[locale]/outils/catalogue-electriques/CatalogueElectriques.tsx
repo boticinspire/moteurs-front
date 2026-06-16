@@ -4,17 +4,14 @@ import { useMemo, useState } from 'react'
 import { Link } from '@/i18n/navigation'
 import {
   type EV, type Saison,
-  VEHICLES, brands, bodies,
   autonomieReelle, consoReelle, tempsCharge1080,
   DRIVE_LABEL, fmtKm, fmtKwh, fmtKw, fmtEur, nomComplet,
-} from '@/lib/open-ev-data'
-
-type SortKey = 'autonomie' | 'batterie' | 'conso' | 'prix' | 'charge'
+} from '@/lib/vehicules'
 
 const CSS = `
 .evc{--bg:var(--color-bg);--surface:var(--color-bg-card);--surface-2:var(--color-bg-alt);
  --text:var(--color-text);--soft:var(--color-text-soft);--faint:var(--color-text-muted);
- --line:var(--color-border);--accent:var(--color-primary);--green:#10b981;
+ --line:var(--color-border);--accent:var(--color-primary);--green:#10b981;--green-s:rgba(16,185,129,.14);--stripe:rgba(120,120,140,.06);
  --shadow:0 1px 3px rgba(16,24,43,.06),0 12px 30px -16px rgba(16,24,43,.18);
  color:var(--text);font-size:16px;line-height:1.5}
 html[data-theme="dark"] .evc{--shadow:0 1px 3px rgba(0,0,0,.4),0 16px 36px -16px rgba(0,0,0,.55)}
@@ -28,7 +25,6 @@ html[data-theme="dark"] .evc{--shadow:0 1px 3px rgba(0,0,0,.4),0 16px 36px -16px
 .evc .panel{background:var(--surface);border:1.5px solid var(--line);border-radius:14px;padding:16px;box-shadow:var(--shadow);margin-bottom:18px}
 .evc .filters{display:grid;gap:12px;grid-template-columns:1fr}
 @media(min-width:640px){.evc .filters{grid-template-columns:2fr 1fr 1fr}}
-@media(min-width:980px){.evc .filters{grid-template-columns:2fr 1fr 1fr 1fr 1fr}}
 .evc label{display:block;font-size:.72rem;font-weight:700;color:var(--soft);margin:0 0 4px;text-transform:uppercase;letter-spacing:.03em}
 .evc input,.evc select{width:100%;font:inherit;font-size:.9rem;color:var(--text);background:var(--bg);
  border:1.5px solid var(--line);border-radius:9px;padding:9px 11px;outline:none}
@@ -36,84 +32,80 @@ html[data-theme="dark"] .evc{--shadow:0 1px 3px rgba(0,0,0,.4),0 16px 36px -16px
 .evc .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
 .evc .between{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
 .evc .count{font-size:.85rem;color:var(--faint);font-weight:600}
-.evc .grid{display:grid;gap:14px;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));margin-top:6px}
-.evc .card{background:var(--surface);border:1.5px solid var(--line);border-radius:14px;padding:16px;display:flex;flex-direction:column;gap:10px;transition:border-color .15s;position:relative}
-.evc .card.sel{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent)}
-.evc .card h3{font-size:1rem;font-weight:800;margin:0;line-height:1.25}
-.evc .yr{font-size:.76rem;color:var(--faint);font-weight:600}
-.evc .specs{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:2px}
-.evc .sp{background:var(--surface-2);border:1px solid var(--line);border-radius:9px;padding:7px 9px}
-.evc .sp .k{font-size:.66rem;color:var(--faint);font-weight:700;text-transform:uppercase;letter-spacing:.03em}
-.evc .sp .v{font-size:.92rem;font-weight:800;margin-top:1px}
-.evc .tags{display:flex;gap:5px;flex-wrap:wrap}
-.evc .tag{font-size:.68rem;font-weight:700;padding:2px 7px;border-radius:5px;background:rgba(239,108,26,.1);color:var(--accent);border:1px solid var(--line)}
-.evc .cmpbtn{margin-top:auto;display:flex;align-items:center;gap:7px;font-size:.84rem;font-weight:700;cursor:pointer;color:var(--soft)}
-.evc .cmpbtn input{width:auto}
+.evc .results{margin-top:6px;border:1.5px solid var(--line);border-radius:12px;overflow:hidden}
+.evc .resrow{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:11px 14px;border-bottom:1px solid var(--line)}
+.evc .resrow:last-child{border-bottom:none}
+.evc .resrow:nth-child(odd){background:var(--stripe)}
+.evc .resrow .nm{font-weight:700;font-size:.92rem}
+.evc .resrow .mt{font-size:.76rem;color:var(--faint);margin-top:1px}
+.evc .resrow .mt b{color:var(--soft);font-weight:700}
+.evc .hint{text-align:center;color:var(--soft);padding:26px 14px;font-size:.92rem}
+.evc .chips{display:flex;gap:8px;flex-wrap:wrap;margin:2px 0 4px}
+.evc .selchip{display:inline-flex;align-items:center;gap:7px;background:var(--surface);border:1.5px solid var(--accent);
+ border-radius:999px;padding:6px 8px 6px 13px;font-size:.85rem;font-weight:700}
 .evc .btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;font:inherit;font-weight:700;font-size:.86rem;border:none;border-radius:10px;padding:9px 15px;cursor:pointer}
 .evc .btn-p{background:var(--accent);color:#fff}
 .evc .btn-o{background:transparent;color:var(--accent);border:1.5px solid var(--line)}
 .evc .btn-sm{padding:6px 11px;font-size:.8rem}
-.evc .dock{position:sticky;bottom:0;z-index:30;background:var(--surface);border:1.5px solid var(--accent);border-radius:14px;
- padding:12px 16px;box-shadow:var(--shadow);margin-top:18px;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
-.evc .cmp-table{overflow-x:auto;margin-top:10px}
-.evc table{width:100%;border-collapse:collapse;font-size:.86rem;min-width:520px}
-.evc th,.evc td{text-align:left;padding:10px 12px;border-bottom:1px solid var(--line)}
-.evc thead th{font-size:.7rem;text-transform:uppercase;letter-spacing:.03em;color:var(--faint);font-weight:800;vertical-align:bottom}
-.evc tbody th{font-size:.78rem;color:var(--soft);font-weight:700;white-space:nowrap}
-.evc td.best{color:var(--green);font-weight:800}
+.evc .btn:disabled{opacity:.45;cursor:not-allowed}
+.evc .cmp{margin-top:14px;border:1.5px solid var(--line);border-radius:14px;overflow:hidden}
+.evc .cmp-scroll{overflow-x:auto}
+.evc .cmp table{width:100%;border-collapse:separate;border-spacing:0;font-size:.9rem;min-width:560px;background:transparent}
+.evc .cmp th,.evc .cmp td{text-align:left;padding:13px 16px;border-bottom:1px solid var(--line);background:transparent;vertical-align:middle;font-size:.9rem;color:var(--text)}
+.evc .cmp thead th{position:sticky;top:0;z-index:2;background:var(--surface-2);border-bottom:1.5px solid var(--line);font-weight:800}
+.evc .cmp thead th:first-child{font-size:.68rem;text-transform:uppercase;letter-spacing:.05em;color:var(--faint)}
+.evc .vh{display:flex;flex-direction:column;gap:1px}
+.evc .vh .nm{font-size:.95rem;font-weight:800;line-height:1.2}
+.evc .vh .vr{font-size:.74rem;font-weight:600;color:var(--faint);display:flex;align-items:center;gap:6px}
+.evc .cmp tbody tr:nth-child(odd) td{background:var(--stripe)}
+.evc .cmp tbody th{font-size:.8rem;color:var(--soft);font-weight:700;white-space:nowrap;position:sticky;left:0;z-index:1;background:var(--surface);border-right:1px solid var(--line)}
+.evc .cmp tbody td.best{color:var(--green);font-weight:800;background:var(--green-s)!important}
+.evc .cmp tbody tr:last-child td,.evc .cmp tbody tr:last-child th{border-bottom:none}
 .evc .x{background:none;border:none;color:var(--faint);cursor:pointer;font-size:1rem;padding:2px 4px}
 .evc .x:hover{color:#ef4444}
 .evc .src{font-size:.78rem;color:var(--faint);margin-top:24px;text-align:center;line-height:1.6}
 .evc .src a{color:var(--accent)}
 .evc .seed{background:rgba(245,158,11,.12);border:1px solid rgba(245,158,11,.35);color:var(--text);
  border-radius:10px;padding:10px 14px;font-size:.84rem;margin-bottom:16px}
-.evc .empty{text-align:center;padding:40px;color:var(--soft)}
 `
 
 const MAX_CMP = 4
 
-export default function CatalogueElectriques({ source, version, count }: {
-  source: 'seed' | 'open-ev-data'; version: string | null; count: number
+export default function CatalogueElectriques({ vehicles, isSeed, version, count }: {
+  vehicles: EV[]; isSeed: boolean; version: string | null; count: number
 }) {
   const [q, setQ] = useState('')
   const [marque, setMarque] = useState('')
-  const [carross, setCarross] = useState('')
-  const [autoMin, setAutoMin] = useState(0)
-  const [chargeMin, setChargeMin] = useState(0)
-  const [v2lOnly, setV2lOnly] = useState(false)
-  const [sort, setSort] = useState<SortKey>('autonomie')
   const [saison, setSaison] = useState<Saison>('mixte')
   const [sel, setSel] = useState<string[]>([])
-  const [showCmp, setShowCmp] = useState(false)
 
-  const lesMarques = useMemo(() => brands(), [])
-  const lesCarross = useMemo(() => bodies(), [])
+  const lesMarques = useMemo(
+    () => Array.from(new Set(vehicles.map((v) => v.brand))).sort((a, b) => a.localeCompare(b, 'fr')),
+    [vehicles]
+  )
 
-  const filtres = useMemo(() => {
+  // On n'affiche AUCUNE liste tant que l'utilisateur n'a pas cherché ou choisi une marque.
+  const matches = useMemo(() => {
     const needle = q.trim().toLowerCase()
-    let list = VEHICLES.filter((v) => {
-      if (needle && !nomComplet(v).toLowerCase().includes(needle)) return false
-      if (marque && v.brand !== marque) return false
-      if (carross && v.body !== carross) return false
-      if (autoMin && (v.range_km ?? 0) < autoMin) return false
-      if (chargeMin && (v.dc_kw ?? 0) < chargeMin) return false
-      if (v2lOnly && !v.v2l) return false
-      return true
-    })
-    const by: Record<SortKey, (a: EV, b: EV) => number> = {
-      autonomie: (a, b) => (b.range_km ?? 0) - (a.range_km ?? 0),
-      batterie: (a, b) => (b.battery_kwh ?? 0) - (a.battery_kwh ?? 0),
-      conso: (a, b) => (consoReelle(a) ?? 1e9) - (consoReelle(b) ?? 1e9),
-      prix: (a, b) => (a.price_eur ?? 1e12) - (b.price_eur ?? 1e12),
-      charge: (a, b) => (b.dc_kw ?? 0) - (a.dc_kw ?? 0),
-    }
-    return [...list].sort(by[sort])
-  }, [q, marque, carross, autoMin, chargeMin, v2lOnly, sort])
+    if (!needle && !marque) return []
+    return vehicles
+      .filter((v) => {
+        if (marque && v.brand !== marque) return false
+        if (needle && !nomComplet(v).toLowerCase().includes(needle)) return false
+        return true
+      })
+      .sort((a, b) => (b.range_km ?? 0) - (a.range_km ?? 0))
+      .slice(0, 24)
+  }, [q, marque, vehicles])
 
-  function toggleSel(id: string) {
-    setSel((s) => s.includes(id) ? s.filter((x) => x !== id) : (s.length >= MAX_CMP ? s : [...s, id]))
+  const selVehicles = sel.map((id) => vehicles.find((v) => v.id === id)).filter(Boolean) as EV[]
+  const full = sel.length >= MAX_CMP
+  function add(id: string) {
+    setSel((s) => (s.includes(id) || s.length >= MAX_CMP ? s : [...s, id]))
   }
-  const selVehicles = sel.map((id) => VEHICLES.find((v) => v.id === id)).filter(Boolean) as EV[]
+  function remove(id: string) {
+    setSel((s) => s.filter((x) => x !== id))
+  }
 
   return (
     <div className="evc">
@@ -121,122 +113,102 @@ export default function CatalogueElectriques({ source, version, count }: {
 
       <header className="hero">
         <div className="chip">⚡ Autopulse · catalogue électriques</div>
-        <h1>Comparez toutes les voitures électriques</h1>
+        <h1>Comparez les voitures électriques</h1>
         <p className="lead">
-          Batterie, autonomie WLTP, autonomie réelle estimée, consommation et charge rapide.
-          {' '}{count.toLocaleString('fr-FR')} versions — données ouvertes, sans marque imposée.
+          Cherchez vos modèles, ajoutez-en jusqu’à {MAX_CMP}, et comparez batterie, autonomie réelle,
+          consommation et charge rapide. Plus de {count.toLocaleString('fr-FR')} versions — sans marque imposée.
         </p>
       </header>
 
       <div className="wrap">
-        {source === 'seed' && (
+        {isSeed && (
           <div className="seed">
-            ⚠️ <strong>Jeu de démarrage</strong> : ce catalogue affiche un échantillon de véhicules avec des valeurs WLTP indicatives.
-            Lancez <code>node scripts/refresh-open-ev-data.mjs</code> pour charger le dataset officiel Open EV Data complet et sourcé.
+            ⚠️ <strong>Jeu de démarrage</strong> : catalogue partiel (valeurs WLTP indicatives). Chargez le dataset
+            complet avec <code>node scripts/refresh-open-ev-data.mjs</code> puis{' '}
+            <code>node scripts/ingest-vehicules-supabase.mjs</code>.
           </div>
         )}
 
-        {/* Filtres */}
+        {/* Recherche / sélection */}
         <div className="panel">
           <div className="filters">
-            <div><label>Recherche</label><input value={q} onChange={(e) => setQ(e.target.value)} placeholder="Marque ou modèle…" /></div>
-            <div><label>Marque</label>
+            <div>
+              <label>Rechercher un modèle</label>
+              <input value={q} onChange={(e) => setQ(e.target.value)} placeholder="Ex. Tesla Model 3, Renault 5…" />
+            </div>
+            <div>
+              <label>Marque</label>
               <select value={marque} onChange={(e) => setMarque(e.target.value)}>
                 <option value="">Toutes</option>
-                {lesMarques.map((m) => <option key={m} value={m}>{m}</option>)}
+                {lesMarques.map((m) => (
+                  <option key={m} value={m}>{m}</option>
+                ))}
               </select>
             </div>
-            <div><label>Carrosserie</label>
-              <select value={carross} onChange={(e) => setCarross(e.target.value)}>
-                <option value="">Toutes</option>
-                {lesCarross.map((b) => <option key={b} value={b}>{b}</option>)}
-              </select>
-            </div>
-            <div><label>Autonomie min.</label>
-              <select value={autoMin} onChange={(e) => setAutoMin(Number(e.target.value))}>
-                {[0, 300, 400, 500, 600].map((n) => <option key={n} value={n}>{n === 0 ? 'Indifférent' : `${n}+ km`}</option>)}
-              </select>
-            </div>
-            <div><label>Charge rapide min.</label>
-              <select value={chargeMin} onChange={(e) => setChargeMin(Number(e.target.value))}>
-                {[0, 100, 150, 200].map((n) => <option key={n} value={n}>{n === 0 ? 'Indifférent' : `${n}+ kW`}</option>)}
-              </select>
-            </div>
-          </div>
-          <div className="between" style={{ marginTop: 12 }}>
-            <div className="row">
-              <label style={{ margin: 0, textTransform: 'none', fontSize: '.82rem' }}>
-                <input type="checkbox" checked={v2lOnly} onChange={(e) => setV2lOnly(e.target.checked)} style={{ width: 'auto', marginRight: 6 }} />
-                V2L (alimenter des appareils)
-              </label>
-            </div>
-            <div className="row">
-              <span style={{ fontSize: '.76rem', color: 'var(--color-text-muted)', fontWeight: 700 }}>Trier&nbsp;:</span>
-              <select value={sort} onChange={(e) => setSort(e.target.value as SortKey)} style={{ width: 'auto' }}>
-                <option value="autonomie">Autonomie ↓</option>
-                <option value="batterie">Batterie ↓</option>
-                <option value="charge">Charge rapide ↓</option>
-                <option value="conso">Consommation ↑</option>
-                <option value="prix">Prix ↑</option>
-              </select>
-              <select value={saison} onChange={(e) => setSaison(e.target.value as Saison)} style={{ width: 'auto' }} title="Saison pour l'autonomie réelle estimée">
+            <div>
+              <label>Autonomie réelle</label>
+              <select value={saison} onChange={(e) => setSaison(e.target.value as Saison)} title="Saison de référence pour l'autonomie réelle">
                 <option value="ete">Été</option>
                 <option value="mixte">Mixte</option>
                 <option value="hiver">Hiver</option>
               </select>
             </div>
           </div>
+
+          {(q.trim() || marque) ? (
+            matches.length === 0 ? (
+              <div className="hint">Aucun modèle ne correspond. Essayez un autre nom ou une autre marque.</div>
+            ) : (
+              <div className="results">
+                {matches.map((v) => {
+                  const on = sel.includes(v.id)
+                  return (
+                    <div key={v.id} className="resrow">
+                      <div>
+                        <div className="nm">{nomComplet(v)}</div>
+                        <div className="mt">
+                          {[v.year, fmtKwh(v.battery_kwh), `${fmtKm(v.range_km)} WLTP`, v.dc_kw ? `${v.dc_kw} kW DC` : null]
+                            .filter(Boolean)
+                            .join(' · ')}
+                        </div>
+                      </div>
+                      <button
+                        className={'btn btn-sm ' + (on ? 'btn-o' : 'btn-p')}
+                        disabled={!on && full}
+                        onClick={() => (on ? remove(v.id) : add(v.id))}
+                      >
+                        {on ? 'Retiré ✓' : full ? 'Max atteint' : '+ Ajouter'}
+                      </button>
+                    </div>
+                  )
+                })}
+              </div>
+            )
+          ) : (
+            <div className="hint">Commencez à taper le nom d’un modèle pour l’ajouter à la comparaison.</div>
+          )}
         </div>
 
-        <div className="between">
-          <span className="count">{filtres.length} véhicule{filtres.length > 1 ? 's' : ''}</span>
-          {sel.length > 0 && <button className="btn btn-o btn-sm" onClick={() => setShowCmp(true)}>Comparer ({sel.length})</button>}
-        </div>
-
-        {filtres.length === 0 ? (
-          <div className="panel empty">Aucun véhicule ne correspond. Élargissez les filtres.</div>
-        ) : (
-          <div className="grid">
-            {filtres.map((v) => {
-              const reel = autonomieReelle(v, saison)
-              const t = tempsCharge1080(v)
-              const on = sel.includes(v.id)
-              return (
-                <div key={v.id} className={'card' + (on ? ' sel' : '')}>
-                  <div>
-                    <h3>{v.brand} {v.model}</h3>
-                    <div className="yr">{[v.variant, v.year, v.body && v.drivetrain ? `${v.body} · ${DRIVE_LABEL[v.drivetrain] ?? v.drivetrain}` : v.body].filter(Boolean).join(' · ')}</div>
-                  </div>
-                  <div className="specs">
-                    <div className="sp"><div className="k">Batterie</div><div className="v">{fmtKwh(v.battery_kwh)}</div></div>
-                    <div className="sp"><div className="k">Autonomie WLTP</div><div className="v">{fmtKm(v.range_km)}</div></div>
-                    <div className="sp"><div className="k">Réelle ({saison})</div><div className="v">{fmtKm(reel)}</div></div>
-                    <div className="sp"><div className="k">Charge {t ? `(10→80%)` : 'rapide'}</div><div className="v">{t ? `${t} min` : fmtKw(v.dc_kw)}</div></div>
-                  </div>
-                  <div className="tags">
-                    {v.dc_kw != null && <span className="tag">DC {v.dc_kw} kW</span>}
-                    {v.v2l && <span className="tag">V2L</span>}
-                    {v.price_eur != null && <span className="tag">dès {fmtEur(v.price_eur)}</span>}
-                  </div>
-                  <label className="cmpbtn">
-                    <input type="checkbox" checked={on} onChange={() => toggleSel(v.id)} disabled={!on && sel.length >= MAX_CMP} />
-                    {on ? 'Sélectionné' : 'Comparer'}
-                  </label>
-                </div>
-              )
-            })}
-          </div>
-        )}
-
-        {/* Dock comparaison */}
-        {sel.length > 0 && (
-          <div className="dock">
-            <span style={{ fontWeight: 700, fontSize: '.9rem' }}>{sel.length} véhicule{sel.length > 1 ? 's' : ''} à comparer{sel.length >= MAX_CMP ? ` (max ${MAX_CMP})` : ''}</span>
-            <div className="row">
-              <button className="btn btn-o btn-sm" onClick={() => setSel([])}>Vider</button>
-              <button className="btn btn-p btn-sm" onClick={() => setShowCmp(true)}>Comparer →</button>
+        {/* Sélection courante */}
+        {selVehicles.length > 0 && (
+          <>
+            <div className="between">
+              <span className="count">
+                {selVehicles.length} véhicule{selVehicles.length > 1 ? 's' : ''} sélectionné{selVehicles.length > 1 ? 's' : ''}
+                {full ? ` (max ${MAX_CMP})` : ''}
+              </span>
+              <button className="btn btn-o btn-sm" onClick={() => setSel([])}>Tout retirer</button>
             </div>
-          </div>
+            <div className="chips">
+              {selVehicles.map((v) => (
+                <span key={v.id} className="selchip">
+                  {nomComplet(v)}
+                  <button className="x" onClick={() => remove(v.id)} aria-label="Retirer">✕</button>
+                </span>
+              ))}
+            </div>
+            <CmpTable vehicles={selVehicles} saison={saison} onRemove={remove} />
+          </>
         )}
 
         <p className="src">
@@ -245,16 +217,12 @@ export default function CatalogueElectriques({ source, version, count }: {
           {' '}<Link href="/outils/carnet-entretien" style={{ color: 'var(--color-primary)' }}>Suivre l’entretien de votre véhicule →</Link>
         </p>
       </div>
-
-      {showCmp && selVehicles.length > 0 && (
-        <ComparaisonModal vehicles={selVehicles} saison={saison} onClose={() => setShowCmp(false)} onRemove={toggleSel} />
-      )}
     </div>
   )
 }
 
-function ComparaisonModal({ vehicles, saison, onClose, onRemove }: {
-  vehicles: EV[]; saison: Saison; onClose: () => void; onRemove: (id: string) => void
+function CmpTable({ vehicles, saison, onRemove }: {
+  vehicles: EV[]; saison: Saison; onRemove: (id: string) => void
 }) {
   const max = (xs: (number | null | undefined)[]) => Math.max(...xs.map((x) => x ?? -Infinity))
   const min = (xs: (number | null | undefined)[]) => Math.min(...xs.map((x) => x ?? Infinity))
@@ -267,40 +235,39 @@ function ComparaisonModal({ vehicles, saison, onClose, onRemove }: {
   const prix = vehicles.map((v) => v.price_eur ?? null)
 
   return (
-    <div className="evc" onClick={onClose} style={{ position: 'fixed', inset: 0, background: 'rgba(2,6,20,.55)', zIndex: 60, overflow: 'auto', padding: '30px 14px' }}>
-      <style>{CSS}</style>
-      <div onClick={(e) => e.stopPropagation()} style={{ maxWidth: 860, margin: '0 auto', background: 'var(--color-bg-card)', border: '1.5px solid var(--color-border)', borderRadius: 16, padding: 20 }}>
-        <div className="between" style={{ marginBottom: 8 }}>
-          <h2 style={{ margin: 0, fontSize: '1.1rem', fontWeight: 800 }}>Comparaison</h2>
-          <button className="x" onClick={onClose} aria-label="Fermer" style={{ fontSize: '1.3rem' }}>✕</button>
-        </div>
-        <div className="cmp-table">
-          <table>
-            <thead>
-              <tr>
-                <th>Critère</th>
-                {vehicles.map((v) => (
-                  <th key={v.id}>{v.brand} {v.model}<br /><span style={{ fontWeight: 600, color: 'var(--color-text-muted)' }}>{v.variant ?? ''}</span>
-                    <button className="x" onClick={() => onRemove(v.id)} title="Retirer">✕</button>
-                  </th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              <tr><th>Batterie</th>{vehicles.map((v, i) => <td key={v.id} className={batt[i] === max(batt) ? 'best' : ''}>{fmtKwh(v.battery_kwh)}</td>)}</tr>
-              <tr><th>Autonomie WLTP</th>{vehicles.map((v, i) => <td key={v.id} className={wltp[i] === max(wltp) ? 'best' : ''}>{fmtKm(v.range_km)}</td>)}</tr>
-              <tr><th>Autonomie réelle ({saison})</th>{vehicles.map((v, i) => <td key={v.id} className={reel[i] === max(reel) ? 'best' : ''}>{fmtKm(reel[i])}</td>)}</tr>
-              <tr><th>Conso réelle estimée</th>{vehicles.map((v, i) => <td key={v.id} className={conso[i] === min(conso) ? 'best' : ''}>{conso[i] != null ? `${conso[i]} Wh/km` : '—'}</td>)}</tr>
-              <tr><th>Charge rapide (pic)</th>{vehicles.map((v, i) => <td key={v.id} className={dc[i] === max(dc) ? 'best' : ''}>{fmtKw(v.dc_kw)}</td>)}</tr>
-              <tr><th>Charge 10→80 %</th>{vehicles.map((v, i) => <td key={v.id} className={tps[i] === min(tps) ? 'best' : ''}>{tps[i] != null ? `${tps[i]} min` : '—'}</td>)}</tr>
-              <tr><th>Charge AC</th>{vehicles.map((v) => <td key={v.id}>{fmtKw(v.ac_kw)}</td>)}</tr>
-              <tr><th>Transmission</th>{vehicles.map((v) => <td key={v.id}>{v.drivetrain ? (DRIVE_LABEL[v.drivetrain] ?? v.drivetrain) : '—'}</td>)}</tr>
-              <tr><th>Places</th>{vehicles.map((v) => <td key={v.id}>{v.seats ?? '—'}</td>)}</tr>
-              <tr><th>V2L</th>{vehicles.map((v) => <td key={v.id}>{v.v2l ? 'Oui' : '—'}</td>)}</tr>
-              <tr><th>Prix indicatif</th>{vehicles.map((v, i) => <td key={v.id} className={prix[i] != null && prix[i] === min(prix) ? 'best' : ''}>{fmtEur(v.price_eur)}</td>)}</tr>
-            </tbody>
-          </table>
-        </div>
+    <div className="cmp">
+      <div className="cmp-scroll">
+        <table>
+          <thead>
+            <tr>
+              <th>Critère</th>
+              {vehicles.map((v) => (
+                <th key={v.id}>
+                  <div className="vh">
+                    <span className="nm">{v.brand} {v.model}</span>
+                    <span className="vr">
+                      {[v.variant, v.year].filter(Boolean).join(' · ') || '—'}
+                      <button className="x" onClick={() => onRemove(v.id)} title="Retirer" style={{ fontSize: '.85rem' }}>✕</button>
+                    </span>
+                  </div>
+                </th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            <tr><th>Batterie</th>{vehicles.map((v, i) => <td key={v.id} className={batt[i] != null && batt[i] === max(batt) ? 'best' : ''}>{fmtKwh(v.battery_kwh)}</td>)}</tr>
+            <tr><th>Autonomie WLTP</th>{vehicles.map((v, i) => <td key={v.id} className={wltp[i] != null && wltp[i] === max(wltp) ? 'best' : ''}>{fmtKm(v.range_km)}</td>)}</tr>
+            <tr><th>Autonomie réelle ({saison})</th>{vehicles.map((v, i) => <td key={v.id} className={reel[i] != null && reel[i] === max(reel) ? 'best' : ''}>{fmtKm(reel[i])}</td>)}</tr>
+            <tr><th>Conso réelle estimée</th>{vehicles.map((v, i) => <td key={v.id} className={conso[i] != null && conso[i] === min(conso) ? 'best' : ''}>{conso[i] != null ? `${conso[i]} Wh/km` : '—'}</td>)}</tr>
+            <tr><th>Charge rapide (pic)</th>{vehicles.map((v, i) => <td key={v.id} className={dc[i] != null && dc[i] === max(dc) ? 'best' : ''}>{fmtKw(v.dc_kw)}</td>)}</tr>
+            <tr><th>Charge 10→80 %</th>{vehicles.map((v, i) => <td key={v.id} className={tps[i] != null && tps[i] === min(tps) ? 'best' : ''}>{tps[i] != null ? `${tps[i]} min` : '—'}</td>)}</tr>
+            <tr><th>Charge AC</th>{vehicles.map((v) => <td key={v.id}>{fmtKw(v.ac_kw)}</td>)}</tr>
+            <tr><th>Transmission</th>{vehicles.map((v) => <td key={v.id}>{v.drivetrain ? (DRIVE_LABEL[v.drivetrain] ?? v.drivetrain) : '—'}</td>)}</tr>
+            <tr><th>Places</th>{vehicles.map((v) => <td key={v.id}>{v.seats ?? '—'}</td>)}</tr>
+            <tr><th>V2L</th>{vehicles.map((v) => <td key={v.id}>{v.v2l ? 'Oui' : '—'}</td>)}</tr>
+            <tr><th>Prix indicatif</th>{vehicles.map((v, i) => <td key={v.id} className={prix[i] != null && prix[i] === min(prix) ? 'best' : ''}>{fmtEur(v.price_eur)}</td>)}</tr>
+          </tbody>
+        </table>
       </div>
     </div>
   )

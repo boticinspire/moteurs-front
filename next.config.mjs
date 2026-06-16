@@ -12,6 +12,19 @@ const nextConfig = {
         destination: 'https://moteurs.com/:path*',
         permanent: true,
       },
+      // ── Refonte outils (Phase 2) : consolidation + 301 ──────────────────
+      // /simulateur (legacy) → /comparer
+      { source: '/simulateur', destination: '/comparer', permanent: true },
+      { source: '/:locale(en|nl|de|es|it)/simulateur', destination: '/:locale/comparer', permanent: true },
+      // /assistance/couts → onglet "Le coût de mon véhicule"
+      { source: '/assistance/couts', destination: '/comparer?mode=mensuel', permanent: true },
+      { source: '/:locale(en|nl|de|es|it)/assistance/couts', destination: '/:locale/comparer?mode=mensuel', permanent: true },
+      // /outils/tco-particulier → onglet "Rentabilité VE vs thermique"
+      { source: '/outils/tco-particulier', destination: '/comparer?mode=rentabilite', permanent: true },
+      { source: '/:locale(en|nl|de|es|it)/outils/tco-particulier', destination: '/:locale/comparer?mode=rentabilite', permanent: true },
+      // /outils/comparer-modeles → catalogue (specs structurées Open EV Data)
+      { source: '/outils/comparer-modeles', destination: '/outils/catalogue-electriques', permanent: true },
+      { source: '/:locale(en|nl|de|es|it)/outils/comparer-modeles', destination: '/:locale/outils/catalogue-electriques', permanent: true },
     ]
   },
   async headers() {

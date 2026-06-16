@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 import { useTranslations } from 'next-intl'
 import { getTranslations, setRequestLocale } from 'next-intl/server'
-import ComparateurTCO from './ComparateurTCO'
+import ComparerTabs, { type ComparerMode } from './ComparerTabs'
 import FaqAccordion from '@/components/FaqAccordion'
 import { routing } from '@/i18n/routing'
 import { buildAlternates } from '@/lib/seo-utils'
@@ -26,15 +26,20 @@ export async function generateMetadata({
 
 export default async function ComparerPage({
   params,
+  searchParams,
 }: {
   params: Promise<{ locale: string }>
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>
 }) {
   const { locale } = await params
+  const sp = await searchParams
   setRequestLocale(locale)
-  return <ComparerContent />
+  const raw = Array.isArray(sp?.mode) ? sp.mode[0] : sp?.mode
+  const mode: ComparerMode = raw === 'mensuel' || raw === 'rentabilite' ? raw : 'motorisations'
+  return <ComparerContent mode={mode} />
 }
 
-function ComparerContent() {
+function ComparerContent({ mode }: { mode: ComparerMode }) {
   const t = useTranslations('Comparer')
 
   const faq = [
@@ -57,7 +62,7 @@ function ComparerContent() {
 
       <section style={{ padding: '32px 0 80px' }}>
         <div className="container">
-          <ComparateurTCO />
+          <ComparerTabs initialMode={mode} />
           <FaqAccordion items={faq} />
         </div>
       </section>

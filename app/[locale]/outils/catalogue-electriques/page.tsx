@@ -1,7 +1,7 @@
 import { getStaticMetadata } from '@/lib/seo-keywords'
 import { setRequestLocale } from 'next-intl/server'
 import { routing } from '@/i18n/routing'
-import { DATA } from '@/lib/open-ev-data'
+import { getVehiculesEV } from '@/lib/vehicules'
 import CatalogueElectriques from './CatalogueElectriques'
 
 export function generateStaticParams() {
@@ -9,6 +9,7 @@ export function generateStaticParams() {
 }
 
 export const metadata = getStaticMetadata('/outils/catalogue-electriques')
+export const revalidate = 3600
 
 export default async function CatalogueElectriquesPage({
   params,
@@ -17,6 +18,10 @@ export default async function CatalogueElectriquesPage({
 }) {
   const { locale } = await params
   setRequestLocale(locale)
+
+  const vehicles = await getVehiculesEV()
+  // Jeu de démarrage tant que le dataset complet (~1149) n'a pas été ingéré.
+  const isSeed = vehicles.length < 300
 
   const jsonLd = {
     '@context': 'https://schema.org',
@@ -31,7 +36,7 @@ export default async function CatalogueElectriquesPage({
   return (
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
-      <CatalogueElectriques source={DATA.source} version={DATA.dataset_version} count={DATA.count} />
+      <CatalogueElectriques vehicles={vehicles} isSeed={isSeed} version={null} count={vehicles.length} />
     </>
   )
 }
