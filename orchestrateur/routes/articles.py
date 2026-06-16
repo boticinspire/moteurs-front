@@ -2,7 +2,7 @@ import asyncio
 import logging
 from fastapi import APIRouter, HTTPException, Query
 from database import get_supabase
-from agents.redaction.agent import run_redaction_batch
+from agents.redaction.agent import run_redaction_batch, generer_declinaisons_post_validation
 from agents.seo.agent import enrichir_article_seo
 
 logger = logging.getLogger(__name__)
@@ -66,7 +66,19 @@ async def valider_article(article_id: int, commentaire: str = ""):
 
     asyncio.create_task(_seo_bg())
 
-    return {"status": "ok", "article_id": article_id, "etat": "VALIDE", "seo": "en_cours"}
+    # Déclinaison géographique BE/CH/CA en arrière-plan (politique 1-article/signal) :
+    # on ne décline un signal vers les autres pays qu'une fois l'article validé.
+    async def _decliner_bg():
+        try:
+            res = await generer_declinaisons_post_validation(article_id)
+            logger.info(f"[Validation] Déclinaisons article #{article_id} : {res}")
+        except Exception as e:
+            logger.error(f"[Validation] Erreur déclinaison article #{article_id} : {e}")
+
+    asyncio.create_task(_decliner_bg())
+
+    return {"status": "ok", "article_id": article_id, "etat": "VALIDE",
+            "seo": "en_cours", "declinaisons": "en_cours"}
 
 
 @router.patch("/{article_id}/rejeter")

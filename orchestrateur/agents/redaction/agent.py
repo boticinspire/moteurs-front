@@ -14,6 +14,16 @@ settings = get_settings()
 # Mapping segment nom → id Supabase
 SEGMENTS = {"B2B": 1, "Particulier": 2}
 
+# ── Politique de génération (2026-06-16) ──────────────────────────────────────
+# True  : l'Agent Rédaction ne génère qu'UN SEUL article (pays + audience
+#         primaires) par signal de veille. Les déclinaisons géographiques BE/CH/CA
+#         sont créées APRÈS validation éditoriale d'Oliver, via
+#         generer_declinaisons_post_validation(). Objectif : ~80 % d'appels Sonnet
+#         en moins et une file de validation sans quasi-doublons (un même signal
+#         ne remplit plus la file de 6 reformulations 3 pays × 2 audiences).
+# False : ancien comportement (fan-out 1→N à la génération).
+GENERER_UN_SEUL_ARTICLE = True
+
 # ── Contextes réglementaires par pays cible ───────────────────────────────────
 # ⚠️ MAINTENANCE CRITIQUE : ces chaînes sont injectées telles quelles dans le prompt
 # et traitées par le modèle comme SOURCE DE VÉRITÉ. Toute aide / montant / date faux
@@ -671,6 +681,23 @@ async def generer_declinaisons(item: dict, source: dict) -> list[dict]:
         logger.error("[Guard] Erreur is_recently_covered (non bloquant) : %s", e)
     # ─────────────────────────────────────────────────────────────────────────
 
+    # ── Politique 1-article/signal (2026-06-16) ──────────────────────────────
+    # On ne produit qu'UN article (pays primaire + audience primaire) à ce stade.
+    # Les autres pays sont déclinés après validation (économie de tokens + file
+    # de validation lisible). Voir generer_declinaisons_post_validation().
+    if GENERER_UN_SEUL_ARTICLE:
+        pays_primaire = "FR" if "FR" in pays_cibles else (pays_cibles[0] if pays_cibles else "FR")
+        cible_primaire = cibles_a_generer[0] if cibles_a_generer else "pro"
+        _differes = [p for p in pays_cibles if p != pays_primaire]
+        if _differes or len(cibles_a_generer) > 1:
+            logger.info(
+                "[AgentRédaction] Politique 1-article/signal : génère %s/%s "
+                "— déclinaisons différées à la validation : %s",
+                pays_primaire, cible_primaire, _differes or "—",
+            )
+        pays_cibles = [pays_primaire]
+        cibles_a_generer = [cible_primaire]
+
     # ── Étape 2 : rédaction originale par (pays × cible) ──
     articles = []
     total_attendu = len(pays_cibles) * len(cibles_a_generer)
@@ -787,6 +814,9 @@ async def run_redaction_item(item: dict, source: dict) -> int:
                     "langue": source.get("langue"),
                     "pertinence_score": float(item.get("pertinence_score", 0)),
                     "faits_extraits": article_data.get("_faits_extraits", ""),
+                    # role : "primaire" (1er article du signal) ou "declinaison"
+                    # (généré post-validation). Sert à ne décliner que les primaires.
+                    "role": article_data.get("_role", "primaire"),
                 },
             }).execute()
 
@@ -897,3 +927,170 @@ async def run_redaction_batch(limit: int = 3) -> dict:
         f"Consultez les lignes '[redaction] tokens' ci-dessus pour le détail coûts."
     )
     return {"articles_generes": total_articles, "items_traites": len(items)}
+
+
+async def generer_declinaisons_post_validation(article_id: int) -> dict:
+    """
+    Décline un article VALIDÉ (le « primaire » d'un signal) vers les autres pays.
+
+    Appelé après la validation d'Oliver (cf. routes/articles.py::valider_article).
+    Respecte la politique 1-article/signal : à la génération on ne crée qu'un
+    article FR ; ici, une fois l'article retenu par l'humain, on produit les
+    versions BE/CH/CA pour conserver la couverture géographique — SANS relancer
+    l'extraction Haiku (les faits sont réutilisés depuis sources_json).
+
+    Idempotent : ne décline qu'un primaire non déjà décliné, et saute toute
+    cible (pays, cible, langue) déjà couverte (garde anti-doublon exact).
+    Les déclinaisons sont créées en EN_ATTENTE_VALIDATION pour relecture.
+    """
+    supabase = get_supabase()
+    art = (
+        supabase.table("articles").select("*").eq("id", article_id).single().execute().data
+    )
+    if not art:
+        return {"status": "introuvable", "article_id": article_id, "declinaisons": 0}
+
+    src = art.get("sources_json") or {}
+    if src.get("role") not in (None, "primaire"):
+        logger.info(
+            "[Déclinaison] Article #%s n'est pas un primaire (role=%s) — skip",
+            article_id, src.get("role"),
+        )
+        return {"status": "skip_non_primaire", "article_id": article_id, "declinaisons": 0}
+    if src.get("declinaisons_faites"):
+        logger.info("[Déclinaison] Article #%s déjà décliné — skip", article_id)
+        return {"status": "deja_decline", "article_id": article_id, "declinaisons": 0}
+
+    pays_primaire = art.get("pays_cible", "FR")
+    cible = art.get("cible", "pro")
+    cible = cible if cible in ("particulier", "pro") else "pro"
+    langue = art.get("langue", "fr")
+    faits = src.get("faits_extraits", "")
+    veille_item_id = src.get("veille_item_id")
+
+    # Reconstruire item + source d'origine (sans nouvel appel Haiku)
+    item = {
+        "titre": art.get("titre_provisoire", ""),
+        "url_origine": src.get("url_origine"),
+        "resume_ia": art.get("resume_50mots", ""),
+        "contenu_brut": "",
+    }
+    if veille_item_id:
+        try:
+            vi = (
+                supabase.table("veille_items")
+                .select("titre,url_origine,resume_ia,contenu_brut")
+                .eq("id", veille_item_id).single().execute().data
+            )
+            if vi:
+                item.update({
+                    "titre": vi.get("titre") or item["titre"],
+                    "url_origine": vi.get("url_origine") or item["url_origine"],
+                    "resume_ia": vi.get("resume_ia") or item["resume_ia"],
+                    "contenu_brut": vi.get("contenu_brut") or "",
+                })
+        except Exception as e:
+            logger.warning("[Déclinaison] veille_item #%s illisible : %s", veille_item_id, e)
+
+    source = {
+        "nom": src.get("source_nom", "Source externe"),
+        "pays": src.get("pays_source", "EU"),
+        "langue": src.get("langue", "fr"),
+    }
+    if not faits:
+        faits = f"• {item.get('resume_ia', '')}" if item.get("resume_ia") else ""
+
+    pays_pool = PAYS_DECLINATIONS.get(str(source["pays"]).upper(), ["FR", "BE", "CH"])
+    pays_a_decliner = [p for p in pays_pool if p != pays_primaire]
+    if not pays_a_decliner:
+        return {"status": "aucun_pays", "article_id": article_id, "declinaisons": 0}
+
+    crees = 0
+    for pays in pays_a_decliner:
+        try:
+            if dedup.is_exact_duplicate(supabase, item.get("titre", ""), pays, cible, langue):
+                logger.info("[Déclinaison] %s/%s déjà couvert — skip", pays, cible)
+                continue
+        except Exception:
+            pass
+
+        data = await generer_article(item, source, pays, faits, cible)
+        if not data:
+            logger.warning(
+                "[Déclinaison] échec génération %s/%s (art #%s)", pays, cible, article_id
+            )
+            continue
+        data["_role"] = "declinaison"
+        titre_decl = data.get("titre", item.get("titre", ""))
+
+        try:
+            if dedup.is_exact_duplicate(supabase, titre_decl, pays, cible, langue):
+                logger.info(
+                    "[Déclinaison] doublon exact après génération %s/%s — skip", pays, cible
+                )
+                continue
+        except Exception:
+            pass
+
+        segment_nom = data.get("_segment_detecte", "Particulier")
+        segment_id = SEGMENTS.get(segment_nom, 2)
+        base_slug = data.get("slug") or _slugify(titre_decl)
+        suffixe = "par" if cible == "particulier" else "pro"
+        slug = f"{base_slug}-{pays.lower()}-{suffixe}"
+
+        try:
+            supabase.table("articles").insert({
+                "titre_provisoire": titre_decl[:255],
+                "slug": slug,
+                "profil_id": 1,
+                "segment_id": segment_id,
+                "cible": cible,
+                "pays_cible": pays,
+                "langue": langue,
+                "etat_code": "EN_ATTENTE_VALIDATION",
+                "etat_updated_at": datetime.utcnow().isoformat(),
+                "contenu_html": data.get("contenu_html", ""),
+                "resume_50mots": data.get("resume_50mots", "")[:300],
+                "meta_title": _tronquer_aux_mots(data.get("meta_title", ""), 60),
+                "meta_description": _tronquer_aux_mots(data.get("meta_description", ""), 160),
+                "faq_json": data.get("faq", []),
+                "sources_json": {
+                    "veille_item_id": veille_item_id,
+                    "url_origine": item.get("url_origine"),
+                    "source_nom": source.get("nom"),
+                    "pays_source": source.get("pays"),
+                    "langue": source.get("langue"),
+                    "faits_extraits": faits,
+                    "role": "declinaison",
+                    "derive_de": article_id,
+                },
+            }).execute()
+            crees += 1
+            logger.info("[Déclinaison] ✅ %s/%s créée depuis art #%s", pays, cible, article_id)
+        except Exception as e:
+            err = str(e)
+            if "23505" in err or "duplicate key" in err.lower():
+                logger.info("[Déclinaison] slug '%s' déjà existant — ignoré", slug)
+            else:
+                logger.error("[Déclinaison] erreur insert %s : %s", pays, e)
+
+    # Marqueur anti-redéclinaison sur le primaire
+    try:
+        new_src = dict(src)
+        new_src["declinaisons_faites"] = True
+        supabase.table("articles").update(
+            {"sources_json": new_src}
+        ).eq("id", article_id).execute()
+    except Exception as e:
+        logger.warning("[Déclinaison] maj marqueur primaire échouée : %s", e)
+
+    logger.info(
+        "[Déclinaison] Article #%s → %s déclinaison(s) créée(s) %s",
+        article_id, crees, pays_a_decliner,
+    )
+    return {
+        "status": "ok",
+        "article_id": article_id,
+        "declinaisons": crees,
+        "pays": pays_a_decliner,
+    }
