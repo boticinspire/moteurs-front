@@ -31,6 +31,14 @@ export const SEO_MAP: Record<string, SeoMeta> = {
     volume: 12000,
     intent: 'Informationnelle',
   },
+  '/outils/carnet-entretien': {
+    title: 'Carnet d’entretien intelligent — toutes voitures, tous carburants | Moteurs.com',
+    description: 'Suivez l’entretien de votre voiture (essence, diesel, hybride, électrique) : échéances au km et à la date, rappels vidange, freins, pneus, contrôle technique et suivi des coûts. Gratuit, sans matériel.',
+    keywords: ['carnet d’entretien voiture', 'suivi entretien véhicule', 'rappel entretien voiture', 'planning entretien auto'],
+    primaryKeyword: 'carnet d’entretien voiture',
+    volume: 8100,
+    intent: 'Commerciale',
+  },
   '/comparer': {
     title: 'Comparateur voiture électrique vs diesel vs essence — TCO 2026 | Moteurs.com',
     description: 'Comparez diesel, essence, électrique, hybride et GNV sur 48 mois. Aides 2026 incluses. 4 pays couverts.',

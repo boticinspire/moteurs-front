@@ -33,6 +33,15 @@ export default async function OutilsPage({
 
   const OUTILS_PHARES = [
     {
+      href: '/outils/carnet-entretien',
+      icon: '🩺',
+      titre: 'Le carnet d’entretien intelligent',
+      desc: 'Ajoutez votre voiture (toute marque, tout carburant) : Autopulse calcule vos prochaines échéances au km et à la date — vidange, freins, pneus, contrôle technique — et suit vos coûts.',
+      tags: ['Toutes marques', 'Essence · Diesel · Hybride · Élec.', 'Rappels', 'Gratuit'],
+      cta: 'Suivre ma voiture',
+      badge: t('badge_new'),
+    },
+    {
       href: '/outils/facture-recharge',
       icon: '🔥',
       titre: 'Avez-vous payé trop cher ?',
