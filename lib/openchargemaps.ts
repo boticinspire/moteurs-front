@@ -159,7 +159,16 @@ async function fetchStationsAroundPoint(
     maxresults: String(maxresults),
   })
 
-  const res = await fetch(`/api/ocm?${params.toString()}`)
+  const ctrl = new AbortController()
+  const to = setTimeout(() => ctrl.abort(), 12000)
+  let res: Response
+  try {
+    res = await fetch(`/api/ocm?${params.toString()}`, { signal: ctrl.signal })
+  } catch {
+    return []
+  } finally {
+    clearTimeout(to)
+  }
   if (!res.ok) return []
 
   const data = await res.json()

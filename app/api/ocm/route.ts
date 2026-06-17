@@ -35,10 +35,13 @@ export async function GET(req: NextRequest) {
   })
 
   try {
+    const ctrl = new AbortController()
+    const to = setTimeout(() => ctrl.abort(), 12000)
     const res = await fetch(`${OCM_BASE}?${params.toString()}`, {
       headers: { 'Accept': 'application/json' },
       next: { revalidate: 3600 },   // cache 1h côté serveur
-    })
+      signal: ctrl.signal,
+    }).finally(() => clearTimeout(to))
 
     if (!res.ok) {
       return NextResponse.json(

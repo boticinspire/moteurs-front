@@ -3,6 +3,7 @@ import routesData from '@/data/routes-vacances.json'
 import { TRAJETS_SEO, variantesForTrajet } from '@/lib/trajets-seo'
 import { routing } from '@/i18n/routing'
 import { getAuteurSlugs } from '@/lib/auteurs'
+import { getVoitureSlugs, CLASSEMENTS } from '@/lib/voitures'
 
 const BASE = 'https://moteurs.com'
 
@@ -70,6 +71,10 @@ const PAGES_STATIQUES: { url: string; priority: number; changeFreq: MetadataRout
   { url: '/articles',      priority: 0.9,  changeFreq: 'daily'   },
   { url: '/autopulse',           priority: 0.9,  changeFreq: 'monthly' },
   { url: '/outils',              priority: 0.85, changeFreq: 'weekly'  },
+  { url: '/voitures',            priority: 0.8,  changeFreq: 'weekly'  },
+  { url: '/voitures/palmares',   priority: 0.75, changeFreq: 'weekly'  },
+  { url: '/voitures/comparer',   priority: 0.7,  changeFreq: 'monthly' },
+  { url: '/voitures/choisir',    priority: 0.75, changeFreq: 'monthly' },
   { url: '/outils/tco-poids-lourds', priority: 0.85, changeFreq: 'monthly' },
   { url: '/assistance',    priority: 0.85, changeFreq: 'weekly'  },
   { url: '/comparer',      priority: 0.85, changeFreq: 'monthly' },
@@ -240,7 +245,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     }))
   )
 
-  const [articles, cartes, dessinsSlugs] = await Promise.all([fetchArticlesSlugs(), fetchCartesIds(), fetchDessinsSlugs()])
+  const [articles, cartes, dessinsSlugs, voituresSlugs] = await Promise.all([fetchArticlesSlugs(), fetchCartesIds(), fetchDessinsSlugs(), getVoitureSlugs()])
   const articleEntries: MetadataRoute.Sitemap = articles.map(a => ({
     url: `${BASE}/article/${a.slug}`,
     lastModified: new Date(a.published_at).toISOString(),
@@ -262,6 +267,20 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.55,
   }))
 
+  const voitureEntries: MetadataRoute.Sitemap = voituresSlugs.map(slug => ({
+    url: `${BASE}/voitures/${slug}`,
+    lastModified: now,
+    changeFrequency: 'monthly' as const,
+    priority: 0.6,
+  }))
+
+  const palmaresEntries: MetadataRoute.Sitemap = CLASSEMENTS.map(c => ({
+    url: `${BASE}/voitures/palmares/${c.slug}`,
+    lastModified: now,
+    changeFrequency: 'weekly' as const,
+    priority: 0.7,
+  }))
+
   const auteurEntries: MetadataRoute.Sitemap = getAuteurSlugs().map(slug => ({
     url: `${BASE}/auteurs/${slug}`,
     lastModified: now,
@@ -278,5 +297,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...carteEntries,
     ...dessinEntries,
     ...auteurEntries,
+    ...voitureEntries,
+    ...palmaresEntries,
   ]
 }

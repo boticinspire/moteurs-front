@@ -26,6 +26,7 @@ export default function Footer() {
               <li><Link href="/assistance">{t('link_assistance')}</Link></li>
               <li><Link href="/assistant-vacances">{t('link_assistant_vacances')}</Link></li>
               <li><Link href="/comparer-trajet">{t('link_comparer_trajet')}</Link></li>
+              <li><Link href="/voitures">Voitures électriques</Link></li>
               <li><Link href="/recharge-electrique">{t('link_recharge')}</Link></li>
               <li><Link href="/trajet">{t('link_trajet')}</Link></li>
               <li><Link href="/vacances-voiture">{t('link_vacances')}</Link></li>
