@@ -150,9 +150,19 @@ export default function AdminPage() {
 
   async function valider(id: number) {
     msg('Publication en cours…')
-    const { error } = await sb.from('articles').update({ etat_code: 'VALIDE' }).eq('id', id)
-    if (error) { msg('✗ Erreur : ' + error.message); return }
-    msg('✓ Validé — Agent SEO en cours…')
+    // Appel de la route Railway : passe en VALIDE + déclenche l'Agent SEO ET la
+    // déclinaison géographique BE/CH/CA (politique 1-article/signal). L'écriture
+    // Supabase directe court-circuitait ce hook -> articles FR uniquement.
+    try {
+      const r = await fetch(`${RAIL}/articles/${id}/valider`, { method: 'PATCH' })
+      if (!r.ok) throw new Error('HTTP ' + r.status)
+      msg('✓ Validé — SEO + déclinaisons BE/CH/CA en cours…')
+    } catch (e: any) {
+      // Fallback : au minimum passer en VALIDE en base (sans déclinaison).
+      const { error } = await sb.from('articles').update({ etat_code: 'VALIDE' }).eq('id', id)
+      if (error) { msg('✗ Erreur : ' + error.message); return }
+      msg('✓ Validé — mais backend injoignable : déclinaisons NON lancées (' + (e?.message || 'erreur') + ')', 7000)
+    }
     setArticles(prev => prev.filter(a => a.id !== id)); setSelected(null); chargerStats()
   }
 
@@ -160,15 +170,23 @@ export default function AdminPage() {
     const enAttente = articles.filter(a => a.etat_code === 'EN_ATTENTE_VALIDATION')
     if (enAttente.length === 0) { msg('Aucun article en attente.'); return }
     msg(`Validation de ${enAttente.length} article(s) en cours…`)
-    const { error } = await sb.from('articles')
-      .update({ etat_code: 'VALIDE' })
-      .eq('etat_code', 'EN_ATTENTE_VALIDATION')
-    if (error) { msg('✗ Erreur : ' + error.message); return }
-    msg(`✓ ${enAttente.length} article(s) validés — Lancement Agent SEO…`)
-    try {
-      await fetch(`${RAIL}/seo/traiter-valides`, { method: 'POST' })
-      msg(`✓ ${enAttente.length} article(s) validés et publiés.`, 6000)
-    } catch { msg('✓ Validés — mais erreur connexion SEO. Lance "Publier validés" manuellement.') }
+    // Appel de la route Railway par article : chaque validation déclenche SEO +
+    // déclinaison BE/CH/CA. (L'ancien bulk-update Supabase + SEO batch ne
+    // déclinait jamais -> articles FR uniquement.)
+    let ok = 0
+    for (const a of enAttente) {
+      try {
+        const r = await fetch(`${RAIL}/articles/${a.id}/valider`, { method: 'PATCH' })
+        if (r.ok) ok++
+      } catch { /* on continue */ }
+    }
+    if (ok === 0) {
+      // Fallback : au minimum basculer en VALIDE (sans déclinaison).
+      await sb.from('articles').update({ etat_code: 'VALIDE' }).eq('etat_code', 'EN_ATTENTE_VALIDATION')
+      msg('✓ Validés — mais backend injoignable : déclinaisons NON lancées.', 7000)
+    } else {
+      msg(`✓ ${ok}/${enAttente.length} validé(s) — SEO + déclinaisons BE/CH/CA en cours…`, 6000)
+    }
     setSelected(null)
     await chargerStats()
     await chargerArticles('EN_ATTENTE_VALIDATION')

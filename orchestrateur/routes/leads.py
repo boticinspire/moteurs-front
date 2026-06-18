@@ -31,7 +31,20 @@ async def creer_lead(lead: LeadIn):
     Répond immédiatement — la qualification tourne en async.
     """
     supabase = get_supabase()
-    result = supabase.table("leads").insert(lead.model_dump()).execute()
+    payload = lead.model_dump()
+    # segment_id=0 (envoyé par le formulaire quand « non spécifié ») n'existe pas
+    # dans la table segments -> viole la FK leads_segment_id_fkey (500, lead perdu).
+    # La colonne est nullable : on neutralise toute valeur falsy (0/None) en NULL.
+    if not payload.get("segment_id"):
+        payload["segment_id"] = None
+    try:
+        result = supabase.table("leads").insert(payload).execute()
+    except Exception as e:
+        # Filet de sécurité : ne JAMAIS perdre un lead pour un souci de FK
+        # (ex. segment_id inconnu). On réessaie sans segment_id.
+        logger.error(f"[Leads] Insert échoué ({e}) — retry sans segment_id")
+        payload["segment_id"] = None
+        result = supabase.table("leads").insert(payload).execute()
     lead_id = result.data[0]["id"]
 
     # Qualification + préparation réponse en arrière-plan (non bloquant)
