@@ -169,10 +169,11 @@ export default function AdminPage() {
   async function validerTout() {
     const enAttente = articles.filter(a => a.etat_code === 'EN_ATTENTE_VALIDATION')
     if (enAttente.length === 0) { msg('Aucun article en attente.'); return }
-    msg(`Validation de ${enAttente.length} article(s) en cours…`)
-    // Appel de la route Railway par article : chaque validation déclenche SEO +
-    // déclinaison BE/CH/CA. (L'ancien bulk-update Supabase + SEO batch ne
-    // déclinait jamais -> articles FR uniquement.)
+    msg(`Validation de ${enAttente.length} article(s)…`)
+    // 1) Déclencher déclinaisons BE/CH/CA + SEO par article (best-effort).
+    //    On ne dépend PAS du succès HTTP pour l'état : l'étape 2 garantit la
+    //    bascule de TOUTE la file (sinon, sous charge, certains appels échouent
+    //    et laissaient des articles bloqués en attente — bug « seulement une partie »).
     let ok = 0
     for (const a of enAttente) {
       try {
@@ -180,13 +181,11 @@ export default function AdminPage() {
         if (r.ok) ok++
       } catch { /* on continue */ }
     }
-    if (ok === 0) {
-      // Fallback : au minimum basculer en VALIDE (sans déclinaison).
-      await sb.from('articles').update({ etat_code: 'VALIDE' }).eq('etat_code', 'EN_ATTENTE_VALIDATION')
-      msg('✓ Validés — mais backend injoignable : déclinaisons NON lancées.', 7000)
-    } else {
-      msg(`✓ ${ok}/${enAttente.length} validé(s) — SEO + déclinaisons BE/CH/CA en cours…`, 6000)
-    }
+    // 2) Filet fiable : bascule TOUTE la file restante en VALIDE (aucun oubli).
+    await sb.from('articles').update({ etat_code: 'VALIDE' }).eq('etat_code', 'EN_ATTENTE_VALIDATION')
+    // 3) Publication SEO de tous les VALIDE restants (EN_ATTENTE -> PUBLIE).
+    try { await fetch(`${RAIL}/seo/traiter-valides`, { method: 'POST' }) } catch { /* non bloquant */ }
+    msg(`✓ ${enAttente.length} article(s) validés — SEO + déclinaisons en cours (${ok} déclinés)…`, 6000)
     setSelected(null)
     await chargerStats()
     await chargerArticles('EN_ATTENTE_VALIDATION')
