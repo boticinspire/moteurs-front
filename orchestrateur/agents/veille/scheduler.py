@@ -40,7 +40,7 @@ def _lancer_veille():
 def _lancer_redaction():
     """
     Wrapper synchrone — cycle rédaction.
-    Déclenché 30 min après chaque cycle veille.
+    Déclenché 1 fois tous les 2 jours (limitation conso API — décision 26/06).
     Limite à 3 articles par cycle pour maîtriser les coûts Sonnet.
     """
     logger.info(f"[Scheduler] Cycle Rédaction — {datetime.now().strftime('%H:%M')}")
@@ -67,12 +67,13 @@ def start_scheduler():
         replace_existing=True,
     )
 
-    # Job 2 : Agent Rédaction — 30 min après chaque cycle veille
+    # Job 2 : Agent Rédaction — 1 cycle tous les 2 jours à 08h30 (limitation conso API)
+    # CronTrigger(day="*/2") = jours impairs du mois -> ~1 fois tous les 2 jours.
     scheduler.add_job(
         _lancer_redaction,
-        trigger=CronTrigger(hour=heures_str, minute=30),
+        trigger=CronTrigger(day="*/2", hour="8", minute=30),
         id="agent_redaction",
-        name="Agent Rédaction — génération articles",
+        name="Agent Rédaction — génération articles (tous les 2 jours)",
         replace_existing=True,
     )
 
