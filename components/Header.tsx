@@ -5,7 +5,7 @@ import { Link, usePathname } from '@/i18n/navigation'
 import { useTranslations } from 'next-intl'
 import LanguageSwitcher from './LanguageSwitcher'
 
-type NavHref = '/' | '/articles' | '/recharge-electrique' | '/vacances-voiture' | '/cout-voiture' | '/depannage' | '/documents-auto' | '/outils' | '/dessins' | '/jeux' | '/b2b' | '/particulier'
+type NavHref = '/' | '/media' | '/articles' | '/recharge-electrique' | '/vacances-voiture' | '/cout-voiture' | '/depannage' | '/documents-auto' | '/outils' | '/dessins' | '/jeux' | '/b2b' | '/particulier'
 
 export default function Header() {
   const t = useTranslations('Header')
@@ -16,7 +16,7 @@ export default function Header() {
 
   // Liens principaux visibles dans la nav desktop
   const mainLinks: { href: NavHref; label: string; urgent?: boolean }[] = [
-    { href: '/',                     label: t('nav_home') },
+    { href: '/media',                label: t('nav_home') },
     { href: '/articles',             label: t('nav_articles') },
     { href: '/recharge-electrique',  label: t('nav_recharge') },
     { href: '/vacances-voiture',     label: t('nav_vacances') },
@@ -30,6 +30,7 @@ export default function Header() {
     { href: '/outils',         label: t('nav_outils') },
     { href: '/dessins',        label: t('nav_dessins') },
     { href: '/jeux',           label: 'Jeux' },
+    { href: '/',               label: t('nav_produits') },
   ]
 
   // Liens audience — menu compte (desktop) + section profil (mobile)
@@ -153,7 +154,7 @@ export default function Header() {
 
       <header className="site-header">
         <div className="container">
-          <Link href="/" className="logo" aria-label={t('aria_logo')}>
+          <Link href="/media" className="logo" aria-label={t('aria_logo')}>
             <span className="logo-mark" aria-hidden="true">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 3v18M3 12h18"/></svg>
             </span>
@@ -263,7 +264,7 @@ export default function Header() {
       {open && (
         <div className="mobile-overlay" role="dialog" aria-modal="true">
           <div className="mobile-overlay-header">
-            <Link href="/" className="logo" style={{ color: 'white' }} aria-label={t('aria_logo')}>
+            <Link href="/media" className="logo" style={{ color: 'white' }} aria-label={t('aria_logo')}>
               <span className="logo-mark" aria-hidden="true">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 3v18M3 12h18"/></svg>
               </span>

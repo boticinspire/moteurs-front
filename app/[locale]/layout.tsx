@@ -8,6 +8,7 @@ import '../globals.css'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 import CookieBanner from '@/components/CookieBanner'
+import MediaChrome from '@/components/MediaChrome'
 import TranslationBannerGate from '@/components/TranslationBannerGate'
 import { routing, type Locale } from '@/i18n/routing'
 
@@ -141,10 +142,15 @@ export default async function LocaleLayout({
           />
         </noscript>
         <NextIntlClientProvider>
-          <Header />
-          <TranslationBannerGate />
+          {/* Header/footer du média masqués sur la vitrine produits (/) — voir MediaChrome */}
+          <MediaChrome>
+            <Header />
+            <TranslationBannerGate />
+          </MediaChrome>
           {children}
-          <Footer />
+          <MediaChrome>
+            <Footer />
+          </MediaChrome>
           <CookieBanner />
         </NextIntlClientProvider>
       </body>

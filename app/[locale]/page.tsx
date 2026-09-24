@@ -1,687 +1,285 @@
-'use client'
+import type { Metadata } from 'next'
+import Image from 'next/image'
+import { getTranslations, setRequestLocale } from 'next-intl/server'
+import { routing } from '@/i18n/routing'
+import VitrineHeader from '@/components/vitrine/VitrineHeader'
+import VitrineFooter from '@/components/vitrine/VitrineFooter'
+import DevisForm from '@/components/vitrine/DevisForm'
+import s from '@/components/vitrine/vitrine.module.css'
 
-import { useEffect, useState } from 'react'
-import { Link, useRouter } from '@/i18n/navigation'
-import { useTranslations } from 'next-intl'
-import NewsletterForm from '@/components/NewsletterForm'
-import villesData from '@/data/villes.json'
+/**
+ * Page d'accueil Moteurs.com — vitrine produits.
+ *
+ * Depuis septembre 2026, la racine du site est consacrée exclusivement à la
+ * présentation et à la vente des produits développés (gabarits de contrôle
+ * pour sièges et guides de soupape — brevet BE 2025/5347).
+ *
+ * L'ancien média (outils TCO, décryptages, espace membres…) est intégralement
+ * conservé et accessible sous /media (voir app/[locale]/media/page.tsx).
+ * Le header/footer du média sont masqués ici par <MediaChrome> (layout).
+ */
 
-type Theme = 'light' | 'dark'
+export const revalidate = 86400
 
-// Détection saison été : par défaut light tant qu'on est < 1er septembre 2026
-function detectSeasonTheme(): Theme {
-  const now = new Date()
-  const switchDate = new Date('2026-09-01T00:00:00')
-  return now < switchDate ? 'light' : 'dark'
+const FLYERS: Record<string, { file: string; label: string }> = {
+  fr: { file: '/vitrine/flyer-FR.png', label: 'Flyer FR (PNG)' },
+  en: { file: '/vitrine/flyer-EN.png', label: 'Flyer EN (PNG)' },
+  nl: { file: '/vitrine/flyer-NL.pdf', label: 'Flyer NL (PDF)' },
+  de: { file: '/vitrine/flyer-DE.pdf', label: 'Flyer DE (PDF)' },
 }
 
-export default function HomePage() {
-  const t = useTranslations('Home')
-  const router = useRouter()
-  const [theme, setTheme] = useState<Theme>('light')
-  const [activeTab, setActiveTab] = useState<'trip' | 'tco' | 'fleet'>('trip')
-  const [depart, setDepart] = useState('Paris')
-  const [destination, setDestination] = useState('Nice')
-  const [allerRetour, setAllerRetour] = useState<'yes' | 'no'>('yes')
-  const [personnes, setPersonnes] = useState('2 adults')
-  const [pays, setPays] = useState<'FR' | 'BE' | 'CH' | 'CA'>('FR')
+export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
+  const { locale } = await params
+  const t = await getTranslations({ locale, namespace: 'Vitrine' })
+  const alternates: Record<string, string> = {}
+  for (const l of routing.locales) alternates[l] = l === routing.defaultLocale ? '/' : `/${l}`
+  return {
+    title: { absolute: t('meta_title') },
+    description: t('meta_description'),
+    alternates: {
+      canonical: locale === routing.defaultLocale ? '/' : `/${locale}`,
+      languages: alternates,
+    },
+    openGraph: {
+      title: t('meta_title'),
+      description: t('meta_description'),
+      images: [{ url: '/vitrine/hero-atelier.webp', width: 1400, height: 788 }],
+      type: 'website',
+    },
+  }
+}
 
-  // ── Search IA ──
-  const [searchQuery, setSearchQuery] = useState('')
-  const [searchLoading, setSearchLoading] = useState(false)
-  const [searchResult, setSearchResult] = useState<{ answer: string; url: string; label: string } | null>(null)
-  const [searchError, setSearchError] = useState<string | null>(null)
+export default async function VitrineHomePage({ params }: { params: Promise<{ locale: string }> }) {
+  const { locale } = await params
+  setRequestLocale(locale)
+  const t = await getTranslations({ locale, namespace: 'Vitrine' })
 
-  const paysLabel: Record<'FR' | 'BE' | 'CH' | 'CA', string> = {
-    FR: 'France',
-    BE: 'Belgique',
-    CH: 'Suisse',
-    CA: 'Canada',
+  const productJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'Product',
+    name: t('product_name'),
+    description: t('meta_description'),
+    brand: { '@type': 'Brand', name: 'Moteurs.com' },
+    image: 'https://moteurs.com/vitrine/planche-reelle.webp',
+    url: 'https://moteurs.com/',
+    offers: {
+      '@type': 'Offer',
+      availability: 'https://schema.org/PreOrder',
+      priceCurrency: 'EUR',
+      url: 'https://moteurs.com/#devis',
+    },
   }
 
-  function handleSubmit(e: React.FormEvent) {
-    e.preventDefault()
-    if (activeTab === 'tco') { router.push('/comparer'); return }
-    if (activeTab === 'fleet') { router.push('/b2b'); return }
-    // Trip : passe les valeurs via sessionStorage
-    try {
-      sessionStorage.setItem('home-trajet', JSON.stringify({
-        depart: depart.trim(),
-        arrivee: destination.trim(),
-        allerRetour: allerRetour === 'yes',
-        personnes,
-        pays,
-      }))
-    } catch {}
-    router.push('/comparer-trajet')
-  }
-
-  async function handleSearchSubmit(e: React.FormEvent) {
-    e.preventDefault()
-    if (!searchQuery.trim() || searchLoading) return
-    setSearchLoading(true)
-    setSearchResult(null)
-    setSearchError(null)
-    try {
-      const res = await fetch('/api/search', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ question: searchQuery.trim() }),
-      })
-      const data = await res.json()
-      if (!res.ok) throw new Error(data.error ?? 'Erreur')
-      setSearchResult(data)
-    } catch {
-      setSearchError('Impossible de traiter votre question. Réessayez.')
-    } finally {
-      setSearchLoading(false)
-    }
-  }
-
-  useEffect(() => {
-    const stored = typeof window !== 'undefined' ? localStorage.getItem('moteurs-theme') : null
-    const resolved: Theme = (stored === 'light' || stored === 'dark') ? stored : detectSeasonTheme()
-    setTheme(resolved)
-    document.documentElement.dataset.theme = resolved
-  }, [])
-
-  function applyTheme(t: Theme) {
-    setTheme(t)
-    try {
-      localStorage.setItem('moteurs-theme', t)
-      document.documentElement.dataset.theme = t
-    } catch {}
-  }
+  const steps = [1, 2, 3] as const
+  const faqs = [1, 2, 3, 4, 5] as const
 
   return (
-    <main className="home-v2" data-theme={theme}>
-      <div className="v2-grain" aria-hidden="true" />
+    <div className={s.page}>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(productJsonLd) }} />
+      <VitrineHeader />
 
-      {/* ===== Lucide icon defs ===== */}
-      <svg width="0" height="0" style={{ position: 'absolute' }} aria-hidden="true">
-        <defs>
-          <symbol id="i-arrow-right" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7" /></symbol>
-          <symbol id="i-arrow-up-right" viewBox="0 0 24 24"><path d="M7 17 17 7M7 7h10v10" /></symbol>
-          <symbol id="i-map-pin" viewBox="0 0 24 24"><path d="M20 10c0 7-8 13-8 13s-8-6-8-13a8 8 0 0 1 16 0Z" /><circle cx="12" cy="10" r="3" /></symbol>
-          <symbol id="i-route" viewBox="0 0 24 24"><circle cx="6" cy="19" r="3" /><path d="M9 19h8.5a3.5 3.5 0 0 0 0-7h-11a3.5 3.5 0 0 1 0-7H15" /><circle cx="18" cy="5" r="3" /></symbol>
-          <symbol id="i-zap" viewBox="0 0 24 24"><path d="M13 2 3 14h9l-1 8 10-12h-9l1-8Z" /></symbol>
-          <symbol id="i-fuel" viewBox="0 0 24 24"><line x1="3" x2="15" y1="22" y2="22" /><line x1="4" x2="14" y1="9" y2="9" /><path d="M14 22V4a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v18" /><path d="M14 13h2a2 2 0 0 1 2 2v2a2 2 0 0 0 2 2a2 2 0 0 0 2-2V9.83a2 2 0 0 0-.59-1.42L18 5" /></symbol>
-          <symbol id="i-battery-charging" viewBox="0 0 24 24"><path d="M14.5 5H17a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2h-2.5" /><path d="M9.5 19H5a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h4.5" /><line x1="23" x2="23" y1="13" y2="11" /><polyline points="11 7 8 12 12 12 9 17" /></symbol>
-          <symbol id="i-leaf" viewBox="0 0 24 24"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19.2 2.96a1 1 0 0 1 1.8.5c0 8-3.78 16-12 16Z" /><path d="M2 21c0-3 1.85-5.36 5.08-6" /></symbol>
-          <symbol id="i-check" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5" /></symbol>
-          <symbol id="i-shield-check" viewBox="0 0 24 24"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z" /><path d="m9 12 2 2 4-4" /></symbol>
-          <symbol id="i-credit-card" viewBox="0 0 24 24"><rect width="20" height="14" x="2" y="5" rx="2" /><line x1="2" x2="22" y1="10" y2="10" /></symbol>
-          <symbol id="i-calculator" viewBox="0 0 24 24"><rect width="16" height="20" x="4" y="2" rx="2" /><line x1="8" x2="16" y1="6" y2="6" /><line x1="16" x2="16" y1="14" y2="18" /><path d="M8 10h.01M12 10h.01M16 10h.01M8 14h.01M12 14h.01M8 18h.01M12 18h.01" /></symbol>
-          <symbol id="i-bar-chart" viewBox="0 0 24 24"><line x1="12" x2="12" y1="20" y2="10" /><line x1="18" x2="18" y1="20" y2="4" /><line x1="6" x2="6" y1="20" y2="16" /></symbol>
-          <symbol id="i-trending-down" viewBox="0 0 24 24"><path d="m22 17-8.5-8.5-5 5L2 7" /><path d="M16 17h6v-6" /></symbol>
-          <symbol id="i-calendar" viewBox="0 0 24 24"><rect width="18" height="18" x="3" y="4" rx="2" /><path d="M16 2v4M8 2v4M3 10h18" /></symbol>
-          <symbol id="i-globe" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" /><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></symbol>
-          <symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4" /><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41" /></symbol>
-          <symbol id="i-moon" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" /></symbol>
-          <symbol id="i-umbrella" viewBox="0 0 24 24"><path d="M22 12a10 10 0 0 0-20 0Z" /><path d="M12 12v8a2 2 0 0 0 4 0" /><path d="M12 2v2" /></symbol>
-          <symbol id="i-flame" viewBox="0 0 24 24"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5" /></symbol>
-          <symbol id="i-briefcase" viewBox="0 0 24 24"><rect width="20" height="14" x="2" y="7" rx="2" /><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16" /></symbol>
-          <symbol id="i-camera" viewBox="0 0 24 24"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z" /><circle cx="12" cy="13" r="3" /></symbol>
-          <symbol id="i-file-text" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" /><polyline points="14 2 14 8 20 8" /><line x1="16" x2="8" y1="13" y2="13" /><line x1="16" x2="8" y1="17" y2="17" /></symbol>
-          <symbol id="i-wrench" viewBox="0 0 24 24"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z" /></symbol>
-          <symbol id="i-life-buoy" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" /><circle cx="12" cy="12" r="4" /><line x1="4.93" x2="9.17" y1="4.93" y2="9.17" /><line x1="14.83" x2="19.07" y1="14.83" y2="19.07" /><line x1="14.83" x2="19.07" y1="9.17" y2="4.93" /><line x1="14.83" x2="18.36" y1="9.17" y2="5.64" /><line x1="4.93" x2="9.17" y1="19.07" y2="14.83" /></symbol>
-          <symbol id="i-alert-triangle" viewBox="0 0 24 24"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z" /><line x1="12" x2="12" y1="9" y2="13" /><line x1="12" x2="12.01" y1="17" y2="17" /></symbol>
-        </defs>
-      </svg>
-
-      {/* ===== HERO ===== */}
-      <section className="v2-hero">
-        <div className="v2-mesh">
-          <div className="v2-orb o1" />
-          <div className="v2-orb o2" />
-          <div className="v2-orb o3" />
-          <div className="v2-orb o4" />
-        </div>
-        <div className="v2-container">
-          {/* ===== Search IA ===== */}
-          <form onSubmit={handleSearchSubmit} style={{
-            display: 'flex', alignItems: 'center', gap: 0,
-            background: 'var(--v2-tool-bg)', border: '1.5px solid var(--v2-line-strong)',
-            borderRadius: '14px', padding: '5px 5px 5px 16px',
-            backdropFilter: 'blur(16px) saturate(160%)',
-            marginBottom: '12px', maxWidth: '620px',
-          }}>
-            <svg style={{ width: 15, height: 15, flexShrink: 0, stroke: 'var(--v2-muted)', fill: 'none', strokeWidth: 1.8, strokeLinecap: 'round', strokeLinejoin: 'round' }} viewBox="0 0 24 24">
-              <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
-            </svg>
-            <input
-              type="text"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Votre question — Paris-Nice en électrique, voyant rouge, bonus…"
-              style={{
-                flex: 1, background: 'transparent', border: 'none', outline: 'none',
-                font: 'inherit', fontSize: '.92rem', color: 'var(--v2-text-strong)',
-                padding: '9px 12px', minWidth: 0,
-              }}
-            />
-            <button
-              type="submit"
-              disabled={searchLoading || !searchQuery.trim()}
-              style={{
-                flexShrink: 0, padding: '9px 18px', borderRadius: '10px',
-                font: 'inherit', fontSize: '.84rem', fontWeight: 700,
-                cursor: 'pointer', border: 'none', whiteSpace: 'nowrap',
-                background: theme === 'light'
-                  ? 'linear-gradient(135deg,#ef6c1a,#c95211)'
-                  : 'linear-gradient(135deg,#5b8def,#3b82f6)',
-                color: '#fff',
-                opacity: (searchLoading || !searchQuery.trim()) ? 0.55 : 1,
-              }}
-            >
-              {searchLoading ? 'Analyse…' : 'Chercher'}
-            </button>
-          </form>
-          {searchError && (
-            <p style={{ margin: '0 0 20px 4px', fontSize: '.83rem', color: '#dc2626' }}>{searchError}</p>
-          )}
-          {searchResult && (
-            <div style={{
-              display: 'flex', alignItems: 'center', gap: '14px', flexWrap: 'wrap',
-              background: 'var(--v2-tool-bg)', border: '1px solid var(--v2-line-strong)',
-              borderRadius: '12px', padding: '14px 18px', marginBottom: '20px',
-              backdropFilter: 'blur(12px)', animation: 'v2srch .3s ease',
-              maxWidth: '620px',
-            }}>
-              <p style={{ flex: 1, margin: 0, fontSize: '.92rem', color: 'var(--v2-text-strong)', fontWeight: 500, lineHeight: 1.45 }}>
-                {searchResult.answer}
-              </p>
-              <button
-                type="button"
-                onClick={() => router.push(searchResult.url as Parameters<typeof router.push>[0])}
-                style={{
-                  flexShrink: 0, padding: '8px 16px', borderRadius: '9px',
-                  font: 'inherit', fontSize: '.84rem', fontWeight: 700,
-                  cursor: 'pointer', border: 'none', whiteSpace: 'nowrap',
-                  background: theme === 'light'
-                    ? 'linear-gradient(135deg,#ef6c1a,#c95211)'
-                    : 'linear-gradient(135deg,#5b8def,#3b82f6)',
-                  color: '#fff',
-                }}
-              >
-                {searchResult.label} →
-              </button>
-            </div>
-          )}
-          <style>{`@keyframes v2srch{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}`}</style>
-
-          {theme === 'light' ? (
-            <h1>
-              {t('hero_h1_summer_a')} <span className="glow">{t('hero_h1_summer_glow')}</span><br />
-              {t('hero_h1_summer_b')}
-            </h1>
-          ) : (
-            <h1>
-              {t('hero_h1_default_a')} <span className="glow">{t('hero_h1_default_glow')}</span><br />
-              {t('hero_h1_default_b')}
-            </h1>
-          )}
-
-          <p className="v2-lead">
-            {t('hero_lead_a')}{' '}
-            {t('hero_lead_b')} <em>{t('hero_lead_em')}</em> {t('hero_lead_c')}
-          </p>
-
-          <div className="v2-profile-tabs" role="tablist">
-            <button role="tab" aria-selected={activeTab === 'trip'} className={activeTab === 'trip' ? 'active' : ''} onClick={() => setActiveTab('trip')}>
-              <svg className="v2-ic"><use href={theme === 'light' ? '#i-umbrella' : '#i-route'} /></svg>
-              {theme === 'light' ? t('tab_trip_summer') : t('tab_trip_default')}
-            </button>
-            <button role="tab" aria-selected={activeTab === 'tco'} className={activeTab === 'tco' ? 'active' : ''} onClick={() => setActiveTab('tco')}>
-              <svg className="v2-ic"><use href="#i-bar-chart" /></svg>{t('tab_tco')}
-            </button>
-            <button role="tab" aria-selected={activeTab === 'fleet'} className={activeTab === 'fleet' ? 'active' : ''} onClick={() => setActiveTab('fleet')}>
-              <svg className="v2-ic"><use href="#i-briefcase" /></svg>{t('tab_fleet')}
-            </button>
-          </div>
-
-          <div className="v2-tool-shell">
-            <form className="v2-tool" onSubmit={handleSubmit}>
-              {activeTab === 'trip' && (
-                <>
-                  <div className="field">
-                    <label><svg className="v2-ic"><use href="#i-map-pin" /></svg>{t('form_departure')}</label>
-                    <input
-                      type="text"
-                      list="v2-villes"
-                      value={depart}
-                      onChange={(e) => setDepart(e.target.value)}
-                      placeholder="Paris"
-                      required
-                    />
-                  </div>
-                  <div className="field">
-                    <label><svg className="v2-ic"><use href="#i-map-pin" /></svg>{theme === 'light' ? t('form_destination_light') : t('form_destination_dark')}</label>
-                    <input
-                      type="text"
-                      list="v2-villes"
-                      value={destination}
-                      onChange={(e) => setDestination(e.target.value)}
-                      placeholder="Nice"
-                      required
-                    />
-                  </div>
-                  <div className="field">
-                    <label htmlFor="v2-sel-ar"><svg className="v2-ic"><use href="#i-calendar" /></svg>{t('form_round_trip')}</label>
-                    <select id="v2-sel-ar" value={allerRetour} onChange={(e) => setAllerRetour(e.target.value as 'yes' | 'no')}>
-                      <option value="yes">{t('form_yes')}</option>
-                      <option value="no">{t('form_no')}</option>
-                    </select>
-                  </div>
-                  <div className="field">
-                    <label htmlFor="v2-sel-persons"><svg className="v2-ic"><use href="#i-briefcase" /></svg>{t('form_people')}</label>
-                    <select id="v2-sel-persons" value={personnes} onChange={(e) => setPersonnes(e.target.value)}>
-                      <option value="2 adults">{t('form_2_adults')}</option>
-                      <option value="1">1</option>
-                      <option value="3">3</option>
-                      <option value="4">4</option>
-                      <option value="5+">5+</option>
-                    </select>
-                  </div>
-                </>
-              )}
-              {activeTab === 'tco' && (
-                <div className="field" style={{ flex: 4 }}>
-                  <label><svg className="v2-ic"><use href="#i-bar-chart" /></svg>{t('tco_inner_label')}</label>
-                  <div style={{ padding: '12px 14px', color: 'var(--color-text-muted)', fontSize: '.9rem' }}>
-                    {t('tco_inner_body')}
-                  </div>
-                </div>
-              )}
-              {activeTab === 'fleet' && (
-                <div className="field" style={{ flex: 4 }}>
-                  <label><svg className="v2-ic"><use href="#i-briefcase" /></svg>{t('fleet_inner_label')}</label>
-                  <div style={{ padding: '12px 14px', color: 'var(--color-text-muted)', fontSize: '.9rem' }}>
-                    {t('fleet_inner_body')}
-                  </div>
-                </div>
-              )}
-              <div className="field">
-                <label htmlFor="v2-sel-pays"><svg className="v2-ic"><use href="#i-globe" /></svg>{t('form_country')}</label>
-                <select id="v2-sel-pays" value={pays} onChange={(e) => setPays(e.target.value as 'FR' | 'BE' | 'CH' | 'CA')}>
-                  <option value="FR">{paysLabel.FR}</option>
-                  <option value="BE">{paysLabel.BE}</option>
-                  <option value="CH">{paysLabel.CH}</option>
-                  <option value="CA">{paysLabel.CA}</option>
-                </select>
+      <main>
+        {/* ── HERO ─────────────────────────────────────────────────────── */}
+        <section className={s.hero} id="top">
+          <div className={s.heroInner}>
+            <div className={s.heroText}>
+              <p className={s.eyebrow}>{t('patent_line')}</p>
+              <h1 className={s.h1}>{t('hero_title')}</h1>
+              <p className={s.lead}>{t('hero_lead')}</p>
+              <p className={s.heroFor}><strong>{t('hero_for_label')}</strong> {t('hero_for')}</p>
+              <div className={s.heroCtas}>
+                <a href="#devis" className={s.btnPrimary}>{t('cta_quote')}</a>
+                <a href="#principe" className={s.btnGhost}>{t('cta_how')}</a>
               </div>
-              <div className="go">
-                <button type="submit">
-                  {activeTab === 'tco' ? t('cta_calculate') : activeTab === 'fleet' ? t('cta_discover') : t('cta_compare')}
-                  <svg className="v2-ic"><use href="#i-arrow-right" /></svg>
-                </button>
+              <ul className={s.heroBadges}>
+                <li>{t('badge_seconds')}</li>
+                <li>{t('badge_no_caliper')}</li>
+                <li>{t('badge_made_in')}</li>
+              </ul>
+            </div>
+            <div className={s.heroMedia}>
+              <Image
+                src="/vitrine/hero-atelier.webp"
+                alt={t('hero_img_alt')}
+                width={1400}
+                height={788}
+                priority
+                sizes="(max-width: 900px) 100vw, 55vw"
+                className={s.heroImg}
+              />
+            </div>
+          </div>
+        </section>
+
+        {/* ── PRODUIT ──────────────────────────────────────────────────── */}
+        <section className={s.section} id="produit">
+          <div className={s.container}>
+            <div className={s.split}>
+              <div>
+                <p className={s.kicker}>{t('product_kicker')}</p>
+                <h2 className={s.h2}>{t('product_title')}</h2>
+                <p className={s.p}>{t('product_p1')}</p>
+                <p className={s.p}>{t('product_p2')}</p>
+                <ul className={s.checks}>
+                  <li>{t('product_check1')}</li>
+                  <li>{t('product_check2')}</li>
+                  <li>{t('product_check3')}</li>
+                  <li>{t('product_check4')}</li>
+                </ul>
               </div>
-            </form>
-            <datalist id="v2-villes">
-              {villesData.map((v) => (
-                <option
-                  key={`${v.nom}-${v.pays_code}`}
-                  value={v.nom}
-                  label={v.region ? `${v.nom} · ${v.region}` : `${v.nom} · ${v.pays}`}
-                >
-                  {v.region ? `${v.nom} · ${v.region}` : `${v.nom} · ${v.pays}`}
-                </option>
-              ))}
-            </datalist>
-          </div>
-
-          {/* ===== Live result ===== */}
-          <div className="v2-live">
-            <div className="cell">
-              <div className="moto"><svg className="v2-ic"><use href="#i-fuel" /></svg>{t('live_petrol')}</div>
-              <div className="val">156<span className="cur">€</span></div>
-              <div className="sub">{t('live_round_trip_with_tolls')}</div>
-            </div>
-            <div className="cell">
-              <div className="moto"><svg className="v2-ic"><use href="#i-fuel" /></svg>{t('live_diesel')}</div>
-              <div className="val">138<span className="cur">€</span></div>
-              <div className="sub">{t('live_round_trip_with_tolls')}</div>
-            </div>
-            <div className="cell win">
-              <span className="badge"><svg className="v2-ic"><use href="#i-trending-down" /></svg>{t('live_cheapest')}</span>
-              <div className="moto"><svg className="v2-ic"><use href="#i-zap" /></svg>{t('live_electric')}</div>
-              <div className="val">70<span className="cur">€</span></div>
-              <div className="sub">{t('live_with_fast_charge')}</div>
-            </div>
-            <div className="cell">
-              <div className="moto"><svg className="v2-ic"><use href="#i-battery-charging" /></svg>{t('live_phev')}</div>
-              <div className="val">112<span className="cur">€</span></div>
-              <div className="sub">{t('live_mix_elec_petrol')}</div>
+              <figure className={s.figure}>
+                <Image src="/vitrine/planche-reelle.webp" alt={t('img_board_alt')} width={1000} height={1200} sizes="(max-width: 900px) 100vw, 45vw" className={s.figImg} />
+                <figcaption>{t('img_board_caption')}</figcaption>
+              </figure>
             </div>
           </div>
+        </section>
 
-          <div className="v2-proof-row">
-            <span className="item"><svg className="v2-ic"><use href="#i-check" /></svg><strong>{t('proof_routes_strong')}</strong>&nbsp;{t('proof_routes_rest')}</span>
-            <span className="item"><svg className="v2-ic"><use href="#i-check" /></svg><strong>{t('proof_sources_strong')}</strong>&nbsp;{t('proof_sources_rest')}</span>
-            <span className="item"><svg className="v2-ic"><use href="#i-check" /></svg><strong>{t('proof_free_strong')}</strong>&nbsp;{t('proof_free_rest')}</span>
-            <span className="item"><svg className="v2-ic"><use href="#i-check" /></svg><strong>{t('proof_gdpr_strong')}</strong>&nbsp;{t('proof_gdpr_rest')}</span>
-          </div>
-        </div>
-      </section>
-
-      {/* ===== Logos sources ===== */}
-      <div className="v2-logos">
-        <div className="v2-container">
-          <span className="lab"><svg className="v2-ic"><use href="#i-shield-check" /></svg>{t('sources_label')}</span>
-          <div className="row">
-            <span>DGEC</span><span className="dot" />
-            <span>Commission Européenne</span><span className="dot" />
-            <span>ACEA</span><span className="dot" />
-            <span>OpenChargeMap</span><span className="dot" />
-            <span>ADEME</span><span className="dot" />
-            <span>SPF Finances BE</span><span className="dot" />
-            <span>OFEN CH</span>
-          </div>
-        </div>
-      </div>
-
-      {/* ===== 3 usages principaux ===== */}
-      <section className="v2-section v2-section-tight alt">
-        <div className="v2-container">
-          <h2 style={{ textAlign: 'center', fontSize: 'clamp(1.5rem,2.6vw,2rem)', fontWeight: 800, letterSpacing: '-.03em', marginBottom: '2rem', color: 'var(--v2-text-strong)' }}>
-            {t('usages_section_title')}
-          </h2>
-          <div className="v2-tools-grid v2-tools-grid-3">
-            {/* Trajet — primaire vert */}
-            <Link className="v2-tcard c-green" href="/comparer-trajet" style={{ border: '2px solid #22c55e' }}>
-              <div className="icbox"><svg className="v2-ic"><use href="#i-route" /></svg></div>
-              <h3>{t('usage_trajet_title')}</h3>
-              <p>{t('usage_trajet_desc')}</p>
-              <div style={{ display: 'flex', gap: 8, margin: '6px 0', flexWrap: 'wrap' }}>
-                <span style={{ fontSize: '.72rem', color: '#666', display: 'flex', alignItems: 'center', gap: 3 }}>
-                  <span style={{ width: 5, height: 5, borderRadius: '50%', background: '#22c55e', display: 'inline-block' }} />
-                  {t('usage_trajet_micro1')}
-                </span>
-                <span style={{ fontSize: '.72rem', color: '#666', display: 'flex', alignItems: 'center', gap: 3 }}>
-                  <span style={{ width: 5, height: 5, borderRadius: '50%', background: '#22c55e', display: 'inline-block' }} />
-                  {t('usage_trajet_micro2')}
-                </span>
-              </div>
-              <span className="open" style={{ marginTop: 'auto', fontWeight: 700 }}>
-                {t('usage_trajet_cta')} <svg className="v2-ic"><use href="#i-arrow-right" /></svg>
-              </span>
-            </Link>
-
-            {/* TCO — neutre */}
-            <Link className="v2-tcard c-blue" href="/comparer">
-              <div className="icbox"><svg className="v2-ic"><use href="#i-bar-chart" /></svg></div>
-              <h3>{t('usage_tco_title')}</h3>
-              <p>{t('usage_tco_desc')}</p>
-              <span className="open" style={{ marginTop: 'auto' }}>
-                {t('usage_tco_cta')} <svg className="v2-ic"><use href="#i-arrow-right" /></svg>
-              </span>
-            </Link>
-
-            {/* Panne — urgent orange */}
-            <Link className="v2-tcard c-orange" href="/depannage" style={{ position: 'relative', border: '2px solid #f97316', background: 'linear-gradient(135deg, #fff7ed 0%, #fff 100%)' }}>
-              <span style={{
-                position: 'absolute', top: 10, right: 10,
-                background: '#f97316', color: 'white',
-                fontSize: '.65rem', fontWeight: 700, padding: '2px 8px', borderRadius: 10,
-                textTransform: 'uppercase', letterSpacing: '.3px',
-              }}>
-                {t('usage_panne_badge')}
-              </span>
-              <div className="icbox"><svg className="v2-ic"><use href="#i-wrench" /></svg></div>
-              <h3 style={{ color: '#c2410c' }}>{t('usage_panne_title')}</h3>
-              <p>{t('usage_panne_desc')}</p>
-              <div style={{ display: 'flex', gap: 8, margin: '6px 0', flexWrap: 'wrap' }}>
-                {[t('usage_panne_micro1'), t('usage_panne_micro2'), t('usage_panne_micro3')].map((m, i) => (
-                  <span key={i} style={{ fontSize: '.72rem', color: '#666', display: 'flex', alignItems: 'center', gap: 3 }}>
-                    <span style={{ width: 5, height: 5, borderRadius: '50%', background: '#22c55e', display: 'inline-block' }} />
-                    {m}
-                  </span>
+        {/* ── PRINCIPE ─────────────────────────────────────────────────── */}
+        <section className={`${s.section} ${s.sectionAlt}`} id="principe">
+          <div className={s.container}>
+            <p className={s.kicker}>{t('how_kicker')}</p>
+            <h2 className={s.h2}>{t('how_title')}</h2>
+            <div className={s.stepsGrid}>
+              <ol className={s.steps}>
+                {steps.map(n => (
+                  <li key={n}>
+                    <span className={s.stepNum}>{n}</span>
+                    <div>
+                      <strong>{t(`step${n}_title`)}</strong>
+                      <p>{t(`step${n}_text`)}</p>
+                    </div>
+                  </li>
                 ))}
+              </ol>
+              <div className={s.detailCol}>
+                <figure className={s.figure}>
+                  <Image src="/vitrine/contact-siege.webp" alt={t('img_seat_alt')} width={900} height={766} sizes="(max-width: 900px) 100vw, 40vw" className={s.figImg} />
+                  <figcaption><strong>{t('img_seat_label')}</strong> — {t('img_seat_caption')}</figcaption>
+                </figure>
               </div>
-              <span className="open" style={{ marginTop: 'auto', color: '#c2410c', fontWeight: 700 }}>
-                {t('usage_panne_cta')} <svg className="v2-ic"><use href="#i-arrow-right" /></svg>
-              </span>
-            </Link>
-          </div>
-        </div>
-      </section>
-
-      {/* ===== Metrics ===== */}
-      <section className="v2-metrics">
-        <div className="v2-container">
-          <div className="grid">
-            <div className="cell">
-              <div className="ic-wrap"><svg className="v2-ic"><use href="#i-trending-down" /></svg></div>
-              <div className="num"><span className="accent">{t('metric_1_value')}</span>{t('metric_1_unit')}</div>
-              <div className="lbl">{t('metric_1_label')}</div>
-            </div>
-            <div className="cell">
-              <div className="ic-wrap"><svg className="v2-ic"><use href="#i-route" /></svg></div>
-              <div className="num">{t('metric_2_value')}</div>
-              <div className="lbl">{t('metric_2_label')}</div>
-            </div>
-            <div className="cell">
-              <div className="ic-wrap"><svg className="v2-ic"><use href="#i-briefcase" /></svg></div>
-              <div className="num"><span className="accent">{t('metric_3_value')}</span>{t('metric_3_unit')}</div>
-              <div className="lbl">{t('metric_3_label')}</div>
-            </div>
-            <div className="cell">
-              <div className="ic-wrap"><svg className="v2-ic"><use href="#i-flame" /></svg></div>
-              <div className="num">{t('metric_4_value')}</div>
-              <div className="lbl">{t('metric_4_label')}</div>
             </div>
           </div>
-        </div>
-      </section>
+        </section>
 
-      {/* ===== Itinéraires été (light only) ===== */}
-      {theme === 'light' && (
-        <section className="v2-section alt">
-          <div className="v2-container">
-            <div className="v2-section-head">
-              <div className="left">
-                <div className="v2-eyebrow">{t('summer_eyebrow')}</div>
-                <h2>{t('summer_title_a')} <span className="grad">{t('summer_title_glow')}</span></h2>
+        {/* ── TAILLES ──────────────────────────────────────────────────── */}
+        <section className={s.section} id="tailles">
+          <div className={s.container}>
+            <p className={s.kicker}>{t('sizes_kicker')}</p>
+            <h2 className={s.h2}>{t('sizes_title')}</h2>
+            <div className={s.specGrid}>
+              <div className={s.spec}>
+                <div className={s.specVal}>28–49 mm</div>
+                <div className={s.specLbl}>{t('spec_head')}</div>
+                <div className={s.specSub}>{t('spec_std')}</div>
               </div>
-              <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
-                <Link className="v2-btn v2-btn-ghost" href="/vacances-voiture/checklist-ev">
-                  🖨️ {t('summer_cta_checklist')} <svg className="v2-ic"><use href="#i-arrow-right" /></svg>
-                </Link>
-                <Link className="v2-btn v2-btn-ghost" href="/vacances-voiture">
-                  {t('summer_cta_all')} <svg className="v2-ic"><use href="#i-arrow-right" /></svg>
-                </Link>
+              <div className={s.spec}>
+                <div className={s.specVal}>8–11 mm</div>
+                <div className={s.specLbl}>{t('spec_stem')}</div>
+                <div className={s.specSub}>{t('spec_std')}</div>
+              </div>
+              <div className={s.spec}>
+                <div className={s.specVal}>30° · 45° · 60°</div>
+                <div className={s.specLbl}>{t('spec_angle')}</div>
+                <div className={s.specSub}>{t('spec_on_request')}</div>
               </div>
             </div>
-            <div className="v2-iti-grid">
-              {[
-                { key: '1', titre: t('summer_trip_1_title'), sub: t('summer_trip_1_sub'), km: t('summer_trip_1_km'), diesel: 138, elec: 70, ess: 156, save: 68, bg: 'linear-gradient(180deg,#f59e0b,#ef6c1a)' },
-                { key: '2', titre: t('summer_trip_2_title'), sub: t('summer_trip_2_sub'), km: t('summer_trip_2_km'), diesel: 186, elec: 112, ess: 210, save: 74, bg: 'linear-gradient(180deg,#10b981,#0a8a5e)' },
-                { key: '3', titre: t('summer_trip_3_title'), sub: t('summer_trip_3_sub'), km: t('summer_trip_3_km'), diesel: 164, elec: 95, ess: 183, save: 69, bg: 'linear-gradient(180deg,#38bdf8,#0c4a6e)' },
-              ].map((trip) => (
-                <Link key={trip.key} className="v2-iti" href="/comparer-trajet">
-                  <div className="scene">
-                    <div className="bg" style={{ background: trip.bg }} />
-                    <div className="row">
-                      <div className="city">{trip.titre}<span>{trip.sub}</span></div>
-                      <span className="km"><svg className="v2-ic"><use href="#i-route" /></svg>{trip.km}</span>
-                    </div>
-                  </div>
-                  <div className="body">
-                    <div className="compare">
-                      <div className="c"><div className="l"><svg className="v2-ic"><use href="#i-fuel" /></svg>{t('summer_card_diesel')}</div><div className="v">{trip.diesel}€</div></div>
-                      <div className="c w"><div className="l"><svg className="v2-ic"><use href="#i-zap" /></svg>{t('summer_card_electric')}</div><div className="v">{trip.elec}€</div></div>
-                      <div className="c"><div className="l"><svg className="v2-ic"><use href="#i-fuel" /></svg>{t('summer_card_petrol')}</div><div className="v">{trip.ess}€</div></div>
-                    </div>
-                    <div className="open">
-                      <span className="save"><svg className="v2-ic"><use href="#i-trending-down" /></svg>&minus;{trip.save}€</span>
-                      <span className="arr">{t('summer_card_detail')} <svg className="v2-ic"><use href="#i-arrow-right" /></svg></span>
-                    </div>
-                  </div>
-                </Link>
+            <div className={s.split}>
+              <figure className={s.figure}>
+                <Image src="/vitrine/gabarit-cotes.webp" alt={t('img_cad_alt')} width={900} height={847} sizes="(max-width: 900px) 100vw, 40vw" className={s.figImg} />
+                <figcaption>{t('img_cad_caption')}</figcaption>
+              </figure>
+              <div>
+                <h3 className={s.h3}>{t('sizes_h3')}</h3>
+                <p className={s.p}>{t('sizes_p1')}</p>
+                <p className={s.p}>{t('sizes_p2')}</p>
+                <p className={s.note}>{t('sizes_note')}</p>
+                <a href="#devis" className={s.btnPrimary}>{t('cta_quote')}</a>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* ── OFFRES ───────────────────────────────────────────────────── */}
+        <section className={`${s.section} ${s.sectionAlt}`} id="offres">
+          <div className={s.container}>
+            <p className={s.kicker}>{t('offers_kicker')}</p>
+            <h2 className={s.h2}>{t('offers_title')}</h2>
+            <div className={s.offers}>
+              <article className={s.offer}>
+                <h3>{t('offer1_title')}</h3>
+                <p>{t('offer1_text')}</p>
+                <a href="#devis" className={s.btnGhost}>{t('offer_cta')}</a>
+              </article>
+              <article className={`${s.offer} ${s.offerFeatured}`}>
+                <span className={s.offerTag}>{t('offer2_tag')}</span>
+                <h3>{t('offer2_title')}</h3>
+                <p>{t('offer2_text')}</p>
+                <a href="#devis" className={s.btnPrimary}>{t('offer_cta')}</a>
+              </article>
+              <article className={s.offer}>
+                <h3>{t('offer3_title')}</h3>
+                <p>{t('offer3_text')}</p>
+                <a href="#devis" className={s.btnGhost}>{t('offer_cta')}</a>
+              </article>
+            </div>
+            <figure className={`${s.figure} ${s.figureWide}`}>
+              <Image src="/vitrine/kit-culasse.webp" alt={t('img_kit_alt')} width={1000} height={1289} sizes="(max-width: 900px) 100vw, 60vw" className={s.figImg} />
+              <figcaption>{t('img_kit_caption')}</figcaption>
+            </figure>
+          </div>
+        </section>
+
+        {/* ── DEVIS ────────────────────────────────────────────────────── */}
+        <section className={s.section} id="devis">
+          <div className={s.container}>
+            <div className={s.formHead}>
+              <p className={s.kicker}>{t('quote_kicker')}</p>
+              <h2 className={s.h2}>{t('quote_title')}</h2>
+              <p className={s.p}>{t('quote_text')}</p>
+            </div>
+            <DevisForm />
+            <p className={s.flyers}>
+              {t('flyers_label')}{' '}
+              {Object.entries(FLYERS).map(([k, f], i) => (
+                <span key={k}>{i > 0 && ' · '}<a href={f.file} download>{f.label}</a></span>
+              ))}
+            </p>
+          </div>
+        </section>
+
+        {/* ── FAQ ──────────────────────────────────────────────────────── */}
+        <section className={`${s.section} ${s.sectionAlt}`} id="faq">
+          <div className={s.container}>
+            <p className={s.kicker}>FAQ</p>
+            <h2 className={s.h2}>{t('faq_title')}</h2>
+            <div className={s.faq}>
+              {faqs.map(n => (
+                <details key={n}>
+                  <summary>{t(`faq${n}_q`)}</summary>
+                  <p>{t(`faq${n}_a`)}</p>
+                </details>
               ))}
             </div>
           </div>
         </section>
-      )}
 
-      {/* ===== Pourquoi nous croire ===== */}
-      <section className="v2-section alt">
-        <div className="v2-container">
-          <div className="v2-section-head">
-            <div className="left">
-              <div className="v2-eyebrow">{t('why_eyebrow')}</div>
-              <h2>{t('why_title_a')} <span className="grad">{t('why_title_glow')}</span></h2>
+        {/* ── MÉDIA ────────────────────────────────────────────────────── */}
+        <section className={s.mediaBand}>
+          <div className={s.container}>
+            <div className={s.mediaBandInner}>
+              <div>
+                <p className={s.kicker}>{t('media_kicker')}</p>
+                <h2 className={s.h2}>{t('media_title')}</h2>
+                <p className={s.p}>{t('media_text')}</p>
+              </div>
+              <a href={locale === routing.defaultLocale ? '/media' : `/${locale}/media`} className={s.btnLight}>{t('media_cta')} →</a>
             </div>
           </div>
-          <div className="v2-tools-grid">
-            <div className="v2-tcard c-blue"><div className="icbox"><svg className="v2-ic"><use href="#i-bar-chart" /></svg></div><h3>{t('why_1_title')}</h3><p>{t('why_1_desc')}</p></div>
-            <div className="v2-tcard c-green"><div className="icbox"><svg className="v2-ic"><use href="#i-shield-check" /></svg></div><h3>{t('why_2_title')}</h3><p>{t('why_2_desc')}</p></div>
-            <div className="v2-tcard c-violet"><div className="icbox"><svg className="v2-ic"><use href="#i-globe" /></svg></div><h3>{t('why_3_title')}</h3><p>{t('why_3_desc')}</p></div>
-            <div className="v2-tcard c-orange"><div className="icbox"><svg className="v2-ic"><use href="#i-leaf" /></svg></div><h3>{t('why_4_title')}</h3><p>{t('why_4_desc')}</p></div>
-          </div>
-        </div>
-      </section>
+        </section>
+      </main>
 
-
-      {/* ===== Tools grid (groupés) ===== */}
-      <section className="v2-section">
-        <div className="v2-container">
-          <div className="v2-section-head">
-            <div className="left">
-              <div className="v2-eyebrow">{t('tools_eyebrow')}</div>
-              <h2>{t('tools_title_a')} <span className="grad">{t('tools_title_glow')}</span></h2>
-            </div>
-            <Link className="v2-btn v2-btn-ghost" href="/outils">
-              {t('tools_cta_all')} <svg className="v2-ic"><use href="#i-arrow-right" /></svg>
-            </Link>
-          </div>
-
-          <div className="v2-tool-group">
-            <div className="v2-group-title">{t('tools_group_calc')}</div>
-            <div className="v2-tools-grid">
-              <Link className="v2-tcard c-blue" href="/comparer-trajet">
-                <div className="icbox"><svg className="v2-ic"><use href="#i-route" /></svg></div>
-                <h3>{t('tool1_title')}</h3>
-                <p>{t('tool1_desc')}</p>
-                <span className="open">{t('tool1_cta')} <svg className="v2-ic"><use href="#i-arrow-right" /></svg></span>
-              </Link>
-              <Link className="v2-tcard c-green" href="/comparer">
-                <div className="icbox"><svg className="v2-ic"><use href="#i-bar-chart" /></svg></div>
-                <h3>{t('tool2_title')}</h3>
-                <p>{t('tool2_desc')}</p>
-                <span className="open">{t('tool2_cta')} <svg className="v2-ic"><use href="#i-arrow-right" /></svg></span>
-              </Link>
-              <Link className="v2-tcard c-amber" href="/simulateur">
-                <div className="icbox"><svg className="v2-ic"><use href="#i-calculator" /></svg></div>
-                <h3>{t('tool3_title')}</h3>
-                <p>{t('tool3_desc')}</p>
-                <span className="open">{t('tool3_cta')} <svg className="v2-ic"><use href="#i-arrow-right" /></svg></span>
-              </Link>
-            </div>
-          </div>
-
-          <div className="v2-tool-group">
-            <div className="v2-group-title">{t('tools_group_recharge')}</div>
-            <div className="v2-tools-grid">
-              <Link className="v2-tcard c-pink" href="/outils/cartes-recharge">
-                <div className="icbox"><svg className="v2-ic"><use href="#i-credit-card" /></svg></div>
-                <h3>{t('tool4_title')}</h3>
-                <p>{t('tool4_desc')}</p>
-                <span className="open">{t('tool4_cta')} <svg className="v2-ic"><use href="#i-arrow-right" /></svg></span>
-              </Link>
-              <Link className="v2-tcard c-amber" href="/vacances-voiture/checklist-ev">
-                <div className="icbox"><svg className="v2-ic"><use href="#i-file-text" /></svg></div>
-                <h3>{t('tool9_title')}</h3>
-                <p>{t('tool9_desc')}</p>
-                <span className="open">{t('tool9_cta')} <svg className="v2-ic"><use href="#i-arrow-right" /></svg></span>
-              </Link>
-              <Link className="v2-tcard c-green" href="/assistance">
-                <div className="icbox"><svg className="v2-ic"><use href="#i-life-buoy" /></svg></div>
-                <h3>{t('tool8_title')}</h3>
-                <p>{t('tool8_desc')}</p>
-                <span className="open">{t('tool8_cta')} <svg className="v2-ic"><use href="#i-arrow-right" /></svg></span>
-              </Link>
-            </div>
-          </div>
-
-          <div className="v2-tool-group">
-            <div className="v2-group-title">{t('tools_group_panne')}</div>
-            <div className="v2-tools-grid">
-              <Link className="v2-tcard c-violet" href="/assistant-depannage">
-                <div className="icbox"><svg className="v2-ic"><use href="#i-camera" /></svg></div>
-                <h3>{t('tool5_title')}</h3>
-                <p>{t('tool5_desc')}</p>
-                <span className="open">{t('tool5_cta')} <svg className="v2-ic"><use href="#i-arrow-right" /></svg></span>
-              </Link>
-              <Link className="v2-tcard c-orange" href="/constat">
-                <div className="icbox"><svg className="v2-ic"><use href="#i-file-text" /></svg></div>
-                <h3>{t('tool6_title')}</h3>
-                <p>{t('tool6_desc')}</p>
-                <span className="open">{t('tool6_cta')} <svg className="v2-ic"><use href="#i-arrow-right" /></svg></span>
-              </Link>
-              <Link className="v2-tcard c-blue" href="/depannage">
-                <div className="icbox"><svg className="v2-ic"><use href="#i-wrench" /></svg></div>
-                <h3>{t('tool7_title')}</h3>
-                <p>{t('tool7_desc')}</p>
-                <span className="open">{t('tool7_cta')} <svg className="v2-ic"><use href="#i-arrow-right" /></svg></span>
-              </Link>
-              <Link className="v2-tcard c-red" href="/outils/amende-pv">
-                <div className="icbox"><svg className="v2-ic"><use href="#i-alert-triangle" /></svg></div>
-                <h3>{t('tool10_title')}</h3>
-                <p>{t('tool10_desc')}</p>
-                <span className="open">{t('tool10_cta')} <svg className="v2-ic"><use href="#i-arrow-right" /></svg></span>
-              </Link>
-            </div>
-          </div>
-
-          <div className="v2-tool-group">
-            <div className="v2-group-title">Pause détente</div>
-            <div className="v2-tools-grid">
-              <Link className="v2-tcard c-violet" href="/jeux/sudoku">
-                <div className="icbox" style={{ fontSize: '1.5rem', lineHeight: 1, display: 'grid', placeItems: 'center' }}>🧩</div>
-                <h3>Sudoku</h3>
-                <p>Une grille à solution unique générée à chaque partie — 4 niveaux, notes, indices et chrono. La pause maligne entre deux trajets.</p>
-                <span className="open">Jouer <svg className="v2-ic"><use href="#i-arrow-right" /></svg></span>
-              </Link>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ===== Newsletter CTA ===== */}
-      <section className="v2-section">
-        <div className="v2-container">
-          <div className="v2-cta-block">
-            <div>
-              <h2>{t('newsletter_title_a')} <span className="grad">{t('newsletter_title_glow')}</span></h2>
-              <p>{t('newsletter_subtitle')}</p>
-            </div>
-            <div>
-              <NewsletterForm />
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ===== Toggle thème flottant ===== */}
-      <div className="v2-theme-toggle" role="group" aria-label={t('theme_group_label')}>
-        <button
-          type="button"
-          className={theme === 'light' ? 'active' : ''}
-          onClick={() => applyTheme('light')}
-          aria-label={t('theme_aria_light')}
-        >
-          <svg className="v2-ic"><use href="#i-sun" /></svg>{t('theme_label_light')}
-        </button>
-        <button
-          type="button"
-          className={theme === 'dark' ? 'active' : ''}
-          onClick={() => applyTheme('dark')}
-          aria-label={t('theme_aria_dark')}
-        >
-          <svg className="v2-ic"><use href="#i-moon" /></svg>{t('theme_label_dark')}
-        </button>
-      </div>
-    </main>
+      <VitrineFooter />
+    </div>
   )
 }
