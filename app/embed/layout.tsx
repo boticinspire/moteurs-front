@@ -1,12 +1,14 @@
 import type { Metadata, Viewport } from 'next'
 import type { ReactNode } from 'react'
-import { Inter } from 'next/font/google'
+import localFont from 'next/font/local'
 import '../globals.css'
 
-const inter = Inter({
-  subsets: ['latin'],
+// Inter auto-hébergée (@fontsource-variable/inter) — voir app/[locale]/layout.tsx
+const inter = localFont({
+  src: '../../node_modules/@fontsource-variable/inter/files/inter-latin-wght-normal.woff2',
   variable: '--font-inter',
   display: 'swap',
+  weight: '100 900',
 })
 
 /**

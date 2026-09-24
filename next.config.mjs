@@ -4,6 +4,11 @@ const withNextIntl = createNextIntlPlugin('./i18n/request.ts')
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  // `NEXT_OUTPUT=standalone npm run build` → bundle autonome (.next/standalone) pour un
+  // hébergement Node.js classique (Behostings, VPS). Vercel ignore cette option.
+  ...(process.env.NEXT_OUTPUT === 'standalone'
+    ? { output: 'standalone', outputFileTracingRoot: import.meta.dirname }
+    : {}),
   async redirects() {
     return [
       {

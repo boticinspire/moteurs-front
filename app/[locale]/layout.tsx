@@ -1,6 +1,6 @@
 import type { Metadata, Viewport } from 'next'
 import type { ReactNode } from 'react'
-import { Inter } from 'next/font/google'
+import localFont from 'next/font/local'
 import { notFound } from 'next/navigation'
 import { NextIntlClientProvider, hasLocale } from 'next-intl'
 import { getTranslations, setRequestLocale } from 'next-intl/server'
@@ -12,10 +12,13 @@ import MediaChrome from '@/components/MediaChrome'
 import TranslationBannerGate from '@/components/TranslationBannerGate'
 import { routing, type Locale } from '@/i18n/routing'
 
-const inter = Inter({
-  subsets: ['latin'],
+// Inter auto-hébergée (@fontsource-variable/inter) : aucune requête vers Google Fonts,
+// build possible hors ligne, conformité RGPD (pas de fuite d'IP vers Google).
+const inter = localFont({
+  src: '../../node_modules/@fontsource-variable/inter/files/inter-latin-wght-normal.woff2',
   variable: '--font-inter',
   display: 'swap',
+  weight: '100 900',
 })
 
 export function generateStaticParams() {
