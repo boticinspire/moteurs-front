@@ -1,5 +1,6 @@
 import { notFound } from 'next/navigation'
 import type { Metadata } from 'next'
+import { LEAN_PRERENDER } from '@/lib/prerender'
 import { supabase, FLAGS, CONF_CLASS, CONF_LABEL, CIBLE_LABEL, CIBLE_COLOR, flagForLang, labelForLang, type Article } from '@/lib/supabase'
 
 // Emoji drapeau par langue d'article (pour le titre Open Graph)
@@ -13,6 +14,9 @@ export const revalidate = 86400
 
 // Pré-génère les slugs de tous les articles publiés au build
 export async function generateStaticParams() {
+  // Hébergement Node (standalone) : articles générés à la 1re visite + cache ISR
+  // (évite ~3 850 pages / ~3 Go dans le paquet) — voir lib/prerender.ts
+  if (LEAN_PRERENDER) return []
   const { data } = await supabase
     .from('articles')
     .select('slug')
