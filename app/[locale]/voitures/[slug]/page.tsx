@@ -1,5 +1,6 @@
 import { notFound } from 'next/navigation'
 import type { Metadata } from 'next'
+import { LEAN_PRERENDER } from '@/lib/prerender'
 import type { CSSProperties } from 'react'
 import { Link } from '@/i18n/navigation'
 import { getVoiture, getVoitureSlugs, consoReelle100, type EvModele } from '@/lib/voitures'
@@ -9,6 +10,8 @@ import CoutRechargeModele from './CoutRechargeModele'
 export const revalidate = 86400
 
 export async function generateStaticParams() {
+  // Hébergement Node (standalone) : fiches générées à la 1re visite + cache ISR — voir lib/prerender.ts
+  if (LEAN_PRERENDER) return []
   const slugs = await getVoitureSlugs()
   return slugs.map((slug) => ({ slug }))
 }
