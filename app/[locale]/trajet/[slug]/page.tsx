@@ -4,6 +4,7 @@
  */
 
 import type { Metadata } from 'next'
+import { LEAN_PRERENDER } from '@/lib/prerender'
 import { notFound } from 'next/navigation'
 import { Link } from '@/i18n/navigation'
 import {
@@ -25,6 +26,8 @@ const ANNEE = new Date().getFullYear()
 // ─── Generate static params ───────────────────────────────────────────────────
 
 export async function generateStaticParams() {
+  // Hébergement Node (standalone) : génération à la demande + cache ISR — voir lib/prerender.ts
+  if (LEAN_PRERENDER) return []
   return TRAJETS_SEO.map(t => ({ slug: t.slug }))
 }
 

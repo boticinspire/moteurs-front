@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import { LEAN_PRERENDER } from '@/lib/prerender'
 import { notFound } from 'next/navigation'
 import routesData from '@/data/routes-vacances.json'
 import { calculerTousVehicules, fmtEur, fmtDuree, type Route } from '@/lib/trajet'
@@ -9,6 +10,8 @@ const ROUTES = routesData as Route[]
 // ─── Génération statique des pages ────────────────────────────────────────────
 
 export async function generateStaticParams() {
+  // Hébergement Node (standalone) : génération à la demande + cache ISR — voir lib/prerender.ts
+  if (LEAN_PRERENDER) return []
   return ROUTES.map(route => ({ slug: route.slug }))
 }
 

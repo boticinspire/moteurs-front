@@ -64,7 +64,7 @@ EOF
 rm -f "$PKG/.env.local" "$PKG/.env"
 rm -rf "$PKG/.next/cache"
 
-echo "▶ Taille (les pages pré-rendues comparer-trajet × 6 langues pèsent ~1,3 Go décompressés)"
+echo "▶ Taille (trajets générés à la demande — voir lib/prerender.ts)"
 du -sh "$PKG"
 echo "▶ Zip → $ZIP"
 rm -f "$ZIP"

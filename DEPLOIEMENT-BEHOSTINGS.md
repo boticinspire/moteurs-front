@@ -14,11 +14,17 @@
 
 ## 1. Construire le paquet
 
-Le build **doit être fait sous Linux x64** (binaires natifs `sharp`). Trois possibilités :
+Le build **doit être fait sous Linux x64** (binaires natifs `sharp`) :
 
-1. **WSL / VM Ubuntu sur ton PC** : `npm ci && bash scripts/package-behostings.sh`
-2. **Directement dans cPanel** (si la mémoire le permet) : uploader le repo, `npm ci`, `NEXT_OUTPUT=standalone npm run build`, puis suivre §2 avec le dossier tel quel
-3. **Session Claude** : paquet produit dans le cloud et déposé dans `D:\Moteurs.com\Moteurs.com\deploy\`
+1. **GitHub Actions (recommandé)** : workflow `.github/workflows/package-behostings.yml`.
+   - Déclenchement : pousser un tag `behostings-*` (ex. `git tag behostings-2 && git push origin behostings-2`), ou *Actions › Paquet Behostings › Run workflow* une fois le workflow présent sur `main`.
+   - Le zip est dans la section **Artifacts** du run.
+   - Prérequis (fait le 24/09/2026) : secrets `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, `NEXT_PUBLIC_ORS_API_KEY`, `NEXT_PUBLIC_ORS_BASE_URL`.
+2. **WSL / VM Ubuntu sur ton PC** : `npm ci && bash scripts/package-behostings.sh`
+
+Taille : ~380 Mo décompressés / ~115 Mo zippés. En mode standalone, les pages `comparer-trajet/[slug]` et `trajet/[slug]` ne sont pas pré-rendues : générées à la première visite puis mises en cache sur disque (`.next/server/app/…`) — voir `lib/prerender.ts`. Le dossier de l'app doit rester accessible en écriture.
+
+Hébergement constaté (24/09/2026) : DirectAdmin `hostnode7.behostings.net` (193.105.73.254), « Setup Node.js App » avec Node 20 / 22 / **24 (recommandée)** / 26, limites **1 Go RAM** et 50 % CPU → suffisant pour servir, pas pour builder. Dans DirectAdmin, les écrans s'appellent « Setup Node.js App » (Racine de l'application, URL de l'application, Fichier de démarrage = `app.js`, Mode = Production).
 
 ## 2. Première mise en place — test sur un sous-domaine (sans toucher au site actuel)
 
