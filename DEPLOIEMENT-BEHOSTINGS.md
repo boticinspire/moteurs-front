@@ -64,3 +64,14 @@ Hébergement constaté (24/09/2026) : DirectAdmin `hostnode7.behostings.net` (19
 
 - **VPS cloud Behostings** : même paquet, lancé avec `pm2 start app.js` derrière Nginx (reverse proxy vers 127.0.0.1:3000) + certbot. Tout reste en Belgique.
 - **Repli** : Vercel plan Pro (usage commercial obligatoire) — aucune modification de code.
+
+## 6. Déploiement réel — 24/09/2026 (environnement de test)
+
+- URL : **https://moteurs.botic.be** (sous-domaine de botic.be, DNS déjà chez Behostings — aucune modification du DNS de moteurs.com).
+- Paquet : run GitHub Actions #4 (`behostings-4`, commit 6b63040), 132 Mo.
+- Transfert : zip découpé en morceaux de 9 Mo, envoyés via le gestionnaire de fichiers DirectAdmin, réassemblés dans le Terminal (`cat pkg.part?? > …zip`, `sha256sum -c`) → `~/apps/moteurs/app` (461 Mo).
+- Setup Node.js App : Node 24.20.0, Production, racine `apps/moteurs/app`, URL `moteurs.botic.be`, startup `app.js`, log `~/apps/moteurs/passenger.log`.
+- À retenir :
+  - DirectAdmin dépose un `index.html` d'attente dans `~/domains/<sous-domaine>/public_html` : il masque l'app → renommé en `../index.html.default-directadmin`.
+  - Le shell du serveur définit `HOSTNAME` (nom de la machine) : `app.js` force désormais `localhost` (surcharge via `NEXT_HOSTNAME`).
+  - Variables d'environnement serveur encore à saisir dans Setup Node.js App (clés, par l'utilisateur) : `OCM_API_KEY`, `SUPABASE_SERVICE_ROLE_KEY` (facultative).

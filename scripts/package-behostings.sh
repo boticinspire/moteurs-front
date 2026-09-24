@@ -41,7 +41,9 @@ cat > "$PKG/app.js" << 'EOF'
 // cPanel injecte PORT ; Next standalone lit HOSTNAME/PORT.
 // NB : '127.0.0.1' provoque une boucle de redirection (rewrite du middleware next-intl
 // vers http://localhost:PORT/fr) — garder 'localhost' ou '0.0.0.0'.
-process.env.HOSTNAME = process.env.HOSTNAME || 'localhost'
+// NB 2 : ne PAS reprendre process.env.HOSTNAME — sur un serveur mutualisé le shell la définit
+// déjà (nom de la machine) ; utiliser NEXT_HOSTNAME pour surcharger.
+process.env.HOSTNAME = process.env.NEXT_HOSTNAME || 'localhost'
 process.env.PORT = process.env.PORT || '3000'
 process.env.NODE_ENV = 'production'
 process.chdir(__dirname)
