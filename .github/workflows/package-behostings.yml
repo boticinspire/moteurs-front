@@ -1,0 +1,52 @@
+name: Paquet Behostings (Next.js standalone)
+
+# Construit le site en mode standalone sur Linux x64 (binaires natifs compatibles
+# avec le serveur Behostings) et publie le zip comme artefact téléchargeable.
+#
+# Lancement : GitHub › Actions › « Paquet Behostings » › Run workflow (branche au choix).
+# Résultat  : onglet du run › Artifacts › moteurs-behostings-<sha>.zip
+
+on:
+  workflow_dispatch:
+  push:
+    tags:
+      - 'behostings-*'
+
+jobs:
+  package:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Dépendances
+        run: npm ci --no-audit --no-fund
+
+      - name: Variables publiques de build (NEXT_PUBLIC_*)
+        # Les clés publiques Supabase/ORS sont embarquées dans le bundle client au build.
+        # À définir dans GitHub › Settings › Secrets and variables › Actions.
+        run: |
+          {
+            echo "NEXT_PUBLIC_SUPABASE_URL=${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}"
+            echo "NEXT_PUBLIC_SUPABASE_ANON_KEY=${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}"
+            echo "NEXT_PUBLIC_ORS_API_KEY=${{ secrets.NEXT_PUBLIC_ORS_API_KEY }}"
+            echo "NEXT_PUBLIC_ORS_BASE_URL=${{ secrets.NEXT_PUBLIC_ORS_BASE_URL }}"
+          } > .env.local
+
+      - name: Build + zip
+        env:
+          NEXT_TELEMETRY_DISABLED: 1
+        run: bash scripts/package-behostings.sh
+
+      - name: Publier l'artefact
+        uses: actions/upload-artifact@v4
+        with:
+          name: moteurs-behostings-${{ github.sha }}
+          path: dist/moteurs-behostings-*.zip
+          retention-days: 14
+          compression-level: 0
