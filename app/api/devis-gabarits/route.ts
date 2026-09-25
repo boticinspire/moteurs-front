@@ -5,11 +5,16 @@
  *   1. Valide le corps (nom, email obligatoires)
  *   2. Insère dans la table Supabase `demandes_gabarits`
  *      (RLS : insert autorisé à anon, lecture réservée au service role / admin)
- *   3. Déclenche l'Edge Function `devis-gabarits-email` (notification + accusé de réception)
+ *   3. Envoie les emails (notification + accusé de réception) :
+ *      - via le SMTP de l'hébergeur (lib/mailer-devis.ts) si SMTP_* est configuré
+ *      - sinon repli sur l'Edge Function Supabase `devis-gabarits-email`
  *   4. Retourne { success: true }
  */
 
 import { NextRequest, NextResponse } from 'next/server'
+import { sendDevisEmails, smtpConfigured } from '@/lib/mailer-devis'
+
+export const runtime = 'nodejs'
 
 const SUPABASE_URL      = process.env.NEXT_PUBLIC_SUPABASE_URL ?? ''
 const SUPABASE_ANON_KEY = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ?? ''
@@ -84,15 +89,24 @@ export async function POST(req: NextRequest) {
       const msg = (data && (data.message || data.error)) ?? `Supabase HTTP ${res.status}`
       return NextResponse.json({ error: msg }, { status: 502 })
     }
-    // Notification email (interne + accusé de réception client) — fire & forget
-    try {
-      const fnKey = SUPABASE_ANON_KEY || key
-      fetch(`${SUPABASE_URL}/functions/v1/devis-gabarits-email`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${fnKey}` },
-        body: JSON.stringify(row),
-      }).catch(err => console.error('[devis-gabarits] notification email:', err))
-    } catch {}
+    // Notification email (interne + accusé de réception client)
+    if (smtpConfigured()) {
+      try {
+        await sendDevisEmails(row)
+      } catch (err) {
+        // La demande est enregistrée : on ne fait pas échouer le formulaire pour un souci d'email
+        console.error('[devis-gabarits] SMTP:', err)
+      }
+    } else {
+      try {
+        const fnKey = SUPABASE_ANON_KEY || key
+        fetch(`${SUPABASE_URL}/functions/v1/devis-gabarits-email`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${fnKey}` },
+          body: JSON.stringify(row),
+        }).catch(err => console.error('[devis-gabarits] notification email:', err))
+      } catch {}
+    }
     // return=minimal : la clé anon n'a pas de droit SELECT (RLS) — on ne renvoie pas l'id
     return NextResponse.json({ success: true })
   } catch (err) {

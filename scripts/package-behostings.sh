@@ -59,6 +59,12 @@ NEXT_PUBLIC_ORS_BASE_URL=
 OCM_API_KEY=
 # optionnel : écriture serveur (leads, revalidate) sans passer par la RLS anon
 SUPABASE_SERVICE_ROLE_KEY=
+# emails de devis (boîte créée dans DirectAdmin)
+SMTP_HOST=mail.moteurs.com
+SMTP_PORT=465
+SMTP_USER=devis@moteurs.com
+SMTP_PASS=
+DEVIS_NOTIFY_TO=info@moteurs.com
 NODE_ENV=production
 EOF
 
