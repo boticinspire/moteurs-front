@@ -88,7 +88,9 @@
   "LanguageSwitcher": {
     "label": "Taal",
     "current": "Huidige taal: {language}",
-    "switch_to": "Overschakelen naar {language}"
+    "switch_to": "Overschakelen naar {language}",
+    "group_be": "België",
+    "group_other": "Andere talen"
   },
   "CookieBanner": {
     "title": "Uw cookievoorkeuren",

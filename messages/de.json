@@ -88,7 +88,9 @@
   "LanguageSwitcher": {
     "label": "Sprache",
     "current": "Aktuelle Sprache: {language}",
-    "switch_to": "Zu {language} wechseln"
+    "switch_to": "Zu {language} wechseln",
+    "group_be": "Belgien",
+    "group_other": "Weitere Sprachen"
   },
   "CookieBanner": {
     "title": "Ihre Cookie-Einstellungen",
