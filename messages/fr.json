@@ -82,7 +82,7 @@
     "link_outils": "Tous les calculateurs",
     "link_mentions": "Mentions légales",
     "link_about": "À propos",
-    "copyright": "© 2026 Moteurs.com — Média indépendant de la transition énergétique des transports routiers",
+    "copyright": "© 2026 Moteurs.com — un produit de Botic (BE 0689.469.169)",
     "link_cgu": "CGU"
   },
   "LanguageSwitcher": {
@@ -301,16 +301,16 @@
   "Legal": {
     "title": "Mentions légales",
     "section_editor_title": "Éditeur",
-    "section_editor_body": "Moteurs.com — Média éditorial indépendant. Directeur de la publication : Oliver.",
+    "section_editor_body": "Moteurs.com est un produit de Botic, entreprise individuelle d'Olivier Lory (personne physique). Siège : Rue des Mésanges 11, 5600 Villers-le-Gambon (Philippeville), Belgique. N° d'entreprise (BCE) et TVA : BE 0689.469.169. Directeur de la publication : Olivier Lory. Contact : contact@botic.be.",
     "section_hosting_title": "Hébergement",
-    "section_hosting_body": "Vercel Inc., 440 N Barranca Avenue #4133, Covina, CA 91723, États-Unis.",
+    "section_hosting_body": "Site hébergé en Belgique par Behostings (behostings.com). Diffusion, sécurité et DNS : Cloudflare, Inc. Base de données et envoi des emails transactionnels : Supabase (sous-traitant).",
     "section_data_title": "Données personnelles",
-    "section_data_body": "Moteurs.com collecte uniquement les données strictement nécessaires (email d'inscription, préférence de langue). Conformément au RGPD, vous disposez d'un droit d'accès, de rectification et de suppression à exercer auprès de redaction@moteurs.com.",
+    "section_data_body": "Moteurs.com ne collecte que les données nécessaires : email d'inscription et préférence de langue pour le média ; nom, email, entreprise, pays et caractéristiques techniques de la demande pour les demandes de devis. Ces données servent uniquement à répondre à votre demande et ne sont jamais revendues. Conformément au RGPD, vous disposez d'un droit d'accès, de rectification et de suppression à exercer auprès de privacy@botic.be.",
     "section_cookies_title": "Cookies",
     "section_cookies_body": "Cookies essentiels uniquement (session, préférence de langue). Aucun cookie publicitaire ou de profilage tiers.",
     "section_ip_title": "Propriété intellectuelle",
-    "section_ip_body": "L'ensemble du contenu de Moteurs.com (textes, calculateurs, visuels) est protégé. Toute reproduction sans autorisation est interdite. Citation autorisée avec lien retour.",
-    "last_updated": "Dernière mise à jour : mai 2026."
+    "section_ip_body": "L'ensemble du contenu de Moteurs.com (textes, calculateurs, visuels, dessins techniques) est protégé. Les gabarits de contrôle pour sièges et guides de soupape font l'objet d'une demande de brevet (BE 2025/5347). Toute reproduction sans autorisation est interdite. Citation autorisée avec lien retour.",
+    "last_updated": "Dernière mise à jour : septembre 2026."
   },
   "NotFound": {
     "title": "Page introuvable",
@@ -1308,6 +1308,7 @@
     "footer_location": "Belgique",
     "footer_legal": "Mentions légales",
     "footer_terms": "CGU",
-    "footer_rights": "Tous droits réservés"
+    "footer_rights": "Tous droits réservés",
+    "footer_company": "un produit de Botic · BE 0689.469.169"
   }
 }

@@ -83,6 +83,14 @@ export default async function LocaleLayout({
     name: 'Moteurs.com',
     url: 'https://moteurs.com',
     logo: 'https://moteurs.com/logo.png',
+    parentOrganization: {
+        '@type': 'Organization',
+        name: 'Botic',
+        url: 'https://botic.be',
+        vatID: 'BE0689469169',
+        founder: { '@type': 'Person', name: 'Olivier Lory' },
+        address: { '@type': 'PostalAddress', streetAddress: 'Rue des Mésanges 11', postalCode: '5600', addressLocality: 'Villers-le-Gambon', addressCountry: 'BE' },
+      },
     description: t('org_description'),
     knowsAbout: [
       'Transition energetique des transports routiers',

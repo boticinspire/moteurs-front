@@ -82,7 +82,7 @@
     "link_outils": "Alle Rechner",
     "link_mentions": "Impressum",
     "link_about": "Über uns",
-    "copyright": "© 2026 Moteurs.com — Unabhängiges Medium zur Energiewende des Straßenverkehrs",
+    "copyright": "© 2026 Moteurs.com — ein Produkt von Botic (BE 0689.469.169)",
     "link_cgu": "Nutzungsbedingungen"
   },
   "LanguageSwitcher": {
@@ -301,16 +301,16 @@
   "Legal": {
     "title": "Impressum",
     "section_editor_title": "Herausgeber",
-    "section_editor_body": "Moteurs.com — Unabhängiges redaktionelles Medium. Verantwortlich für den Inhalt: Oliver.",
+    "section_editor_body": "Moteurs.com ist ein Produkt von Botic, Einzelunternehmen von Olivier Lory (natürliche Person). Sitz: Rue des Mésanges 11, 5600 Villers-le-Gambon (Philippeville), Belgien. Unternehmens- (ZDU) und USt-Nr.: BE 0689.469.169. Verantwortlich für den Inhalt: Olivier Lory. Kontakt: contact@botic.be.",
     "section_hosting_title": "Hosting",
-    "section_hosting_body": "Vercel Inc., 440 N Barranca Avenue #4133, Covina, CA 91723, Vereinigte Staaten.",
+    "section_hosting_body": "Gehostet in Belgien von Behostings (behostings.com). Auslieferung, Sicherheit und DNS: Cloudflare, Inc. Datenbank und Transaktions-E-Mails: Supabase (Auftragsverarbeiter).",
     "section_data_title": "Personenbezogene Daten",
-    "section_data_body": "Moteurs.com erhebt nur die unbedingt notwendigen Daten (Abonnement-E-Mail, Spracheinstellung). Nach DSGVO haben Sie Recht auf Auskunft, Berichtigung und Löschung. Kontakt: redaction@moteurs.com.",
+    "section_data_body": "Moteurs.com erhebt nur die notwendigen Daten: E-Mail-Adresse und Sprachwahl für das Medium; Name, E-Mail, Firma, Land und technische Angaben der Anfrage für Angebotsanfragen. Diese Daten dienen ausschließlich der Beantwortung Ihrer Anfrage und werden nie verkauft. Gemäß DSGVO haben Sie ein Recht auf Auskunft, Berichtigung und Löschung: privacy@botic.be.",
     "section_cookies_title": "Cookies",
     "section_cookies_body": "Ausschließlich notwendige Cookies (Sitzung, Spracheinstellung). Keine Werbe- oder Profiling-Cookies Dritter.",
     "section_ip_title": "Urheberrecht",
-    "section_ip_body": "Alle Inhalte auf Moteurs.com (Texte, Rechner, Bilder) sind geschützt. Jede Vervielfältigung ohne Genehmigung ist verboten. Zitate sind mit Rückverweis erlaubt.",
-    "last_updated": "Letzte Aktualisierung: Mai 2026."
+    "section_ip_body": "Alle Inhalte von Moteurs.com (Texte, Rechner, Bilder, technische Zeichnungen) sind geschützt. Für die Prüflehren für Ventilsitz und -führung wurde ein Patent angemeldet (BE 2025/5347). Jede Vervielfältigung ohne Genehmigung ist untersagt. Zitate mit Rücklink erlaubt.",
+    "last_updated": "Zuletzt aktualisiert: September 2026."
   },
   "NotFound": {
     "title": "Seite nicht gefunden",
@@ -1308,6 +1308,7 @@
     "footer_location": "Belgien",
     "footer_legal": "Impressum",
     "footer_terms": "AGB",
-    "footer_rights": "Alle Rechte vorbehalten"
+    "footer_rights": "Alle Rechte vorbehalten",
+    "footer_company": "ein Produkt von Botic · BE 0689.469.169"
   }
 }

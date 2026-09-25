@@ -82,7 +82,7 @@
     "link_outils": "Tutti i calcolatori",
     "link_mentions": "Note legali",
     "link_about": "Chi siamo",
-    "copyright": "© 2026 Moteurs.com — Media indipendente sulla transizione energetica del trasporto su strada",
+    "copyright": "© 2026 Moteurs.com — a Botic product (BE 0689.469.169)",
     "link_cgu": "Condizioni d'uso"
   },
   "LanguageSwitcher": {
@@ -301,16 +301,16 @@
   "Legal": {
     "title": "Note legali",
     "section_editor_title": "Editore",
-    "section_editor_body": "Moteurs.com — Media editoriale indipendente. Direttore della pubblicazione: Oliver.",
+    "section_editor_body": "Moteurs.com is a product of Botic, a sole proprietorship of Olivier Lory. Registered office: Rue des Mésanges 11, 5600 Villers-le-Gambon (Philippeville), Belgium. Company (BCE) and VAT number: BE 0689.469.169. Publication director: Olivier Lory. Contact: contact@botic.be.",
     "section_hosting_title": "Hosting",
-    "section_hosting_body": "Vercel Inc., 440 N Barranca Avenue #4133, Covina, CA 91723, Stati Uniti.",
+    "section_hosting_body": "Hosted in Belgium by Behostings (behostings.com). Delivery, security and DNS: Cloudflare, Inc. Database and transactional email: Supabase (processor).",
     "section_data_title": "Dati personali",
-    "section_data_body": "Moteurs.com raccoglie esclusivamente i dati strettamente necessari (e-mail di iscrizione, preferenza di lingua). In base al GDPR, hai diritto di accesso, rettifica e cancellazione scrivendo a redaction@moteurs.com.",
+    "section_data_body": "Moteurs.com only collects the data it needs: sign-up email and language preference for the media; name, email, company, country and technical details of the request for quote requests. This data is used solely to answer your request and is never sold. Under the GDPR you have the right to access, rectify and delete your data: privacy@botic.be.",
     "section_cookies_title": "Cookie",
     "section_cookies_body": "Solo cookie essenziali (sessione, preferenza di lingua). Nessun cookie pubblicitario o di profilazione di terzi.",
     "section_ip_title": "Proprietà intellettuale",
-    "section_ip_body": "Tutti i contenuti di Moteurs.com (testi, calcolatori, immagini) sono protetti. È vietata qualsiasi riproduzione senza autorizzazione. Citazione consentita con backlink.",
-    "last_updated": "Ultimo aggiornamento: maggio 2026."
+    "section_ip_body": "All Moteurs.com content (texts, calculators, visuals, technical drawings) is protected. The valve seat and guide check gauges are the subject of a patent application (BE 2025/5347). Any reproduction without permission is prohibited. Quoting is allowed with a link back.",
+    "last_updated": "Last updated: September 2026."
   },
   "NotFound": {
     "title": "Pagina non trovata",
@@ -1308,6 +1308,7 @@
     "footer_location": "Belgium",
     "footer_legal": "Legal notice",
     "footer_terms": "Terms",
-    "footer_rights": "All rights reserved"
+    "footer_rights": "All rights reserved",
+    "footer_company": "a Botic product · BE 0689.469.169"
   }
 }

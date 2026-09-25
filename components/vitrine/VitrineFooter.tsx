@@ -38,7 +38,9 @@ export default function VitrineFooter() {
           </ul>
         </div>
       </div>
-      <div className={s.footerBottom}>© {year} Moteurs.com — {t('footer_rights')}</div>
+      <div className={s.footerBottom}>
+        © {year} Moteurs.com — <a href="https://botic.be" className={s.footerBotic}>{t('footer_company')}</a> — {t('footer_rights')}
+      </div>
     </footer>
   )
 }

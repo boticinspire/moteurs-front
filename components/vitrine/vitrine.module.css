@@ -176,6 +176,8 @@
 .footerList a:hover, .footerMediaLink:hover { color: #fff !important; text-decoration: underline; }
 .footerMediaLink { font-weight: 600; }
 .muted { color: #7f91ad; }
+.footerBotic { color: #b8c7df !important; text-decoration: none; }
+.footerBotic:hover { color: #fff !important; text-decoration: underline; }
 .footerBottom { max-width: var(--v-max); margin: 32px auto 0; padding: 18px 20px 0; border-top: 1px solid rgba(255,255,255,.1); font-size: .82rem; color: #7f91ad; }
 
 /* ── Responsive ─────────────────────────────────────────────────────────── */

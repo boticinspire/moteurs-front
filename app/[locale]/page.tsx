@@ -60,6 +60,14 @@ export default async function VitrineHomePage({ params }: { params: Promise<{ lo
     name: t('product_name'),
     description: t('meta_description'),
     brand: { '@type': 'Brand', name: 'Moteurs.com' },
+    manufacturer: {
+        '@type': 'Organization',
+        name: 'Botic',
+        url: 'https://botic.be',
+        vatID: 'BE0689469169',
+        founder: { '@type': 'Person', name: 'Olivier Lory' },
+        address: { '@type': 'PostalAddress', streetAddress: 'Rue des Mésanges 11', postalCode: '5600', addressLocality: 'Villers-le-Gambon', addressCountry: 'BE' },
+      },
     image: 'https://moteurs.com/vitrine/planche-reelle.webp',
     url: 'https://moteurs.com/',
     offers: {

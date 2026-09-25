@@ -82,7 +82,7 @@
     "link_outils": "Alle calculators",
     "link_mentions": "Wettelijke vermeldingen",
     "link_about": "Over ons",
-    "copyright": "© 2026 Moteurs.com — Onafhankelijk medium over de energietransitie van het wegvervoer",
+    "copyright": "© 2026 Moteurs.com — een product van Botic (BE 0689.469.169)",
     "link_cgu": "Gebruiksvoorwaarden"
   },
   "LanguageSwitcher": {
@@ -301,16 +301,16 @@
   "Legal": {
     "title": "Wettelijke vermeldingen",
     "section_editor_title": "Uitgever",
-    "section_editor_body": "Moteurs.com — Onafhankelijk redactioneel medium. Verantwoordelijke uitgever: Oliver.",
+    "section_editor_body": "Moteurs.com is een product van Botic, eenmanszaak van Olivier Lory (natuurlijke persoon). Maatschappelijke zetel: Rue des Mésanges 11, 5600 Villers-le-Gambon (Philippeville), België. Ondernemings- (KBO) en btw-nummer: BE 0689.469.169. Verantwoordelijke uitgever: Olivier Lory. Contact: contact@botic.be.",
     "section_hosting_title": "Hosting",
-    "section_hosting_body": "Vercel Inc., 440 N Barranca Avenue #4133, Covina, CA 91723, Verenigde Staten.",
+    "section_hosting_body": "Gehost in België door Behostings (behostings.com). Levering, beveiliging en DNS: Cloudflare, Inc. Database en transactionele e-mails: Supabase (verwerker).",
     "section_data_title": "Persoonsgegevens",
-    "section_data_body": "Moteurs.com verzamelt enkel strikt noodzakelijke gegevens (inschrijvings-e-mail, taalvoorkeur). Conform de AVG hebt u recht op inzage, rectificatie en verwijdering via redaction@moteurs.com.",
+    "section_data_body": "Moteurs.com verzamelt enkel de noodzakelijke gegevens: e-mailadres en taalvoorkeur voor het medium; naam, e-mail, bedrijf, land en technische gegevens van de aanvraag voor offerteaanvragen. Deze gegevens dienen uitsluitend om uw aanvraag te beantwoorden en worden nooit verkocht. Volgens de AVG hebt u recht op inzage, verbetering en verwijdering: privacy@botic.be.",
     "section_cookies_title": "Cookies",
     "section_cookies_body": "Enkel essentiële cookies (sessie, taalvoorkeur). Geen reclame- of profileringscookies van derden.",
     "section_ip_title": "Intellectuele eigendom",
-    "section_ip_body": "De volledige inhoud van Moteurs.com (teksten, calculators, beelden) is beschermd. Reproductie zonder toestemming is verboden. Citeren toegestaan met terugkoppeling.",
-    "last_updated": "Laatste update: mei 2026."
+    "section_ip_body": "Alle inhoud van Moteurs.com (teksten, calculators, beelden, technische tekeningen) is beschermd. Voor de controlekalibers voor klepzittingen en geleiders is een octrooi aangevraagd (BE 2025/5347). Elke reproductie zonder toestemming is verboden. Citeren toegestaan met link.",
+    "last_updated": "Laatst bijgewerkt: september 2026."
   },
   "NotFound": {
     "title": "Pagina niet gevonden",
@@ -1308,6 +1308,7 @@
     "footer_location": "België",
     "footer_legal": "Wettelijke vermeldingen",
     "footer_terms": "Voorwaarden",
-    "footer_rights": "Alle rechten voorbehouden"
+    "footer_rights": "Alle rechten voorbehouden",
+    "footer_company": "een product van Botic · BE 0689.469.169"
   }
 }
