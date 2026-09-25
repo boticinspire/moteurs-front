@@ -98,9 +98,13 @@ export default function Header() {
         .nav-menu a {
           display: flex; align-items: center; gap: 10px; padding: 10px 12px;
           border-radius: 9px; font-size: .88rem; font-weight: 500;
-          color: var(--color-text); white-space: nowrap; text-decoration: none;
+          color: #1f2937; white-space: nowrap; text-decoration: none;
         }
-        .nav-menu a:hover, .nav-menu a.active { background: var(--color-bg-alt); color: var(--color-primary); }
+        /* Le menu est toujours sur fond blanc : couleurs fixes, indépendantes du thème clair/sombre */
+        .nav-menu a:hover, .nav-menu a.active { background: #f4f7fb; color: var(--color-primary); }
+        .nav-menu a.menu-vitrine { color: #0e2a57; font-weight: 600; }
+        .nav-menu a.menu-vitrine svg { stroke: #1d5fd1; }
+        .site-header .logo .logo-text-dim { color: #64748b; }
         .nav-menu a svg { width: 16px; height: 16px; stroke: var(--color-primary); fill: none; stroke-width: 2; flex-shrink: 0; }
         .nav-menu .menu-lbl { font-size: .68rem; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: var(--color-text-soft); padding: 8px 12px 4px; }
         .nav-menu .menu-sep { height: 1px; background: rgba(11,30,56,.08); margin: 6px 4px; }
@@ -185,6 +189,12 @@ export default function Header() {
                 <svg className="chev" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg>
               </button>
               <div className="nav-menu" role="menu">
+                {/* Retour à la page principale du site : vitrine gabarits de soupape */}
+                <Link href="/" className="menu-vitrine" role="menuitem">
+                  <svg viewBox="0 0 24 24"><path d="M12 3v18"/><path d="M6 21h12"/><path d="M4 9c0-2 3.6-4 8-4s8 2 8 4"/></svg>
+                  {t('nav_produits')}
+                </Link>
+                <div className="menu-sep" aria-hidden="true" />
                 <Link href="/documents-auto" className={path === '/documents-auto' ? 'active' : ''} role="menuitem">
                   <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
                   {t('nav_documents')}
