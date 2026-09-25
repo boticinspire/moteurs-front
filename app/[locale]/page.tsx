@@ -224,7 +224,7 @@ export default async function VitrineHomePage({ params }: { params: Promise<{ lo
               </article>
             </div>
             <figure className={`${s.figure} ${s.figureWide}`}>
-              <Image src="/vitrine/kit-culasse.webp" alt={t('img_kit_alt')} width={1000} height={1289} sizes="(max-width: 900px) 100vw, 60vw" className={s.figImg} />
+              <Image src="/vitrine/kit-atelier.webp" alt={t('img_kit_alt')} width={912} height={1176} sizes="(max-width: 900px) 100vw, 60vw" className={s.figImg} />
               <figcaption>{t('img_kit_caption')}</figcaption>
             </figure>
           </div>
