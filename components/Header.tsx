@@ -154,7 +154,7 @@ export default function Header() {
 
       <header className="site-header">
         <div className="container">
-          <Link href="/media" className="logo" aria-label={t('aria_logo')}>
+          <Link href="/" className="logo" aria-label={t('aria_logo')}>
             <span className="logo-mark" aria-hidden="true">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 3v18M3 12h18"/></svg>
             </span>
@@ -264,7 +264,7 @@ export default function Header() {
       {open && (
         <div className="mobile-overlay" role="dialog" aria-modal="true">
           <div className="mobile-overlay-header">
-            <Link href="/media" className="logo" style={{ color: 'white' }} aria-label={t('aria_logo')}>
+            <Link href="/" className="logo" style={{ color: 'white' }} aria-label={t('aria_logo')}>
               <span className="logo-mark" aria-hidden="true">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 3v18M3 12h18"/></svg>
               </span>
