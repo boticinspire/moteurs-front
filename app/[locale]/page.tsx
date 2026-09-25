@@ -186,7 +186,7 @@ export default async function VitrineHomePage({ params }: { params: Promise<{ lo
             </div>
             <div className={s.split}>
               <figure className={s.figure}>
-                <Image src="/vitrine/gabarit-cotes.webp" alt={t('img_cad_alt')} width={900} height={847} sizes="(max-width: 900px) 100vw, 40vw" className={s.figImg} />
+                <Image src="/vitrine/gabarit-brevet.webp" alt={t('img_cad_alt')} width={900} height={970} sizes="(max-width: 900px) 100vw, 40vw" className={s.figImg} />
                 <figcaption>{t('img_cad_caption')}</figcaption>
               </figure>
               <div>
