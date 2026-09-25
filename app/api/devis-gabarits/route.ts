@@ -13,6 +13,7 @@
 
 import { NextRequest, NextResponse } from 'next/server'
 import { sendDevisEmails, smtpConfigured } from '@/lib/mailer-devis'
+import { allow, clientIp } from '@/lib/rate-limit'
 
 export const runtime = 'nodejs'
 
@@ -53,6 +54,10 @@ export async function POST(req: NextRequest) {
 
   if (!body?.nom?.trim() || !body?.email?.trim() || !EMAIL_RE.test(body.email)) {
     return NextResponse.json({ error: 'Nom et email valides requis' }, { status: 400 })
+  }
+
+  if (!allow(`devis:${clientIp(req.headers)}`, 5)) {
+    return NextResponse.json({ error: 'Trop de demandes — réessayez dans une heure.' }, { status: 429 })
   }
 
   const row = {

@@ -31,7 +31,7 @@ export type DemandeDevis = {
 export const smtpConfigured = () =>
   Boolean(process.env.SMTP_HOST && process.env.SMTP_USER && process.env.SMTP_PASS)
 
-const esc = (v: unknown) =>
+export const esc = (v: unknown) =>
   String(v ?? '—').replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c] as string))
 
 const ACK: Record<string, { subject: string; hello: string; body: string; sign: string }> = {
@@ -62,7 +62,7 @@ const ACK: Record<string, { subject: string; hello: string; body: string; sign: 
 }
 
 let transporter: nodemailer.Transporter | null = null
-function getTransport() {
+export function getTransport() {
   if (transporter) return transporter
   const port = Number(process.env.SMTP_PORT || 465)
   transporter = nodemailer.createTransport({
